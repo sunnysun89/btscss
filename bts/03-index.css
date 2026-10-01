@@ -1,0 +1,476 @@
+/* ==========================================================================
+   Burn The Sky — 03 index
+   Categories and forum rows.
+
+   The markup, as it really is once la categoria esta separada en el indice
+   (panel -> Estructura y Jerarquia -> splited_categories = 4):
+
+     div.forabg                     una por categoria
+       div.inner
+         span.corners-top
+         ul.topiclist
+           li.header                aqui esta el NOMBRE de la categoria
+             dl.icon
+               dd.dterm > div.table-title
+               dd.topics   "Temas"
+               dd.posts    "Mensajes"
+               dd.lastpost "Ultimos Mensajes"
+         ul.topiclist.forums
+           li.row                   un foro
+             dl.icon                lleva un background gif y el div de dentro
+                                      lleva un margin-left en linea
+               dd.dterm
+                 div
+                   h3.hierarchy > a.forumtitle
+                   br
+                   (descripcion)
+                   span.mod-text "Moderador:"
+                   a.group-mod
+               dd.topics  > dfn "Temas"
+               dd.posts   > dfn "Mensajes"
+               dd.lastpost
+         span.corners-bottom
+
+   La rejilla va en dl.icon, porque es lo que tiene las celdas: li.row solo
+   tiene un hijo. Y dl.icon trae un fondo gif y el div un margen en linea,
+   que hay que anular para que mande el estilo.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   The category box
+   -------------------------------------------------------------------------- */
+
+.forabg {
+  background: var(--bts-surface);
+  border: 1px solid var(--bts-line);
+  border-radius: var(--bts-radius-lg);
+  margin: 0 0 var(--bts-gap-lg);
+  overflow: hidden;
+  box-shadow: var(--bts-shadow);
+}
+
+.forabg > .inner { padding: 0; }
+
+/* The rounded edges are drawn with two empty spans; ours is a real border. */
+.forabg .corners-top,
+.forabg .corners-bottom { display: none; }
+
+/* --------------------------------------------------------------------------
+   The category name
+   -------------------------------------------------------------------------- */
+
+.forabg ul.topiclist > li.header {
+  padding: 0;
+  background: var(--bts-surface-2);
+  border-bottom: 1px solid var(--bts-line);
+}
+
+/* phpBB sets a background gif on this dl. Kill it. */
+.forabg li.header dl.icon {
+  display: flex;
+  align-items: center;
+  gap: var(--bts-gap);
+  margin: 0;
+  padding: var(--bts-gap-sm) var(--bts-gap);
+  background: none !important;
+}
+
+.forabg li.header .table-title {
+  flex: 1;
+  font-family: var(--bts-font-display);
+  font-size: var(--bts-fs-md);
+  font-weight: 600;
+  letter-spacing: .01em;
+  color: var(--bts-text);
+  position: relative;
+  padding-left: .8rem;
+}
+
+/* A hairline in the accent down the left of the name */
+.forabg li.header .table-title::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .1em;
+  bottom: .1em;
+  width: 2px;
+  border-radius: 1px;
+  background: linear-gradient(180deg, var(--bts-accent), var(--bts-accent-3));
+}
+
+.forabg li.header .table-title a { color: inherit; }
+.forabg li.header .table-title a:hover { color: var(--bts-accent); opacity: 1; }
+
+/* The column heads next to the name */
+.forabg li.header dd.topics,
+.forabg li.header dd.posts {
+  margin: 0;
+  font-size: var(--bts-fs-xs);
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--bts-text-3);
+  text-align: right;
+  min-width: 4rem;
+}
+
+.forabg li.header dd.dterm { flex: 1; margin: 0; padding: 0; min-width: 0; }
+
+.forabg li.header dd.lastpost {
+  margin: 0;
+  font-size: var(--bts-fs-xs);
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--bts-text-3);
+  text-align: right;
+  min-width: 12rem;
+}
+
+/* --------------------------------------------------------------------------
+   A forum row
+   -------------------------------------------------------------------------- */
+
+.forabg ul.topiclist.forums > li.row {
+  border-bottom: 1px solid var(--bts-line);
+  transition: background .15s ease;
+}
+.forabg ul.topiclist.forums > li.row:last-child { border-bottom: 0; }
+/* El hover tiene que mover el TEXTO ademas del fondo.
+
+   Con solo levantar el fondo, la descripcion (que es --bts-text-3) pasa de
+   5,58 de contraste a 3,81: se ve la fila cambiar y el texto se pierde. Por eso
+   al pasar el raton la descripcion sube a --bts-text-2 y queda en 5,98, mejor
+   que en reposo. Ademas sale una barra de acento a la izquierda, que es la
+   senal de "estoy aqui" que ningun color por si solo da.
+
+   Vorfreude hace lo mismo con un color en vez de un gris (--colehover). */
+.forabg ul.topiclist.forums > li.row:hover { background: var(--bts-hover); }
+
+.forabg ul.topiclist.forums > li.row:hover dd.dterm > div { color: var(--bts-text-2); }
+.forabg ul.topiclist.forums > li.row:hover .mod-text { color: var(--bts-text-2); }
+.forabg ul.topiclist.forums > li.row:hover dd.topics,
+.forabg ul.topiclist.forums > li.row:hover dd.posts,
+.forabg ul.topiclist.forums > li.row:hover dd.lastpost { color: var(--bts-text-2); }
+.forabg ul.topiclist.forums > li.row:hover a.group-mod { color: var(--bts-text); }
+
+/* La barra de acento de 2px del borde izquierdo se ha quitado. Con el fondo ya
+   subiendo a 1,57 de contraste y el nombre yendo a blanco, la barra era ruido:
+   ademas el acento al lado de la fila daba 6,18 y competia con el propio nombre.
+   La fila se reconoce por el fondo y por el texto, que es suficiente. */
+
+.forabg ul.topiclist.forums li.row > dl.icon {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  grid-template-areas:
+    "name  topics posts"
+    "last  last  last";
+  align-items: start;
+  gap: .3rem var(--bts-gap);
+  margin: 0;
+  padding: var(--bts-gap) var(--bts-gap);
+  background: none !important;   /* el gif de phpBB, fuera */
+  /* phpBB pone `ul.forums dd { border-left: 1px solid #fff }` en CADA celda del
+     indice: es el borde blanco del tema claro, y en un foro oscuro salian unos
+     palos blancos verticales entre columnas. phpBB solo se lo quita a dd.topics
+     y dd.posts, no a dd.dterm ni dd.lastpost, que son las dos que se notaban.
+     El border:0 de aqui los quita de todas. */
+  border: 0;
+}
+
+/* El border de arriba no basta: phpBB apunta a las dd una por una, y los bordes
+   no se heredan. Hay que ir a las celdas.
+
+   Y el ancho tambien. phpBB pone width:60% en dd.dterm, width:8% en dd.topics y
+   dd.posts, y width:20% en dd.lastpost. En una rejilla el width de la celda manda
+   sobre la pista: la pista de 470px se quedaba en una celda de 282, y hacia un
+   hueco de 208px entre la descripcion y los contadores. Medido, no supuesto. Sin
+   este width:auto el reparto 52% / 4rem / 4rem / resto no llega a aplicarse. */
+.forabg ul.topiclist.forums li.row > dl.icon > dd,
+.forabg li.header dl.icon > dd,
+.forabg ul.topiclist li.header dl.icon > dd {
+  border: 0;
+  width: auto !important;
+  min-width: 0;
+}
+
+/* --- name and description, one cell --- */
+
+.forabg li.row dl.icon > dd.dterm {
+  grid-area: name;
+  margin: 0;
+  padding: 0 0 0 2.75rem;          /* hueco para el icono */
+  min-width: 0;
+}
+
+/* phpBB pone el margen aqui en linea; hay que quitarlo para que mande el
+   hueco del icono de arriba */
+.forabg li.row dd.dterm > div {
+  display: block;
+  margin: 0 !important;
+}
+
+.forabg li.row h3.hierarchy {
+  margin: 0;
+  font-family: var(--bts-font-display);
+  font-size: var(--bts-fs-md);
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.forabg li.row h3.hierarchy a.forumtitle { color: var(--bts-text); }
+.forabg li.row h3.hierarchy a.forumtitle:hover { color: var(--bts-accent); opacity: 1; }
+
+/* La descripcion va detras del nombre, como un <br> suelto dentro del div */
+.forabg li.row dd.dterm > div > br + br:not(.mod-text),
+.forabg li.row dd.dterm > div > br ~ br { color: var(--bts-text-3); }
+
+/* El texto de descripcion es el nodo de texto que sigue al h3 */
+.forabg li.row h3.hierarchy ~ br ~ * { color: inherit; }
+
+/* --- el icono del foro --- */
+
+.forabg li.row dl.icon::before {
+  content: "";
+  position: absolute;
+  margin-left: .75rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  border: 1px solid var(--bts-line);
+  background: var(--bts-surface-2);
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235f6878' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M4 6h16M4 12h16M4 18h10'/%3E%3C/svg%3E");
+  background-size: .9rem;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Sin leer: anillo de acento y icono encendido */
+.forabg li.row.unread dl.icon::before,
+.forabg li.row dl.icon:has(a.icon-unread)::before {
+  border-color: var(--bts-accent-2);
+  box-shadow: 0 0 0 3px var(--bts-accent-glow);
+}
+.forabg li.row.unread dl.icon::before {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364e0ce' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M4 6h16M4 12h16M4 18h10'/%3E%3C/svg%3E");
+}
+
+/* Punto de no leido junto al nombre */
+.forabg li.row.unread h3.hierarchy a.forumtitle::before,
+.forabg li.row h3.hierarchy a.icon-unread::before {
+  content: "";
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-right: .5rem;
+  vertical-align: middle;
+  border-radius: 50%;
+  background: var(--bts-accent);
+  box-shadow: 0 0 6px var(--bts-accent);
+}
+
+/* --- descripcion --- */
+
+.forabg li.row dd.dterm .mod-text {
+  font-size: var(--bts-fs-xs);
+  color: var(--bts-text-3);
+}
+
+
+/* --- la descripcion ---
+
+   phpBB mete el texto de la descripcion como un nodo de texto suelto dentro del
+   div, separado del nombre y de la linea de moderadores por <br>. Esos <br> no
+   se pueden quitar: si se ocultan, el nombre, la descripcion y "Moderador:" se
+   juntan en un solo renglon, que es como se vio la primera vez.
+
+   La solucion es no pelear con los <br> sino hacer que el div sea una columna
+   flexible. Cada nodo de texto y cada elemento se convierte en un bloque
+   anonimo y sale en su propia linea, y el <br> deja de hacer falta porque ya no
+   hay linea continua.
+
+   El !important del display no es opcional: phpBB pone un
+   style="display: block; margin : 0 0px 0 45px;" EN LINEA en este div, y un estilo
+   en linea gana a cualquier regla de hoja de estilo que no lo lleve. Sin el,
+   esta regla no hace absolutamente nada. */
+.forabg li.row dd.dterm > div {
+  display: flex !important;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: .3rem;
+  margin: 0 !important;
+  font-size: var(--bts-fs-sm);
+  line-height: 1.55;
+  color: var(--bts-text-3);
+}
+
+.forabg li.row dd.dterm br { display: none; }
+
+/* El vacio final que phpBB deja con <strong></strong> */
+.forabg li.row dd.dterm strong:empty { display: none; }
+
+/* La linea "Moderador: ..." va un punto mas apagada y un poco mas pequena */
+.forabg li.row dd.dterm .mod-text,
+.forabg li.row dd.dterm a.group-mod {
+  margin-top: .15rem;
+  font-size: var(--bts-fs-xs);
+}
+
+.forabg li.row h3.hierarchy { font-size: var(--bts-fs-md); color: var(--bts-text); }
+.forabg li.row a.group-mod { color: var(--bts-text-2); text-decoration: underline; text-decoration-color: var(--bts-line-2); text-underline-offset: 2px; }
+.forabg li.row a.group-mod:hover { color: var(--bts-accent); }
+
+/* --- contadores --- */
+
+.forabg li.row dd.topics,
+.forabg li.row dd.posts {
+  margin: 0;
+  font-family: var(--bts-font-mono);
+  font-size: var(--bts-fs-xs);
+  color: var(--bts-text-3);
+  text-align: right;
+  min-width: 4rem;
+}
+.forabg li.row dd.topics { grid-area: topics; }
+.forabg li.row dd.posts  { grid-area: posts; }
+
+/* El dfn de dentro es la etiqueta para lectores de pantalla */
+.forabg li.row dd.topics dfn,
+.forabg li.row dd.posts dfn {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+/* --- ultimo mensaje --- */
+
+.forabg li.row dd.lastpost {
+  grid-area: last;
+  margin: .4rem 0 0;
+  padding-top: .4rem;
+  border-top: 1px solid var(--bts-line);
+  font-size: var(--bts-fs-xs);
+  color: var(--bts-text-3);
+  text-align: right;
+}
+.forabg li.row dd.lastpost a { color: var(--bts-text-2); }
+.forabg li.row dd.lastpost a:hover { color: var(--bts-accent); }
+
+/* --------------------------------------------------------------------------
+   En ancho normal, las columnas con ancho fijo
+
+   Con `1fr auto auto auto` la columna del nombre se come todo el sobrante y la
+   de ultimo mensaje se queda en 14 rem, con lo que los titulos salian cortados
+   ("Los niveles de p...", "Bienvenida a Bu..."), y en la captura se veia un
+   hueco enorme entre la descripcion y los contadores.
+
+   Los cinco foros de referencia usan porcentajes en vez de 1fr:
+
+     Vorfreude   dd.dterm { width:52% }   dd.lastpost { width:32% }
+     NBorn       dd.dterm { width:60% }   dd.lastpost { width:20% }
+
+   Aqui igual: la descripcion se lleva el 52% y el sobrante se lo queda el
+   ultimo mensaje, que es el que necesita el sitio.
+   -------------------------------------------------------------------------- */
+
+@media (min-width: 861px) {
+  .forabg ul.topiclist.forums li.row > dl.icon {
+    grid-template-columns: minmax(0, 52%) 4rem 4rem minmax(15rem, 1fr);
+    grid-template-areas: "name topics posts last";
+    align-items: center;
+  }
+
+  .forabg li.row dd.topics,
+  .forabg li.row dd.posts {
+    padding: 0 .5rem;
+    text-align: center;
+  }
+
+  .forabg li.row dd.lastpost {
+    margin: 0;
+    padding: 0 0 0 var(--bts-gap);
+    border-top: 0;
+    min-width: 0;
+    text-align: left;
+    align-items: flex-start;
+  }
+
+  /* La cabecera de columna tiene que ocupar lo mismo que las celdas de arriba,
+     o las etiquetas TEMAS y MENSAJES no caen sobre sus numeros. */
+  .forabg li.header dl.icon {
+    display: grid;
+    grid-template-columns: minmax(0, 52%) 4rem 4rem minmax(15rem, 1fr);
+    /* El mismo hueco que las filas. Con gap:0 las etiquetas se quedaban 20px a la
+       izquierda de sus numeros. */
+    gap: .3rem var(--bts-gap);
+    align-items: center;
+    padding: var(--bts-gap-sm) var(--bts-gap);
+  }
+
+  .forabg li.header dd.dterm    { grid-column: 1; text-align: left; padding-left: 2.75rem; }
+  .forabg li.header dd.topics   { grid-column: 2; text-align: center; padding: 0 .5rem; }
+  .forabg li.header dd.posts    { grid-column: 3; text-align: center; padding: 0 .5rem; }
+  .forabg li.header dd.lastpost { grid-column: 4; text-align: left; min-width: 0; }
+}
+
+/* --------------------------------------------------------------------------
+   Sub-foros
+   -------------------------------------------------------------------------- */
+
+.forabg li.row .linklist {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .3rem .75rem;
+  margin: .4rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--bts-fs-xs);
+}
+.forabg li.row .linklist a { color: var(--bts-text-3); }
+.forabg li.row .linklist a:hover { color: var(--bts-accent); }
+
+/* --------------------------------------------------------------------------
+   Announcements
+   -------------------------------------------------------------------------- */
+
+.forabg li.row.forum_announce { background: var(--bts-accent-wash); }
+
+/* --------------------------------------------------------------------------
+   Who is online
+   -------------------------------------------------------------------------- */
+
+.color-groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem .75rem;
+  margin: var(--bts-gap-sm) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.color-groups li {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  font-size: var(--bts-fs-xs);
+  color: var(--bts-text-3);
+}
+.color-groups .group-icon { width: 8px; height: 8px; border-radius: 2px; flex: none; }
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 860px) {
+  /* Los contadores sobran en un movil; el nombre y el ultimo mensaje no. */
+  .forabg li.header dd.topics,
+  .forabg li.header dd.posts { display: none; }
+  .forabg li.header dd.lastpost { min-width: 0; text-align: left; }
+
+  .forabg li.row dd.topics { display: none; }
+  .forabg li.row dd.posts {
+    grid-area: topics;
+    text-align: left;
+    font-size: var(--bts-fs-xs);
+  }
+}
