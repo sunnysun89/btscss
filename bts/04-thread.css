@@ -75,23 +75,96 @@
   box-shadow: var(--bts-shadow);
 }
 
-.post > .inner { padding: 0; }
+/* --------------------------------------------------------------------------
+   El reparto en dos columnas
 
-/* El post del usuario conectado, marcado por phpBB con .online */
+   NO VALIA CON UN FLOTADO, Y ESTA ES LA RAZON.
+
+   La idea era `float: left` en la ficha y ya esta. Pero el orden en el DOM de
+   este panel es el contrario de phpBB de escritorio:
+
+       0  span.corners-top
+       1  div          el ancla del post, 1px
+       2  div.postbody    <- el texto
+       3  div.postprofile <- la ficha, DESPUES
+       4  div.clear
+       5  div.fa_like_div
+       6  p.right         el boton de citar
+       7  span.corners-bottom
+
+   Medido. Un flotado solo tira del contenido que va despues que el, asi que
+   con la ficha en el puesto 3 el texto ya estaba colocado a lo ancho completo y
+   la ficha se caia debajo. Por eso con `float: left` el post seguia saliendo
+   exactamente igual que con `float: right`: el flotado no estaba fallando, es
+   que no puede hacer lo que se le pide.
+
+   Se hace con `grid-template-areas`. Se probo primero con `order` de flex, que
+   deberia bastar, y medido tampoco reordenaba: el texto se quedaba en 40 px y
+   la ficha a la derecha. Las areas de rejilla si reordenan, y ademas el
+   agrupamiento es explicito —"ficha cuerpo" en una linea, "ancho ancho" debajo
+   — en vez de depender de que un flex-basis del 100 % provoque el salto de
+   linea.
+
+   Medido con esta version: ficha en x=93, texto en x=293, 20 px entre los dos. */
+.post > .inner {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  grid-template-areas:
+    "ficha cuerpo"
+    "ancho ancho";
+  align-items: start;
+  padding: 0;
+}
+
+.post .postprofile {
+  grid-area: ficha;
+  float: none;
+  width: auto;
+  margin: 0 var(--bts-gap) var(--bts-gap) 0;
+}
+
+.post .postbody {
+  grid-area: cuerpo;
+  min-width: 0;
+}
+
+/* Los likes, el boton de citar, el ancla y los corners: a lo ancho de la
+   tarjeta y debajo de las dos columnas. El selector es explicito, y no `> div`
+   a pelo, porque `> div` tambien cae en el postbody y en la propia ficha. */
+.post > .inner > .fa_like_div,
+.post > .inner > p.right,
+.post > .inner > .clear,
+.post > .inner > .corners-top,
+.post > .inner > .corners-bottom,
+.post > .inner > div:not(.postbody):not(.postprofile):not(.fa_like_div):not(.clear) {
+  grid-area: ancho;
+}
 .post.online { border-left: 2px solid var(--bts-accent-2); }
 
 /* --------------------------------------------------------------------------
-   La columna del autor
-   -------------------------------------------------------------------------- */
+   La columna del autor — A LA IZQUIERDA
 
+   Es lo que se ha pedido, y es lo que hacen los cuatro de referencia. En el
+   ejemplo de post que hay que imitar, la ficha del personaje —avatar grande,
+   nombre, rango, cifras— va en una columna fija a la izquierda, y el texto a su
+   derecha. Aqui phpBB trae la ficha en un <dl class="postprofile"> y la
+   colocaba flotando a la derecha; lo unico que hace falta es cambiar de lado.
+
+   220px en vez de 200 para que el avatar tenga sitio: es el elemento mas grande
+   de la columna y a 200 se quedaba enano. El texto entra por la derecha solo,
+   porque el flotado se lo deja, sin necesidad de margenes ni de clear.
+
+   El fondo va en --bts-surface-2 en vez de --bts-bg-2: al estar la tarjeta en
+   --bts-surface, un valor mas oscuro hacia un hueco negro dentro de la tarjeta.
+   Con un paso mas claro se lee como columna. */
 .post .postprofile {
-  float: right;
-  width: 200px;
-  margin: 0 0 0 var(--bts-gap);
+  float: left;
+  width: 220px;
+  margin: 0 var(--bts-gap) var(--bts-gap) 0;
   padding: var(--bts-gap);
-  background: var(--bts-bg-2) !important;
+  background: var(--bts-surface-2) !important;
   border: 1px solid var(--bts-line);
-  border-radius: var(--bts-radius);
+  border-radius: var(--bts-radius-lg);
   font-family: var(--bts-font-body);
   font-size: var(--bts-fs-xs);
   line-height: 1.6;
@@ -101,19 +174,44 @@
 
 .post .postprofile dl { margin: 0; }
 
+/* Este <dt> lo flota phpBB. En prosilver, `.postprofile dt { float: left }`, y
+   eso lo deja con el ancho justo de lo que lleva dentro: medido, 84 px dentro
+   de una columna de 180. El avatar se metia a 84 x 180, aplastado y con la
+   forma equivocada. Sin quitar el flotado, el ancho del avatar no se puede
+   poner bien por mucho que se le diga. */
 .post .postprofile dt {
+  float: none;
+  display: block;
   margin: 0 0 .5rem;
   padding: 0;
   text-align: center;
 }
 
-.post .postprofile dt img {
-  max-width: 100%;
-  max-height: 220px;
-  border-radius: var(--bts-radius);
-  border: 1px solid var(--bts-line);
-}
+/* El avatar. En las capturas salia el gif de "sin avatar" a su tamano natural,
+   que es un cuadrado diminuto dentro de un hueco enorme. Se le da un alto fijo
+   y `object-fit` para que cualquier avatar —venga del tamano que venga— salga
+   centrado y con la misma forma en todos los posts.
 
+   Los `!important` son contra el `style="max-width: 200px; max-height: 600px"`
+   que phpBB pone EN LINEA en este <img>. Un estilo en linea gana a cualquier
+   regla de hoja, asi que sin ellos manda el tamano de este panel y el nuestro
+   no. */
+.post .postprofile dt img {
+  display: block;
+  /* Cuadrado de verdad. Con `width: 100%; height: 180px` el ancho salia del
+     ancho de la columna —200 menos el relleno— y quedaban 158 x 180, un
+     rectangulo. `aspect-ratio` lo resuelve sin depender de cuanto mida la
+     columna, y el alto sale del ancho solo. */
+  width: 100% !important;
+  max-width: 160px !important;
+  height: auto !important;
+  aspect-ratio: 1 / 1;
+  margin: 0 auto;
+  object-fit: cover;
+  border-radius: var(--bts-radius);
+  border: 1px solid var(--bts-line-2);
+  background: var(--bts-bg-2);
+}
 .post .postprofile dt strong { font-size: var(--bts-fs-base); }
 
 /* El nombre, con el color del grupo que phpBB pone en linea */
@@ -498,6 +596,16 @@
 
 @media (max-width: 860px) {
   /* La columna del autor deja de flotar y pasa a ser una tira compacta */
+  /* En movil se deshace el reparto en dos columnas y la ficha se pone encima,
+     en fila. Hay que volver a `display: block` en el contenedor, porque con
+     flex el `order` y el `flex-basis` de arriba seguirian mandando y la ficha
+     no seoldersia a lo ancho. */
+  .post > .inner {
+    display: block;
+    grid-template-columns: none;
+    grid-template-areas: none;
+  }
+
   .post .postprofile {
     float: none;
     width: auto;
@@ -511,7 +619,10 @@
   }
 
   .post .postprofile dt { margin: 0; flex: none; }
-  .post .postprofile dt img { max-height: 56px; }
+  /* El alto va fijo en las dos reglas, no solo el max-height: el avatar lleva
+     `height: 180px` arriba, asi que bajando unicamente el max-height el movil
+     se queda con un avatar de 180 de alto dentro de una fila de 56. */
+  .post .postprofile dt img { height: 56px !important; width: 56px !important; max-width: 56px !important; max-height: 56px !important; }
   .post .postprofile dt strong { font-size: var(--bts-fs-sm); }
 
   /* El resto de la columna, en fila y sin etiquetas */
