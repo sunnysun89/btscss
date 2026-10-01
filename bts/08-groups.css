@@ -26,30 +26,62 @@
   font-weight: 600;
   letter-spacing: .01em;
 }
-
 /* --------------------------------------------------------------------------
-   The colour bar under the author
+   La insignia de grupo
 
-   phpBB: <dd class="usr_grp_clr"> or a div with an inline background-color.
-   Made into a small bar so it reads as a colour chip, not a stray fill.
+   ERROR QUE ESTUVO AQUI, Y POR QUE:
+
+   Foroactivo pone la clase usr_grp_clr en TODO lo que es una insignia de
+   grupo, no solo en una barra de color: el nombre del autor en un post, el
+   usuario conectado en el indice, el ultimo usuario registrado, cada entrada de
+   la leyenda de grupos. Este fichero asumia que era unicamente la barra del
+   autor y le ponia width:44px; height:2px.
+
+   El efecto en pantalla era que "Faceless" se partia en "Face / less" porque el
+   nombre no cabia en 44 px, y que las insignias salieran aplastadas a dos
+   pixels de alto. Es la razon de que el final del indice pareciese roto: media
+   pantalla en negro y un par de texto partido.
+
+   Asi que la clase se trata como lo que es: una insignia de texto con el color
+   del grupo puesto en linea por phpBB. Aqui solo se le da forma.
    -------------------------------------------------------------------------- */
 
 .usr_grp_clr {
-  display: block;
-  width: 44px;
-  height: 2px;
-  margin: .6rem auto;
-  border-radius: 1px;
-  opacity: .9;
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: .12rem .45rem;
+  border-radius: var(--bts-radius);
+  background: rgba(255, 255, 255, .05);
+  border: 1px solid var(--bts-line);
+  font-size: inherit;
+  line-height: inherit;
+  opacity: 1;
+  white-space: nowrap;
 }
 
-/* The same class used as a list marker on the members list */
-dl.icon li.usr_grp_clr {
-  width: 8px;
-  height: 8px;
-  margin: 0 .35rem 0 0;
+/* La muestra de color, tomando el color que ya trae en linea */
+.usr_grp_clr::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  flex: none;
   border-radius: 2px;
+  background: currentColor;
+  box-shadow: 0 0 7px currentColor;
 }
+
+/* El <strong> de dentro es el nombre: que no herede el tamano de titular */
+.usr_grp_clr strong {
+  font-weight: 600;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+
 
 /* --------------------------------------------------------------------------
    The group name next to a username
