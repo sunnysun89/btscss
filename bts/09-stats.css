@@ -110,12 +110,35 @@
 
 /* El ultimo usuario lleva un enlace dentro del strong: hay que quitarle el
    subrayado y el tamano de enlace para que se lea como cifra y no como texto
-   subrayado gigante. */
+   subrayado gigante.
+
+   Y el tamano hay que quitarselo del todo: {NEWEST_USER} trae el NOMBRE dentro
+   del <strong>, no una cifra. A 42 px en Bodoni el nombre se partia en dos
+   lineas y ocupaba media celda. La cifra grande solo tiene sentido en las dos
+   primeras, que si traen un numero. */
+.bts-stat-ultimo strong {
+  display: block;
+  font-family: var(--bts-font-body);
+  font-size: var(--bts-fs-md);
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 0;
+}
+
 .bts-stat-ultimo strong a {
   color: inherit;
   text-decoration: none;
 }
 .bts-stat-ultimo strong a:hover { color: var(--bts-accent); }
+
+/* Y dentro hay otro <strong> con la insignia del grupo: que no se rompa */
+.bts-stat-ultimo strong strong {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 600;
+  line-height: inherit;
+  color: inherit;
+}
 
 /* --------------------------------------------------------------------------
    La leyenda de grupos
