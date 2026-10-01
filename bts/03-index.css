@@ -182,6 +182,20 @@
   margin: 0;
   padding: var(--bts-gap) var(--bts-gap);
   background: none !important;   /* el gif de phpBB, fuera */
+  /* phpBB pone `ul.forums dd { border-left: 1px solid #fff }` en CADA celda del
+     indice: es el borde blanco del tema claro, y en un foro oscuro salian unos
+     palos blancos verticales entre columnas. phpBB solo se lo quita a dd.topics
+     y dd.posts, no a dd.dterm ni dd.lastpost, que son las dos que se notaban.
+     El border:0 de aqui los quita de todas. */
+  border: 0;
+}
+
+/* El border de arriba no basta: phpBB apunta a las dd una por una, y los bordes
+   no se heredan. Hay que ir a las celdas. */
+.forabg ul.topiclist.forums li.row > dl.icon > dd,
+.forabg li.header dl.icon > dd,
+.forabg ul.topiclist li.header dl.icon > dd {
+  border: 0;
 }
 
 /* --- name and description, one cell --- */
