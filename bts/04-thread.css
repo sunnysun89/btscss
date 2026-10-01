@@ -45,11 +45,32 @@
    El post entero
    -------------------------------------------------------------------------- */
 
+/* El post es una tarjeta.
+
+   El `!important` del background no es un despiste: 01-base.css pone
+   `.post { background-color: transparent !important }` para tapar el fondo
+   claro de phpBB, y eso se come cualquier fondo que se ponga aqui sin la misma
+   palabra. Con este `background` a secas la tarjeta no se veia NADA: la foto
+   de fondo de la pagina pasaba por detras del texto y el post no existia.
+
+   revisar-superficies.js existe por esto, y avisa de estos casos. */
 .post {
-  background: var(--bts-surface);
+  background: var(--bts-surface) !important;
   border: 1px solid var(--bts-line);
   border-radius: var(--bts-radius-lg);
-  margin: 0 0 var(--bts-gap);
+  margin: 0 auto var(--bts-gap);
+  /* Ancho de la tarjeta, y no del texto.
+
+     La columna del autor flota a la derecha DENTRO de la tarjeta, asi que si lo
+     que se acota es el texto y no la tarjeta, a 1440px de pagina el texto se
+     queda a la izquierda, el autor a la derecha del todo, y en medio queda un
+     hueco de medio metro. Acotando la tarjeta, el autor queda pegado al texto
+     y el bloque se lee como un bloque.
+
+     860px: menos la columna del autor (200), el margen y el relleno, quedan
+     unos 600 de texto, que son del orden de 78ch. La medida de lectura de mas
+     abajo, en el .content, hace de tope por si el ancho se reduce. */
+  max-width: 860px;
   overflow: hidden;
   box-shadow: var(--bts-shadow);
 }
@@ -68,7 +89,7 @@
   width: 200px;
   margin: 0 0 0 var(--bts-gap);
   padding: var(--bts-gap);
-  background: var(--bts-bg-2);
+  background: var(--bts-bg-2) !important;
   border: 1px solid var(--bts-line);
   border-radius: var(--bts-radius);
   font-family: var(--bts-font-body);
@@ -220,13 +241,76 @@
   color: var(--bts-text);
 }
 
-/* Medida de lectura: en un post largo a todo el ancho no se lee. */
+/* Medida de lectura.
+
+   Antes esto solo acotaba `p`, `ul`, `ol` y `blockquote`, y no acotaba NADA en
+   la practica: phpBB mete el cuerpo del post en un <div> suelto, no en
+   parrafos. Comprobado en el DOM:
+
+       .content
+         <div>  "Para publicar una trama, un vinculo o un personaje..."
+
+   Ni un `p` a la vista. A 985px de ventana se leia bien porque la tarjeta
+   entra justo, pero a 1440 el texto llegaba a los 1000px de ancho, que es
+   demasiado para una linea de prosa.
+
+   Por eso se acota el CONTENEDOR y no los hijos: asi da igual lo que phpBB
+   meta dentro. 78ch, un poco mas que antes, porque el post va con la columna
+   del autor al lado y 68ch dejaba un hueco raro. */
+.post .postbody .content {
+  max-width: 78ch;
+}
 .post .postbody .content > p,
 .post .postbody .content > ul,
 .post .postbody .content > ol,
-.post .postbody .content > blockquote { max-width: var(--bts-readw); }
+.post .postbody .content > blockquote { max-width: 100%; }
 
 .post .postbody .content a { color: var(--bts-accent); }
+
+/* --- la caja de codigo ---
+
+   Esta es la tira clara que se ve en las capturas. phpBB imprime el bloque de
+   codigo como un <dl>:
+
+       <dl class="codebox"><dt>Codigo:</dt><dd><code>...</code></dd></dl>
+
+   y ese <dt> lo pinta con el fondo claro del tema —#ECF3F7—, el mismo azul
+   clarito que phpBB usa para las celdas del indice. Sobre una superficie casi
+   negra es un 1,3 de contraste: una barra blanca atravesada en mitad del post.
+
+   Medido: 661 x 25 px, con "Código:" dentro. */
+.post .postbody .content .codebox {
+  margin: var(--bts-gap) 0;
+  border: 1px solid var(--bts-line);
+  border-radius: var(--bts-radius);
+  overflow: hidden;
+  background: var(--bts-bg-2) !important;
+}
+
+.post .postbody .content .codebox dt {
+  padding: .35rem .75rem;
+  font-size: var(--bts-fs-xs);
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--bts-text-3) !important;
+  background: var(--bts-surface-2) !important;
+  border-bottom: 1px solid var(--bts-line);
+}
+
+.post .postbody .content .codebox dd {
+  margin: 0;
+  padding: var(--bts-gap);
+  overflow-x: auto;
+}
+
+.post .postbody .content .codebox code {
+  background: none;
+  padding: 0;
+  color: var(--bts-text-2);
+  font-size: .8125rem;
+  line-height: 1.7;
+}
 
 /* --- BBCode --- */
 
@@ -246,6 +330,17 @@
 
 .post .postbody .content .attrib a { color: var(--bts-text-3); }
 
+/* --- la linea del autor: "por Faceless · Ayer a las 8:39 pm" ----------
+
+   Hace falta una regla propia porque el grupo 1 de 01-base mete `p` en
+   --bts-text con !important, y eso dejaba la linea a blanco del todo, igual
+   que el nombre del tema que tiene justo encima. Aqui va un punto mas
+   apagada: es metadata, no el titular. */
+.post .postbody p.author {
+  color: var(--bts-text-2) !important;
+  font-size: var(--bts-fs-sm);
+}
+
 /* --- la firma --- */
 
 .post .postbody .signature {
@@ -262,7 +357,16 @@
 
    OJO: en el indice la lista de foros es ul.topiclist.forums, o sea que lleva
    las dos clases. Todo lo de aqui va con :not(.forums) para no mezclarse.
-   -------------------------------------------------------------------------- */
+
+   El ancho se acota por el mismo motivo que la tarjeta del post: a 1440 de
+   pagina una fila de tema con el titulo, los contadores y el ultimo mensaje
+   repartidos en 1440 deja el titulo perdido. 1180 en vez de 860 porque aqui si
+   hay cuatro columnas de verdad y hace falta el sitio. */
+.topiclist:not(.forums) {
+  max-width: 1180px;
+  margin-left: auto;
+  margin-right: auto;
+}
 
 .topiclist:not(.forums) li.row {
   position: relative;
