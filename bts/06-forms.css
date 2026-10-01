@@ -270,7 +270,7 @@ input[type=checkbox]:checked {
    -------------------------------------------------------------------------- */
 
 #post-form, .postform {
-  background: var(--bts-surface);
+  background: var(--bts-surface) !important;
   border: 1px solid var(--bts-line);
   border-radius: var(--bts-radius-lg);
   padding: var(--bts-gap);
@@ -313,4 +313,8 @@ table.themeform td, table.ipbtable td {
   vertical-align: middle;
 }
 
-table.themeform tr:hover td, table.ipbtable tr:hover td { background: var(--bts-surface-2); }
+/* El !important por lo mismo que en los posts: 01-base pone
+   `table td { background-color: transparent !important }` y sin esto el hover
+   de las filas del formulario no se ve. */
+table.themeform tr:hover td,
+table.ipbtable tr:hover td { background: var(--bts-surface-2) !important; }
