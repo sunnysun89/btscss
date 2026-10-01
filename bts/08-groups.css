@@ -1,0 +1,207 @@
+/* ==========================================================================
+   Burn The Sky — 08 groups
+   The bridge between the eight fame groups and the skin.
+
+   Foroactivo writes the group's own colour into an inline style on the author,
+   as `color-groups li` and `usr_grp_clr` carry a `background-color` or
+   `color` with the group hex. That means the skin never has to know a group
+   exists: it only has to make sure the markup looks right whichever group it is.
+
+   Everything here reads from --group1..--group8, declared in 01-base.css.
+   Adding an eighth group was a variable, not a stylesheet.
+
+   For the ladder to work on any element, give it the class and the number:
+
+     <span class="ladder" data-group="3">INFAMOUS</span>
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Author colour
+
+   The inline hex wins, so this only sets what happens around it.
+   -------------------------------------------------------------------------- */
+
+.postauthor strong a,
+.author-name a {
+  font-weight: 600;
+  letter-spacing: .01em;
+}
+
+/* --------------------------------------------------------------------------
+   The colour bar under the author
+
+   phpBB: <dd class="usr_grp_clr"> or a div with an inline background-color.
+   Made into a small bar so it reads as a colour chip, not a stray fill.
+   -------------------------------------------------------------------------- */
+
+.usr_grp_clr {
+  display: block;
+  width: 44px;
+  height: 2px;
+  margin: .6rem auto;
+  border-radius: 1px;
+  opacity: .9;
+}
+
+/* The same class used as a list marker on the members list */
+dl.icon li.usr_grp_clr {
+  width: 8px;
+  height: 8px;
+  margin: 0 .35rem 0 0;
+  border-radius: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   The group name next to a username
+
+   phpBB wraps it in .group, sometimes with the colour inline.
+   -------------------------------------------------------------------------- */
+
+.group {
+  display: inline-block;
+  padding: .1rem .45rem;
+  font-size: var(--bts-fs-xs);
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  border-radius: 3px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--bts-line);
+}
+
+/* --------------------------------------------------------------------------
+   The colour-groups strip
+
+   This is the legend of groups that Foroactivo prints on the index: one small
+   swatch per group, each with the hex inline. It only needs spacing.
+   -------------------------------------------------------------------------- */
+
+.color-groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem .75rem;
+  margin: var(--bts-gap-sm) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.color-groups li {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  font-size: var(--bts-fs-xs);
+  color: var(--bts-text-3);
+}
+
+.color-groups .group-icon {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex: none;
+}
+
+.color-groups a { color: inherit; }
+.color-groups a:hover { color: var(--bts-text); }
+
+/* --------------------------------------------------------------------------
+   Ladder component
+
+   Opt-in, so a template can show a character's rung without any extra CSS.
+   -------------------------------------------------------------------------- */
+
+.ladder {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  padding: .2rem .55rem;
+  font-size: var(--bts-fs-xs);
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--bts-text);
+  background: var(--bts-surface-2);
+  border: 1px solid var(--bts-line);
+  border-radius: var(--bts-radius);
+}
+
+.ladder::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-radius: 2px;
+  background: var(--ladder-colour, var(--bts-text-3));
+  box-shadow: 0 0 8px var(--ladder-colour, transparent);
+}
+
+.ladder[data-group="1"] { --ladder-colour: var(--group1); }  /* AUTHORITY */
+.ladder[data-group="2"] { --ladder-colour: var(--group2); }  /* DIVINE    */
+.ladder[data-group="3"] { --ladder-colour: var(--group3); }  /* INFAMOUS  */
+.ladder[data-group="4"] { --ladder-colour: var(--group4); }  /* NOTABLE   */
+.ladder[data-group="5"] { --ladder-colour: var(--group5); }  /* UNDERDOG  */
+.ladder[data-group="6"] { --ladder-colour: var(--group6); }  /* UNKNOWN   */
+.ladder[data-group="7"] { --ladder-colour: var(--group7); }  /* ORDINARY  */
+.ladder[data-group="8"] { --ladder-colour: var(--group8); }  /* MISSING   */
+
+/* --------------------------------------------------------------------------
+   The eight rungs, laid out
+
+   For a legend block. The order is the ladder, highest to lowest, and it must
+   match construir/GRUPOS.md.
+
+     <ul class="ladder-list">
+       <li data-group="1"><b>AUTHORITY</b> — descripcion</li>
+       ...
+     </ul>
+   -------------------------------------------------------------------------- */
+
+.ladder-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+}
+
+.ladder-list li {
+  display: grid;
+  grid-template-columns: 10px 1fr;
+  gap: .75rem;
+  align-items: baseline;
+  padding: .5rem .7rem;
+  background: var(--bts-surface-2);
+  border: 1px solid var(--bts-line);
+  border-radius: var(--bts-radius);
+  font-size: var(--bts-fs-sm);
+  color: var(--bts-text-2);
+}
+
+.ladder-list li::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  transform: translateY(1px);
+  background: var(--ladder-colour, var(--bts-text-3));
+  box-shadow: 0 0 10px var(--ladder-colour, transparent);
+}
+
+.ladder-list li[data-group="1"] { --ladder-colour: var(--group1); }
+.ladder-list li[data-group="2"] { --ladder-colour: var(--group2); }
+.ladder-list li[data-group="3"] { --ladder-colour: var(--group3); }
+.ladder-list li[data-group="4"] { --ladder-colour: var(--group4); }
+.ladder-list li[data-group="5"] { --ladder-colour: var(--group5); }
+.ladder-list li[data-group="6"] { --ladder-colour: var(--group6); }
+.ladder-list li[data-group="7"] { --ladder-colour: var(--group7); }
+.ladder-list li[data-group="8"] { --ladder-colour: var(--group8); }
+
+.ladder-list b {
+  display: block;
+  font-family: var(--bts-font-body);
+  font-size: var(--bts-fs-xs);
+  font-weight: 700;
+  letter-spacing: .1em;
+  color: var(--bts-text);
+  margin-bottom: .15rem;
+}

@@ -1,0 +1,259 @@
+/* ==========================================================================
+   Burn The Sky — 01 base
+   Variables, reset, typography.
+
+   Dark cold base, one aqua accent that stays out of the way of the eight group
+   colours (those live in --group1..--group8 at the bottom, and the skin must
+   never repaint a group).
+
+   Fonts: Playfair Display and Bodoni Moda carry the display work, Inter does
+   the reading. Inter because these are long posts and it is the most legible
+   at length of anything on Google Fonts without feeling clinical.
+   ========================================================================== */
+
+:root {
+  /* --- surfaces, coldest to warmest -------------------------------
+     The whole scale sits about two steps lighter than a typical "dark theme"
+     so that a dark forum is still readable rather than black-on-black. The base
+     is still #0a0c11, which on a normal monitor reads as black, but every
+     surface above it separates from the one below. */
+  --bts-bg:          #0a0c11;
+  --bts-bg-2:        #10131a;
+  --bts-surface:     #171b24;
+  --bts-surface-2:   #1f242f;
+  --bts-surface-3:   #272d3a;
+  --bts-surface-4:   #313847;
+
+  /* The row hover.
+     Three attempts at this, and the numbers say why the last one is right:
+
+       1. hover = surface-2   -> contrast against surface 1.07. Invisible.
+       2. hover = #303849     -> 1.47, but the description is --bts-text-3 and
+                                 its contrast fell from 5.58 to 3.81. You saw
+                                 the row change and lost the text.
+       3. this one            -> 1.32 against the surface, and because the
+                                 text brightens to --bts-text-2 on hover, the
+                                 description goes 5.58 -> 5.98 instead.
+
+     Vorfreude does the same with a colour instead of a grey step
+     (--colehover), so this is not a quirk. What both get right is that the
+     hover moves the TEXT as well as the background. */
+  --bts-hover:       #2a3140;
+  --bts-hover-2:     #343c4c;
+
+  /* --- lines -------------------------------------------------------- */
+  --bts-line:        #2b3240;
+  --bts-line-2:      #3a4354;
+  --bts-line-accent: #2b7d74;
+
+  /* --- text --------------------------------------------------------- */
+  --bts-text:        #e6eaf2;
+  --bts-text-2:      #a8b0c0;
+  --bts-text-3:      #8a93a6;
+  --bts-text-on:     #0a0c11;
+
+  /* --- accent ------------------------------------------------------- */
+  --bts-accent:      #64e0ce;
+  --bts-accent-2:    #2b7d74;
+  --bts-accent-3:    #1a4a45;
+  --bts-accent-glow: rgba(100, 224, 206, .12);
+  --bts-accent-wash: rgba(100, 224, 206, .05);
+
+  /* --- signals ------------------------------------------------------ */
+  --bts-danger:      #e8552f;
+  --bts-warn:        #f5c542;
+  --bts-ok:          #4fbf8b;
+
+  /* --- the eight fame groups ----------------------------------------
+     Same order as the ladder, and they must stay in sync with
+     construir/GRUPOS.md. Anything that styles a group reads from here. */
+  --group1: #e8552f;   /* AUTHORITY */
+  --group2: #f5c542;   /* DIVINE    */
+  --group3: #e43d5b;   /* INFAMOUS  */
+  --group4: #5b8cff;   /* NOTABLE   */
+  --group5: #ff7a45;   /* UNDERDOG  */
+  --group6: #c13bce;   /* UNKNOWN   */
+  --group7: #4fbf8b;   /* ORDINARY  */
+  --group8: #7c8598;   /* MISSING   */
+
+  /* --- type --------------------------------------------------------- */
+  --bts-font-display: 'Playfair Display', Georgia, serif;
+  --bts-font-hero:    'Bodoni Moda', 'Playfair Display', serif;
+  --bts-font-body:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --bts-font-mono:    ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, monospace;
+
+  --bts-fs-xs:   .6875rem;
+  --bts-fs-sm:   .8125rem;
+  --bts-fs-base: .9375rem;
+  --bts-fs-md:   1.0625rem;
+  --bts-fs-lg:   1.375rem;
+  --bts-fs-xl:   1.875rem;
+  --bts-fs-2xl:  2.75rem;
+  --bts-fs-3xl:  4rem;
+
+  /* --- space and shape ---------------------------------------------- */
+  --bts-gap:     1.25rem;
+  --bts-gap-sm:  .625rem;
+  --bts-gap-lg:  2.25rem;
+  --bts-radius:  4px;
+  --bts-radius-lg: 8px;
+
+  --bts-shadow:    0 1px 2px rgba(0,0,0,.45);
+  --bts-shadow-lg: 0 12px 40px rgba(0,0,0,.6);
+
+  --bts-maxw: 1440px;
+  --bts-readw: 68ch;
+}
+
+/* ==========================================================================
+   Reset
+   ========================================================================== */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bts-bg);
+  color: var(--bts-text);
+  font-family: var(--bts-font-body);
+  font-size: var(--bts-fs-base);
+  line-height: 1.65;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+img, svg, video { max-width: 100%; height: auto; }
+img { vertical-align: middle; }
+
+/* Forumactivo puts a min-width on the body to hold the fixed-width layout.
+   That is what made the old skin overflow below 1360px, so it goes. */
+body[style*="min-width"],
+#phpbb { min-width: 0 !important; }
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0 0 var(--bts-gap-sm);
+  font-family: var(--bts-font-display);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -.01em;
+  color: var(--bts-text);
+}
+
+h1 { font-size: var(--bts-fs-xl); }
+h2 { font-size: var(--bts-fs-lg); }
+h3 { font-size: var(--bts-fs-md); }
+h4 { font-size: var(--bts-fs-base); }
+
+p { margin: 0 0 var(--bts-gap); }
+
+a {
+  color: var(--bts-accent);
+  text-decoration: none;
+  transition: color .15s ease, opacity .15s ease;
+}
+a:hover { color: var(--bts-accent); opacity: .82; }
+
+strong, b { font-weight: 700; }
+em, i { font-style: italic; }
+
+code, pre {
+  font-family: var(--bts-font-mono);
+  font-size: .875em;
+}
+
+pre {
+  background: var(--bts-surface);
+  border: 1px solid var(--bts-line);
+  border-left: 2px solid var(--bts-accent-2);
+  border-radius: var(--bts-radius);
+  padding: var(--bts-gap);
+  overflow-x: auto;
+  line-height: 1.55;
+}
+
+code {
+  background: var(--bts-surface-2);
+  border-radius: 3px;
+  padding: .1em .35em;
+  color: var(--bts-accent);
+}
+pre code { background: none; padding: 0; color: inherit; }
+
+blockquote {
+  margin: var(--bts-gap) 0;
+  padding: var(--bts-gap-sm) var(--bts-gap);
+  border-left: 2px solid var(--bts-line-2);
+  background: var(--bts-bg-2);
+  color: var(--bts-text-2);
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--bts-line);
+  margin: var(--bts-gap-lg) 0;
+}
+
+small { font-size: var(--bts-fs-xs); color: var(--bts-text-3); }
+
+/* ==========================================================================
+   Selection and focus
+   ========================================================================== */
+
+::selection {
+  background: var(--bts-accent);
+  color: var(--bts-text-on);
+}
+
+:focus-visible {
+  outline: 2px solid var(--bts-accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ==========================================================================
+   Utility
+   ========================================================================== */
+
+.hidden, .hide { display: none !important; }
+
+.corners-top, .corners-bottom { background: none; border: 0; }
+
+.clear { clear: both; }
+.clearfix::after { content: ""; display: block; clear: both; }
+
+/* Screen-reader only, but focusable */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Reduced motion
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Print
+   -------------------------------------------------------------------------- */
+
+@media print {
+  body { background: #fff; color: #000; }
+  .navbar, #page-footer, .sidebar, .btn, .button1, .button2 { display: none !important; }
+}
