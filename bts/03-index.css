@@ -41,7 +41,7 @@
    -------------------------------------------------------------------------- */
 
 .forabg {
-  background: var(--bts-surface);
+  background: var(--bts-surface) !important;
   border: 1px solid var(--bts-line);
   border-radius: var(--bts-radius-lg);
   margin: 0 0 var(--bts-gap-lg);
