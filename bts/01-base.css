@@ -154,18 +154,32 @@
   --bts-fs-2xl:  2.75rem;
   --bts-fs-3xl:  4rem;
 
-  /* --- space and shape ---------------------------------------------- */
+  /* --- space and shape ----------------------------------------------
+     Los radios se subieron de 4/8 a 6/12. A 4 el rectangulo se leia como una
+     tabla, que es justo la impression que daba todo: muy plano, muy
+     cuadriculado. Los cuatro foros de referencia tienen las cajas con las
+     esquinas claramente redondeadas — Blinding Lights en la foto del
+     principio se ve, y NBorn las lleva a 10 — y eso ablanda la pagina entera
+     sin ningun color nuevo. */
   --bts-gap:     1.25rem;
   --bts-gap-sm:  .625rem;
   --bts-gap-lg:  2.25rem;
-  --bts-radius:  4px;
-  --bts-radius-lg: 8px;
+  --bts-radius:  6px;
+  --bts-radius-lg: 12px;
 
-  --bts-shadow:    0 1px 2px rgba(0,0,0,.45);
-  --bts-shadow-lg: 0 12px 40px rgba(0,0,0,.6);
+  /* Sombras mas bajas que antes. Con el velo ya en su sitio y las tarjetas
+     ya con superficies de verdad, una sombra fuerte sobre un fondo casi negro
+     solo anade un halo sucio alrededor del borde. */
+  --bts-shadow:    0 1px 2px rgba(0,0,0,.5);
+  --bts-shadow-lg: 0 10px 34px rgba(0,0,0,.55);
+
+  /* Cuanto se mueve una cosa cuando pasa el raton. Corto y sin rebote: en un
+     foro se pasa el raton por encima de las filas sin querer, y un
+     ease-out largo en cada fila cansa. */
+  --bts-ms: .14s;
 
   --bts-maxw: 1440px;
-  --bts-readw: 68ch;
+  --bts-readw: 78ch;
 }
 
 /* ==========================================================================
@@ -716,6 +730,59 @@ dl.file dt,
   }
 }
 
+  /* ==========================================================================
+     Movimiento
+
+     Lo unico que se hace aqui es poner el MISMO tiempo de transicion en todo.
+     Antes cada elemento traia el suyo escrito a mano: .15s por aqui, .12s por
+     alla, .1s en otro sitio. En una pagina con las filas del indice, la cabecera,
+     la barra y los desplegables todos a la vez, esa diferencia se nota: el raton
+     va a distinto ritmo por la pagina mientras la recorre.
+
+     .14s es lo bastante corto para que el raton no note el cambio y lo bastante
+     largo para que se vea que hay cambio. Sin rebote: ease-out y ya.
+
+     Y se respeta prefers-reduced-motion, que esta mas abajo y estaba puesto
+     desde el principio.
+     ========================================================================== */
+
+  .forabg ul.topiclist.forums > li.row,
+  .topiclist:not(.forums) li.row,
+  .forabg > .inner,
+  .post,
+  .module,
+  .panel,
+  #search-box,
+  .navbar a,
+  .navbar a.mainmenu,
+  a,
+  .button1,
+  .button2,
+  input[type="submit"],
+  button {
+    transition:
+      background-color var(--bts-ms) ease-out,
+      color var(--bts-ms) ease-out,
+      border-color var(--bts-ms) ease-out,
+      opacity var(--bts-ms) ease-out;
+  }
+
+  /* Las imagenes de los avatares y de los iconos, con un pelin mas, porque al
+     cambiar de tamaño un salto se nota mucho mas que un cambio de color. */
+  .postprofile dt img,
+  ul.topiclist li.row .icon,
+  .navbar a.mainmenu img {
+    transition: opacity var(--bts-ms) ease-out, filter var(--bts-ms) ease-out,
+                transform var(--bts-ms) ease-out;
+  }
+
+  /* El hover de una fila adelanta un pelo el texto, para que se note de que
+     la fila esta seleccionada. Un pixel y medio: mas que eso ya parece que
+     la pagina da un bote. */
+  .forabg ul.topiclist.forums > li.row:hover h3.hierarchy a,
+  .topiclist:not(.forums) li.row:hover h3.topic-title a {
+    transform: translateX(1.5px);
+  }
 /* --------------------------------------------------------------------------
    Print
    -------------------------------------------------------------------------- */
