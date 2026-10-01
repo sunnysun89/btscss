@@ -67,15 +67,28 @@
 }
 
 /* --------------------------------------------------------------------------
-   La barra en si
-   --------------------------------------------------------------------------
-   El fondo va con !important porque phpBB lo pinta con un gradiente en su
-   propia regla de #fa_toolbar, y ese gradiente es azul. Este es el unico
-   sitio de toda la skin donde el !important no es por especificidad sino
-   porque hay una propiedad en conflicto directa.
+   La barra, tal y como se ha pedido
 
-   El alto lo fijan los hijos con min-height, no el padre: en una barra tan
-   baja, el alto sale de la linea que lleva dentro. */
+   El modelo es una tira MUY fina: los enlaces del menu en versalitas con el
+   tracking abierto, centrados, y NOTIFICACIONES a la derecha, en mas peso. Sin
+   logo, sin "comparte", sin marco, sin nada que se parezca a un panel.
+
+   Eso obliga a decidir donde acaba esta barra y donde empieza la de phpBB. Lo
+   que hay arriba del todo, en el DOM, son dos elementos distintos:
+
+     #fa_toolbar   la de phpBB: saludo, notificaciones, compartir
+     .navbar       la del foro: indice, faq, miembros, perfil, cerrar sesion
+
+   Los dos se pueden pintar como UNA sola tira, y es lo que se ha hecho: mismo
+   fondo, misma altura, mismo borde inferior, y el relleno de la de phpBB se
+   queda vacio de contenido porque sus enlaces ya estan en la de abajo. La
+   diferencia entre las dos es de posicion en el DOM —la de phpBB va antes del
+   banner— no de aspecto.
+
+   Lo que SI quedaria de verdad pegado es mover el <div id="fa_toolbar"> dentro
+   de #page-header, en overall_header, y no hay forma de hacer eso con una hoja
+   de estilos. Si algún dia se quiere que no haya separacion entre las dos, esa
+   es la unica parte que hay que tocar a mano. */
 #fa_toolbar {
   min-height: 34px;
   background: var(--bts-bg-2) !important;
@@ -85,11 +98,79 @@
   color: var(--bts-text-2);
 }
 
+/* Lo que se va de esta tira.
+
+   El saludo y el boton de compartir: los enlaces del usuario ya estan en la
+   barra de abajo, que es donde los quiere el modelo, y "Compartir" con cuatro
+   pictogramas es ruido en una tira de 34 px. */
+#fa_toolbar #fa_share,
+#fa_toolbar #fa_welcome {
+  display: none !important;
+}
+
+/* El nombre del usuario, del lado derecho y con la forma del modelo: entre
+   corchetes, como el "[ FACELESS ]" que phpBB pone al final de la barra. */
+#fa_toolbar #fa_right {
+  margin-left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: .5rem;
+  min-height: 34px;
+  padding: 0 var(--bts-gap);
+}
+
+#fa_toolbar #fa_notifications {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  height: 26px;
+  padding: 0 .5rem;
+  border-radius: 999px;
+  font-size: var(--bts-fs-xs);
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--bts-text) !important;
+  background: transparent;
+  transition: background .15s ease, color .15s ease;
+}
+
+#fa_toolbar #fa_notifications:hover {
+  color: var(--bts-accent) !important;
+  background: var(--bts-surface-2);
+}
+
+/* El contador de sin leer, como un punto y no como una burbuja: con el texto
+   en mayusculas al lado, la unica cosa que compite es el punto. */
+#fa_toolbar #notif_unread {
+  min-width: 16px;
+  height: 16px;
+  margin-left: .4rem;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--bts-accent);
+  color: var(--bts-text-on);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 16px;
+  text-align: center;
+}
+
+#fa_toolbar #notif_list {
+  background: var(--bts-surface) !important;
+  border: 1px solid var(--bts-line);
+  border-radius: var(--bts-radius);
+  box-shadow: var(--bts-shadow-lg);
+  color: var(--bts-text-2);
+}
+
 /* --- la marca del foro, a la izquierda -------------------------------
    En el hueco que dejaban el logo de Foroactivo y su enlace. Bodoni, en
-   mayusculas y con el tracking abierto, que es como lleva el nombre Blinding
-   Lights su tira de arriba. El resplandor es del texto entero, con un
-   text-shadow, para no gastar el ::after que necesita el menu de usuario. */
+   mayusculas y con el tracking abierto. El resplandor es del texto entero, con
+   un text-shadow, para no gastar el ::after que necesita el menu de usuario. */
 #fa_toolbar::before {
   content: "Burn The Sky";
   display: flex;
@@ -104,171 +185,6 @@
   color: var(--bts-text);
   text-shadow: 0 0 14px var(--bts-accent-glow);
   white-space: nowrap;
-}
-
-/* --- los tres bloques ------------------------------------------------ */
-
-#fa_toolbar .fa_tbMainElement {
-  display: flex;
-  align-items: center;
-  min-height: 34px;
-  padding: 0 .5rem;
-  line-height: 1;
-}
-
-#fa_toolbar #fa_share {
-  margin-left: 1rem;
-  padding-left: 1rem;
-  border-left: 1px solid var(--bts-line);
-}
-
-#fa_toolbar #fa_right {
-  margin-left: auto;
-  gap: .35rem;
-}
-
-/* --- compartir -------------------------------------------------------
-   Se queda: cuatro enlaces que no son de phpBB pero si utiles, y quitarlos
-   seria perderlos. Lo unico que cambia es que dejan de ser cuatro botones con
-   borde y pasan a ser cuatro pictogramas apagados que se encienden al pasar.
-   El texto "Comparte :" se va —decir "compartir" junto a cuatro iconos es
-   redundante— pero el icono del correo lo anuncia su title. */
-#fa_toolbar #fa_share_text {
-  display: none;
-}
-
-#fa_toolbar #fa_share a {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 26px;
-  height: 26px;
-  border-radius: var(--bts-radius);
-  background: transparent;
-  filter: grayscale(1) brightness(1.6);
-  opacity: .55;
-  transition: opacity .15s ease, filter .15s ease, background .15s ease;
-}
-
-#fa_toolbar #fa_share a:hover {
-  filter: none;
-  opacity: 1;
-  background: var(--bts-accent-wash);
-}
-
-/* --- el saludo ------------------------------------------------------- */
-
-#fa_toolbar #fa_welcome {
-  display: inline-flex;
-  align-items: center;
-  height: 26px;
-  padding: 0 .7rem;
-  border-radius: 999px;
-  font-size: var(--bts-fs-xs);
-  font-weight: 600;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--bts-text-2) !important;
-  background: var(--bts-surface-2);
-  border: 1px solid var(--bts-line);
-  transition: color .15s ease, border-color .15s ease, background .15s ease;
-}
-
-#fa_toolbar #fa_welcome:hover {
-  color: var(--bts-text) !important;
-  background: var(--bts-surface-3);
-  border-color: var(--bts-line-2);
-}
-
-/* --- el desplegable del usuario --------------------------------------
-   phpBB lo pinta como un <ul> con fondo claro y texto de tema claro. Sobre
-   una superficie casi negra eso son 1,4 de contraste. El contenido lo
-   escribe phpBB en vivo —avatar, rango, enlaces—, asi que no se puede rehacer
-   el markup: se pinta el contenedor. */
-#fa_toolbar #fa_menulist {
-  background: var(--bts-surface) !important;
-  border: 1px solid var(--bts-line);
-  border-radius: var(--bts-radius);
-  box-shadow: var(--bts-shadow-lg);
-  padding: .3rem;
-  margin-top: .3rem;
-  min-width: 15rem;
-}
-
-#fa_toolbar #fa_menulist li a {
-  display: block;
-  padding: .45rem .7rem;
-  border-radius: 3px;
-  font-size: var(--bts-fs-sm);
-  color: var(--bts-text-2) !important;
-  transition: background .12s ease, color .12s ease;
-}
-
-#fa_toolbar #fa_menulist li a:hover {
-  background: var(--bts-hover);
-  color: var(--bts-text) !important;
-}
-
-/* El rango del usuario. phpBB lo pinta con el color del grupo en un atributo
-   style EN LINEA, asi que el color lo pone el panel y aqui solo se le da
-   forma. No se toca el color: es el grupo, y el grupo manda. */
-#fa_toolbar #fa_ranktitle {
-  font-size: var(--bts-fs-xs);
-  font-weight: 600;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-}
-
-#fa_toolbar #fa_usermenu img {
-  border-radius: 999px;
-  border: 1px solid var(--bts-line-2);
-}
-
-#fa_toolbar .fa_separator {
-  height: 1px;
-  margin: .3rem .4rem;
-  background: var(--bts-line);
-}
-
-/* --- las notificaciones ---------------------------------------------- */
-
-#fa_toolbar #fa_notifications {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 999px;
-  opacity: .7;
-  transition: opacity .15s ease, background .15s ease;
-}
-
-#fa_toolbar #fa_notifications:hover {
-  opacity: 1;
-  background: var(--bts-surface-2);
-}
-
-/* El contador de sin leer. Un punto de acento, no una burbuja: con texto
-   arriba del todo el unico espacio con contraste es el punto. */
-#fa_toolbar #notif_unread {
-  min-width: 16px;
-  height: 16px;
-  padding: 0 4px;
-  border-radius: 999px;
-  background: var(--bts-accent);
-  color: var(--bts-text-on);
-  font-size: 10px;
-  font-weight: 700;
-  line-height: 16px;
-  text-align: center;
-}
-
-#fa_toolbar #notif_list {
-  background: var(--bts-surface) !important;
-  border: 1px solid var(--bts-line);
-  border-radius: var(--bts-radius);
-  box-shadow: var(--bts-shadow-lg);
-  color: var(--bts-text-2);
 }
 
 /* --- el buscador de la barra ------------------------------------------
