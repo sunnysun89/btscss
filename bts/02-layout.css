@@ -264,12 +264,54 @@ body::before {
   text-shadow: 0 1px 10px rgba(0,0,0,.85);
 }
 
-/* --- the navbar below the band --- */
+/* --------------------------------------------------------------------------
+   La barra de navegacion
 
+   CENTRADA, y con el tracking muy abierto. Antes iba alineada a la izquierda y
+   con las etiquetas pegadas unas a otras, que es la disposicion por defecto de
+   phpBB y lo que mas se nota como "panel de phpBB" de toda la pagina.
+
+   El modelo pedido es una tira con las entradas en versalitas, con espacio entre
+   letras, centradas, y sin nada mas. Se insiste en tres cosas:
+
+     - text-align: center en el <ul>, y los <li> en inline-block para que el
+       centrado los functioned de verdad;
+     - letter-spacing: .12em, que es lo que hace que una lista de palabras cortas
+       se lea como menu y no como un parrafo;
+     - el buscador, que estaba en su propia fila debajo y partia la barra en dos.
+       El modelo no lo tiene —el item BUSCAR abre la busqueda—, asi que se
+       retira de la tira.
+
+   No se usa display:flex en el <ul> a proposito: en este panel no se ha
+   comportado, y letting the li flow inline da la misma fila dejando que sea el
+   navegador el que la parte cuando no cabe. */
 .navbar > .inner {
   max-width: var(--bts-maxw);
   margin: 0 auto;
   padding: 0 var(--bts-gap-lg);
+}
+
+.navbar ul.linklist.navlinks {
+  text-align: center;
+  padding: 0;
+}
+
+.navbar ul.linklist.navlinks > li {
+  display: inline-block;
+  float: none;
+}
+
+.navbar a.mainmenu {
+  padding: .7rem .8rem;
+  font-size: var(--bts-fs-xs);
+  font-weight: 600;
+  letter-spacing: .12em;
+}
+
+/* El buscador fuera de la tira. El item BUSCAR del menu lo sigue abriendo. */
+.navbar #search-menu,
+.navbar .searchbox {
+  display: none !important;
 }
 
 /* phpBB's own rule floats the logo left and pads it; both are gone now that
