@@ -19,17 +19,43 @@ body {
   background-size: cover;
 }
 
+/* El velo sobre la foto de fondo.
+
+   EL z-index ES LO UNICO IMPORTANTE DE ESTE BLOQUE, y estaba mal.
+
+   Estaba en `z-index: 0`. Con eso este pseudoelemento es un elemento POSICIONADO
+   con z-index cero, y segun el orden de pintado del CSS eso va por encima del
+   contenido que no esta posicionado:
+
+       1. fondo del elemento que forma el contexto de apilamiento
+       2. hijos con z-index negativo
+       3. bloques en flujo sin posicionar, sus fondos
+       4. texto en flujo
+       ...
+       9. hijos posicionados con z-index:auto o 0     <-- AQUI
+
+   O sea que este velo estaba PINTA ENCIMA DE TODA LA PAGINA, con un negro al
+   82-97 %. Cada palabra del foro se dibujaba debajo de el. Por eso decia el
+   usuario que "todo se ve gris menos el banner": el banner es lo unico que
+   tiene luz propia para atravesar un velo de esa densidad.
+
+   `z-index: -1` lo baja al paso 2, debajo del contenido y por encima del
+   fondo, que es justo lo que tiene que hacer: apagar la foto para que no
+   compita con el texto, sin tocar el texto.
+
+   El gradiente se puede suavizar mucho por esto. Con el velo debajo, ya no
+   tiene que tapar el contenido, solo la foto, asi que baja del 82-97 % al
+   62-88 % y la imagen de fondo se ve de verdad. */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
-  /* The scrim over the background photo. Neutral, not blue: at rgba(7,8,11)
-     this was carrying a blue cast that tinted the whole page. rgba(6,6,7) is
-     the same density with no hue in it. */
+  /* Neutral, no azulado: el rgba(7,8,11) de antes arrastraba un tinte frio que
+     se notaba en toda la pagina. rgba(6,6,7) es la misma densidad sin tono. */
   background:
-    linear-gradient(180deg, rgba(6,6,7,.82) 0%, rgba(6,6,7,.93) 40%, rgba(6,6,7,.97) 100%);
+    linear-gradient(180deg, rgba(6,6,7,.62) 0%, rgba(6,6,7,.80) 40%, rgba(6,6,7,.90) 100%);
   pointer-events: none;
-  z-index: 0;
+  z-index: -1;
 }
 
 /* Any page that has no image worth showing falls back to flat. */
