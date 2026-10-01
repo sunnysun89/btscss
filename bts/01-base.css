@@ -200,6 +200,74 @@ hr {
 small { font-size: var(--bts-fs-xs); color: var(--bts-text-3); }
 
 /* ==========================================================================
+   La tipografia, por la via larga
+
+   phpBB pone `font-family: Verdana` directamente sobre 32 selectores. Cada uno
+   gana a lo que el elemento herede del body, asi que poner la fuente en el body
+   no basta: hay que ir elemento por elemento.
+
+   Este bloque pisa los que se ven al leer un post, escribir, o mirar la lista de
+   temas. Los que quedan fuera (chat, adjuntos, faq, la barra de emoticonos) se
+   quedan en Verdana porque son paginas que no se tocan de momento.
+
+   Todos llevan !important por dos motivos: un estilo directo de phpBB gana a
+   cualquier regla normal, y algunos de estos selectores (a.button1) tienen mas
+   especificidad que la mia.
+
+   El error que mas se notaba era `.content p`: phpBB define la fuente en
+   `.content` Y otra vez en `.content p`, que es un elemento distinto. Arreglando
+   solo el contenedor, los parrafos de dentro seguian en Verdana.
+   ========================================================================== */
+
+body,
+h1, h2, h3, h4, h5, h6,
+h1.page-title,
+p.author,
+fieldset,
+fieldset.polls,
+dl.faq,
+a.topictitle,
+.content,
+.content p,
+.postbody .topic-title,
+.postbody p.author,
+li.header dt,
+li.header dd,
+input,
+select,
+textarea,
+a.button1, a.button2,
+input.button1, input.button2,
+button.button1, button.button2,
+table.forumline td.catHead,
+.attachbox dl.file,
+dl.file dt,
+#message-box textarea,
+.editor-message-box textarea {
+  font-family: var(--bts-font-body) !important;
+}
+
+/* Las cabeceras de columna del indice ("TEMAS", "MENSAJES"). phpBB les pone
+   Arial con la misma especificidad que el bloque de arriba, asi que se repiten
+   aqui con mas peso para que no haya duda. */
+.forabg li.header dt,
+.forabg li.header dd,
+.forabg ul.topiclist li.header dd {
+  font-family: var(--bts-font-body) !important;
+}
+
+/* Las excepciones, que si llevan otra fuente a proposito. */
+
+.topic-title,
+.postbody .topic-title,
+.postbody h2.topic-title { font-family: var(--bts-font-hero) !important; }
+
+.forabg li.header .table-title,
+.forabg h3.hierarchy { font-family: var(--bts-font-display) !important; }
+
+#site-title,
+#site-title h1 { font-family: var(--bts-font-hero) !important; }
+/* ==========================================================================
    Selection and focus
    ========================================================================== */
 
