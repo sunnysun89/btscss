@@ -104,11 +104,29 @@
 /* --------------------------------------------------------------------------
    The colour-groups strip
 
-   This is the legend of groups that Foroactivo prints on the index: one small
-   swatch per group, each with the hex inline. It only needs spacing.
-   -------------------------------------------------------------------------- */
+   OJO CON QUE CLASE ES ESTA, QUE ESTUVO MAL ENTENDIDA.
 
-.color-groups {
+   Este panel pone `color-groups` en el <span> del usuario conectado que sale en
+   la columna del ultimo mensaje, no solo en la leyenda:
+
+       <span class="group-1 color-groups usr_grp_clr" style="color:#ff7a4d">
+         <strong>Faceless</strong>
+       </span>
+
+   Medido en el DOM. Y como aqui se le ponia `display: flex`, `flex-wrap`,
+   `gap`, `margin-top` y `list-style: none` a proposito de una lista, ese span
+   de una linea se converdia en una caja flex con margen arriba. Ademas
+   `color: var(--bts-text-3)` le apagaba justo a lo que phpBB pinta en linea con
+   el color del grupo.
+
+   Por eso todo esto va con `ul.color-groups > li` y no con `.color-groups` a
+   pelo: la regla solo puede tocar a una lista de verdad, y un span con la misma
+   clase se queda como lo que es.
+
+   El color del grupo lo pone phpBB en linea y manda sobre esto. Aqui no se
+   reescribe ninguno: la insignia lleva el color del panel, no el de la hoja. */
+
+ul.color-groups {
   display: flex;
   flex-wrap: wrap;
   gap: .4rem .75rem;
@@ -117,23 +135,29 @@
   list-style: none;
 }
 
-.color-groups li {
+ul.color-groups > li {
   display: inline-flex;
   align-items: center;
   gap: .35rem;
   font-size: var(--bts-fs-xs);
-  color: var(--bts-text-3);
+  /* Sin color a proposito: se hereda el que phpBB pone en linea. Ponerle un
+     gris aqui lo apagaba, y el grupo es del grupo, no de la hoja. */
+  line-height: 1.4;
 }
 
-.color-groups .group-icon {
+/* La muestra de color, tomando el que ya viene en linea */
+ul.color-groups > li::before {
+  content: "";
   width: 8px;
   height: 8px;
   border-radius: 2px;
   flex: none;
+  background: currentColor;
+  box-shadow: 0 0 7px currentColor;
 }
 
-.color-groups a { color: inherit; }
-.color-groups a:hover { color: var(--bts-text); }
+ul.color-groups > li a { color: inherit; }
+ul.color-groups > li a:hover { color: var(--bts-text) !important; }
 
 /* --------------------------------------------------------------------------
    Ladder component
