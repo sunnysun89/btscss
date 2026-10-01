@@ -1,14 +1,14 @@
 /* ==========================================================================
    Burn The Sky — 11 topbar
 
-   La barra de arriba. Antes era la de Foroactivo: "#fa_toolbar", con el logo
-   de Foroactivo a la izquierda, "Comparte :", el menu de usuario y las
-   notificaciones.
+   La barra de arriba. La de phpBB/Foroactivo —"#fa_toolbar"— llega con el logo
+   de Foroactivo a la izquierda, un "Comparte :", el menu de usuario y las
+   notificaciones. Aqui se le quita la marca y se le cambia el resto.
 
-   QUE NO SE HACE AQUI, Y POR QUE.
+   QUE NO SE HACE, Y POR QUE.
 
    Lo tentador es tirar la barra y escribir una nueva. No. Dentro de
-   #fa_toolbar hay cosas que son de phpBB y tienen JavaScript debajo:
+   #fa_toolbar hay cosas de phpBB con JavaScript debajo:
 
      #fa_welcome        el saludo del usuario
      #fa_menulist       el desplegable: perfil, mis temas, mis mensajes,
@@ -20,24 +20,20 @@
 
    Si se borra el markup y se pone otro, todo eso deja de funcionar: el menu
    de usuario se abre a medio hacer, las notificaciones no llegan, y el
-   desconectarse desaparece. En un foro de rol eso no es un detalle
-   estetico, es perder la sesion.
+   desconectarse desaparece. En un foro de rol eso no es un detalle estetico,
+   es perder la sesion.
 
-   Asi que aqui no se quita nada del DOM: se CAMBIA DE VESTUJO. La barra sigue
-   siendo la de phpBB, con sus mismos elementos y su mismo JS, y lo unico que
-   se retira son las dos cosas que son marca de Foroactivo — el logo y el
-   enlace a su web.
+   Asi que el DOM no se toca. Se retira solo lo que es marca —#fa_left,
+   #fa_service, #fa_icon, el boton de plegar— y se viste el resto.
 
-   Ni una linea de JavaScript en toda la hoja, que para esto es justo lo que
-   hace falta: no hay que editar ninguna plantilla ni pegar nada en el panel
-   para que esto salga. La marca del foro va en un ::before.
+   Ni una linea de JavaScript en toda la hoja: no hay que editar ninguna
+   plantilla ni pegar nada en el panel. La marca del foro va en un ::before.
 
    OJO CON LA ATRIBUCION. Foroactivo da el foro gratis a cambio de que su
-   nombre siga en la pagina. Ocultar su barra no es lo mismo que quitar el
-   aviso legal del pie, y el pie es donde esta el aviso: si alguna vez hay que
-   devolver la barra, esta hoja entera se desactiva quitando el <link> de
-   cabecera.html y ya esta. Conviene tener presente que quitar la marca de
-   forma visible puede ir contra las condiciones del servicio.
+   nombre siga en la pagina. Ocultar el logo no es quitar el aviso legal del
+   pie —que es donde esta el aviso— pero quitar la marca visible puede ir
+   contra las condiciones del servicio. Si hay que devolverla, se quitan sus
+   tres selectores de este bloque y ya esta.
 
    Medido en el DOM antes de escribir esto:
      #fa_toolbar          0..30 de alto, ancho completo
@@ -45,21 +41,19 @@
      #fa_share            "Comparte :" + facebook, twitter, mail, rss
      #fa_right            #fa_welcome, #fa_notifications, #fa_hide
      #fa_toolbar_hidden   la variante colapsada, en -60
-     #fa_hide             el chevron que pliega la barra
    ========================================================================== */
 
-/* --- fuera la barra de phpBB ----------------------------------------- */
+/* --- fuera la marca de Foroactivo ------------------------------------ */
 
-/* Las dos: la de arriba y su variante colapsada, que esta en -60 y asoma
-   cuando phpBB cree que se ha plegado. Con las dos fuera, el contenido
-   sube 30px solo, porque ocupaban sitio de verdad en el flujo. */
-#fa_toolbar,
+/* La variante colapsada, que esta en -60 y asoma cuando phpBB cree que la
+   barra se ha plegado. Esa si se va entera. */
 #fa_toolbar_hidden {
   display: none !important;
 }
 
-/* Y las dos cosas sueltas de la marca, por si el panel las vuelve a pintar con
-   su propia hoja en alguna pagina: el icono y el enlace a foroactivo.com. */
+/* Y las dos cosas sueltas de la marca: el icono y el enlace a foroactivo.com.
+   El resto de la barra NO se quita — el razonamiento del principio lo explica
+   —; se retira solo la marca y se cambia de vestido lo demas. */
 #fa_left,
 #fa_service,
 #fa_icon {
