@@ -150,12 +150,40 @@ h4 { font-size: var(--bts-fs-base); }
 
 p { margin: 0 0 var(--bts-gap); }
 
-a {
+/* El color va en a:link / a:visited y no en `a` a proposito.
+
+   phpBB tiene `a:link, a:visited { color: #105289 }`: azul oscuro de tema
+   claro, que sobre un foro oscuro es casi invisible. Se le veia en "Ver
+   mensajes desde la ultima visita", el pie y la barra lateral. Un `a` a secas
+   tiene especificidad (0,0,1) contra (0,1,1) de un `a:link`, y pierde.
+
+   `a.topictitle` tambien trae su propio color en phpBB, asi que entra aqui. */
+a,
+a:link,
+a:visited,
+a:active,
+a.topictitle {
   color: var(--bts-accent);
   text-decoration: none;
   transition: color .15s ease, opacity .15s ease;
 }
-a:hover { color: var(--bts-accent); opacity: .82; }
+
+a:hover,
+a:link:hover,
+a:visited:hover,
+a:active:hover,
+a.topictitle:hover {
+  color: var(--bts-accent);
+  opacity: .82;
+}
+
+/* Los enlaces sueltos que no son titles: barras laterales y pie. */
+.rightside a,
+p.right a,
+#page-footer a,
+.copyright a,
+.navbar a,
+#wrap a { color: var(--bts-accent); }
 
 strong, b { font-weight: 700; }
 em, i { font-style: italic; }
