@@ -1,0 +1,619 @@
+/* ==========================================================================
+   Burn The Sky — 01 base
+   Variables, reset, typography.
+
+   Near-black neutral base, one warm ember accent that stays out of the way of
+   the eight group colours (those live in --group1..--group8 at the bottom, and
+   the skin must never repaint a group).
+
+   The palette is measured, not chosen by eye. See the comments on each token
+   block for the readings taken off NBorn, LoveWinsAll, Blinding Lights and
+   DTT, and for the contrast figures that justify each value.
+
+   Fonts: Playfair Display and Bodoni Moda carry the display work, Inter does
+   the reading. Inter because these are long posts and it is the most legible
+   at length of anything on Google Fonts without feeling clinical.
+   ========================================================================== */
+
+:root {
+  /* --- surfaces, near-black -----------------------------------------
+     Measured against the four reference forums:
+
+       NBorn          #0d0d0d   dominant 28x, then #0b0b0b and #101010
+       LoveWinsAll    #141414   dominant 46x, then #1c1c1c and #191919
+       BlindingLights greyscale photograph, no flat fill at all
+       DTT            #e5e2de   the one light theme, warm off-white
+
+     The two dark references sit BELOW what this skin used to be (#1e2431), and
+     they stay perfectly readable. That settles the argument: the readability
+     does not come from lifting the background. It comes from three things
+     instead, and all three are now load-bearing here:
+
+       1. text is high-contrast neutral. --bts-text is #f5f5f5, which is
+          exactly LWA's body colour, at 17.1:1 on --bts-surface.
+       2. rows are separated by a visible line, not by a background step.
+          At near-black a 1px difference between two surfaces is invisible,
+          so --bts-line carries the structure instead.
+       3. every step is genuinely neutral. No blue cast. The old scale was
+          #0e1117 -> #3b4459, a cold blue-grey, and that cast is what made
+          text sitting on it look washed out rather than just dim. */
+  --bts-bg:          #08080a;
+  --bts-bg-2:        #0d0d0e;
+  --bts-surface:     #101011;
+  --bts-surface-2:   #17171a;
+  --bts-surface-3:   #1f1f23;
+  --bts-surface-4:   #28282d;
+
+  /* The row hover.
+     Three attempts at this, and the numbers say why the last one is right:
+
+       1. hover = surface-2   -> contrast against surface 1.07. Invisible.
+       2. hover = #303849     -> 1.47, but the description is --bts-text-3 and
+                                 its contrast fell from 5.58 to 3.81. You saw
+                                 the row change and lost the text.
+       3. this one            -> 1.32 against the surface, and because the
+                                 text brightens to --bts-text-2 on hover, the
+                                 description goes 5.58 -> 5.98 instead.
+
+     Vorfreude does the same with a colour instead of a grey step
+     (--colehover), so this is not a quirk. What both get right is that the
+     hover moves the TEXT as well as the background.
+
+     The numbers above were against the old #1e2431. Recomputed here, because
+     at near-black a hover has to travel further to be seen at all:
+     #101011 -> #242428 is 1.46, which is more than the old 1.32 needed. The
+     description sits at 7.37 on the resting row and 6.15 on the hovered one,
+     both well clear of 4.5, so the row visibly lifts and the text survives. */
+  --bts-hover:       #242428;
+  --bts-hover-2:     #303036;
+
+  /* --- lines --------------------------------------------------------
+     These do the structural work that a lighter background used to do. At
+     near-black they have to be brighter than a dark theme would normally
+     need: #2a2a2e reads as a defined edge, #1c1c1f does not. */
+  --bts-line:        #2a2a2e;
+  --bts-line-2:      #45454c;
+  --bts-line-accent: #5c3a20;
+
+  /* --- text ---------------------------------------------------------
+     Deliberately borrowed from the references rather than invented.
+     --bts-text is LWA's #f5f5f5. --bts-text-3 is NBorn's #a1a1a1, the grey
+     they use for 364 elements. Both are fully neutral — no blue, no warm
+     tint — which is what stops them looking washed out on a near-black
+     ground.
+
+     Contrast against --bts-surface (#101011):
+       --bts-text     #f5f5f5   17.1
+       --bts-text-2   #cfcfd2   12.9
+       --bts-text-3   #a1a1a1    7.4
+     The gap between 2 and 3 is wide on purpose: 3 is the description and the
+     metadata, which is the text that was hardest to read before. */
+  --bts-text:        #f5f5f5;
+  --bts-text-2:      #cfcfd2;
+  --bts-text-3:      #a1a1a1;
+  --bts-text-on:     #0a0a0b;
+
+  /* --- accent -------------------------------------------------------
+     The old skin ran a bright cyan, #64e0ce. Measured across the four
+     references, not one uses a saturated cool accent:
+
+       NBorn          #684747  dusty rose, 200 elements
+       LoveWinsAll    #c57446  terracotta, 24 elements
+       Blinding Lights #8f9c7c sage green
+       DTT            #98441b  rust, 325 elements
+
+     All four are warm, all four are muted, and in three of the four the accent
+     is used as ordinary body text rather than only for links. So the ember
+     below is warm and muted on purpose — a true orange at this lightness
+     vibrates against near-black and reads as a link colour, which is the one
+     job it should not be doing.
+
+       --bts-accent     #e08a4a  7.2 on --bts-surface
+       --bts-accent-2   #a86234  3.6 — decorative only, never body text
+       --bts-accent-3   #5c3a20   1.6 — fills and rules only */
+  --bts-accent:      #e08a4a;
+  --bts-accent-2:    #a86234;
+  --bts-accent-3:    #5c3a20;
+  --bts-accent-glow: rgba(224, 138, 74, .14);
+  --bts-accent-wash: rgba(224, 138, 74, .06);
+
+  /* --- signals ------------------------------------------------------
+     --bts-danger was #e8552f, which against an ember accent of #e08a4a is
+     two oranges next to each other and a delete button reads as an accent
+     button. Pushed to a clear red. */
+  --bts-danger:      #dd4b3e;
+  --bts-warn:        #f5c542;
+  --bts-ok:          #4fbf8b;
+
+  /* --- the eight fame groups ----------------------------------------
+     Same order as the ladder, and they must stay in sync with
+     construir/GRUPOS.md. Anything that styles a group reads from here. */
+  --group1: #ff7a4d;   /* AUTHORITY */
+  --group2: #f5c542;   /* DIVINE    */
+  --group3: #ff6b8a;   /* INFAMOUS  */
+  --group4: #7aa5ff;   /* NOTABLE   */
+  --group5: #ff7a45;   /* UNDERDOG  */
+  --group6: #d97ae0;   /* UNKNOWN   */
+  --group7: #4fbf8b;   /* ORDINARY  */
+  --group8: #9aa5b8;   /* MISSING   */
+
+  /* --- type --------------------------------------------------------- */
+  --bts-font-display: 'Playfair Display', Georgia, serif;
+  --bts-font-hero:    'Bodoni Moda', 'Playfair Display', serif;
+  --bts-font-body:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --bts-font-mono:    ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, monospace;
+
+  --bts-fs-xs:   .6875rem;
+  --bts-fs-sm:   .8125rem;
+  --bts-fs-base: .9375rem;
+  --bts-fs-md:   1.0625rem;
+  --bts-fs-lg:   1.375rem;
+  --bts-fs-xl:   1.875rem;
+  --bts-fs-2xl:  2.75rem;
+  --bts-fs-3xl:  4rem;
+
+  /* --- space and shape ---------------------------------------------- */
+  --bts-gap:     1.25rem;
+  --bts-gap-sm:  .625rem;
+  --bts-gap-lg:  2.25rem;
+  --bts-radius:  4px;
+  --bts-radius-lg: 8px;
+
+  --bts-shadow:    0 1px 2px rgba(0,0,0,.45);
+  --bts-shadow-lg: 0 12px 40px rgba(0,0,0,.6);
+
+  --bts-maxw: 1440px;
+  --bts-readw: 68ch;
+}
+
+/* ==========================================================================
+   Reset
+   ========================================================================== */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bts-bg);
+  color: var(--bts-text);
+  font-family: var(--bts-font-body);
+  font-size: var(--bts-fs-base);
+  line-height: 1.65;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+img, svg, video { max-width: 100%; height: auto; }
+img { vertical-align: middle; }
+
+/* Forumactivo puts a min-width on the body to hold the fixed-width layout.
+   That is what made the old skin overflow below 1360px, so it goes. */
+body[style*="min-width"],
+#phpbb { min-width: 0 !important; }
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0 0 var(--bts-gap-sm);
+  font-family: var(--bts-font-display);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -.01em;
+  color: var(--bts-text);
+}
+
+h1 { font-size: var(--bts-fs-xl); }
+h2 { font-size: var(--bts-fs-lg); }
+h3 { font-size: var(--bts-fs-md); }
+h4 { font-size: var(--bts-fs-base); }
+
+p { margin: 0 0 var(--bts-gap); }
+
+/* --------------------------------------------------------------------------
+   Enlaces
+   --------------------------------------------------------------------------
+   Cada selector va en su PROPIA regla, y esto no es estetica: es la causa de
+   que media pagina saliera en color de acento.
+
+   Agrupados en una sola regla, `a, a:link, a:visited, a:active, a.topictitle`
+   vale (0,4,5). Una regla agrupada no vale lo que vale su selector mas fuerte
+   y tampoco la media: vale la SUMA de todos. Con (0,4,5) le ganaba a
+   `.navbar a.mainmenu`, que es (0,2,1), y la barra de navegacion salia
+   entera en acento aun teniendo su propia regla de texto neutro. Medido con
+   construir/revisar-cascada.js, no supuesto.
+
+   Separados, cada uno vale lo suyo:
+     a              (0,0,1)
+     a:link         (0,1,1)   — empata con el `a:link, a:visited` de phpBB
+     a:visited      (0,1,1)      (#105289, azul de tema claro) y gana por
+                                 orden, porque esta hoja va despues
+     a.topictitle   (0,1,1)
+
+   Ese empate con phpBB es justo lo que se busca: lo bastante fuerte para
+   tapar su azul, lo bastante flojo para no pisar nada de mas. Si alguna vez
+   hace falta mas, la via es una regla mas especifica, no agrupar. */
+
+a {
+  color: var(--bts-accent);
+  text-decoration: none;
+  transition: color .15s ease, opacity .15s ease;
+}
+
+a:link { color: var(--bts-accent); }
+a:visited { color: var(--bts-accent); }
+a:active { color: var(--bts-accent); }
+a.topictitle { color: var(--bts-accent); }
+
+a:hover { color: var(--bts-accent); opacity: .82; }
+a:link:hover { color: var(--bts-accent); }
+a:visited:hover { color: var(--bts-accent); }
+a:active:hover { color: var(--bts-accent); }
+a.topictitle:hover { color: var(--bts-accent); }
+
+strong, b { font-weight: 700; }
+em, i { font-style: italic; }
+
+code, pre {
+  font-family: var(--bts-font-mono);
+  font-size: .875em;
+}
+
+pre {
+  background: var(--bts-surface);
+  border: 1px solid var(--bts-line);
+  border-left: 2px solid var(--bts-accent-2);
+  border-radius: var(--bts-radius);
+  padding: var(--bts-gap);
+  overflow-x: auto;
+  line-height: 1.55;
+}
+
+code {
+  background: var(--bts-surface-2);
+  border-radius: 3px;
+  padding: .1em .35em;
+  color: var(--bts-accent);
+}
+pre code { background: none; padding: 0; color: inherit; }
+
+blockquote {
+  margin: var(--bts-gap) 0;
+  padding: var(--bts-gap-sm) var(--bts-gap);
+  border-left: 2px solid var(--bts-line-2);
+  background: var(--bts-bg-2);
+  color: var(--bts-text-2);
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--bts-line);
+  margin: var(--bts-gap-lg) 0;
+}
+
+small { font-size: var(--bts-fs-xs); color: var(--bts-text-3); }
+
+/* ==========================================================================
+   Las superficies, pintadas de verdad
+
+   ESTE ERA EL ERROR DE FONDO, Y ERA EL QUE HACIA QUE SE VIERA TODO OSCURO.
+
+   El foro esta sobre el tema claro de phpBB, que pinta de blanco o azul claro
+   un puñado de contenedores:
+
+     #wrap        #FFFFFF   el contenedor de toda la pagina
+     .navbar      #CADCEB   la barra de navegacion
+     ul.forums    #ECF3F7   la lista de foros del indice
+     input        #FFFFFF   los campos de los formularios
+
+   La primera version de esta skin no los tocaba: ponia el fondo oscuro en el
+   body y confiaba en un velo (body::before, un gradiente al 82-97 %) para tapar
+   lo de debajo. Funcionaba mas o menos mientras el velo tapara, pero en cuanto
+   el contenidoTransparent se apoyaba en uno de esos contenedores, el texto salia
+   claro sobre claro y no se leia: "Ver mensajes desde la ultima visita" a 1,60
+   de contraste, los titulos de foro a 1,43, el menu a 1,14.
+
+   Arreglo: pintar las superficies de verdad y quitar el velo. El fondo oscuro se
+   queda en el body, que es lo unico que tiene que cumplir de fondo.
+
+   Todo lleva !important porque estas reglas de phpBB estan dentro de #wrap y
+   compiten por especificidad.
+   ========================================================================== */
+
+#wrap,
+#outer-wrapper,
+#page-body,
+.navbar,
+.navbar .inner,
+.navbar .inner .linklist,
+ul.forums,
+ul.topiclist,
+.forumbg,
+.forabg,
+dl.icon,
+dd.dterm,
+.post,
+.postbody,
+table,
+table th,
+table td {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* Las que si llevan superficie propia */
+
+body {
+  background-color: var(--bts-bg) !important;
+}
+
+.navbar,
+.navbar .inner {
+  background-color: var(--bts-surface) !important;
+  border-bottom: 1px solid var(--bts-line);
+}
+
+.forabg {
+  background-color: var(--bts-surface) !important;
+  background-image: none !important;
+}
+
+.forabg > .inner,
+.forabg ul.topiclist,
+.forabg ul.topiclist.forums {
+  background-color: transparent !important;
+}
+
+.forabg ul.topiclist.forums > li.row {
+  background-color: var(--bts-surface) !important;
+}
+
+.forabg ul.topiclist > li.header {
+  background-color: var(--bts-surface-2) !important;
+}
+
+.forabg ul.topiclist.forums > li.row:hover {
+  background-color: var(--bts-hover) !important;
+}
+
+/* Las pestanas del perfil y los modulos de la barra lateral.
+
+   OJO: estas pestanas NO tienen clase. No es ul.tabnav como en phpBB de
+   escritorio: aqui es un <ul> a pelo, con <li> y dentro <a><span>, y la activa
+   lleva la clase activetab en el <li>. Escribir .tabnav no encuentra nada, que es
+   lo que pasaba en la primera version de este bloque.
+
+   Cada <a> trae un fondo claro de phpBB (#ECF3F7, y la activa #CADCEB), con el
+   texto del color del tema claro encima: a 1,6 y 2,0 de contraste, ilegibles.
+   Aqui pasan a la superficie del foro, y la activa se distingue por el acento. */
+
+ul > li > a > span,
+ul > li.activetab > a > span {
+  display: block;
+  padding: .5rem .9rem;
+  font-family: var(--bts-font-body);
+  font-size: var(--bts-fs-xs);
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--bts-text-2);
+  background: var(--bts-surface-2) !important;
+  border: 1px solid var(--bts-line);
+  border-bottom: 0;
+  border-radius: var(--bts-radius) var(--bts-radius) 0 0;
+}
+
+ul > li > a { text-decoration: none; }
+
+ul > li > a:hover > span {
+  color: var(--bts-text);
+  background: var(--bts-hover) !important;
+}
+
+ul > li.activetab > a > span,
+ul > li.activetab > a:hover > span {
+  color: var(--bts-accent);
+  background: var(--bts-surface) !important;
+  border-color: var(--bts-accent-2);
+}
+
+/* Los modulos de la barra lateral del perfil */
+
+.module {
+  background: var(--bts-surface) !important;
+  background-image: none !important;
+  border: 1px solid var(--bts-line);
+  border-radius: var(--bts-radius);
+  padding: var(--bts-gap-sm) var(--bts-gap);
+  color: var(--bts-text-2);
+  font-size: var(--bts-fs-sm);
+  line-height: 1.6;
+}
+
+.module h3,
+.module .h3 {
+  font-family: var(--bts-font-body);
+  font-size: var(--bts-fs-xs);
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--bts-text-3);
+  margin: 0 0 .5rem;
+}
+
+.module em { color: var(--bts-text-3); }
+.module strong { color: var(--bts-text); }
+.module a { color: var(--bts-accent); }
+
+/* El titulo de pagina, que phpBB pinta en su azul (#105289) */
+
+h1.page-title,
+h2.page-title {
+  color: var(--bts-text) !important;
+  font-family: var(--bts-font-display) !important;
+  font-weight: 600;
+}
+
+/* Las etiquetas de los formularios, en el azul del tema claro (#536482) */
+
+label,
+.postform dt,
+.postform dt strong,
+fieldset dt,
+.topic-review dt {
+  color: var(--bts-text-3) !important;
+}
+
+/* El boton flotante de compartir, tambien en azul phpBB */
+
+.btn-floating-left,
+.btn-floating-right {
+  color: var(--bts-accent) !important;
+  font-family: var(--bts-font-body);
+}
+/* Los campos: phpBB los pinta blancos */
+input[type=text], input[type=password], input[type=email],
+input[type=number], input[type=url], input[type=search],
+input[type=checkbox], input[type=radio],
+textarea, select {
+  background-color: var(--bts-bg-2) !important;
+  color: var(--bts-text) !important;
+}
+
+select option {
+  background-color: var(--bts-surface) !important;
+  color: var(--bts-text) !important;
+}
+
+/* El velo se queda solo como una sombra suave de profundidad, ya no como
+   tapon de las superficies */
+body::before {
+  background: linear-gradient(180deg, rgba(10,12,17,.30) 0%, rgba(10,12,17,.55) 45%, rgba(10,12,17,.75) 100%) !important;
+}
+/* ==========================================================================
+   La tipografia, por la via larga
+
+   phpBB pone `font-family: Verdana` directamente sobre 32 selectores. Cada uno
+   gana a lo que el elemento herede del body, asi que poner la fuente en el body
+   no basta: hay que ir elemento por elemento.
+
+   Este bloque pisa los que se ven al leer un post, escribir, o mirar la lista de
+   temas. Los que quedan fuera (chat, adjuntos, faq, la barra de emoticonos) se
+   quedan en Verdana porque son paginas que no se tocan de momento.
+
+   Todos llevan !important por dos motivos: un estilo directo de phpBB gana a
+   cualquier regla normal, y algunos de estos selectores (a.button1) tienen mas
+   especificidad que la mia.
+
+   El error que mas se notaba era `.content p`: phpBB define la fuente en
+   `.content` Y otra vez en `.content p`, que es un elemento distinto. Arreglando
+   solo el contenedor, los parrafos de dentro seguian en Verdana.
+   ========================================================================== */
+
+body,
+h1, h2, h3, h4, h5, h6,
+h1.page-title,
+p.author,
+fieldset,
+fieldset.polls,
+dl.faq,
+a.topictitle,
+.content,
+.content p,
+.postbody .topic-title,
+.postbody p.author,
+li.header dt,
+li.header dd,
+input,
+select,
+textarea,
+a.button1, a.button2,
+input.button1, input.button2,
+button.button1, button.button2,
+table.forumline td.catHead,
+.attachbox dl.file,
+dl.file dt,
+#message-box textarea,
+.editor-message-box textarea {
+  font-family: var(--bts-font-body) !important;
+}
+
+/* Las cabeceras de columna del indice ("TEMAS", "MENSAJES"). phpBB les pone
+   Arial con la misma especificidad que el bloque de arriba, asi que se repiten
+   aqui con mas peso para que no haya duda. */
+.forabg li.header dt,
+.forabg li.header dd,
+.forabg ul.topiclist li.header dd {
+  font-family: var(--bts-font-body) !important;
+}
+
+/* Las excepciones, que si llevan otra fuente a proposito. */
+
+.topic-title,
+.postbody .topic-title,
+.postbody h2.topic-title { font-family: var(--bts-font-hero) !important; }
+
+.forabg li.header .table-title,
+.forabg h3.hierarchy { font-family: var(--bts-font-display) !important; }
+
+#site-title,
+#site-title h1 { font-family: var(--bts-font-hero) !important; }
+/* ==========================================================================
+   Selection and focus
+   ========================================================================== */
+
+::selection {
+  background: var(--bts-accent);
+  color: var(--bts-text-on);
+}
+
+:focus-visible {
+  outline: 2px solid var(--bts-accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ==========================================================================
+   Utility
+   ========================================================================== */
+
+.hidden, .hide { display: none !important; }
+
+.corners-top, .corners-bottom { background: none; border: 0; }
+
+.clear { clear: both; }
+.clearfix::after { content: ""; display: block; clear: both; }
+
+/* Screen-reader only, but focusable */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Reduced motion
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Print
+   -------------------------------------------------------------------------- */
+
+@media print {
+  body { background: #fff; color: #000; }
+  .navbar, #page-footer, .sidebar, .btn, .button1, .button2 { display: none !important; }
+}

@@ -1,0 +1,252 @@
+/* ==========================================================================
+   Burn The Sky — 10 stats (parte 2)
+   El bloque de piezoelectric, en su forma nueva.
+
+   Reparto de las cuatro casillas, de izquierda a derecha:
+
+     .bts-stat-online   la grande: ahora mismo, quien esta en linea
+     .bts-stat-chica    dos pequeñas: mensajes y miembros
+     .bts-stat-ultimo   el ultimo usuario, con su avatar al lado
+
+   El bloque viejo era una fila de tres celdas iguales con la cifra grande. Ahora
+   "ahora mismo" manda y las dos cuentas quedan como dato secundario, que es como
+   lo tienen Vorfreude y LoveWinsAll.
+
+   Lo que hace phpBB es entregarnos frases enteras con el numero dentro de un
+   <strong> ("Nuestros miembros han publicado un total de 13 mensajes"). El CSS
+   saca ese <strong> y lo pone de titular. Por eso las casillas pequeñas pueden
+   ser pequenas: el numero sale del sitio que phpBB le puso.
+   ========================================================================== */
+
+.bts-stats-fila {
+  display: grid;
+  grid-template-columns: minmax(0, 2.2fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.3fr);
+  gap: 1px;
+  background: var(--bts-line);
+  border: 1px solid var(--bts-line);
+  border-radius: var(--bts-radius);
+  overflow: hidden;
+}
+
+.bts-stat {
+  display: flex;
+  flex-direction: column;
+  gap: .3rem;
+  padding: var(--bts-gap);
+  background: var(--bts-surface-2);
+  font-family: var(--bts-font-body);
+  font-size: var(--bts-fs-xs);
+  line-height: 1.55;
+  color: var(--bts-text-2);
+  min-width: 0;
+  transition: background .18s ease;
+}
+
+.bts-stat:hover { background: var(--bts-hover); }
+
+/* --------------------------------------------------------------------------
+   El titulo de cada casilla
+   -------------------------------------------------------------------------- */
+
+.bts-stat-label {
+  font-size: var(--bts-fs-xs);
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--bts-text-3);
+}
+
+.bts-stat-online .bts-stat-label { color: var(--bts-accent); }
+
+/* --------------------------------------------------------------------------
+   Las cifras
+
+   El numero es el <strong> que phpBB ya trae dentro de la frase. En las casillas
+   grandes va en Bodoni; en las pequenas, en la misma fuente del cuerpo pero mas
+   grande de lo normal, porque son un dato y no un titular.
+   -------------------------------------------------------------------------- */
+
+.bts-stat strong {
+  display: block;
+  font-family: var(--bts-font-hero);
+  font-size: var(--bts-fs-xl);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: 0;
+  color: var(--bts-text);
+}
+
+.bts-stat-chica strong {
+  font-family: var(--bts-font-hero);
+  font-size: var(--bts-fs-lg);
+}
+
+/* La frase que envuelve al numero se apaga para que solo se lea la cifra */
+.bts-stat-chica { color: var(--bts-text-3); }
+
+/* --------------------------------------------------------------------------
+   Ahora mismo
+   -------------------------------------------------------------------------- */
+
+.bts-stat-online {
+  background:
+    linear-gradient(180deg, var(--bts-accent-wash), transparent 70%),
+    var(--bts-surface-2);
+}
+
+.bts-stat-online strong {
+  font-size: var(--bts-fs-lg);
+  color: #fff;
+}
+
+.bts-online-cifra {
+  font-family: var(--bts-font-body);
+  font-size: var(--bts-fs-sm);
+  line-height: 1.5;
+  color: var(--bts-text);
+}
+
+.bts-online-extra {
+  font-size: var(--bts-fs-xs);
+  color: var(--bts-text-3);
+}
+
+/* La lista de conectados: insignias, no parrafos */
+.bts-online-lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  margin-top: .25rem;
+  font-size: var(--bts-fs-xs);
+  color: var(--bts-text-3);
+}
+
+/* --------------------------------------------------------------------------
+   El ultimo usuario, con avatar
+
+   La foto no viene en ninguna variable de phpBB: {NEWEST_USER} solo trae el
+   nombre con su enlace. El hueco lo deja este elemento y lo rellena el modulo
+   10-avatar.js con el avatar que hay en su perfil. Si el modulo no corre, el
+   nombre se ve igual, sin foto.
+   -------------------------------------------------------------------------- */
+
+.bts-stat-ultimo { gap: .5rem; }
+
+.bts-ultimo {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  min-width: 0;
+}
+
+.bts-ultimo-foto {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--bts-radius);
+  border: 1px solid var(--bts-line);
+  background: var(--bts-surface-3);
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+  display: block;
+}
+
+/* Cuando la foto esta puesta */
+.bts-ultimo-foto[data-bts-avatar-puesto] {
+  border-color: var(--bts-line-2);
+  box-shadow: 0 0 0 2px var(--bts-accent-glow);
+}
+
+/* El nombre, con el grupo; sin el <strong> de titular de antes */
+.bts-ultimo-texto {
+  min-width: 0;
+  font-size: var(--bts-fs-sm);
+  color: var(--bts-text-2);
+}
+
+.bts-stat-ultimo strong {
+  display: inline;
+  font-family: var(--bts-font-body);
+  font-size: inherit;
+  font-weight: 600;
+  line-height: inherit;
+  margin: 0;
+}
+
+.bts-stat-ultimo strong a { color: inherit; text-decoration: none; }
+.bts-stat-ultimo strong a:hover { color: var(--bts-accent); }
+
+/* El <strong> de dentro es la insignia del grupo */
+.bts-stat-ultimo strong strong {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 600;
+  color: inherit;
+}
+
+.bts-ultimo .usr_grp_clr { padding: .1rem .35rem; }
+
+/* --------------------------------------------------------------------------
+   Leyenda
+   -------------------------------------------------------------------------- */
+
+.bts-leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .5rem .9rem;
+  margin-top: var(--bts-gap);
+  padding-top: var(--bts-gap-sm);
+  border-top: 1px solid var(--bts-line);
+  color: var(--bts-text-3);
+}
+
+.bts-leyenda-titulo {
+  font-size: var(--bts-fs-xs);
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--bts-text-3);
+}
+
+.bts-leyenda .group,
+.bts-leyenda .color-groups,
+.bts-leyenda .usr_grp_clr {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .2rem .5rem;
+  font-family: var(--bts-font-body);
+  font-size: var(--bts-fs-xs);
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--bts-text-2);
+  background: var(--bts-surface-2);
+  border: 1px solid var(--bts-line);
+  border-radius: var(--bts-radius);
+}
+
+.bts-leyenda a { color: inherit; text-decoration: none; }
+.bts-leyenda a:hover { color: var(--bts-text); }
+
+/* --------------------------------------------------------------------------
+   Narrow
+
+   En movil las cuatro casillas se apilan. La de "ahora mismo" la primera, que es
+   la que mas importa.
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .bts-stats-fila { grid-template-columns: 1fr 1fr; }
+  .bts-stat-online { grid-column: 1 / -1; }
+  .bts-stat-ultimo { grid-column: 1 / -1; }
+}
+
+@media (max-width: 560px) {
+  .bts-stats-fila { grid-template-columns: 1fr; }
+  .bts-stat-online,
+  .bts-stat-ultimo { grid-column: 1; }
+  .bts-stat strong { font-size: var(--bts-fs-lg); }
+}
