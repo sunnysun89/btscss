@@ -182,7 +182,7 @@
    Vorfreude hace lo mismo con un color en vez de un gris (--colehover). */
 .forabg ul.topiclist.forums > li.row:hover { background: var(--bts-hover); }
 
-.forabg ul.topiclist.forums > li.row:hover dd.dterm > div { color: var(--bts-text-2); }
+.forabg ul.topiclist.forums > li.row:hover dd.dterm > div { color: var(--bts-text); }
 .forabg ul.topiclist.forums > li.row:hover .mod-text { color: var(--bts-text-2); }
 .forabg ul.topiclist.forums > li.row:hover dd.topics,
 .forabg ul.topiclist.forums > li.row:hover dd.posts,
@@ -264,12 +264,17 @@
 .forabg li.row h3.hierarchy a.forumtitle { color: var(--bts-text) !important; }
 .forabg li.row h3.hierarchy a.forumtitle:hover { color: var(--bts-accent) !important; opacity: 1; }
 
-/* La descripcion va detras del nombre, como un <br> suelto dentro del div */
-.forabg li.row dd.dterm > div > br + br:not(.mod-text),
-.forabg li.row dd.dterm > div > br ~ br { color: var(--bts-text-3); }
+/* Nada que poner aqui.
 
-/* El texto de descripcion es el nodo de texto que sigue al h3 */
-.forabg li.row h3.hierarchy ~ br ~ * { color: inherit; }
+   Estas dos reglas llevaban la pintura de la descripcion y no hacian nada.
+   La descripcion es un nodo de texto suelto —el que va entre el h3 y el <br>
+   siguiente— y a un nodo de texto no se le aplica ningun selector, por mucho
+   `br ~ br` que se escriba. Todo lo que hay ahi dentro es el <strong> vacio
+   que phpBB deja al final, que ya se esconde mas abajo con :empty.
+
+   El color de verdad esta en `.forabg li.row dd.dterm > div`, que es el
+   contenedor del que lo hereda. Se deja constancia aqui para que nadie vuelva
+   a poner el color ahi dentro. */
 
 /* --- el icono del foro --- */
 
@@ -344,7 +349,27 @@
   margin: 0 !important;
   font-size: var(--bts-fs-sm);
   line-height: 1.55;
-  color: var(--bts-text-3);
+
+  /* AQUI va el color de la descripcion, y no en ningun sitio mas. Se perdio
+     bastante tiempo buscando donde estaba.
+
+     La descripcion no es un elemento: es un NODO DE TEXTO suelto, el que va
+     entre el h3 y el <br> siguiente. Comprobado:
+
+       0  <h3 class="hierarchy">   "Reglamento"
+       1  <br>
+       2  TEXTO                    "Las reglas de este foro, y solo las reglas..."
+       3  <br>
+       4  <strong>
+
+     Como este div es flex column, ese nodo de texto se convierte en un item
+     anonimo y toma el color del CONTENEDOR. Y como a un nodo de texto no se
+     le puede aplicar ningun selector, las reglas del tipo `br ~ br` que
+     habia aqui no localiza jamas nada: se diagnosticaban bien pero no hacian nada.
+
+     Aqui esta el de verdad. A --bts-text-2, no a --bts-text-3, que es lo que
+     tiene: era el texto mas leido del indice y salia apagado. */
+  color: var(--bts-text-2);
 }
 
 .forabg li.row dd.dterm br { display: none; }
@@ -352,11 +377,14 @@
 /* El vacio final que phpBB deja con <strong></strong> */
 .forabg li.row dd.dterm strong:empty { display: none; }
 
-/* La linea "Moderador: ..." va un punto mas apagada y un poco mas pequena */
+/* La linea "Moderador: ..." va un punto mas apagada y un poco mas pequena.
+   El color es explicito porque la descripcion que tiene justo encima ha
+   subido a --bts-text-2, y esta tiene que seguir distinguiendose de ella. */
 .forabg li.row dd.dterm .mod-text,
 .forabg li.row dd.dterm a.group-mod {
   margin-top: .15rem;
   font-size: var(--bts-fs-xs);
+  color: var(--bts-text-3);
 }
 
 .forabg li.row h3.hierarchy { font-size: var(--bts-fs-md); color: var(--bts-text); }
@@ -472,7 +500,7 @@
   list-style: none;
   font-size: var(--bts-fs-xs);
 }
-.forabg li.row .linklist a { color: var(--bts-text-3); }
+.forabg li.row .linklist a { color: var(--bts-text-2); }
 .forabg li.row .linklist a:hover { color: var(--bts-accent); }
 
 /* --------------------------------------------------------------------------
