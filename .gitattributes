@@ -1,0 +1,23 @@
+# Los comentarios de un .gitattributes empiezan por almohadilla.
+#
+# Con asterisco NO vale: git lee `*` como el nombre de un atributo y falla con
+# "git is not a valid attribute name". Puesto asi:
+#
+#   git is not a valid attribute name: .gitattributes:1
+#   CRLF, is not a valid attribute name: .gitattributes:2
+#
+# El aviso de CRLF que sale al hacer `git add` no es un error de git: es git
+# diciendo que el archivo tiene LF en el disco y que lo va a guardar con CRLF,
+# porque el core.autocrlf de Windows esta en true. Con esto se le dice que se
+# guarde siempre con LF y el aviso no aparece.
+#
+# Es tambien la razon de por que los ficheros en GitHub salian con un byte
+# menos que en local: LF son 1 byte y CRLF son 2.
+* text=auto eol=lf
+
+# Las imagenes no se tocan. Con `text` las convertiria y las estropearia.
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.gif binary
+*.ico binary

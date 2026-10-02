@@ -1,252 +1,229 @@
 /* ==========================================================================
-   Burn The Sky — 10 stats (parte 2)
-   El bloque de piezoelectric, en su forma nueva.
+   Burn The Sky — 10 news
 
-   Reparto de las cuatro casillas, de izquierda a derecha:
+   La tabla de noticias del indice: el panel que en NBorn ocupa el ancho de la
+   pagina justo debajo del banner.
 
-     .bts-stat-online   la grande: ahora mismo, quien esta en linea
-     .bts-stat-chica    dos pequeñas: mensajes y miembros
-     .bts-stat-ultimo   el ultimo usuario, con su avatar al lado
+   Que se ha copiado de ahi, en concreto:
 
-   El bloque viejo era una fila de tres celdas iguales con la cifra grande. Ahora
-   "ahora mismo" manda y las dos cuentas quedan como dato secundario, que es como
-   lo tienen Vorfreude y LoveWinsAll.
+     - Un panel ancho, oscuro y plano, con UNA linea de acento en el borde de
+       arriba. El acento de NBorn es rojo sangre; aqui es el ember. La funcion
+       es la misma: separar el panel de la pagina sin gritar.
+     - Repartido en columnas y no en una fila de cifras. NBorn pone a la
+       izquierda un calendario, en medio una galeria, y a la derecha una
+       columna de listas cortas con un boton ACCIONAR. Aqui hay menos cosas que
+       enseñar, asi que son tres columnas: ultimos temas, cifras, y quien esta
+       ahora.
+     - Los titulos de cada bloque en versalitas con el tracking abierto, en
+       `--bts-text-3`. En NBorn son discretos y el contenido manda.
+     - Las cifras grandes en el cuerpo de la caja, con la palabra encima. NBorn
+       pone el numero en grande y la etiqueta en pequeno al lado.
 
-   Lo que hace phpBB es entregarnos frases enteras con el numero dentro de un
-   <strong> ("Nuestros miembros han publicado un total de 13 mensajes"). El CSS
-   saca ese <strong> y lo pone de titular. Por eso las casillas pequeñas pueden
-   ser pequenas: el numero sale del sitio que phpBB le puso.
+   Y una decision que no es de NBorn pero viene de ahi: el panel va en
+   `--bts-surface`, el mismo valor que una fila del indice, y se separa con un
+   borde. Si fuera un paso mas claro se leeria como otra zona de la pagina, y
+   la idea es que es una bandeja de encima, no una seccion mas.
+
+   Lo que se ha dejado fuera a proposito: la galeria de imagenes y el calendario.
+   Son dos bloques que dependen de modulos y de un calendario propios, y meterlos
+   a medias es peor que no meterlos.
    ========================================================================== */
 
-.bts-stats-fila {
-  display: grid;
-  grid-template-columns: minmax(0, 2.2fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.3fr);
-  gap: 1px;
-  background: var(--bts-line);
+.bts-noticia {
+  position: relative;
+  margin: var(--bts-gap-lg) 0 var(--bts-gap);
+  padding: 0;
+  background: var(--bts-surface) !important;
   border: 1px solid var(--bts-line);
-  border-radius: var(--bts-radius);
+  border-radius: var(--bts-radius-lg);
   overflow: hidden;
 }
 
-.bts-stat {
-  display: flex;
-  flex-direction: column;
-  gap: .3rem;
-  padding: var(--bts-gap);
-  background: var(--bts-surface-2);
-  font-family: var(--bts-font-body);
-  font-size: var(--bts-fs-xs);
-  line-height: 1.55;
-  color: var(--bts-text-2);
-  min-width: 0;
-  transition: background .18s ease;
+/* La linea de acento. Va en un pseudoelemento para no competir con el borde,
+   que si no se veria la separacion que se quiere. */
+.bts-noticia::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--bts-accent), var(--bts-accent-3) 55%, transparent);
 }
 
-.bts-stat:hover { background: var(--bts-hover); }
+.bts-noticia > .inner { padding: var(--bts-gap); }
 
-/* --------------------------------------------------------------------------
-   El titulo de cada casilla
-   -------------------------------------------------------------------------- */
+/* La cita de arriba, como la que lleva NBorn. Sale de lo que el panel ya
+   pinta —el texto de bienvenida del administrador— y solo se le cambia el
+   estilo: en versalitas finas y espaciadas, sobre la propia superficie. */
+.bts-noticia-cabecera {
+  margin: 0 0 var(--bts-gap);
+  padding: 0 0 var(--bts-gap);
+  border-bottom: 1px solid var(--bts-line);
+  font-size: var(--bts-fs-sm);
+  line-height: 1.8;
+  color: var(--bts-text-2);
+}
 
-.bts-stat-label {
+/* --- el reparto en columnas -------------------------------------------
+
+   Tres columnas en `1.4fr 1fr 1.2fr`: la de temas es la mas ancha porque es
+   la que tiene texto largo; la de cifras es estrecha porque son numeros; la
+   de conectados necesita sitio para los nombres. Por debajo de 900px cada
+   una cae a su propia fila, y por debajo de 620 la de cifras se apila. */
+.bts-noticia-fila {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1.2fr;
+  gap: var(--bts-gap);
+  align-items: start;
+}
+
+.bts-noticia-col { min-width: 0; }
+
+/* El titulo de cada bloque. Chato, en versalitas, con tracking abierto, y
+   apagado: es una etiqueta, no un titular. */
+.bts-noticia-titulo {
+  margin: 0 0 .6rem;
+  padding: 0 0 .4rem;
+  border-bottom: 1px solid var(--bts-line);
+  font-family: var(--bts-font-body);
   font-size: var(--bts-fs-xs);
   font-weight: 700;
   letter-spacing: .14em;
   text-transform: uppercase;
-  color: var(--bts-text-3);
+  color: var(--bts-text-3) !important;
 }
 
-.bts-stat-online .bts-stat-label { color: var(--bts-accent); }
+/* --- la columna de temas ---------------------------------------------- */
 
-/* --------------------------------------------------------------------------
-   Las cifras
-
-   El numero es el <strong> que phpBB ya trae dentro de la frase. En las casillas
-   grandes va en Bodoni; en las pequenas, en la misma fuente del cuerpo pero mas
-   grande de lo normal, porque son un dato y no un titular.
-   -------------------------------------------------------------------------- */
-
-.bts-stat strong {
-  display: block;
-  font-family: var(--bts-font-hero);
-  font-size: var(--bts-fs-xl);
-  font-weight: 500;
-  line-height: 1.05;
-  letter-spacing: 0;
-  color: var(--bts-text);
-}
-
-.bts-stat-chica strong {
-  font-family: var(--bts-font-hero);
-  font-size: var(--bts-fs-lg);
-}
-
-/* La frase que envuelve al numero se apaga para que solo se lea la cifra */
-.bts-stat-chica { color: var(--bts-text-3); }
-
-/* --------------------------------------------------------------------------
-   Ahora mismo
-   -------------------------------------------------------------------------- */
-
-.bts-stat-online {
-  background:
-    linear-gradient(180deg, var(--bts-accent-wash), transparent 70%),
-    var(--bts-surface-2);
-}
-
-.bts-stat-online strong {
-  font-size: var(--bts-fs-lg);
-  color: #fff;
-}
-
-.bts-online-cifra {
-  font-family: var(--bts-font-body);
-  font-size: var(--bts-fs-sm);
-  line-height: 1.5;
-  color: var(--bts-text);
-}
-
-.bts-online-extra {
-  font-size: var(--bts-fs-xs);
-  color: var(--bts-text-3);
-}
-
-/* La lista de conectados: insignias, no parrafos */
-.bts-online-lista {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .35rem;
-  margin-top: .25rem;
-  font-size: var(--bts-fs-xs);
-  color: var(--bts-text-3);
-}
-
-/* --------------------------------------------------------------------------
-   El ultimo usuario, con avatar
-
-   La foto no viene en ninguna variable de phpBB: {NEWEST_USER} solo trae el
-   nombre con su enlace. El hueco lo deja este elemento y lo rellena el modulo
-   10-avatar.js con el avatar que hay en su perfil. Si el modulo no corre, el
-   nombre se ve igual, sin foto.
-   -------------------------------------------------------------------------- */
-
-.bts-stat-ultimo { gap: .5rem; }
-
-.bts-ultimo {
-  display: flex;
-  align-items: center;
-  gap: .55rem;
-  min-width: 0;
-}
-
-.bts-ultimo-foto {
-  flex: none;
-  width: 34px;
-  height: 34px;
-  border-radius: var(--bts-radius);
-  border: 1px solid var(--bts-line);
-  background: var(--bts-surface-3);
-  background-size: cover;
-  background-position: center;
-  overflow: hidden;
-  display: block;
-}
-
-/* Cuando la foto esta puesta */
-.bts-ultimo-foto[data-bts-avatar-puesto] {
-  border-color: var(--bts-line-2);
-  box-shadow: 0 0 0 2px var(--bts-accent-glow);
-}
-
-/* El nombre, con el grupo; sin el <strong> de titular de antes */
-.bts-ultimo-texto {
-  min-width: 0;
-  font-size: var(--bts-fs-sm);
-  color: var(--bts-text-2);
-}
-
-.bts-stat-ultimo strong {
-  display: inline;
-  font-family: var(--bts-font-body);
-  font-size: inherit;
-  font-weight: 600;
-  line-height: inherit;
+.bts-noticia-temas {
   margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-.bts-stat-ultimo strong a { color: inherit; text-decoration: none; }
-.bts-stat-ultimo strong a:hover { color: var(--bts-accent); }
-
-/* El <strong> de dentro es la insignia del grupo */
-.bts-stat-ultimo strong strong {
-  font-family: inherit;
-  font-size: inherit;
-  font-weight: 600;
-  color: inherit;
+.bts-noticia-temas li {
+  padding: .45rem 0;
+  border-bottom: 1px solid var(--bts-line);
+  font-size: var(--bts-fs-sm);
+  line-height: 1.45;
 }
 
-.bts-ultimo .usr_grp_clr { padding: .1rem .35rem; }
+.bts-noticia-temas li:last-child { border-bottom: 0; }
 
-/* --------------------------------------------------------------------------
-   Leyenda
-   -------------------------------------------------------------------------- */
+.bts-noticia-temas a {
+  color: var(--bts-text-2) !important;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
-.bts-leyenda {
+.bts-noticia-temas a:hover { color: var(--bts-accent) !important; }
+
+.bts-noticia-temas .gensmall,
+.bts-noticia-temas small {
+  color: var(--bts-text-3) !important;
+  font-size: var(--bts-fs-xs);
+}
+
+/* --- la columna de cifras ---------------------------------------------
+
+   El numero grande es el <strong> que phpBB ya mete dentro de la frase de
+   "nuestros miembros han publicado un total de N mensajes". No hay que
+   tocar la variable: se saca ese <strong> y se pone en grande, que es lo que
+   hacen LoveWinsAll y Vorfreude con el mismo truco. */
+.bts-cifras { margin: 0; }
+
+.bts-cifras p { margin: 0 0 .7rem; color: var(--bts-text-3) !important; font-size: var(--bts-fs-sm); }
+
+.bts-cifras p:last-child { margin-bottom: 0; }
+
+.bts-cifras strong {
+  display: block;
+  margin-bottom: .1rem;
+  font-family: var(--bts-font-display);
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--bts-text) !important;
+}
+
+/* El phpBB mete el numero de otro modo en algunas frases, con la palabra
+   delante: "13 Mensajes". Se saca el numero de en medio con un color propio y
+   el resto de la frase se queda apagada. */
+.bts-cifras strong::first-line { color: var(--bts-text); }
+
+/* --- la columna de conectados ------------------------------------------ */
+
+.bts-noticia-online p { margin: 0 0 .6rem; font-size: var(--bts-fs-sm); color: var(--bts-text-3) !important; }
+.bts-noticia-online p:last-child { margin-bottom: 0; }
+
+/* Los nombres de los conectados salen sueltos, separados por comas. Se les
+   da un punto de acento delante, como la insignia de grupo, para que se lea
+   como lista y no como un parrafo. */
+.bts-noticia-online a {
+  color: var(--bts-text-2) !important;
+  font-weight: 500;
+}
+
+.bts-noticia-online a:hover { color: var(--bts-accent) !important; }
+
+/* --- la leyenda de grupos, abajo a todo ancho ------------------------- */
+
+.bts-noticia-leyenda {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: .5rem .9rem;
+  gap: .4rem .75rem;
   margin-top: var(--bts-gap);
-  padding-top: var(--bts-gap-sm);
+  padding-top: var(--bts-gap);
   border-top: 1px solid var(--bts-line);
-  color: var(--bts-text-3);
 }
 
-.bts-leyenda-titulo {
+.bts-noticia-leyenda-titulo {
   font-size: var(--bts-fs-xs);
-  font-weight: 600;
-  letter-spacing: .12em;
+  font-weight: 700;
+  letter-spacing: .14em;
   text-transform: uppercase;
-  color: var(--bts-text-3);
+  color: var(--bts-text-3) !important;
+  margin-right: .3rem;
 }
 
-.bts-leyenda .group,
-.bts-leyenda .color-groups,
-.bts-leyenda .usr_grp_clr {
-  display: inline-flex;
-  align-items: center;
-  gap: .4rem;
-  padding: .2rem .5rem;
-  font-family: var(--bts-font-body);
-  font-size: var(--bts-fs-xs);
-  font-weight: 600;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--bts-text-2);
-  background: var(--bts-surface-2);
+/* La leyenda la imprime phpBB como un <ul class="color-groups">. Los estilos
+   de lista viven en 08-groups.css; aqui solo se compacta para que quepa como
+   una tira al pie del panel. */
+.bts-noticia-leyenda ul.color-groups {
+  margin: 0;
+  gap: .35rem .7rem;
+}
+
+/* --- la caja de "quien esta en linea" que ya venia suelta ------------- */
+
+.panel.bts-online {
+  background: var(--bts-surface) !important;
   border: 1px solid var(--bts-line);
-  border-radius: var(--bts-radius);
+  border-radius: var(--bts-radius-lg);
+  padding: var(--bts-gap);
+  margin-bottom: var(--bts-gap);
 }
 
-.bts-leyenda a { color: inherit; text-decoration: none; }
-.bts-leyenda a:hover { color: var(--bts-text); }
+.panel.bts-online .inner { padding: 0; }
+
+.bts-online-linea {
+  margin: 0;
+  font-size: var(--bts-fs-sm);
+  color: var(--bts-text-2) !important;
+}
 
 /* --------------------------------------------------------------------------
-   Narrow
-
-   En movil las cuatro casillas se apilan. La de "ahora mismo" la primera, que es
-   la que mas importa.
+   En pantallas estrechas
    -------------------------------------------------------------------------- */
-
 @media (max-width: 900px) {
-  .bts-stats-fila { grid-template-columns: 1fr 1fr; }
-  .bts-stat-online { grid-column: 1 / -1; }
-  .bts-stat-ultimo { grid-column: 1 / -1; }
+  .bts-noticia-fila { grid-template-columns: 1fr 1fr; }
+  .bts-noticia-col:last-child { grid-column: 1 / -1; }
 }
 
-@media (max-width: 560px) {
-  .bts-stats-fila { grid-template-columns: 1fr; }
-  .bts-stat-online,
-  .bts-stat-ultimo { grid-column: 1; }
-  .bts-stat strong { font-size: var(--bts-fs-lg); }
+@media (max-width: 620px) {
+  .bts-noticia-fila { grid-template-columns: 1fr; }
+  .bts-cifras { display: flex; flex-wrap: wrap; gap: var(--bts-gap); }
+  .bts-cifras p { flex: 1 1 8rem; margin-bottom: 0; }
 }

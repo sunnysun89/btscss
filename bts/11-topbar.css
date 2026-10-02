@@ -67,31 +67,34 @@
 }
 
 /* --------------------------------------------------------------------------
-   La barra, tal y como se ha pedido
+   La barra, y por que NO se junta con la de abajo
 
-   El modelo es una tira MUY fina: los enlaces del menu en versalitas con el
-   tracking abierto, centrados, y NOTIFICACIONES a la derecha, en mas peso. Sin
-   logo, sin "comparte", sin marco, sin nada que se parezca a un panel.
+   Son dos elementos distintos y se quedan distintos:
 
-   Eso obliga a decidir donde acaba esta barra y donde empieza la de phpBB. Lo
-   que hay arriba del todo, en el DOM, son dos elementos distintos:
+     #fa_toolbar   la de phpBB: saludo, notificaciones, compartir. Arriba de
+                   todo, ANTES del banner.
+     .navbar       la del foro: indice, faq, miembros, perfil, cerrar sesion.
+                   Debajo del banner.
 
-     #fa_toolbar   la de phpBB: saludo, notificaciones, compartir
-     .navbar       la del foro: indice, faq, miembros, perfil, cerrar sesion
+   Se habian pintado con el mismo fondo y el mismo borde para que parecieran
+   una sola tira, y eso no es lo pedido. La de arriba es una tira de servicio y
+   la de abajo es el menu; juntas se leen como una sola cosa, y una sola cosa
+   partida en dos por el banner en medio es justo lo que no funciona.
 
-   Los dos se pueden pintar como UNA sola tira, y es lo que se ha hecho: mismo
-   fondo, misma altura, mismo borde inferior, y el relleno de la de phpBB se
-   queda vacio de contenido porque sus enlaces ya estan en la de abajo. La
-   diferencia entre las dos es de posicion en el DOM —la de phpBB va antes del
-   banner— no de aspecto.
+   Cada una con su papel:
 
-   Lo que SI quedaria de verdad pegado es mover el <div id="fa_toolbar"> dentro
-   de #page-header, en overall_header, y no hay forma de hacer eso con una hoja
-   de estilos. Si algún dia se quiere que no haya separacion entre las dos, esa
-   es la unica parte que hay que tocar a mano. */
+     - Esta, arriba: minima. La marca a la izquierda y las notificaciones a la
+       derecha. Nada mas. Es lo que hace NBorn, cuya tira bajo el banner es solo
+       el logotipo en petitito y nada mas.
+     - La de abajo, en 02-layout.css, lleva el menu.
+
+   Lo que esta en medio —el banner— es lo que las separa. Si algun dia se
+   quisiera la de phpBB pegada al menu, hay que mover el
+   <div id="fa_toolbar"> dentro de #page-header en overall_header: con una hoja
+   de estilos no se puede. */
 #fa_toolbar {
   min-height: 34px;
-  background: var(--bts-bg-2) !important;
+  background: var(--bts-bg) !important;
   background-image: none !important;
   border-bottom: 1px solid var(--bts-line);
   font-family: var(--bts-font-body);

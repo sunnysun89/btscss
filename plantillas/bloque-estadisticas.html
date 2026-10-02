@@ -1,0 +1,63 @@
+<!-- ==========================================================================
+     El bloque de piezoelectric
+
+     Que se pide:
+       - el panel de "ahora mismo" (el que esta en linea), que es imprescindible
+       - "mensajes totales" y "miembros registrados" en pequeno
+       - el ultimo usuario registrado con su avatar, tambien en pequeño
+
+     Lo que phpBB entrega son frases enteras con el numero dentro de un <strong>
+     ("Nuestros miembros han publicado un total de 13 mensajes"), asi que el CSS
+     saca ese <strong> y lo pone en grande. No hay que tocar las variables.
+
+     El avatar del ultimo usuario NO viene en ninguna variable: phpBB solo pasa
+     el nombre con un enlace ({NEWEST_USER}), y el avatar no existe en el
+     indice. Por eso la casilla va con data-bts-avatar y la rellena el modulo JS
+     `10-avatar.js`, que busca el perfil de ese usuario una vez y lo guarda en
+     sessionStorage. Si el JS no corre, la casilla se queda solo con el nombre.
+     ========================================================================== -->
+
+<div class="panel bts-stats">
+	<div class="inner">
+
+		<div class="bts-stats-fila">
+
+			<!-- Ahora mismo: la casilla grande, la primera -->
+			<div class="bts-stat bts-stat-online">
+				<span class="bts-stat-label">{L_WHO_IS_ONLINE}</span>
+				<div class="bts-online-cifra">{TOTAL_USERS_ONLINE}</div>
+				<div class="bts-online-extra">
+					{RECORD_USERS}
+				</div>
+				<div class="bts-online-lista">
+					{LOGGED_IN_USER_LIST}
+					{L_ONLINE_USERS}
+					{L_CONNECTED_MEMBERS}
+					{L_WHOSBIRTHDAY_TODAY}{L_WHOSBIRTHDAY_WEEK}
+				</div>
+			</div>
+
+			<!-- Las dos cifras pequenas -->
+			<div class="bts-stat bts-stat-chica">{TOTAL_POSTS}</div>
+			<div class="bts-stat bts-stat-chica">{TOTAL_USERS}</div>
+
+			<!-- El ultimo usuario, con avatar -->
+			<div class="bts-stat bts-stat-ultimo">
+				<span class="bts-stat-label">{L_NEWEST_USER}</span>
+				<div class="bts-ultimo" data-bts-avatar>
+					<span class="bts-ultimo-foto" data-bts-avatar-slot></span>
+					<span class="bts-ultimo-texto">{NEWEST_USER}</span>
+				</div>
+			</div>
+
+		</div>
+
+		<!-- BEGIN switch_group_legend -->
+		<div class="bts-leyenda">
+			<span class="bts-leyenda-titulo">{LEGEND}</span>
+			{GROUP_LEGEND}
+		</div>
+		<!-- END switch_group_legend -->
+
+	</div>
+</div>

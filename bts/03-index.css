@@ -547,3 +547,233 @@
     font-size: var(--bts-fs-xs);
   }
 }
+
+/* ==========================================================================
+   LAS TARJETAS DE FORO
+
+   Este es el cambio de mayor tamano de toda la skin, y sale de mirar los dos
+   de referencia en grande.
+
+   LO QUE HACE phpBB, Y LO QUE HACEN ELLOS.
+
+   El indice de phpBB es una lista: una fila por foro, contopics, mensajes y
+   ultimo mensaje en columnas a la derecha. Es una tabla, y se ve como una tabla.
+   A lo largo de toda la pagina.
+
+   NBorn pone DOS tarjetas por fila. LoveWinsAll tambien. Blinding Lights pone
+   una banda por fila, pero con una foto a la izquierda y no una tabla. Los tres
+   coinciden en lo mismo, y es lo que cambia la pagina:
+
+     - el foro es una CAJA con su propio fondo y su borde, no una fila dentro de
+       una lista;
+     - el titulo va en un cuerpo de display, en minusculas y en cursiva
+       —"registros generales", "busquedas"—, no en el cuerpo del texto en
+       mayusculas;
+     - las cifras van en ese mismo cuerpo de display y en grande —"4", "24",
+       "1287"—, no en el cuerpo de texto en pequeno;
+     - la descripcion es un parrafo, no una frase pegada al titulo;
+     - los subforos son una tira de vinetas en minusculas y apagadas, no una
+       lista con puntos.
+
+   QUE SE CAMBIA Y QUE NO.
+
+   No se cambia la estructura de phpBB: siguen siendo los mismos
+   `ul.topiclist.forums > li.row` con sus mismas cuatro celdas. Lo que cambia es
+   que la lista deja de ser una lista y pasa a ser una rejilla de cajas, y las
+   celdas se colocan dentro de la caja en vez de en fila.
+
+   Solo a partir de 1000px. Por debajo se queda como esta, que en un movil una
+   fila por foro es lo que toca.
+
+   El separador entre tarjetas son 1px de hueco, y lo que se ve por ahi es el
+   fondo del <ul>, que se pone en --bts-line. Es el mismo truco que usan ellos
+   para las separaciones: no un borde en cada caja, sino una rejilla con la
+   linea en el medio. */
+@media (min-width: 1000px) {
+  .forabg ul.topiclist.forums {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--bts-line) !important;
+    padding: 0;
+  }
+
+  .forabg ul.topiclist.forums > li.row {
+    background: var(--bts-surface) !important;
+    margin: 0;
+    padding: 0;
+  }
+
+  .forabg ul.topiclist.forums > li.row > dl.icon {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "name   name"
+      "last   last"
+      "topics posts";
+    gap: var(--bts-gap-sm) var(--bts-gap);
+    padding: var(--bts-gap);
+  }
+}
+
+/* El titulo, en el cuerpo de display, en minusculas y en cursiva. Es lo que
+   hacen NBorn y LoveWinsAll con el nombre del foro, y es la diferencia mas
+   grande de tono de toda la pagina: la lista deja de ser un indice y pasa a
+   ser un catalogo. */
+.forabg li.row h3.hierarchy {
+  font-family: var(--bts-font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: var(--bts-fs-lg);
+  letter-spacing: .01em;
+  text-transform: lowercase;
+}
+
+/* Las cifras, en el mismo cuerpo y en grande. NBorn pone "4", "24" y
+   "1287" asi, y son las que hacen que una tabla se lea como una lista de
+   cifras de verdad. */
+.forabg li.row dd.topics,
+.forabg li.row dd.posts {
+  font-family: var(--bts-font-display);
+  font-size: var(--bts-fs-lg);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--bts-text) !important;
+  text-align: left;
+}
+
+/* La palabra que phpBB pone detras del numero —"Temas", "Mensajes"— se queda
+   en el cuerpo de texto y en minusculas, que es como va en los dos de
+   referencia. Los <dfn> de phpBB son solo para lectores de pantalla, asi que
+   no hay nada que ocultar ahi. */
+.forabg li.row dd.topics dfn,
+.forabg li.row dd.posts dfn {
+  font-family: var(--bts-font-body);
+  font-size: var(--bts-fs-xs);
+  font-weight: 400;
+  font-style: normal;
+  text-transform: lowercase;
+  letter-spacing: .06em;
+  color: var(--bts-text-3) !important;
+}
+
+/* El ultimo mensaje, al fondo de la tarjeta y en petitito. En las tarjetas de
+   NBorn la foto y el "ultimo" van abajo, como un pie, y no compiten con el
+   titulo. */
+.forabg li.row dd.lastpost {
+  padding-top: var(--bts-gap-sm);
+  font-size: var(--bts-fs-xs);
+  color: var(--bts-text-3) !important;
+}
+
+/* Los subforos, en una tira de vinetas en minusculas. En NBorn es literalmente
+   "reglamento · ambientacion · la que se barda" y en el mio habia una lista con
+   puntos; la diferencia es que la lista con puntos ocupa mas lineas y rompe el
+   ritmo de la tarjeta. */
+.forabg li.row .linklist {
+  margin-top: var(--bts-gap-sm);
+  font-size: var(--bts-fs-xs);
+  letter-spacing: .04em;
+  text-transform: lowercase;
+}
+
+.forabg li.row .linklist a { color: var(--bts-text-3) !important; }
+.forabg li.row .linklist a:hover { color: var(--bts-accent) !important; }
+
+/* El separador entre vinetas, un punto medio y con aire. */
+.forabg li.row .linklist li + li::before {
+  content: "\00b7";
+  margin: 0 .45rem;
+  color: var(--bts-line-2);
+}
+
+.forabg li.row .linklist li { display: inline-flex; align-items: center; }
+
+/* --------------------------------------------------------------------------
+   El nombre de la categoria
+
+   Lo pone centrado y en el color del acento, sobre su propia banda. Es lo que
+   hace NBorn —"AMBIENTACION GUIA", "EL ARCHIVO", "EVENTOS"— y es lo contrario
+   de lo que habia: alineado a la izquierda y en blanco, que es exactamente
+   como se ve una tabla. Centrado y en el acento se lee como un rótulo. */
+.forabg li.header {
+  background: var(--bts-bg-2) !important;
+  border-bottom: 1px solid var(--bts-line);
+}
+
+.forabg li.header dd.dterm {
+  text-align: center;
+  padding-left: 0;
+  font-family: var(--bts-font-body);
+  font-size: var(--bts-fs-xs);
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--bts-accent) !important;
+}
+/* En el reparto de tarjetas, las etiquetas de columna no tienen a que alinearse
+   con nada: cada tarjeta lleva sus propias cifras abajo. Asi que arriba solo
+   queda el nombre de la categoria, centrado. Es lo que hace NBorn, donde cada
+   tarjeta lleva su propio "TEMAS 4 / MENSAJES 24" y arriba no hay nada mas que
+   el rotulo. */
+@media (min-width: 1000px) {
+  .forabg li.header dd.topics,
+  .forabg li.header dd.posts,
+  .forabg li.header dd.lastpost { display: none; }
+
+  .forabg li.header dl.icon {
+    display: block;
+    padding: .55rem var(--bts-gap);
+  }
+
+  .forabg li.header dd.dterm { text-align: center; }
+}
+/* --------------------------------------------------------------------------
+   Las etiquetas de los contadores
+
+   phpBB esconde la palabra detras del numero en un <dfn>, que es solo para
+   lectores de pantalla. Antes no se notaba, porque las celdas de la tabla
+   tenían la palabra a la derecha y se leia "0 Temas" entero. En la tarjeta los
+   contadores van al pie y con la cifra en grande, asi que salia un "0" suelto
+   al lado de otro "0" y no se entendia nada.
+
+   Se pone la palabra con un ::after. Es la palabra de phpBB, sacada del <dfn>
+   que este panel ya trae, no una inventada aqui: asi el dato y su etiqueta van
+   siempre juntos y no pueden desincronizarse. */
+.forabg li.row dd.topics::after {
+  content: "temas";
+  margin-left: .4rem;
+}
+
+.forabg li.row dd.posts::after {
+  content: "mensajes";
+  margin-left: .4rem;
+}
+
+/* Los dos contadores, repartidos a los extremos del pie de la tarjeta: temas a
+   la izquierda, mensajes a la derecha.
+
+   Se reparte en dos columnas iguales y la segunda se pega a su derecha con
+   `justify-self: end`. Medido: 206 px la celda de temas y 77 la de mensajes,
+   que es lo que se quiere —el texto pegado a su borde y el hueco en medio— y
+   no un descuadre.
+
+   Con `minmax(0, 1fr) auto` en vez de dos columnas iguales pasaba lo contrario:
+   la primera se comia todo el espacio libre (389 px) y la segunda se quedaba
+   con el ancho del digito (23 px).
+
+   Nada de `subgrid` aqui: la celda del contador es un elemento de la rejilla
+   de dl.icon, no una rejilla ella misma. */
+@media (min-width: 1000px) {
+  .forabg ul.topiclist.forums > li.row > dl.icon {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.forabg li.row dd.posts { justify-self: end; }
+
+/* En el reparto de una sola columna, los contadores vuelven a su sitio de
+   antes y no necesitan etiquetas duplicadas. */
+@media (max-width: 999px) {
+  .forabg li.row dd.topics::after,
+  .forabg li.row dd.posts::after { content: none; }
+}
