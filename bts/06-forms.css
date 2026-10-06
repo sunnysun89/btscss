@@ -1,14 +1,7 @@
 /* ==========================================================================
-   Burn The Sky — 06 forms
-   Buttons, inputs, selects, sceditor.
-
-   sceditor is the message editor. It is the only third-party thing on the
-   page that needs styling, and it looks worst of anything out of the box.
+   Burn The Sky — 06 forms (reinicio)
+   Botones, campos, página de publicar y editor sceditor.
    ========================================================================== */
-
-/* --------------------------------------------------------------------------
-   Buttons
-   -------------------------------------------------------------------------- */
 
 .button1, .button2,
 input[type=submit], button[type=submit] {
@@ -28,13 +21,10 @@ input[type=submit], button[type=submit] {
   border: 1px solid var(--bts-line-2);
   border-radius: 5px;
   cursor: pointer;
-  transition: background .18s ease, border-color .18s ease, color .18s ease,
-              box-shadow .18s ease, transform .08s ease;
+  transition: background .18s ease-out, border-color .18s ease-out, color .18s ease-out,
+              box-shadow .18s ease-out, transform .08s ease-out;
 }
 
-/* The hover goes to the accent and lifts a shadow, which is what Vorfreude
-   does (hover -> var(--accent6) plus box-shadow). A plain lighter grey reads as
-   "the button is off"; an accent plus a shadow reads as "press me". */
 .button1:hover, input[type=submit]:hover, button[type=submit]:hover {
   background: var(--bts-accent-2);
   border-color: var(--bts-accent);
@@ -44,7 +34,6 @@ input[type=submit], button[type=submit] {
 
 .button1:active, input[type=submit]:active { transform: translateY(1px); box-shadow: none; }
 
-/* The primary action: the accent, used sparingly */
 .button1.icon-postreply,
 #post-form input[type=submit],
 .formpanel .btnsubmit {
@@ -65,13 +54,12 @@ input[type=submit], button[type=submit] {
 .button1.icon-postreply[disabled],
 input[type=submit][disabled] { opacity: .45; cursor: not-allowed; }
 
-/* Small icon buttons: the post footer actions */
-.icon, a.icon { display: inline-flex; align-items: center; opacity: .55; transition: opacity .15s ease; }
+.icon, a.icon { display: inline-flex; align-items: center; opacity: .55; transition: opacity var(--bts-ms) ease-out; }
 .icon:hover { opacity: 1; }
 .icon img { width: 14px; height: 14px; filter: grayscale(1) brightness(1.8); }
 
 /* --------------------------------------------------------------------------
-   Inputs
+   Campos
    -------------------------------------------------------------------------- */
 
 input[type=text], input[type=password], input[type=email],
@@ -87,7 +75,7 @@ textarea, select {
   border: 1px solid var(--bts-line);
   border-radius: var(--bts-radius);
   outline: none;
-  transition: border-color .15s ease, box-shadow .15s ease;
+  transition: border-color var(--bts-ms) ease-out, box-shadow var(--bts-ms) ease-out;
 }
 
 input:focus, textarea:focus, select:focus {
@@ -112,12 +100,6 @@ select {
 
 select option { background: var(--bts-surface); color: var(--bts-text); }
 
-/* --------------------------------------------------------------------------
-   Checkboxes and radios
-
-   The native control is replaced visually but stays focusable.
-   -------------------------------------------------------------------------- */
-
 input[type=checkbox], input[type=radio] {
   appearance: none;
   width: 1rem;
@@ -130,7 +112,7 @@ input[type=checkbox], input[type=radio] {
   border-radius: 3px;
   cursor: pointer;
   vertical-align: -2px;
-  transition: background .12s ease, border-color .12s ease;
+  transition: background .12s ease-out, border-color .12s ease-out;
 }
 
 input[type=radio] { border-radius: 50%; }
@@ -147,10 +129,6 @@ input[type=checkbox]:checked {
   background-repeat: no-repeat;
 }
 
-/* --------------------------------------------------------------------------
-   Labels and field rows
-   -------------------------------------------------------------------------- */
-
 .postform dt, .form-row > dt {
   font-size: var(--bts-fs-xs);
   font-weight: 600;
@@ -163,11 +141,56 @@ input[type=checkbox]:checked {
 .postform dd { margin: 0 0 var(--bts-gap); }
 
 /* --------------------------------------------------------------------------
-   sceditor
+   Página de publicar: título centrado con filete, asunto grande, área alta,
+   smileys en rejilla, botones centrados. Selectores en pareja (#id/.clase)
+   porque phpBB varía según la página; lo que no existe no se pinta.
+   -------------------------------------------------------------------------- */
 
-   The editor is a textarea plus an iframe. In source mode the iframe is hidden
-   and the textarea shows; in visual mode it is the other way round. Both need
-   the same surface.
+input[name="subject"] {
+  font-family: var(--bts-font-display) !important;
+  font-size: var(--bts-fs-md) !important;
+  padding: .7rem 1rem !important;
+}
+
+#message-box textarea,
+#text_editor_textarea {
+  min-height: 20rem !important;
+}
+
+#smiley-box,
+.smiley-box {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr);
+  gap: .3rem;
+  justify-items: center;
+  align-items: center;
+  padding: var(--bts-gap-sm);
+  background: var(--bts-surface-2);
+  border: 1px solid var(--bts-line);
+  border-radius: var(--bts-radius);
+}
+
+#smiley-box img,
+.smiley-box img { cursor: pointer; }
+
+#post-form .form-actions,
+.posting-buttons {
+  justify-content: center;
+  margin-top: var(--bts-gap-lg);
+}
+
+#post-form .options,
+#post-options,
+.postform .options {
+  font-size: var(--bts-fs-xs);
+  color: var(--bts-text-3);
+  line-height: 2;
+}
+
+#post-form select[name*="forum"] { max-width: 16rem; }
+
+/* --------------------------------------------------------------------------
+   sceditor
    -------------------------------------------------------------------------- */
 
 .sceditor-container {
@@ -179,8 +202,6 @@ input[type=checkbox]:checked {
 }
 
 .sceditor-container:focus-within { border-color: var(--bts-accent-2) !important; }
-
-/* --- toolbar --- */
 
 .sceditor-toolbar {
   background: var(--bts-surface-2) !important;
@@ -215,7 +236,6 @@ input[type=checkbox]:checked {
   border-color: var(--bts-accent-2) !important;
 }
 
-/* The tool icons are glyphs; tint them so they are not grey mush */
 .sceditor-button div,
 .sceditor-button i {
   color: var(--bts-text-2) !important;
@@ -223,8 +243,6 @@ input[type=checkbox]:checked {
   font-size: 13px !important;
 }
 .sceditor-button:hover div { color: var(--bts-accent) !important; }
-
-/* --- the editable area --- */
 
 .sceditor-container iframe {
   background: var(--bts-bg-2) !important;
@@ -249,7 +267,6 @@ input[type=checkbox]:checked {
 .sceditor-container.sourceMode #text_editor_textarea { display: block !important; }
 .sceditor-container:not(.sourceMode) #text_editor_textarea { display: none !important; }
 
-/* Quotes and code inside the editor should already look like the output */
 .sceditor-container iframe blockquote {
   border-left: 2px solid var(--bts-accent-2);
   background: var(--bts-bg);
@@ -266,7 +283,7 @@ input[type=checkbox]:checked {
 }
 
 /* --------------------------------------------------------------------------
-   The post form
+   Formulario de post y tablas adjuntas
    -------------------------------------------------------------------------- */
 
 #post-form, .postform {
@@ -290,89 +307,6 @@ input[type=checkbox]:checked {
 
 .form-actions { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin-top: var(--bts-gap); }
 
-/* --------------------------------------------------------------------------
-   La pagina de publicar / responder
-
-   El modelo (captura 7) es: titulo enorme centrado con filete debajo
-   ("PUBLICAR UN NUEVO TEMA"), campo de titulo a todo ancho, barra de
-   herramientas, area grande, panel lateral de emoticonos, y botones
-   PREVISUALIZAR / BOSQUEJO / ENVIAR centrados como pildoras.
-
-   Los selectores van en pareja (#id y .clase) porque segun la pagina phpBB
-   usa uno u otro; si uno no existe, el otro lo coge. Ninguna regla depende
-   de que exista un markup concreto: todo lo que no esta, no se pinta.
-   -------------------------------------------------------------------------- */
-
-/* El titulo de la pagina, centrado con filete. Es la misma forma que los
-   rotulos de seccion de las referencias (EL COMIENZO, MUNDO, OFF ROL). */
-h1.page-title {
-  text-align: center;
-  letter-spacing: .02em;
-}
-
-h1.page-title::after {
-  content: "";
-  display: block;
-  width: min(28rem, 70%);
-  height: 1px;
-  margin: var(--bts-gap-sm) auto 0;
-  background: linear-gradient(90deg, transparent, var(--bts-line-2), transparent);
-}
-
-/* El campo del titulo del tema: a todo ancho y en cuerpo de titular. */
-input[name="subject"] {
-  font-family: var(--bts-font-display) !important;
-  font-size: var(--bts-fs-md) !important;
-  padding: .7rem 1rem !important;
-}
-
-/* El area de escritura: alta de verdad. A 8rem el borrador se escribe mirando
-   por una rendija; las referencias dejan un bloque grande. */
-#message-box textarea,
-#text_editor_textarea {
-  min-height: 20rem !important;
-}
-
-/* La caja de emoticonos en rejilla, no en tira. */
-#smiley-box,
-.smiley-box {
-  display: grid !important;
-  grid-template-columns: repeat(3, 1fr);
-  gap: .3rem;
-  justify-items: center;
-  align-items: center;
-  padding: var(--bts-gap-sm);
-  background: var(--bts-surface-2);
-  border: 1px solid var(--bts-line);
-  border-radius: var(--bts-radius);
-}
-
-#smiley-box img,
-.smiley-box img { cursor: pointer; }
-
-/* Los tres botones, centrados y como pildoras. */
-#post-form .form-actions,
-.posting-buttons {
-  justify-content: center;
-  margin-top: var(--bts-gap-lg);
-}
-
-/* Las opciones de abajo (desactivar HTML, adjuntar firma...), en pequeno. */
-#post-form .options,
-#post-options,
-.postform .options {
-  font-size: var(--bts-fs-xs);
-  color: var(--bts-text-3);
-  line-height: 2;
-}
-
-/* El "Cambiar a" del final, en linea y compacto. */
-#post-form select[name*="forum"] { max-width: 16rem; }
-
-/* --------------------------------------------------------------------------
-   Attachments and the poll block, which are tables
-   -------------------------------------------------------------------------- */
-
 table.themeform, table.ipbtable { width: 100%; border-collapse: collapse; font-size: var(--bts-fs-sm); }
 
 table.themeform th, table.ipbtable th {
@@ -392,8 +326,5 @@ table.themeform td, table.ipbtable td {
   vertical-align: middle;
 }
 
-/* El !important por lo mismo que en los posts: 01-base pone
-   `table td { background-color: transparent !important }` y sin esto el hover
-   de las filas del formulario no se ve. */
 table.themeform tr:hover td,
 table.ipbtable tr:hover td { background: var(--bts-surface-2) !important; }

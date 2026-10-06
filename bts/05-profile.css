@@ -1,15 +1,7 @@
 /* ==========================================================================
-   Burn The Sky — 05 profile
-   Profile fields, the fame ladder, group colours.
-
-   The six character-sheet fields are: Rango, Estatus, Nivel de poder,
-   Poderes, Implante 1/2/3. phpBB renders each custom field as a
-   definition list inside the profile, and the group as usr_grp_clr.
+   Burn The Sky — 05 profile (reinicio)
+   Ficha de perfil, directorio de miembros, escalera de fama.
    ========================================================================== */
-
-/* --------------------------------------------------------------------------
-   The profile box
-   -------------------------------------------------------------------------- */
 
 .profile-box,
 #profile {
@@ -31,13 +23,6 @@
   background: var(--bts-surface-2);
   border-bottom: 1px solid var(--bts-line);
 }
-
-/* --------------------------------------------------------------------------
-   The field list
-
-   phpBB emits dl with dt (label) and dd (value). Empty fields are omitted
-   server-side, so nothing has to hide them here.
-   -------------------------------------------------------------------------- */
 
 .profile-box dl,
 #profile dl {
@@ -72,16 +57,6 @@
 .profile-box dt:last-of-type, .profile-box dd:last-of-type,
 #profile dt:last-of-type, #profile dd:last-of-type { border-bottom: 0; }
 
-/* --------------------------------------------------------------------------
-   The three implant fields
-
-   They are plain text fields holding "URL | description". Making the URL part
-   look like an image and the description like a caption is the whole point of
-   them, so the pipe is what we hang that on.
-   -------------------------------------------------------------------------- */
-
-.profile-box dd:has(> a[href*="imgur"], a[href$=".png"], a[href$=".jpg"]) { line-height: 1.5; }
-
 .profile-box dd img {
   max-height: 340px;
   width: auto;
@@ -92,76 +67,9 @@
 }
 
 /* --------------------------------------------------------------------------
-   The fame ladder
-
-   Eight groups, colours in --group1..--group8. Any element can opt in with
-   data-group="1".."8" and it takes the matching colour.
-
-     <span class="ladder" data-group="3">INFAMOUS</span>
-   -------------------------------------------------------------------------- */
-
-.ladder {
-  display: inline-flex;
-  align-items: center;
-  gap: .4rem;
-  font-size: var(--bts-fs-xs);
-  font-weight: 600;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--bts-text);
-}
-
-.ladder::before {
-  content: "";
-  width: 8px;
-  height: 8px;
-  border-radius: 2px;
-  background: var(--ladder-colour, var(--bts-text-3));
-  box-shadow: 0 0 8px var(--ladder-colour, transparent);
-}
-
-.ladder[data-group="1"] { --ladder-colour: var(--group1); }
-.ladder[data-group="2"] { --ladder-colour: var(--group2); }
-.ladder[data-group="3"] { --ladder-colour: var(--group3); }
-.ladder[data-group="4"] { --ladder-colour: var(--group4); }
-.ladder[data-group="5"] { --ladder-colour: var(--group5); }
-.ladder[data-group="6"] { --ladder-colour: var(--group6); }
-.ladder[data-group="7"] { --ladder-colour: var(--group7); }
-.ladder[data-group="8"] { --ladder-colour: var(--group8); }
-
-/* --------------------------------------------------------------------------
-   Group name anywhere
-
-   phpBB puts the group name in a .group and colours the author with the
-   group's own hex inline, so all that needs styling here is the container.
-   -------------------------------------------------------------------------- */
-
-.group {
-  display: inline-block;
-  font-size: var(--bts-fs-xs);
-  font-weight: 600;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-}
-
-/* The username itself, tinted by the author's group */
-.postauthor strong a { color: inherit; }
-
-/* --------------------------------------------------------------------------
-   Members list
-   -------------------------------------------------------------------------- */
-
-/* --------------------------------------------------------------------------
-   Members list: el directorio
-
-   El modelo (captura 6) es una lista de filas oscuras en dos columnas: nombre
-   a la izquierda con un punto de color delante, codigo de rango a la derecha
-   (Ω-A, β). Sin cabeceras de tabla, sin bordes de rejilla: cada fila es una
-   pastilla.
-
-   El color del punto sale del color de grupo que phpBB pone en linea
-   (currentColor), asi que cada fila lleva el color de su grupo sin que la
-   hoja sepa que grupos hay.
+   Directorio de miembros: tarjetas oscuras, nombre con punto de grupo a la
+   izquierda y cifras en mono a la derecha. El color sale del inline de phpBB
+   (currentColor): la hoja no sabe qué grupos hay.
    -------------------------------------------------------------------------- */
 
 .memberlist .row {
@@ -181,7 +89,6 @@
 .memberlist .row:hover { background: var(--bts-hover); }
 .memberlist .row:hover a { color: var(--bts-text); }
 
-/* El nombre, con el punto de grupo delante. */
 .memberlist .row a[href*="/u"] {
   display: inline-flex;
   align-items: center;
@@ -206,7 +113,6 @@
   box-shadow: 0 0 7px currentColor;
 }
 
-/* Las cifras de la derecha (mensajes, registros), en mono y apagadas. */
 .memberlist .row .posts,
 .memberlist .row .joined,
 .memberlist .row td:last-child {
@@ -217,9 +123,6 @@
   white-space: nowrap;
 }
 
-.memberlist .row:hover::before { opacity: 1; }
-
-/* Cabecera de la tabla de miembros: se deja como etiqueta, no como tabla. */
 .memberlist th,
 .memberlist thead td {
   font-size: var(--bts-fs-xs);
@@ -232,8 +135,52 @@
 }
 
 /* --------------------------------------------------------------------------
-   Responsive
+   Escalera de fama (opt-in): <span class="ladder" data-group="3">
    -------------------------------------------------------------------------- */
+
+.ladder {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  padding: .2rem .55rem;
+  font-size: var(--bts-fs-xs);
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--bts-text);
+  background: var(--bts-surface-2);
+  border: 1px solid var(--bts-line);
+  border-radius: var(--bts-radius);
+}
+
+.ladder::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-radius: 2px;
+  background: var(--ladder-colour, var(--bts-text-3));
+  box-shadow: 0 0 8px var(--ladder-colour, transparent);
+}
+
+.ladder[data-group="1"] { --ladder-colour: var(--group1); }
+.ladder[data-group="2"] { --ladder-colour: var(--group2); }
+.ladder[data-group="3"] { --ladder-colour: var(--group3); }
+.ladder[data-group="4"] { --ladder-colour: var(--group4); }
+.ladder[data-group="5"] { --ladder-colour: var(--group5); }
+.ladder[data-group="6"] { --ladder-colour: var(--group6); }
+.ladder[data-group="7"] { --ladder-colour: var(--group7); }
+.ladder[data-group="8"] { --ladder-colour: var(--group8); }
+
+.group {
+  display: inline-block;
+  font-size: var(--bts-fs-xs);
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.postauthor strong a { color: inherit; }
 
 @media (max-width: 620px) {
   .profile-box dl, #profile dl { grid-template-columns: 1fr; }

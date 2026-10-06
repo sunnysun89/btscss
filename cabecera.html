@@ -1,74 +1,29 @@
 <!--
   ============================================================================
-  Burn The Sky — cabecera
+  Burn The Sky — cabecera (reinicio)
 
-  Que poner en overall_header, justo despues de {CSS} y antes de </head>.
+  Pegar entero en overall_header, justo despues de {CSS} y antes de </head>.
+  Foroactivo no deja anadir <link> sueltos: la cabecera es el unico sitio.
 
-  Hay que pegarlo entero. Foroactivo no deja anadir <link> sueltos al panel,
-  asi que la cabecera es el unico sitio donde pueden vivir las hojas externas,
-  que es exactamente lo que hace Blinding Lights.
+  Orden: la base de phpBB va primero ({CSS}), y estas hojas van detras, en
+  este orden. Cambiar el orden cambia quien gana. 08-responsive va el ultimo
+  porque lleva todos los @media.
 
-  ============================================================================
-  LO MAS IMPORTANTE DE ESTE FICHERO: EL ?v= DE CADA HOJA
-  ============================================================================
-
-  GitHub Pages sirve los ficheros con una cache de unos diez minutos. Sin un
-  `?v=` en la URL, el navegador guarda `04-thread.css` en su cache y, cuando se
-  sube una version nueva, sigue dando la vieja durante esos diez minutos.
-
-  Por eso ha pasado varias veces: se suben las hojas, se recarga, y no se ve
-  nada. La conclusion era que el CSS estaba mal. No lo estaba. La ultima vez se
-  comprobo que `.post` mide 860 px con la hoja nueva en el servidor, mientras
-  que en las capturas el post ocupaba el ancho entero de antes: se estaba viendo
-  la version vieja, servida desde la cache del navegador.
-
-  El `?v=` no es un truco. Es una URL distinta, asi que el navegador no tiene
-  nada cacheado y la pide de cero.
-
-  CUANDO CAMBIEN LAS HOJAS, SUBE EL NUMERO DE ESTE BLOQUE. Solo el numero.
-  Ahora es 9.
-
-  ============================================================================
-  EL ORDEN DE LAS HOJAS
-  ============================================================================
-
-  Van detras de {CSS}, que es la base de phpBB, y en este orden. Cambiar el
-  orden cambia quien gana, porque muchas reglas se empatan a igualdad de
-  especificidad y entonces decide la que va despues.
-
-  LAS DOS ULTIMAS VAN EN ESTE ORDEN A PROPOSITO. 11-topbar va antes que
-  07-responsive porque 07 lleva dentro todos los @media de la skin, y si se
-  cargara despues sus reglas se amontonarian encima de las de 11 sin mirar el
-  ancho. Hoy no se pelean —la barra no se pliega—, pero si manana la barra
-  vuelve a verse en movil, el media query tiene que ganar.
-
-  11-topbar es la unica hoja que se puede quitar sin tocar nada mas. Si hay que
-  devolver la barra de Foroactivo por lo que sea, se borra su <link> de aqui y
-  ya esta: no hay ningun otro sitio donde dependa de ella.
-
-  Para desplegar: sube la carpeta bts/ a GitHub Pages.
+  EL ?v=: GitHub Pages cachea ~10 min. Sin version en la URL, el navegador
+  sirve la hoja vieja y parece que el CSS no funciona. Al cambiar hojas, se
+  sube el numero. Ahora es 1.
   ============================================================================
 -->
 
-<!-- Tipografias
-     Playfair Display  ->  titulos, nombres de foro, tema
-     Bodoni Moda       ->  el titulo grande del foro, y la marca de la barra
-     Inter            ->  texto corrido, porque aqui los posts son largos
-   -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="https://sunnysun89.github.io/btscss/bts/01-base.css?v=9">
-<link rel="stylesheet" href="https://sunnysun89.github.io/btscss/bts/02-layout.css?v=9">
-<link rel="stylesheet" href="https://sunnysun89.github.io/btscss/bts/03-index.css?v=9">
-<link rel="stylesheet" href="https://sunnysun89.github.io/btscss/bts/04-thread.css?v=9">
-<link rel="stylesheet" href="https://sunnysun89.github.io/btscss/bts/05-profile.css?v=9">
-<link rel="stylesheet" href="https://sunnysun89.github.io/btscss/bts/06-forms.css?v=9">
-<link rel="stylesheet" href="https://sunnysun89.github.io/btscss/bts/08-groups.css?v=9">
-<link rel="stylesheet" href="https://sunnysun89.github.io/btscss/bts/09-stats.css?v=9">
-<link rel="stylesheet" href="https://sunnysun89.github.io/btscss/bts/10-stats.css?v=9">
-<link rel="stylesheet" href="https://sunnysun89.github.io/btscss/bts/11-topbar.css?v=9">
-<link rel="stylesheet" href="https://sunnysun89.github.io/btscss/bts/12-members.css?v=9">
-<link rel="stylesheet" href="https://sunnysun89.github.io/btscss/bts/13-database.css?v=9">
-<link rel="stylesheet" href="https://sunnysun89.github.io/btscss/bts/07-responsive.css?v=9">
+<link rel="stylesheet" href="https://sunnysun89.github.io/btscss/bts/01-base.css?v=1">
+<link rel="stylesheet" href="https://sunnysun89.github.io/btscss/bts/02-layout.css?v=1">
+<link rel="stylesheet" href="https://sunnysun89.github.io/btscss/bts/03-index.css?v=1">
+<link rel="stylesheet" href="https://sunnysun89.github.io/btscss/bts/04-thread.css?v=1">
+<link rel="stylesheet" href="https://sunnysun89.github.io/btscss/bts/05-profile.css?v=1">
+<link rel="stylesheet" href="https://sunnysun89.github.io/btscss/bts/06-forms.css?v=1">
+<link rel="stylesheet" href="https://sunnysun89.github.io/btscss/bts/07-topbar.css?v=1">
+<link rel="stylesheet" href="https://sunnysun89.github.io/btscss/bts/08-responsive.css?v=1">

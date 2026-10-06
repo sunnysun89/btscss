@@ -1,14 +1,7 @@
 /* ==========================================================================
-   Burn The Sky — 02 layout
-   Page shell, header, navigation, columns, footer.
+   Burn The Sky — 02 layout (reinicio)
+   Fondo, velo, hero, navegación, pie.
    ========================================================================== */
-
-/* --------------------------------------------------------------------------
-   Background
-
-   fondo-general is 1920x1080 and about 2.9 MB. It is fixed and dimmed hard so
-   it reads as depth rather than as a picture, and so the text stays readable.
-   -------------------------------------------------------------------------- */
 
 body {
   background-color: var(--bts-bg);
@@ -19,56 +12,22 @@ body {
   background-size: cover;
 }
 
-/* El velo sobre la foto de fondo.
-
-   EL z-index ES LO UNICO IMPORTANTE DE ESTE BLOQUE, y estaba mal.
-
-   Estaba en `z-index: 0`. Con eso este pseudoelemento es un elemento POSICIONADO
-   con z-index cero, y segun el orden de pintado del CSS eso va por encima del
-   contenido que no esta posicionado:
-
-       1. fondo del elemento que forma el contexto de apilamiento
-       2. hijos con z-index negativo
-       3. bloques en flujo sin posicionar, sus fondos
-       4. texto en flujo
-       ...
-       9. hijos posicionados con z-index:auto o 0     <-- AQUI
-
-   O sea que este velo estaba PINTA ENCIMA DE TODA LA PAGINA, con un negro al
-   82-97 %. Cada palabra del foro se dibujaba debajo de el. Por eso decia el
-   usuario que "todo se ve gris menos el banner": el banner es lo unico que
-   tiene luz propia para atravesar un velo de esa densidad.
-
-   `z-index: -1` lo baja al paso 2, debajo del contenido y por encima del
-   fondo, que es justo lo que tiene que hacer: apagar la foto para que no
-   compita con el texto, sin tocar el texto.
-
-   El gradiente se vuelve a subir. Se habia bajado al 62-90 % al arreglar el
-   z-index, y eso fue un error de calculo: al estar ya DEBAJO del contenido, el
-   velo no puede danar al texto, asi que no hay ningun motivo para no tapar la
-   foto. Y es justo al taparla menos cuando aparecio lo otro: con la nebulosa
-   del fondo a plena vista, hasta un texto blanco se ve gris, porque el ojo lo
-   compara con lo que tiene alrededor. Sobre un fondo casi negro, el #f5f5f5 se
-   ve blanco de verdad.
-
-   Asi que de vuelta a 88-97 %. La foto no desaparece —se sigue leyendo como
-   textura, que es lo que se quiere— pero deja de competir con el texto. Los
-   cuatro de referencia hacen igual: NBorn apaga casi del todo su foto,
-   Blinding Lights la pasa a escala de grises, LoveWinsAll no pone foto en la
-   zona de contenido. */
+/* El velo apaga la foto para que no compita con el texto.
+   z-index: -1, SIEMPRE: un posicionado con z-index 0 se pinta ENCIMA del
+   contenido (paso 9 vs pasos 3-4) y con -1 queda debajo del contenido y sobre
+   el fondo. Esa fue la causa de que todo se viese gris en el ciclo anterior.
+   Al estar debajo, puede tapar fuerte (88-97 %): sobre casi-negro el texto
+   claro se lee blanco de verdad. */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
-  /* Neutral, no azulado: el rgba(7,8,11) de antes arrastraba un tinte frio que
-     se notaba en toda la pagina. rgba(6,6,7) es la misma densidad sin tono. */
   background:
-    linear-gradient(180deg, rgba(6,6,7,.88) 0%, rgba(6,6,7,.93) 40%, rgba(6,6,7,.97) 100%);
+    linear-gradient(180deg, rgba(7,7,8,.88) 0%, rgba(7,7,8,.93) 40%, rgba(7,7,8,.97) 100%);
   pointer-events: none;
   z-index: -1;
 }
 
-/* Any page that has no image worth showing falls back to flat. */
 .no-image body { background-image: none; }
 
 /* --------------------------------------------------------------------------
@@ -91,86 +50,27 @@ body::before {
 }
 
 /* --------------------------------------------------------------------------
-   Header
+   Hero: la banda con el banner.
+
+   #page-header es BLOCK (si se vuelve flex, .headerbar se encoge al ancho de
+   su contenido: medido, 398 px en página de 965). El fondo va en .headerbar,
+   no en el inner (que lleva max-width y lo encajonaría). El !important es
+   porque phpBB pone su bg_header.gif con la MISMA especificidad y su hoja va
+   primero.
    -------------------------------------------------------------------------- */
 
-#top {
-  position: relative;
-  border-bottom: 1px solid var(--bts-line);
-  background:
-    linear-gradient(180deg, rgba(16,19,26,.96), rgba(11,13,18,.92));
-  backdrop-filter: blur(12px);
-}
-
-/* --------------------------------------------------------------------------
-   Header: the hero band
-
-   The logo phpBB shipped here was https://2img.net/i/fa/logo/logo_es.png, which
-   is the Foroactivo.com mark, not anything belonging to this forum. It is gone.
-
-   What replaces it is the recovered Burn The Sky banner, still hosted at
-   2img.net, as the backdrop of a full-width band with the forum name in Bodoni
-   over it and the tagline beneath. That is the shape the reference forums use:
-   image first, name on top of it.
-
-   Two things here are load-bearing and were wrong the first time round:
-
-   1. #page-header must stay a BLOCK. phpBB puts .headerbar and .navbar side by
-      side in source order, and making the header a flex row with
-      justify-content:space-between shrinks .headerbar down to its content
-      width instead of letting it span the page. The band came out 398px wide
-      in a 965px page.
-
-   2. The background goes on .headerbar, not on #logo-desc. The inner wrapper
-      carries the max-width, so putting the image on the inner would letterbox
-      it to the content column instead of the viewport.
-
-   The markup:
-
-     div.headerbar > div.inner
-       span.corners-top
-       div#logo-desc
-         a#logo > img            <- the Foroactivo mark, hidden below
-         div#site-title > h1
-         p                       <- the tagline
-       span.corners-bottom
-   -------------------------------------------------------------------------- */
-
-/* 1. Not a flex row. */
 #page-header {
   display: block;
   padding: 0;
 }
-
-/* 2. The band itself spans; the inner keeps the content column. */
 
 .headerbar {
   position: relative;
   margin: 0;
   border-bottom: 1px solid var(--bts-line);
   background-color: var(--bts-bg-2);
-  /* The scrim over the photo, in three layers:
-
-     1. a vertical neutral wash, heaviest at the top and bottom and lightest at
-        38% — that is where the neon band sits in the image, and a flat 55%
-        wash was burying it;
-     2. a very slight ember wash from the left, 5% alpha. The photo is
-        strongly blue and violet and the palette is now neutral, so without
-        this the banner reads as a different website dropped into the page.
-        At 5% it is not visible as colour, it just stops the clash;
-     3. the image.
-
-     Position is 38% rather than centre: at centre the crop cut the skyline
-     off and showed mostly empty road.
-
-     The !important is load-bearing. phpBB sets its own background-image on
-     .headerbar — the bg_header.gif from 2img.net — at the SAME specificity as
-     this rule, so whichever comes first in the cascade wins, and phpBB's
-     stylesheet comes first. Measured: the band was showing the 2img.net gif
-     instead of the photo. */
   background-image:
-    linear-gradient(180deg, rgba(6,6,7,.72) 0%, rgba(6,6,7,.34) 38%, rgba(6,6,7,.94) 100%),
-    linear-gradient(90deg, rgba(224,138,74,.05) 0%, rgba(6,6,7,0) 45%),
+    linear-gradient(180deg, rgba(7,7,8,.72) 0%, rgba(7,7,8,.34) 38%, rgba(7,7,8,.94) 100%),
     url("img/cabecera.jpg") !important;
   background-repeat: no-repeat;
   background-position: center 38%;
@@ -186,15 +86,9 @@ body::before {
 .headerbar .corners-top,
 .headerbar .corners-bottom { display: none; }
 
-/* --- the Foroactivo mark, removed --- */
-
-/* !important por la misma razon que en 03-index: la marca se seguia viendo.
-   phpBB la pinta con su propia regla y el hide de aqui, sin !important,
-   pierde. Si algun dia hay que dejarla por el aviso de atribucion de
-   foroactivo, este es el unico sitio que hay que tocar. */
 #logo img { display: none !important; }
 
-/* --- the content over the image --- */
+#logo { float: none; padding: 0; margin: 0; }
 
 #logo-desc {
   position: relative;
@@ -206,8 +100,6 @@ body::before {
   padding: var(--bts-gap-lg);
 }
 
-/* A hairline of accent along the bottom edge, the same one the category names
-   use, so the band and the index below it read as one thing. */
 #logo-desc::after {
   content: "";
   position: absolute;
@@ -222,8 +114,6 @@ body::before {
     transparent 100%);
   opacity: .7;
 }
-
-/* --- the name --- */
 
 #site-title {
   margin: 0;
@@ -249,8 +139,6 @@ body::before {
 #site-title a { color: inherit; text-decoration: none; }
 #site-title a:hover { color: var(--bts-accent); opacity: 1; }
 
-/* --- the tagline --- */
-
 #logo-desc > p {
   margin: .7rem 0 0;
   max-width: 58ch;
@@ -264,55 +152,19 @@ body::before {
   text-shadow: 0 1px 10px rgba(0,0,0,.85);
 }
 
-/* --------------------------------------------------------------------------
-   La barra de navegacion: la tira fina del modelo
-
-   Una sola tira centrada, en versalitas con el tracking abierto (.12em), sin
-   caja: sin fondo propio, sin bordes, sin sombra. Es la segunda captura de
-   referencia (INDICE FAQ BUSCAR MIEMBROS ... NOTIFICACIONES): enlaces pequenos
-   arriba, centrados, y nada mas.
-
-   Hubo aqui DOS bloques que decian cosas distintas —uno con text-align:center
-   e inline-block y otro mas abajo con display:flex— y ganaba el de abajo por
-   orden, asi que el centrado no llegaba a verse. Queda uno solo.
-
-   No se usa display:flex en el <ul>: en este panel no se ha comportado, y con
-   los <li> en linea el navegador parte la fila cuando no cabe. */
-.navbar > .inner {
-  max-width: var(--bts-maxw);
-  margin: 0 auto;
-  padding: 0 var(--bts-gap-lg);
-}
-
-/* El buscador fuera de la tira. El item BUSCAR del menu lo sigue abriendo. */
-.navbar #search-menu,
-.navbar .searchbox {
-  display: none !important;
-}
-
-/* phpBB's own rule floats the logo left and pads it; both are gone now that
-   there is no logo. */
-#logo {
-  float: none;
-  padding: 0;
-  margin: 0;
-}
-
-/* --- narrow --- */
-
 @media (max-width: 760px) {
   #logo-desc { min-height: 11rem; padding: var(--bts-gap); }
   #logo-desc > p { font-size: var(--bts-fs-xs); letter-spacing: .07em; }
-  .navbar > .inner { padding: 0 var(--bts-gap); }
 }
-   Navigation bar
 
-   Foroactivo puts the "mainmenu" class on each <a>, not on the list: the list
-   is ul.linklist.navlinks and its children are the li.
+/* --------------------------------------------------------------------------
+   Navegación: una tira fina centrada, como el modelo.
 
-   The ul is deliberately left as a block. Giving it display:flex does not take
-   on this panel, and it is not needed: letting the li flow inline gives the
-   same row, and the browser does the reflowing rather than us.
+   Versalitas con tracking abierto, sin caja ni iconos (las referencias son
+   solo texto; los gifs de phpBB rompen el ritmo). Un solo bloque —en el ciclo
+   anterior había dos que se contradecían y ganaba el de abajo por orden.
+   Sin "lado derecho": el margin-left:auto de phpBB rompía el centrado.
+   Sin buscador en la tira: el item BUSCAR lo sigue abriendo.
    -------------------------------------------------------------------------- */
 
 .navbar {
@@ -325,14 +177,15 @@ body::before {
   text-align: center;
 }
 
-.navbar .inner {
+.navbar > .inner {
   display: block;
   width: 100%;
-  padding: .15rem 0;
+  max-width: var(--bts-maxw);
+  margin: 0 auto;
+  padding: .15rem var(--bts-gap-lg);
   text-align: center;
 }
 
-/* The corners are the rounded edge of the box; there is no box here. */
 .navbar .corners-top, .navbar .corners-bottom { display: none; }
 
 .navbar ul.linklist {
@@ -352,10 +205,6 @@ body::before {
   line-height: normal;
 }
 
-/* Base neutra para todo lo que cuelgue de la barra. No estaba, y al quitar
-   `#wrap a` de 01-base estos enlaces caian en el acento del `a:link` global.
-   Los que deben verse en acento (portada, seccion activa) lo dicen mas abajo,
-   y el hover los lleva ahi a proposito. */
 .navbar a { color: var(--bts-text-2); }
 .navbar a:hover { color: var(--bts-text); }
 
@@ -368,14 +217,10 @@ body::before {
   text-transform: uppercase;
   color: var(--bts-text-2);
   border-bottom: 1px solid transparent;
-  transition: color .15s ease, border-color .15s ease, background .15s ease;
+  transition: color var(--bts-ms) ease-out, border-color var(--bts-ms) ease-out, background var(--bts-ms) ease-out;
 }
 
-/* Sin iconos en la tira: las referencias son solo texto, y los gifs de
-   phpBB rompen el ritmo de las versalitas. */
-.navbar a.mainmenu img {
-  display: none !important;
-}
+.navbar a.mainmenu img { display: none !important; }
 
 .navbar a.mainmenu:hover {
   color: var(--bts-text);
@@ -383,30 +228,29 @@ body::before {
   border-bottom-color: var(--bts-accent);
   opacity: 1;
 }
-.navbar a.mainmenu:hover img { opacity: 1; }
 
 .navbar a.mainmenu.icon-home { color: var(--bts-accent); }
 
-/* phpBB marks the current section with .active on the li or the link */
 .navbar .active > a.mainmenu,
 .navbar a.mainmenu.active {
   color: var(--bts-accent);
   border-bottom-color: var(--bts-accent);
 }
 
-/* Sin "lado derecho" en una tira centrada: el margin-left:auto de phpBB
-   empujaba los ultimos items y rompia el centrado. */
-.navbar li.rightside {
-  margin-left: 0;
-  padding-left: 0;
+.navbar li.rightside { margin-left: 0; padding-left: 0; }
+
+.navbar #search-menu,
+.navbar .searchbox {
+  display: none !important;
 }
 
+@media (max-width: 760px) {
+  .navbar > .inner { padding: 0 var(--bts-gap); }
+}
 
 /* --------------------------------------------------------------------------
-   Search
+   Buscador (fuera de la tira, donde phpBB lo ponga)
    -------------------------------------------------------------------------- */
-
-#search-menu { margin-left: auto; }
 
 #search-box {
   display: flex;
@@ -415,11 +259,12 @@ body::before {
   border: 1px solid var(--bts-line);
   border-radius: var(--bts-radius);
   overflow: hidden;
-  transition: border-color .15s ease;
+  transition: border-color var(--bts-ms) ease-out;
 }
 #search-box:focus-within { border-color: var(--bts-accent-2); }
 
-#search-box input {
+#search-box input[type="text"] {
+  flex: 1 1 auto;
   background: none;
   border: 0;
   color: var(--bts-text);
@@ -431,18 +276,9 @@ body::before {
 }
 #search-box input::placeholder { color: var(--bts-text-3); }
 
-/* El boton de buscar.
-
-   Hay que hablar de `input[type=submit]`, no de `button`: este panel imprime
-   el envio como <input type="submit" value="Buscar">, no como <button>. Medido
-   en el DOM: #search-box tiene un unico hijo, un <form>, y dentro no hay
-   ningun <button>. Las reglas de `button` de aqui no se aplicaban a nada, y
-   por eso el boton salia con el aspecto por defecto de phpBB — un recuadro
-   claro suelto al lado del campo, que era lo que se veia roto.
-
-   Se deja el campo para que crezca y el boton con su ancho natural, en vez de
-   que el boton intente ocupar la mitad del formulario. */
-#search-box input[type="submit"] {
+/* El envío es <input type="submit">, no <button> (medido en el DOM). */
+#search-box input[type="submit"],
+#search-box button {
   flex: none;
   align-self: stretch;
   width: auto;
@@ -456,93 +292,16 @@ body::before {
   font-size: var(--bts-fs-sm);
   padding: 0 1rem;
   cursor: pointer;
-  transition: background .15s ease, color .15s ease;
+  transition: background var(--bts-ms) ease-out, color var(--bts-ms) ease-out;
 }
-#search-box input[type="submit"]:hover {
+#search-box input[type="submit"]:hover,
+#search-box button:hover {
   background: var(--bts-accent-2);
   color: var(--bts-text-on);
 }
 
-/* Y el <button> se deja igualmente, por si phpBB lo cambia en alguna pagina. */
-#search-box button {
-  flex: none;
-  align-self: stretch;
-  background: var(--bts-surface-2);
-  border: 0;
-  border-left: 1px solid var(--bts-line);
-  color: var(--bts-text-2);
-  padding: 0 1rem;
-  cursor: pointer;
-  transition: background .15s ease, color .15s ease;
-}
-#search-box button:hover { background: var(--bts-accent-2); color: var(--bts-text-on); }
-
-/* El campo de texto, que es el que crece. */
-#search-box input[type="text"] { flex: 1 1 auto; }
-
 /* --------------------------------------------------------------------------
-   Columns
-
-   phpBB wraps these in #emptyidleft / #emptyidright until widgets are added.
-   When a column is empty it must not leave a gap.
-   -------------------------------------------------------------------------- */
-
-#main {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--bts-gap-lg);
-  align-items: start;
-}
-
-/* Sidebars collapse away when they are empty. The :empty guard is what stops
-   the 200px dead column on a forum with no widgets. */
-#emptyidleft:not(:empty),
-#emptyidright:not(:empty) {
-  display: block;
-  background: var(--bts-surface);
-  border: 1px solid var(--bts-line);
-  border-radius: var(--bts-radius-lg);
-  padding: var(--bts-gap);
-}
-
-@media (min-width: 1100px) {
-  #main:has(#emptyidleft:not(:empty)) { grid-template-columns: 220px 1fr; }
-  #main:has(#emptyidright:not(:empty)) { grid-template-columns: 1fr 300px; }
-  #main:has(#emptyidleft:not(:empty)):has(#emptyidright:not(:empty)) { grid-template-columns: 220px 1fr 300px; }
-}
-
-.main-content { min-width: 0; }
-
-/* --------------------------------------------------------------------------
-   Panels: the generic box phpBB uses everywhere
-   -------------------------------------------------------------------------- */
-
-.panel {
-  background: var(--bts-surface);
-  border: 1px solid var(--bts-line);
-  border-radius: var(--bts-radius-lg);
-  box-shadow: var(--bts-shadow);
-  margin-bottom: var(--bts-gap);
-  overflow: hidden;
-}
-
-.panel > .inner { padding: var(--bts-gap); }
-
-.panel h2,
-.panel h3 {
-  font-size: var(--bts-fs-sm);
-  font-family: var(--bts-font-body);
-  font-weight: 600;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--bts-text-3);
-  margin: 0 0 var(--bts-gap-sm);
-  padding-bottom: var(--bts-gap-sm);
-  border-bottom: 1px solid var(--bts-line);
-}
-
-/* --------------------------------------------------------------------------
-   Breadcrumbs
+   Migas
    -------------------------------------------------------------------------- */
 
 #page-body .navbar + .path,
@@ -557,7 +316,7 @@ body::before {
 .breadcrumb a:hover { color: var(--bts-accent); }
 
 /* --------------------------------------------------------------------------
-   Footer
+   Pie
    -------------------------------------------------------------------------- */
 
 #page-footer {
@@ -569,7 +328,7 @@ body::before {
   color: var(--bts-text-3);
 }
 
-#page-footer .navbar { justify-content: center; margin-bottom: var(--bts-gap); }
+#page-footer .navbar { text-align: center; margin-bottom: var(--bts-gap); }
 
 .copyright {
   text-align: center;
@@ -579,16 +338,8 @@ body::before {
 }
 .copyright a { color: var(--bts-text-2); }
 
-.footer-home {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: var(--bts-gap);
-}
-
 /* --------------------------------------------------------------------------
-   Notices
+   Avisos
    -------------------------------------------------------------------------- */
 
 .infobox, .errorbox, .successbox {
@@ -599,27 +350,12 @@ body::before {
   font-size: var(--bts-fs-sm);
 }
 
-/* The wash alphas track the signal tokens. The error wash was still the old
-   rgb(232,85,47) after --bts-danger moved to #dd4b3e, which left the tint and
-   the border a half-shade apart. */
 .infobox   { background: var(--bts-accent-wash); border-color: var(--bts-accent-2); color: var(--bts-text); }
-.errorbox  { background: rgba(221,75,62,.12);  border-color: var(--bts-danger); color: #f2a48c; }
+.errorbox  { background: rgba(224,83,69,.12);  border-color: var(--bts-danger); color: #f2a48c; }
 .successbox{ background: rgba(79,191,139,.12);  border-color: var(--bts-ok); color: #8fdcbb; }
 
 .infobox a, .errorbox a, .successbox a { text-decoration: underline; }
 
-/* --------------------------------------------------------------------------
-   Responsive
-   -------------------------------------------------------------------------- */
-
 @media (max-width: 900px) {
   .wrap, #outer-wrapper .wrapper { padding: 0 var(--bts-gap); }
-  #page-header { flex-direction: column; align-items: flex-start; }
-  #search-menu { margin-left: 0; width: 100%; }
-  #search-box input { min-width: 0; width: 100%; }
-}
-
-@media (max-width: 640px) {
-  #site-title { font-size: var(--bts-fs-lg); }
-  .mainmenu a { padding: .45rem .55rem; font-size: var(--bts-fs-xs); }
 }
