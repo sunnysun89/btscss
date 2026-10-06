@@ -1,0 +1,230 @@
+/* ==========================================================================
+   Burn The Sky — 13 database
+
+   El bloque DATABASE del pie del indice: lo tienen los tres de referencia y
+   es lo que cierra la pagina.
+
+     NBorn            cifras 514 / 131 / 122816, lista de conectados, tira de
+                      botones de afiliados (208x80 arriba, cuadrados abajo)
+     Blinding Lights  donut de atribucion, caja ONLINE, caja LAST AFK, login
+     LoveWinsAll      avatar de bienvenida, rejilla de iconos, cifras 25295 /
+                      187, lista de conectados, SALA DE CHAT, botones, aviso
+                      legal
+
+   Lo comun, y lo que se hace aqui:
+
+     - Tres columnas arriba: EL PERSONAL | BIENVENIDA | EN LINEA.
+     - Debajo, a todo ancho: AFILIACIONES, en rejilla de botones.
+     - Al final: la linea legal en pequeno.
+
+   Lo que NO se copia: el donut de rangos (necesita datos que phpBB no da) ni
+   el login (el foro ya tiene el suyo). La bienvenida reutiliza el hueco de
+   avatar de avatar-ultimo.js, asi que ese modulo sigue funcionando sin tocarlo.
+   ========================================================================== */
+
+.bts-database {
+  margin: var(--bts-gap-lg) 0 0;
+  background: var(--bts-surface) !important;
+  border: 1px solid var(--bts-line);
+  border-radius: var(--bts-radius-lg);
+  overflow: hidden;
+}
+
+/* La linea de acento, como la de la tabla de noticias: es la misma familia. */
+.bts-database::before {
+  content: "";
+  display: block;
+  height: 2px;
+  background: linear-gradient(90deg, var(--bts-accent), var(--bts-accent-3) 55%, transparent);
+}
+
+.bts-database > .inner { padding: var(--bts-gap); }
+
+.bts-database-fila {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.2fr;
+  gap: var(--bts-gap);
+  align-items: start;
+}
+
+.bts-database-col { min-width: 0; }
+
+.bts-database-titulo {
+  margin: 0 0 .6rem;
+  padding: 0 0 .4rem;
+  border-bottom: 1px solid var(--bts-line);
+  font-family: var(--bts-font-body);
+  font-size: var(--bts-fs-xs);
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--bts-text-3) !important;
+}
+
+/* --- el personal ------------------------------------------------------
+   Lo rellena modulos.js desde /g1-administradores. Sin JS sale el aviso de
+   abajo, que dice donde va cada cosa. */
+.bts-staff-lista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+}
+
+.bts-staff-lista li a {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: var(--bts-fs-sm);
+  font-weight: 600;
+  color: var(--bts-text-2) !important;
+}
+
+.bts-staff-lista li a::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-radius: 2px;
+  background: var(--miembro-color, var(--bts-text-3));
+  box-shadow: 0 0 7px var(--miembro-color, transparent);
+}
+
+.bts-staff-lista li a:hover { color: var(--bts-accent) !important; }
+
+.bts-staff-vacio {
+  margin: 0;
+  font-size: var(--bts-fs-xs);
+  color: var(--bts-text-3);
+}
+
+/* --- la bienvenida ---------------------------------------------------- */
+
+.bts-bienvenida {
+  display: flex;
+  align-items: center;
+  gap: var(--bts-gap-sm);
+  min-height: 56px;
+}
+
+.bts-bienvenida-cara {
+  width: 56px;
+  height: 56px;
+  flex: none;
+  border-radius: 999px;
+  background: var(--bts-surface-2);
+  border: 1px solid var(--bts-line-2);
+  background-size: cover;
+  background-position: top center;
+}
+
+.bts-bienvenida p {
+  margin: 0;
+  font-size: var(--bts-fs-sm);
+  color: var(--bts-text-2) !important;
+}
+
+.bts-bienvenida a { color: var(--bts-text) !important; font-weight: 600; }
+.bts-bienvenida a:hover { color: var(--bts-accent) !important; }
+
+/* --- en linea ---------------------------------------------------------- */
+
+.bts-database-online p {
+  margin: 0 0 .5rem;
+  font-size: var(--bts-fs-sm);
+  color: var(--bts-text-3) !important;
+}
+
+.bts-database-online p:last-child { margin-bottom: 0; }
+
+.bts-database-online a { color: var(--bts-text-2) !important; font-weight: 500; }
+.bts-database-online a:hover { color: var(--bts-accent) !important; }
+
+/* --- afiliaciones ------------------------------------------------------
+   La rejilla de botones. El contenido lo pega el admin (son imagenes con
+   enlace); aqui solo la forma: botones grandes de 208x80 y cuadrados
+   pequenos, con borde de acento al pasar. Las clases van en el img o en el a
+   que lo envuelve, lo que prefiera quien los pegue. */
+
+.bts-afiliaciones {
+  margin-top: var(--bts-gap);
+  padding-top: var(--bts-gap);
+  border-top: 1px solid var(--bts-line);
+}
+
+.bts-afiliaciones-titulo {
+  margin: 0 0 var(--bts-gap-sm);
+  font-size: var(--bts-fs-xs);
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--bts-text-3) !important;
+  text-align: center;
+}
+
+.bts-afiliaciones-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: .5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bts-afiliaciones-grid img {
+  display: block;
+  border: 1px solid var(--bts-line);
+  border-radius: 3px;
+  transition: border-color var(--bts-ms) ease-out, transform var(--bts-ms) ease-out;
+}
+
+.bts-afiliaciones-grid a:hover img {
+  border-color: var(--bts-accent-2);
+  transform: translateY(-2px);
+}
+
+/* Boton grande clasico: 208x80. Si la imagen no mide eso, object-fit la deja
+   en su caja sin deformarla. */
+.bts-afili img,
+img.bts-afili {
+  width: 208px;
+  height: 80px;
+  object-fit: cover;
+}
+
+/* Boton cuadrado pequeno. */
+.bts-afili-mini img,
+img.bts-afili-mini {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+}
+
+/* --- la linea legal ---------------------------------------------------- */
+
+.bts-legal {
+  margin: var(--bts-gap) 0 0;
+  padding-top: var(--bts-gap-sm);
+  border-top: 1px solid var(--bts-line);
+  font-size: var(--bts-fs-xs);
+  line-height: 1.7;
+  color: var(--bts-text-3) !important;
+  text-align: center;
+}
+
+/* --------------------------------------------------------------------------
+   En pantallas estrechas
+   -------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  .bts-database-fila { grid-template-columns: 1fr 1fr; }
+  .bts-database-col:last-child { grid-column: 1 / -1; }
+}
+
+@media (max-width: 620px) {
+  .bts-database-fila { grid-template-columns: 1fr; }
+  .bts-afili img,
+  img.bts-afili { width: 160px; height: 62px; }
+}

@@ -1,0 +1,148 @@
+/* ==========================================================================
+   Burn The Sky — 12 members
+
+   La tira de retratos del indice.
+
+   QUE ES, Y DE DONDE SALE
+
+   Los tres foros de referencia tienen esta pieza y phpBB no la da:
+
+     NBorn          una hilera de fichas de personaje con el retrato, el nombre
+                    y la fecha debajo
+     LoveWinsAll    lo mismo, agrupado por zona y con un retrato circular al
+                    lado de cada bloque
+     Blinding Lights una fila de avatares al pie, con el tamano anotado
+
+   No hay ninguna variable de phpBB para esto. La monta `plantillas/modulos.js`,
+   que pide memberlist.php y la pinta. Aqui solo se le da forma.
+
+   LA FORMA
+
+   Circular y con borde, como las de LoveWinsAll y NBorn. Con una ficha por
+   miembro: retrato encima y nombre debajo, en un solo tono. La razon de que
+   sea una tira y no una tabla es que aqui no hay nada que comparar: no hay
+   cifras ni columnas, hay gente. Una tabla de una columna vacia es una tabla.
+
+   El color del grupo lo pone phpBB en linea y llega al modulo como
+   `--miembro-color`. Solo se usa para el borde de la ficha y para el punto de
+   la esquina. El texto va en --bts-text, no en el color del grupo: el color lo
+   lleva la insignia, que ya existe, y ponerlo aqui seria repetirlo y ademas
+   ilegible sobre un fondo oscuro. */
+.bts-miembros {
+  margin: var(--bts-gap-lg) 0 var(--bts-gap);
+}
+
+.bts-miembros-titulo {
+  margin: 0 0 var(--bts-gap);
+  padding: 0 0 .5rem;
+  border-bottom: 1px solid var(--bts-line);
+  font-family: var(--bts-font-body);
+  font-size: var(--bts-fs-xs);
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--bts-text-3) !important;
+}
+
+.bts-miembros-tira {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bts-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bts-miembro { margin: 0; padding: 0; }
+
+.bts-miembro-enlace {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .5rem;
+  width: 84px;
+  padding: .5rem .25rem;
+  border-radius: var(--bts-radius-lg);
+  border: 1px solid transparent;
+  color: var(--bts-text-2) !important;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color var(--bts-ms) ease-out,
+              border-color var(--bts-ms) ease-out,
+              color var(--bts-ms) ease-out,
+              transform var(--bts-ms) ease-out;
+}
+
+.bts-miembro-enlace:hover {
+  background: var(--bts-surface);
+  border-color: var(--bts-line);
+  color: var(--bts-text) !important;
+  transform: translateY(-2px);
+}
+
+/* El retrato: circular, con un anillo en el color del grupo si phpBB lo ha
+   dado, y en linea si no. */
+.bts-miembro-cara,
+.bts-miembro-inicial {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--bts-surface-2);
+  border: 1px solid var(--bts-line-2);
+  box-shadow: 0 0 0 2px var(--bts-surface);
+}
+
+.bts-miembro-cara { object-fit: cover; }
+
+/* La inicial, cuando no hay avatar. Va en el cuerpo de display, que es lo que
+   hacen las dos referencias con las letras sueltas. */
+.bts-miembro-inicial {
+  font-family: var(--bts-font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--bts-text-2);
+}
+
+.bts-miembro-enlace:hover .bts-miembro-inicial { color: var(--bts-text); }
+
+/* El anillo del color del grupo. Solo se pinta si el modulo ha puesto la
+   variable, que es lo que hace cuando phpBB trae la insignia en linea. Sin
+   ella, el anillo se queda en el color de la linea de siempre. */
+.bts-miembro-enlace .bts-miembro-cara,
+.bts-miembro-enlace .bts-miembro-inicial {
+  border-color: var(--miembro-color, var(--bts-line-2));
+  box-shadow: 0 0 0 2px var(--bts-surface),
+              0 0 12px -2px var(--miembro-color, transparent);
+}
+
+/* El nombre, en petitito y en dos lineas como mucho. Con un solo miembro —que
+   es el caso ahora mismo— una ficha de 84 px se ve perdida en una tira
+   entera, y las anchas las dejarian estiradas. */
+.bts-miembro-nombre {
+  font-size: var(--bts-fs-xs);
+  line-height: 1.3;
+  color: inherit;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  word-break: break-word;
+}
+
+/* Cuando hay pocos, la tira no se estira: las fichas se quedan a la izquierda
+   con su ancho, en vez de repartirse la fila entera. */
+.bts-miembros-tira:has(> li:only-child) { gap: var(--bts-gap); }
+
+/* En pantallas estrechas, la ficha se hace un poco mas pequeña para que quepan
+   mas de una vez. */
+@media (max-width: 620px) {
+  .bts-miembro-enlace { width: 72px; }
+  .bts-miembro-cara,
+  .bts-miembro-inicial { width: 48px; height: 48px; }
+  .bts-miembro-inicial { font-size: 1.25rem; }
+}

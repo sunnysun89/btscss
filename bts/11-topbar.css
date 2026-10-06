@@ -101,15 +101,39 @@
   color: var(--bts-text-2);
 }
 
-/* Lo que se va de esta tira.
+/* Lo que se va de esta tira: solo el compartir. "Compartir" con cuatro
+   pictogramas es ruido en una tira de 34 px, y ninguna referencia lo trae.
 
-   El saludo y el boton de compartir: los enlaces del usuario ya estan en la
-   barra de abajo, que es donde los quiere el modelo, y "Compartir" con cuatro
-   pictogramas es ruido en una tira de 34 px. */
-#fa_toolbar #fa_share,
-#fa_toolbar #fa_welcome {
+   El saludo NO se esconde, y esto es funcional ademas de visual: #fa_menulist
+   (perfil, mis temas, desconectarse) cuelga de #fa_menu y se abre al pasar
+   sobre el saludo. Con el saludo en display:none el menu deja de ser
+   alcanzable. */
+#fa_toolbar #fa_share {
   display: none !important;
 }
+
+#fa_toolbar #fa_welcome {
+  display: inline-flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 .7rem;
+  font-size: var(--bts-fs-xs);
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--bts-text-2) !important;
+  background: transparent;
+  border: 0;
+  white-space: nowrap;
+}
+
+#fa_toolbar #fa_welcome:hover {
+  color: var(--bts-accent) !important;
+}
+
+/* El nombre entre corchetes, como el "[ FACELESS ]" del modelo. */
+#fa_toolbar #fa_welcome::before { content: "[ "; color: var(--bts-text-3); }
+#fa_toolbar #fa_welcome::after { content: " ]"; color: var(--bts-text-3); }
 
 /* El nombre del usuario, del lado derecho y con la forma del modelo: entre
    corchetes, como el "[ FACELESS ]" que phpBB pone al final de la barra. */
@@ -170,6 +194,56 @@
   color: var(--bts-text-2);
 }
 
+/* --- el desplegable del usuario --------------------------------------
+   phpBB lo pinta como un <ul> con fondo claro y texto de tema claro. Sobre
+   una superficie casi negra eso son 1,4 de contraste. El contenido lo
+   escribe phpBB en vivo —avatar, rango, enlaces—, asi que no se rehace el
+   markup: se pinta el contenedor. */
+#fa_toolbar #fa_menulist {
+  background: var(--bts-surface) !important;
+  border: 1px solid var(--bts-line);
+  border-radius: var(--bts-radius);
+  box-shadow: var(--bts-shadow-lg);
+  padding: .3rem;
+  margin-top: .3rem;
+  min-width: 15rem;
+}
+
+#fa_toolbar #fa_menulist li a {
+  display: block;
+  padding: .45rem .7rem;
+  border-radius: 3px;
+  font-size: var(--bts-fs-sm);
+  color: var(--bts-text-2) !important;
+  transition: background .12s ease, color .12s ease;
+}
+
+#fa_toolbar #fa_menulist li a:hover {
+  background: var(--bts-hover);
+  color: var(--bts-text) !important;
+}
+
+/* El rango del usuario. phpBB lo pinta con el color del grupo en un atributo
+   style EN LINEA, asi que el color lo pone el panel y aqui solo se le da
+   forma. No se toca el color: es el grupo, y el grupo manda. */
+#fa_toolbar #fa_ranktitle {
+  font-size: var(--bts-fs-xs);
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+#fa_toolbar #fa_usermenu img {
+  border-radius: 999px;
+  border: 1px solid var(--bts-line-2);
+}
+
+#fa_toolbar .fa_separator {
+  height: 1px;
+  margin: .3rem .4rem;
+  background: var(--bts-line);
+}
+
 /* --- la marca del foro, a la izquierda -------------------------------
    En el hueco que dejaban el logo de Foroactivo y su enlace. Bodoni, en
    mayusculas y con el tracking abierto. El resplandor es del texto entero, con
@@ -208,7 +282,7 @@
    que el saludo entero. */
 @media (max-width: 620px) {
   #fa_toolbar::before { display: none; }
-  #fa_toolbar #fa_share { margin-left: auto; padding-left: 0; border-left: 0; }
+  #fa_toolbar #fa_right { margin-left: auto; }
   #fa_toolbar #fa_welcome {
     max-width: 9rem;
     overflow: hidden;

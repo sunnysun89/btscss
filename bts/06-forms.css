@@ -291,6 +291,85 @@ input[type=checkbox]:checked {
 .form-actions { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin-top: var(--bts-gap); }
 
 /* --------------------------------------------------------------------------
+   La pagina de publicar / responder
+
+   El modelo (captura 7) es: titulo enorme centrado con filete debajo
+   ("PUBLICAR UN NUEVO TEMA"), campo de titulo a todo ancho, barra de
+   herramientas, area grande, panel lateral de emoticonos, y botones
+   PREVISUALIZAR / BOSQUEJO / ENVIAR centrados como pildoras.
+
+   Los selectores van en pareja (#id y .clase) porque segun la pagina phpBB
+   usa uno u otro; si uno no existe, el otro lo coge. Ninguna regla depende
+   de que exista un markup concreto: todo lo que no esta, no se pinta.
+   -------------------------------------------------------------------------- */
+
+/* El titulo de la pagina, centrado con filete. Es la misma forma que los
+   rotulos de seccion de las referencias (EL COMIENZO, MUNDO, OFF ROL). */
+h1.page-title {
+  text-align: center;
+  letter-spacing: .02em;
+}
+
+h1.page-title::after {
+  content: "";
+  display: block;
+  width: min(28rem, 70%);
+  height: 1px;
+  margin: var(--bts-gap-sm) auto 0;
+  background: linear-gradient(90deg, transparent, var(--bts-line-2), transparent);
+}
+
+/* El campo del titulo del tema: a todo ancho y en cuerpo de titular. */
+input[name="subject"] {
+  font-family: var(--bts-font-display) !important;
+  font-size: var(--bts-fs-md) !important;
+  padding: .7rem 1rem !important;
+}
+
+/* El area de escritura: alta de verdad. A 8rem el borrador se escribe mirando
+   por una rendija; las referencias dejan un bloque grande. */
+#message-box textarea,
+#text_editor_textarea {
+  min-height: 20rem !important;
+}
+
+/* La caja de emoticonos en rejilla, no en tira. */
+#smiley-box,
+.smiley-box {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr);
+  gap: .3rem;
+  justify-items: center;
+  align-items: center;
+  padding: var(--bts-gap-sm);
+  background: var(--bts-surface-2);
+  border: 1px solid var(--bts-line);
+  border-radius: var(--bts-radius);
+}
+
+#smiley-box img,
+.smiley-box img { cursor: pointer; }
+
+/* Los tres botones, centrados y como pildoras. */
+#post-form .form-actions,
+.posting-buttons {
+  justify-content: center;
+  margin-top: var(--bts-gap-lg);
+}
+
+/* Las opciones de abajo (desactivar HTML, adjuntar firma...), en pequeno. */
+#post-form .options,
+#post-options,
+.postform .options {
+  font-size: var(--bts-fs-xs);
+  color: var(--bts-text-3);
+  line-height: 2;
+}
+
+/* El "Cambiar a" del final, en linea y compacto. */
+#post-form select[name*="forum"] { max-width: 16rem; }
+
+/* --------------------------------------------------------------------------
    Attachments and the poll block, which are tables
    -------------------------------------------------------------------------- */
 

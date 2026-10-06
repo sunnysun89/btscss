@@ -1,0 +1,71 @@
+<!-- ==========================================================================
+     EL BLOQUE DATABASE
+
+     El pie del indice con forma de las tres referencias: tres columnas
+     (personal, bienvenida, en linea), debajo afiliaciones a todo ancho, y al
+     final la linea legal.
+
+     DONDE VA: en index_body, despues de la tabla de noticias
+     (plantillas/bts-noticia.html) y antes del cierre del bloque de
+     estadisticas. Se publica A MANO: index_body no se puede publicar por
+     script (ver construir/PANEL-NOTES.md).
+
+     LAS TRES PIEZAS VIVAS:
+
+     1. [data-bts-staff] lo rellena modulos.js desde /g1-administradores. Si el
+        modulo no esta pegado, sale el aviso de abajo, no un hueco.
+     2. [data-bts-avatar] lo rellena avatar-ultimo.js con la foto del miembro
+        mas nuevo. Si no esta pegado, sale solo el nombre.
+     3. Las afiliaciones las pega el admin a mano: una lista de imagenes con
+        enlace. Las clases bts-afili (208x80) y bts-afili-mini (40x40) les dan
+        el tamano; sin clase salen a su tamano natural con el borde.
+
+     COMO CAMBIAR EL NUMERO DE LA CABECERA: cada hoja lleva un ?v=N en
+     cabecera.html. Si cambian las hojas, se sube la N.
+     ========================================================================== -->
+<div class="panel bts-database">
+  <div class="inner">
+
+    <div class="bts-database-fila">
+
+      <!-- El personal: lo pinta modulos.js -->
+      <div class="bts-database-col">
+        <h3 class="bts-database-titulo">El personal</h3>
+        <div data-bts-staff>
+          <p class="bts-staff-vacio">Administración, PNJ y narradores.</p>
+        </div>
+      </div>
+
+      <!-- Bienvenida al mas nuevo: el avatar lo pone avatar-ultimo.js -->
+      <div class="bts-database-col">
+        <h3 class="bts-database-titulo">Bienvenida</h3>
+        <div class="bts-bienvenida" data-bts-avatar>
+          <span class="bts-bienvenida-cara" data-bts-avatar-slot></span>
+          <p>{NEWEST_USER}</p>
+        </div>
+      </div>
+
+      <!-- Quien esta ahora -->
+      <div class="bts-database-col bts-database-online">
+        <h3 class="bts-database-titulo"><a href="{U_VIEWONLINE}" rel="nofollow">{L_WHO_IS_ONLINE}</a></h3>
+        <p>{TOTAL_USERS_ONLINE}</p>
+        <p>{LOGGED_IN_USER_LIST}</p>
+      </div>
+
+    </div>
+
+    <!-- Afiliaciones: pegar aqui la lista de botones -->
+    <div class="bts-afiliaciones">
+      <h3 class="bts-afiliaciones-titulo">Afiliaciones</h3>
+      <ul class="bts-afiliaciones-grid">
+        <!-- ejemplo:
+        <li><a href="URL"><img class="bts-afili" src="URL" alt="nombre"></a></li>
+        <li><a href="URL"><img class="bts-afili-mini" src="URL" alt="nombre"></a></li>
+        -->
+      </ul>
+    </div>
+
+    <p class="bts-legal">Burn The Sky es un foro de rol sin ánimo de lucro. Todo lo publicado pertenece a sus autores.</p>
+
+  </div>
+</div>

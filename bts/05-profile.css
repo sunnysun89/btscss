@@ -151,12 +151,85 @@
    Members list
    -------------------------------------------------------------------------- */
 
-.memberlist .row { border-bottom: 1px solid var(--bts-line); }
-.memberlist .row { position: relative; }
+/* --------------------------------------------------------------------------
+   Members list: el directorio
+
+   El modelo (captura 6) es una lista de filas oscuras en dos columnas: nombre
+   a la izquierda con un punto de color delante, codigo de rango a la derecha
+   (Ω-A, β). Sin cabeceras de tabla, sin bordes de rejilla: cada fila es una
+   pastilla.
+
+   El color del punto sale del color de grupo que phpBB pone en linea
+   (currentColor), asi que cada fila lleva el color de su grupo sin que la
+   hoja sepa que grupos hay.
+   -------------------------------------------------------------------------- */
+
+.memberlist .row {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--bts-gap);
+  padding: .55rem var(--bts-gap);
+  margin-bottom: .3rem;
+  background: var(--bts-surface);
+  border: 1px solid var(--bts-line);
+  border-radius: var(--bts-radius);
+  transition: background var(--bts-ms) ease-out, border-color var(--bts-ms) ease-out;
+}
+
 .memberlist .row:hover { background: var(--bts-hover); }
 .memberlist .row:hover a { color: var(--bts-text); }
 
+/* El nombre, con el punto de grupo delante. */
+.memberlist .row a[href*="/u"] {
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+  font-weight: 600;
+  font-size: var(--bts-fs-sm);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--bts-text-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.memberlist .row a[href*="/u"]::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: 2px;
+  background: currentColor;
+  box-shadow: 0 0 7px currentColor;
+}
+
+/* Las cifras de la derecha (mensajes, registros), en mono y apagadas. */
+.memberlist .row .posts,
+.memberlist .row .joined,
+.memberlist .row td:last-child {
+  font-family: var(--bts-font-mono);
+  font-size: var(--bts-fs-xs);
+  color: var(--bts-text-3);
+  text-align: right;
+  white-space: nowrap;
+}
+
 .memberlist .row:hover::before { opacity: 1; }
+
+/* Cabecera de la tabla de miembros: se deja como etiqueta, no como tabla. */
+.memberlist th,
+.memberlist thead td {
+  font-size: var(--bts-fs-xs);
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--bts-text-3);
+  background: none !important;
+  border-bottom: 1px solid var(--bts-line);
+}
 
 /* --------------------------------------------------------------------------
    Responsive

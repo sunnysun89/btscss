@@ -187,10 +187,11 @@
   text-align: center;
 }
 
-/* El avatar. En las capturas salia el gif de "sin avatar" a su tamano natural,
-   que es un cuadrado diminuto dentro de un hueco enorme. Se le da un alto fijo
-   y `object-fit` para que cualquier avatar —venga del tamano que venga— salga
-   centrado y con la misma forma en todos los posts.
+/* El avatar: retrato alto, como las fichas de referencia.
+
+   En la captura modelo el retrato es vertical (un 3:4 aprox), no un cuadrado:
+   ocupa casi toda la columna y el nombre y las cifras van debajo. Con
+   `aspect-ratio: 1/1` salia un sello pequeno con hueco alrededor.
 
    Los `!important` son contra el `style="max-width: 200px; max-height: 600px"`
    que phpBB pone EN LINEA en este <img>. Un estilo en linea gana a cualquier
@@ -198,30 +199,99 @@
    no. */
 .post .postprofile dt img {
   display: block;
-  /* Cuadrado de verdad. Con `width: 100%; height: 180px` el ancho salia del
-     ancho de la columna —200 menos el relleno— y quedaban 158 x 180, un
-     rectangulo. `aspect-ratio` lo resuelve sin depender de cuanto mida la
-     columna, y el alto sale del ancho solo. */
+  /* Retrato 3:4. Con `width: 100%` el ancho sale de la columna y el alto del
+     ratio, sin depender de cuanto mida nada mas. */
   width: 100% !important;
-  max-width: 160px !important;
+  max-width: 100% !important;
   height: auto !important;
-  aspect-ratio: 1 / 1;
+  max-height: none !important;
+  aspect-ratio: 3 / 4;
   margin: 0 auto;
   object-fit: cover;
+  object-position: top center;
   border-radius: var(--bts-radius);
   border: 1px solid var(--bts-line-2);
   background: var(--bts-bg-2);
 }
-.post .postprofile dt strong { font-size: var(--bts-fs-base); }
+.post .postprofile dt strong {
+  display: block;
+  font-family: var(--bts-font-display);
+  font-size: var(--bts-fs-md);
+  font-weight: 700;
+  letter-spacing: .04em;
+  line-height: 1.25;
+}
 
-/* El nombre, con el color del grupo que phpBB pone en linea */
+/* El nombre, con el color del grupo que phpBB pone en linea. Hereda: el
+   inline del span manda, aqui solo la forma. */
 .post .postprofile dt a { color: inherit; text-decoration: none; }
 .post .postprofile dt a:hover { opacity: .82; }
 
 .post .postprofile dd {
   margin: .35rem 0 0;
-  padding: 0;
+  padding: .3rem .55rem;
   color: var(--bts-text-2);
+  background: var(--bts-bg-2);
+  border: 1px solid var(--bts-line);
+  border-radius: 999px;
+  text-align: center;
+  font-size: var(--bts-fs-xs);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Las dd vacias que phpBB deja (<dd></dd>, <dd><br></dd>) no pintan pildora
+   vacia. */
+.post .postprofile dd:empty,
+.post .postprofile dd:has(> br:only-child) {
+  display: none;
+}
+
+/* La linea de poder que inyecta ficha-personaje.js ("POWER: ★ ..."). Va en el
+   acento y con mas peso: es el dato que define al personaje. */
+.post .postprofile dd.bts-power {
+  color: var(--bts-accent);
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  border-color: var(--bts-accent-2);
+  background: var(--bts-accent-wash);
+}
+
+/* Las barras de medidor (FAMA, CONFIANZA) que inyecta el mismo modulo cuando
+   el campo trae un numero. El relleno lo pone el modulo en --bts-nivel. */
+.post .postprofile dd.bts-medidor {
+  padding: 0;
+  text-align: left;
+  background: var(--bts-bg-2);
+}
+
+.post .postprofile dd.bts-medidor > span {
+  display: block;
+  padding: .3rem .55rem;
+  font-size: var(--bts-fs-xs);
+  color: var(--bts-text-3);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.post .postprofile dd.bts-medidor > i {
+  display: block;
+  height: 4px;
+  margin: 0 .55rem .45rem;
+  border-radius: 2px;
+  background: var(--bts-surface-4);
+  font-style: normal;
+  overflow: hidden;
+}
+
+.post .postprofile dd.bts-medidor > i::before {
+  content: "";
+  display: block;
+  height: 100%;
+  width: var(--bts-nivel, 0%);
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--bts-accent-2), var(--bts-accent));
 }
 
 /* El rango ("Admin", "Moderator", "User") */

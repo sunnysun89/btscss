@@ -265,47 +265,23 @@ body::before {
 }
 
 /* --------------------------------------------------------------------------
-   La barra de navegacion
+   La barra de navegacion: la tira fina del modelo
 
-   CENTRADA, y con el tracking muy abierto. Antes iba alineada a la izquierda y
-   con las etiquetas pegadas unas a otras, que es la disposicion por defecto de
-   phpBB y lo que mas se nota como "panel de phpBB" de toda la pagina.
+   Una sola tira centrada, en versalitas con el tracking abierto (.12em), sin
+   caja: sin fondo propio, sin bordes, sin sombra. Es la segunda captura de
+   referencia (INDICE FAQ BUSCAR MIEMBROS ... NOTIFICACIONES): enlaces pequenos
+   arriba, centrados, y nada mas.
 
-   El modelo pedido es una tira con las entradas en versalitas, con espacio entre
-   letras, centradas, y sin nada mas. Se insiste en tres cosas:
+   Hubo aqui DOS bloques que decian cosas distintas —uno con text-align:center
+   e inline-block y otro mas abajo con display:flex— y ganaba el de abajo por
+   orden, asi que el centrado no llegaba a verse. Queda uno solo.
 
-     - text-align: center en el <ul>, y los <li> en inline-block para que el
-       centrado los functioned de verdad;
-     - letter-spacing: .12em, que es lo que hace que una lista de palabras cortas
-       se lea como menu y no como un parrafo;
-     - el buscador, que estaba en su propia fila debajo y partia la barra en dos.
-       El modelo no lo tiene —el item BUSCAR abre la busqueda—, asi que se
-       retira de la tira.
-
-   No se usa display:flex en el <ul> a proposito: en este panel no se ha
-   comportado, y letting the li flow inline da la misma fila dejando que sea el
-   navegador el que la parte cuando no cabe. */
+   No se usa display:flex en el <ul>: en este panel no se ha comportado, y con
+   los <li> en linea el navegador parte la fila cuando no cabe. */
 .navbar > .inner {
   max-width: var(--bts-maxw);
   margin: 0 auto;
   padding: 0 var(--bts-gap-lg);
-}
-
-.navbar ul.linklist.navlinks {
-  text-align: center;
-  padding: 0;
-}
-
-.navbar ul.linklist.navlinks > li {
-  display: inline-block;
-  float: none;
-}
-
-.navbar a.mainmenu {
-  padding: .7rem .8rem;
-  font-size: var(--bts-fs-xs);
-  font-weight: 600;
-  letter-spacing: .12em;
 }
 
 /* El buscador fuera de la tira. El item BUSCAR del menu lo sigue abriendo. */
@@ -340,24 +316,20 @@ body::before {
    -------------------------------------------------------------------------- */
 
 .navbar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--bts-gap);
-  padding: 0;
+  display: block;
   margin: 0;
+  padding: 0;
   background: none;
   border: 0;
   box-shadow: none;
+  text-align: center;
 }
 
 .navbar .inner {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--bts-gap);
+  display: block;
   width: 100%;
-  padding: 0;
+  padding: .15rem 0;
+  text-align: center;
 }
 
 /* The corners are the rounded edge of the box; there is no box here. */
@@ -368,11 +340,13 @@ body::before {
   padding: 0;
   list-style: none;
   line-height: 0;
+  text-align: center;
+  width: 100%;
 }
 
 .navbar ul.linklist li {
-  display: inline-flex !important;
-  align-items: center;
+  display: inline-block !important;
+  float: none;
   position: relative;
   margin: 0;
   line-height: normal;
@@ -386,24 +360,21 @@ body::before {
 .navbar a:hover { color: var(--bts-text); }
 
 .navbar a.mainmenu {
-  display: inline-flex;
-  align-items: center;
-  gap: .4rem;
-  padding: .5rem .75rem;
-  font-size: var(--bts-fs-sm);
-  font-weight: 500;
-  letter-spacing: .04em;
+  display: inline-block;
+  padding: .7rem .8rem;
+  font-size: var(--bts-fs-xs);
+  font-weight: 600;
+  letter-spacing: .12em;
   text-transform: uppercase;
   color: var(--bts-text-2);
   border-bottom: 1px solid transparent;
   transition: color .15s ease, border-color .15s ease, background .15s ease;
 }
 
+/* Sin iconos en la tira: las referencias son solo texto, y los gifs de
+   phpBB rompen el ritmo de las versalitas. */
 .navbar a.mainmenu img {
-  width: 14px;
-  height: 14px;
-  filter: grayscale(1) brightness(1.7);
-  opacity: .75;
+  display: none !important;
 }
 
 .navbar a.mainmenu:hover {
@@ -423,8 +394,12 @@ body::before {
   border-bottom-color: var(--bts-accent);
 }
 
-/* The search block sits at the far end */
-.navbar li.rightside { margin-left: auto; padding-left: var(--bts-gap); }
+/* Sin "lado derecho" en una tira centrada: el margin-left:auto de phpBB
+   empujaba los ultimos items y rompia el centrado. */
+.navbar li.rightside {
+  margin-left: 0;
+  padding-left: 0;
+}
 
 
 /* --------------------------------------------------------------------------

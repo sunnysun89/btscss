@@ -1,24 +1,16 @@
 # Burn The Sky — la skin
 
-Ocho hojas CSS modulares, servidas desde fuera igual que las de Blinding
+Trece hojas CSS modulares, servidas desde fuera igual que las de Blinding
 Lights, y una cabecera que las enlaza.
 
-## Lo primero: esto NO esta puesto en el foro
+## Lo primero: como saber que se esta viendo
 
-A 30/09/2026 el foro vivo sirve **una sola hoja de estilo**:
-
-```
-https://burnthesky.foroactivo.com/0-ltr.css
-```
-
-que es el tema por defecto de phpBB. No hay ningun `github.io`, ni `localhost`,
-ni `--bts-surface`, ni Playfair en el HTML. El foro se ve con el tema claro
-azulado de fabrica.
-
-Todo lo de este directorio esta escrito y comprobado con medidas, pero **no se ve
-en el foro** hasta que se pegue `cabecera.html` en `overall_header` y las hojas
-esten servidas desde algun sitio. Si has estado mirando `burnthesky.foroactivo.com`
-para juzgar la skin, lo que has visto es phpBB, no esto.
+El foro vivo carga las hojas desde `https://sunnysun89.github.io/btscss/bts/`
+con un `?v=N` en `overall_header` (ver `cabecera.html`). Si el foro se ve con
+el tema claro azul de fabrica, la cabecera no esta pegada o apunta a otra
+base. Si se ve oscuro pero sin los ultimos cambios, es el `?v=`: hay que
+subirlo en `cabecera.html` y volver a pegarlo. `subir.ps1 -SoloComprobar`
+dice que version sirve Pages de cada hoja.
 
 ## Como se despliega
 
@@ -51,12 +43,14 @@ el `serve.ps1` que hay al lado. Cambiar `RAW_BASE` antes de publicar.
 | `bts/02-layout.css` | Fondo, cabecera en hero, navegacion, columnas, pie. |
 | `bts/03-index.css` | Categorias, filas de foro, los contadores. |
 | `bts/04-thread.css` | Lista de temas y los posts. |
-| `bts/05-profile.css` | Campos de perfil y los implantes. |
-| `bts/06-forms.css` | Botones, campos, y el editor sceditor. |
+| `bts/05-profile.css` | Campos de perfil, directorio de miembros y los implantes. |
+| `bts/06-forms.css` | Botones, campos, pagina de publicar y el editor sceditor. |
 | `bts/08-groups.css` | Puente con los ocho grupos de fama. |
-| `bts/09-stats.css` | El bloque de estadisticas viejo. |
-| `bts/10-stats.css` | El bloque de estadisticas nuevo. |
-| `bts/11-topbar.css` | La barra de arriba. Retira la de Foroactivo. |
+| `bts/09-stats.css` | El bloque de estadisticas viejo, ya no se usa. |
+| `bts/10-stats.css` | La tabla de noticias del indice. |
+| `bts/11-topbar.css` | La barra de arriba. |
+| `bts/12-members.css` | La tira de miembros del indice. |
+| `bts/13-database.css` | El bloque DATABASE del pie: personal, bienvenida, afiliaciones. |
 | `bts/07-responsive.css` | Puntos de ruptura. Va el ultimo a proposito: gana. |
 
 ## La barra de arriba, y por que no es una barra nueva
@@ -402,3 +396,61 @@ fallaba en la primera version.
 
 La ultima auditoria sobre el indice y sobre la vista de tema no encuentra ningun
 texto por debajo del minimo de WCAG AA.
+## Los modulos de JavaScript
+
+Tres, y los tres van en **`overall_footer_end`**, uno debajo del otro. Se pegan a
+mano en el panel; no hay forma de meterlos por hoja de estilos.
+
+### `plantillas/modulos.js` — la tira de miembros y el personal
+
+Dos mitades en el mismo fichero:
+
+1. La tira de miembros: fila de fichas circulares con retrato y nombre, debajo
+   de la tabla de noticias. Pide `memberlist.php`, la lee con `DOMParser` y la
+   monta. Sin errores visibles: si falla, no pinta nada y avisa por consola.
+2. El personal: lee `/g1-administradores` (grupo AUTHORITY) y pinta sus
+   miembros dentro de `[data-bts-staff]`, que vive en
+   `plantillas/bloque-database.html`. Si el bloque no esta en la pagina, no se
+   pide nada.
+
+### `plantillas/ficha-personaje.js` — la ficha del autor en cada post
+
+En cada post lee el id del autor, pide su perfil (cache en `sessionStorage`),
+busca los campos por su etiqueta ("Nivel de poder", "Poderes", "Rango",
+"Estatus") y los inyecta en la ficha: linea POWER destacada y barras de
+medidor para niveles o numeros. Si el perfil no tiene campos rellenos, no se
+pinta nada.
+
+Pinta una fila de fichas de circulos con el retrato y el nombre de cada miembro,
+justo debajo de la tabla de noticias. Es la pieza que tienen los tres de
+referencia y que phpBB no da: no existe ninguna variable de indice para los
+miembros, ni para los personajes.
+
+De donde sale: pide `memberlist.php` —la misma pagina del boton "Miembros" del
+menu—, la lee con `DOMParser` y monta la tira. Va sin errores visibles: si la
+pagina no contesta o no hay miembros, no pinta nada y avisa solo por consola.
+
+Lo que se ha comprobado leyendo el DOM de verdad:
+
+- `memberlist.php` contesta 200 y trae una tabla con los enlaces de perfil
+  (`/u1`), y `a.closest('tr')` encuentra la fila, que es de donde se saca el
+  avatar y la insignia de grupo;
+- el color del grupo lo trae phpBB en `style="color:#ff7a4d"` dentro de un
+  `span.usr_grp_clr`, y se recoge para el anillo de la ficha;
+- con el foro como esta ahora, con un solo miembro, pinta una ficha: 84 x 128,
+  con el retrato de 56 x 56.
+
+`viewonline.php` tambien se ha probado y sirve, pero da solo quien esta
+conectado. Se queda guardado para cuando se quiera ese bloque y no la lista.
+
+### `plantillas/avatar-ultimo.js` — el avatar del ultimo usuario registrado
+
+Mete el avatar del miembro mas nuevo en el hueco de las estadisticas. Va antes
+que `modulos.js`, que no lo necesita, pero por el orden no se pierde nada.
+
+### Y una nota sobre DOMParser
+
+No se usa `innerHTML` para meter HTML fetched. Al hacerlo se ejecuta lo que
+venga dentro, scripts incluidos, y las rutas relativas se rompen. `DOMParser`
+analiza el documento sin ejecutar nada, y luego se copian al final solo los
+datos que hacen falta: texto y un `src`.
