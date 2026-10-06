@@ -1,0 +1,189 @@
+{JAVASCRIPT}
+<!-- BEGIN switch_user_logged_in --><p class="right rightside">{LAST_VISIT_DATE}</p><!-- END switch_user_logged_in -->
+<p>{CURRENT_TIME}</p>
+{CAT_NAME}
+<br class="clear" />
+
+<!-- BEGIN switch_user_login_form_header -->
+<div class="panel">
+	<div class="inner"><span class="corners-top"><span></span></span>
+		<form action="{S_LOGIN_ACTION}" method="post" name="form_login">
+			<div class="user_login_form center">
+				<label>{L_USERNAME} : <input class="post" type="text" size="10" name="username" /></label>&nbsp;
+				<label>{L_PASSWORD} : <input class="post" type="password" size="10" name="password" /></label>&nbsp;
+				<label>{L_AUTO_LOGIN} : <input class="radio" type="checkbox" name="autologin" {AUTOLOGIN_CHECKED} /></label>&nbsp;
+				{S_HIDDEN_FIELDS}<input class="mainoption button1" type="submit" name="login" value="{L_LOGIN}" />
+
+                <!-- BEGIN switch_social_login -->
+                <div class="social_btn">
+                    <!-- BEGIN fb_connect -->
+                    <div class="fb-login-button"></div>
+                    <!-- END fb_connect -->
+                    <!-- BEGIN topicit_connect -->
+                    <div class="ti-connect"></div>
+                    <!-- END topicit_connect -->
+                </div>
+                <!-- END switch_social_login -->
+			</div>
+		</form>
+	<span class="corners-bottom"><span></span></span></div>
+</div>
+<!-- END switch_user_login_form_header -->
+
+<!-- BEGIN message_admin_index -->
+	<div class="panel introduction">
+		<div class="inner"><span class="corners-top"><span></span></span>
+	<!-- BEGIN message_admin_titre -->
+		<div class="h3">{message_admin_index.message_admin_titre.MES_TITRE}</div>
+	<!-- END message_admin_titre -->
+
+	<!-- BEGIN message_admin_txt -->
+		<div class="mes-txt">{message_admin_index.message_admin_txt.MES_TXT}</div>
+	<!-- END message_admin_txt -->
+		<span class="corners-bottom"><span></span></span></div>
+	</div>
+<!-- END message_admin_index -->
+
+{CHATBOX_TOP}
+{BOARD_INDEX}
+
+<!-- BEGIN disable_viewonline -->
+
+<div class="panel bts-noticia">
+  <div class="inner">
+
+    <div class="bts-noticia-fila">
+
+      <!-- IF S_RECENT_TOPIC_LIST -->
+      <div class="bts-noticia-col">
+        <h3 class="bts-noticia-titulo">{L_RECENT_TOPICS}</h3>
+        <ul class="bts-noticia-temas">
+          <!-- BEGIN recent_topics -->
+          <li>
+            <a href="{topic_row_url}">{topic_row_title}</a>
+            <span class="gensmall">{topic_row_posts} &middot; {topic_row_time}</span>
+          </li>
+          <!-- END recent_topics -->
+        </ul>
+      </div>
+      <!-- ENDIF -->
+
+      <div class="bts-noticia-col">
+        <h3 class="bts-noticia-titulo">{L_STATISTICS}</h3>
+        <div class="bts-cifras">
+          <p>{TOTAL_POSTS}</p>
+          <p>{TOTAL_USERS}</p>
+          <p>{NEWEST_USER}</p>
+        </div>
+      </div>
+
+      <div class="bts-noticia-col bts-noticia-online">
+        <h3 class="bts-noticia-titulo"><a href="{U_VIEWONLINE}" rel="nofollow">{L_WHO_IS_ONLINE}</a></h3>
+        <p>{TOTAL_USERS_ONLINE}</p>
+        <p>{RECORD_USERS}</p>
+        <p>{LOGGED_IN_USER_LIST}</p>
+      </div>
+
+    </div>
+
+    <!-- BEGIN switch_group_legend -->
+    <div class="bts-noticia-leyenda">
+      <span class="bts-noticia-leyenda-titulo">{LEGEND}</span>
+      {GROUP_LEGEND}
+    </div>
+    <!-- END switch_group_legend -->
+
+<div class="panel bts-database">
+  <div class="inner">
+
+    <div class="bts-database-fila">
+
+      <div class="bts-database-col">
+        <h3 class="bts-database-titulo">El personal</h3>
+        <div data-bts-staff>
+          <p class="bts-staff-vacio">Administración, PNJ y narradores.</p>
+        </div>
+      </div>
+
+      <div class="bts-database-col">
+        <h3 class="bts-database-titulo">Bienvenida</h3>
+        <div class="bts-bienvenida" data-bts-avatar>
+          <span class="bts-bienvenida-cara" data-bts-avatar-slot></span>
+          <p>{NEWEST_USER}</p>
+        </div>
+      </div>
+
+      <div class="bts-database-col bts-database-online">
+        <h3 class="bts-database-titulo"><a href="{U_VIEWONLINE}" rel="nofollow">{L_WHO_IS_ONLINE}</a></h3>
+        <p>{TOTAL_USERS_ONLINE}</p>
+        <p>{LOGGED_IN_USER_LIST}</p>
+      </div>
+
+    </div>
+
+    <div class="bts-afiliaciones">
+      <h3 class="bts-afiliaciones-titulo">Afiliaciones</h3>
+      <ul class="bts-afiliaciones-grid">
+        <!-- <li><a href="URL"><img class="bts-afili" src="URL" alt="nombre"></a></li> -->
+      </ul>
+    </div>
+
+    <p class="bts-legal">Burn The Sky es un foro de rol sin ánimo de lucro. Todo lo publicado pertenece a sus autores.</p>
+
+  </div>
+</div>
+
+	<!-- BEGIN switch_chatbox_activate -->
+	<div class="h3"><a href="{S_JOIN_CHAT}" target="ChatBox">{CHATBOX_NAME}</a></div>
+	<div class="page-bottom">
+	{TOTAL_CHATTERS_ONLINE}&nbsp;:&nbsp;
+	{CHATTERS_LIST}<br />
+	</div>
+		<!-- BEGIN switch_chatbox_popup -->
+		<div id="chatbox_popup"></div>
+		<script type="text/javascript">
+		insertChatBoxPopup('{disable_viewonline.switch_chatbox_activate.switch_chatbox_popup.U_FRAME_CHATBOX}', '{L_CLICK_TO_JOIN_CHAT}');
+		</script>
+		<!-- END switch_chatbox_popup -->
+	<!-- END switch_chatbox_activate -->
+<!-- END disable_viewonline -->
+
+{CHATBOX_BOTTOM}
+
+<!-- BEGIN switch_user_login_form_footer -->
+<div class="panel">
+	<div class="inner"><span class="corners-top"><span></span></span>
+		<form action="{S_LOGIN_ACTION}" method="post" name="form_login">
+			<div class="user_login_form center">
+				<label>{L_USERNAME} : <input class="post" type="text" size="10" name="username" /></label>&nbsp;
+				<label>{L_PASSWORD} : <input class="post" type="password" size="10" name="password" /></label>&nbsp;
+				<label>{L_AUTO_LOGIN} : <input class="radio" type="checkbox" name="autologin" {AUTOLOGIN_CHECKED} /></label>&nbsp;
+				{S_HIDDEN_FIELDS}<input class="mainoption button1" type="submit" name="login" value="{L_LOGIN}" />
+
+                <!-- BEGIN switch_social_login -->
+                <div class="social_btn">
+                    <!-- BEGIN fb_connect -->
+                    <div class="fb-login-button"></div>
+                    <!-- END fb_connect -->
+                    <!-- BEGIN topicit_connect -->
+                    <div class="ti-connect"></div>
+                    <!-- END topicit_connect -->
+                </div>
+                <!-- END switch_social_login -->
+			</div>
+		</form>
+	<span class="corners-bottom"><span></span></span></div>
+</div>
+<!-- END switch_user_login_form_footer -->
+
+<br style="clear:both" />
+
+<!-- BEGIN switch_legend -->
+<ul id="picture_legend">
+	<li><img src="{FORUM_NEW_IMG}" alt="{L_NEW_POSTS}" loading="lazy"/>{L_NEW_POSTS}</li>
+	<li><img src="{FORUM_IMG}" alt="{L_NO_NEW_POSTS}" loading="lazy"/>{L_NO_NEW_POSTS}</li>
+	<li><img src="{FORUM_LOCKED_IMG}" alt="{L_FORUM_LOCKED}" loading="lazy"/>{L_FORUM_LOCKED}</li>
+</ul>
+<!-- END switch_legend -->
+
+{AUTO_DST}

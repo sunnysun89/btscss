@@ -116,6 +116,49 @@
   display: none;
 }
 
+/* Línea POWER y medidores que inyecta ficha-personaje.js. */
+.post .postprofile dd.bts-power {
+  color: var(--bts-accent);
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  border-color: var(--bts-accent-2);
+  background: var(--bts-accent-wash);
+}
+
+.post .postprofile dd.bts-medidor {
+  padding: 0;
+  text-align: left;
+  overflow: hidden;
+}
+
+.post .postprofile dd.bts-medidor > span {
+  display: block;
+  padding: .3rem .55rem 0;
+  font-size: var(--bts-fs-xs);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--bts-text-3);
+}
+
+.post .postprofile dd.bts-medidor > i {
+  display: block;
+  height: 4px;
+  margin: .35rem .55rem .45rem;
+  border-radius: 2px;
+  background: var(--bts-surface-4);
+  font-style: normal;
+}
+
+.post .postprofile dd.bts-medidor > i::before {
+  content: "";
+  display: block;
+  height: 100%;
+  width: var(--bts-nivel, 0%);
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--bts-accent-2), var(--bts-accent));
+}
+
 .post .postprofile .label span {
   color: var(--bts-text-3) !important;
   font-size: var(--bts-fs-xs);
