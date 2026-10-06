@@ -1,0 +1,49 @@
+<!-- ==========================================================================
+     EL BLOQUE DATABASE (reinicio)
+
+     En index_body, después de la tabla de noticias. Publicar A MANO.
+
+     [data-bts-staff] lo rellena modulos.js desde /g1-administradores.
+     [data-bts-avatar] lo rellena avatar-ultimo.js (recrear ese módulo cuando
+     toque; el hueco ya está). Afiliaciones: pegar botones con clases
+     bts-afili (208x80) o bts-afili-mini (40x40).
+     ========================================================================== -->
+<div class="panel bts-database">
+  <div class="inner">
+
+    <div class="bts-database-fila">
+
+      <div class="bts-database-col">
+        <h3 class="bts-database-titulo">El personal</h3>
+        <div data-bts-staff>
+          <p class="bts-staff-vacio">Administración, PNJ y narradores.</p>
+        </div>
+      </div>
+
+      <div class="bts-database-col">
+        <h3 class="bts-database-titulo">Bienvenida</h3>
+        <div class="bts-bienvenida" data-bts-avatar>
+          <span class="bts-bienvenida-cara" data-bts-avatar-slot></span>
+          <p>{NEWEST_USER}</p>
+        </div>
+      </div>
+
+      <div class="bts-database-col bts-database-online">
+        <h3 class="bts-database-titulo"><a href="{U_VIEWONLINE}" rel="nofollow">{L_WHO_IS_ONLINE}</a></h3>
+        <p>{TOTAL_USERS_ONLINE}</p>
+        <p>{LOGGED_IN_USER_LIST}</p>
+      </div>
+
+    </div>
+
+    <div class="bts-afiliaciones">
+      <h3 class="bts-afiliaciones-titulo">Afiliaciones</h3>
+      <ul class="bts-afiliaciones-grid">
+        <!-- <li><a href="URL"><img class="bts-afili" src="URL" alt="nombre"></a></li> -->
+      </ul>
+    </div>
+
+    <p class="bts-legal">Burn The Sky es un foro de rol sin ánimo de lucro. Todo lo publicado pertenece a sus autores.</p>
+
+  </div>
+</div>

@@ -1,0 +1,146 @@
+/* ==========================================================================
+   Burn The Sky — 09 news (reinicio)
+   Tabla de noticias del índice, modelo NBorn: panel ancho y plano, una línea
+   de acento arriba, tres columnas (últimos temas / cifras / quién está).
+   ========================================================================== */
+
+.bts-noticia {
+  position: relative;
+  margin: var(--bts-gap-lg) 0 var(--bts-gap);
+  padding: 0;
+  background: var(--bts-surface) !important;
+  border: 1px solid var(--bts-line);
+  border-radius: var(--bts-radius-lg);
+  overflow: hidden;
+}
+
+.bts-noticia::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--bts-accent), var(--bts-accent-3) 55%, transparent);
+}
+
+.bts-noticia > .inner { padding: var(--bts-gap); }
+
+.bts-noticia-fila {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1.2fr;
+  gap: var(--bts-gap);
+  align-items: start;
+}
+
+.bts-noticia-col { min-width: 0; }
+
+.bts-noticia-titulo {
+  margin: 0 0 .6rem;
+  padding: 0 0 .4rem;
+  border-bottom: 1px solid var(--bts-line);
+  font-family: var(--bts-font-body);
+  font-size: var(--bts-fs-xs);
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--bts-text-3) !important;
+}
+
+/* --- últimos temas --- */
+
+.bts-noticia-temas {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bts-noticia-temas li {
+  padding: .45rem 0;
+  border-bottom: 1px solid var(--bts-line);
+  font-size: var(--bts-fs-sm);
+  line-height: 1.45;
+}
+
+.bts-noticia-temas li:last-child { border-bottom: 0; }
+
+.bts-noticia-temas a {
+  color: var(--bts-text-2) !important;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bts-noticia-temas a:hover { color: var(--bts-accent) !important; }
+
+.bts-noticia-temas .gensmall,
+.bts-noticia-temas small {
+  color: var(--bts-text-3) !important;
+  font-size: var(--bts-fs-xs);
+}
+
+/* --- cifras: el número es el <strong> que phpBB mete en la frase --- */
+
+.bts-cifras { margin: 0; }
+
+.bts-cifras p { margin: 0 0 .7rem; color: var(--bts-text-3) !important; font-size: var(--bts-fs-sm); }
+
+.bts-cifras p:last-child { margin-bottom: 0; }
+
+.bts-cifras strong {
+  display: block;
+  margin-bottom: .1rem;
+  font-family: var(--bts-font-display);
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--bts-text) !important;
+}
+
+/* --- conectados --- */
+
+.bts-noticia-online p { margin: 0 0 .6rem; font-size: var(--bts-fs-sm); color: var(--bts-text-3) !important; }
+.bts-noticia-online p:last-child { margin-bottom: 0; }
+
+.bts-noticia-online a {
+  color: var(--bts-text-2) !important;
+  font-weight: 500;
+}
+
+.bts-noticia-online a:hover { color: var(--bts-accent) !important; }
+
+/* --- leyenda de grupos al pie --- */
+
+.bts-noticia-leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .4rem .75rem;
+  margin-top: var(--bts-gap);
+  padding-top: var(--bts-gap);
+  border-top: 1px solid var(--bts-line);
+}
+
+.bts-noticia-leyenda-titulo {
+  font-size: var(--bts-fs-xs);
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--bts-text-3) !important;
+  margin-right: .3rem;
+}
+
+.bts-noticia-leyenda ul.color-groups {
+  margin: 0;
+  gap: .35rem .7rem;
+}
+
+@media (max-width: 900px) {
+  .bts-noticia-fila { grid-template-columns: 1fr 1fr; }
+  .bts-noticia-col:last-child { grid-column: 1 / -1; }
+}
+
+@media (max-width: 620px) {
+  .bts-noticia-fila { grid-template-columns: 1fr; }
+  .bts-cifras { display: flex; flex-wrap: wrap; gap: var(--bts-gap); }
+  .bts-cifras p { flex: 1 1 8rem; margin-bottom: 0; }
+}
