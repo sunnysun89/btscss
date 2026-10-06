@@ -304,16 +304,31 @@ body::before {
    Migas
    -------------------------------------------------------------------------- */
 
+/* Migas, patrón PT.2 de Gitano: el contenedor a font-size:0 para matar los
+   separadores de texto de phpBB, tamaño real solo en los enlaces. El link del
+   índice lleva clase propia (.nav2) para vestirlo distinto. */
 #page-body .navbar + .path,
 .breadcrumb {
+  font-size: 0;
+  letter-spacing: 0;
+  margin-bottom: var(--bts-gap);
+}
+
+#page-body .navbar + .path a,
+.breadcrumb a {
   font-size: var(--bts-fs-xs);
   color: var(--bts-text-3);
   letter-spacing: .04em;
   text-transform: uppercase;
-  margin-bottom: var(--bts-gap);
 }
-.breadcrumb a { color: var(--bts-text-3); }
+
+#page-body .navbar + .path a:hover,
 .breadcrumb a:hover { color: var(--bts-accent); }
+
+.breadcrumb a.nav2 {
+  color: var(--bts-text-2);
+  font-weight: 600;
+}
 
 /* --------------------------------------------------------------------------
    Pie
