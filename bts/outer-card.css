@@ -2415,6 +2415,492 @@ form[action*="quickreply"],
 
 
 /* ============================================================================
+   19 · MURAL, TABLÓN Y MENSUAL (Burn The Sky)
+
+   La hoja no trae nada de esto: sin estas reglas el mural sale sin vestir.
+   Lenguaje común: cabeceras de ventana con 3 puntos + título mono, como la
+   captura de referencia (weekly most active / staff / recent topics).
+   ========================================================================== */
+
+/* --- cabecera de ventana: 3 puntos + título --- */
+.rwindowheader {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--burnthesky-line);
+}
+
+.rwindowheader p {
+  width: 9px;
+  height: 9px;
+  margin: 0;
+  border-radius: 50%;
+}
+
+.rwindowheader p:nth-child(1) { background: var(--burnthesky-red-vivid); }
+.rwindowheader p:nth-child(2) { background: var(--burnthesky-gray); }
+.rwindowheader p:nth-child(3) { background: var(--burnthesky-gray-lt); }
+
+.rwindowheader span {
+  margin-left: auto;
+  font: var(--burnthesky-fs-xs) / 1.4 var(--burnthesky-ff-mono);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--burnthesky-gray-lt);
+  white-space: nowrap;
+}
+
+/* --- hero del widget Banner --- */
+#headercontainer #header {
+  position: relative;
+  padding: 30px 26px;
+  background: var(--burnthesky-void-2);
+  border: 1px solid var(--burnthesky-line);
+  overflow: hidden;
+}
+
+#headercontainer .rtitle {
+  font: clamp(48px, 8vw, 96px) / .9 var(--burnthesky-ff-display);
+  letter-spacing: -2px;
+  text-transform: uppercase;
+  color: var(--burnthesky-white);
+  text-shadow: var(--burnthesky-ghost);
+}
+
+#headercontainer .rdesc {
+  margin-top: 10px;
+  max-width: 60ch;
+  font: var(--burnthesky-fs-sm) / 1.7 var(--burnthesky-ff-mono);
+  letter-spacing: 1px;
+  color: var(--burnthesky-gray-lt);
+}
+
+#headercontainer .rbgimg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: grayscale(1) brightness(.3);
+  pointer-events: none;
+}
+
+#headercontainer .position { position: relative; }
+
+/* --- tabla del mural --- */
+#mural { margin-top: var(--burnthesky-gap); }
+
+#mural .rbgname,
+#mural .rwelcomesub {
+  font: var(--burnthesky-fs-sm) / 1.6 var(--burnthesky-ff-mono);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--burnthesky-gray-lt);
+  margin-bottom: 8px;
+}
+
+#mural .rwelcomesub span { color: var(--burnthesky-red-vivid); }
+
+#mural .rmuralcontainer > table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+#mural .rmuralcontainer > table > tbody > tr > td {
+  vertical-align: top;
+  padding: 0 0 0 var(--burnthesky-gap);
+}
+
+#mural .rmuralcontainer > table > tbody > tr > td:first-child {
+  padding-left: 0;
+  width: 190px;
+}
+
+#mural .rmuralavatar > div:last-child { margin-top: 10px; }
+
+#mural .rmuralavatar img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--burnthesky-red-dark);
+  filter: grayscale(1) brightness(.8);
+}
+
+#mural .rmuralinfo {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  background: var(--burnthesky-void-2);
+  border: 1px solid var(--burnthesky-line);
+}
+
+#mural .rmuralinfo > tbody > tr > td {
+  vertical-align: top;
+  padding: 0 0 14px;
+  border-left: 1px solid var(--burnthesky-line);
+}
+
+#mural .rmuralinfo > tbody > tr > td:first-child { border-left: 0; }
+
+/* usuarios activos con barra */
+#mural .ruser { margin: 8px 12px; }
+
+#mural .ruser > span {
+  display: block;
+  font: var(--burnthesky-fs-sm) / 1.5 var(--burnthesky-ff-mono);
+  color: var(--burnthesky-white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#mural .ruser > div {
+  height: 5px;
+  margin-top: 4px;
+  background: var(--burnthesky-void);
+}
+
+#mural .ruser > div > div { height: 100%; }
+
+/* staff en círculos */
+#mural .rstaffc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px;
+  justify-content: center;
+}
+
+#mural .rstaffmemb img {
+  display: block;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--burnthesky-line-2);
+  filter: grayscale(1) brightness(.85);
+  transition: filter .4s ease, border-color var(--burnthesky-ease);
+}
+
+#mural .rstaffmemb a:hover img { filter: none; border-color: var(--burnthesky-red); }
+
+/* últimos temas */
+#mural .rsubsrecent { padding: 6px 12px 12px; }
+
+#mural .rsubsrecent a {
+  font: var(--burnthesky-fs-sm) / 1.6 var(--burnthesky-ff-mono);
+  color: var(--burnthesky-white);
+}
+
+#mural .rsubsrecent,
+#mural .rsubsrecent div {
+  font: var(--burnthesky-fs-xs) / 1.7 var(--burnthesky-ff-mono);
+  color: var(--burnthesky-gray-lt);
+}
+
+/* barra de navegación del mural */
+#mural .rmuralnav {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: var(--burnthesky-gap);
+  background: var(--burnthesky-void);
+  border: 1px solid var(--burnthesky-line);
+}
+
+#mural .rmuralnav a {
+  flex: 1 1 auto;
+  padding: 12px 8px;
+  text-align: center;
+  font: var(--burnthesky-fs-xs) / 1.4 var(--burnthesky-ff-mono);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--burnthesky-gray-lt);
+  border-left: 1px solid var(--burnthesky-line);
+  transition: color var(--burnthesky-ease), background var(--burnthesky-ease);
+}
+
+#mural .rmuralnav a:first-child { border-left: 0; }
+
+#mural .rmuralnav a:hover {
+  color: #fff;
+  background: var(--burnthesky-red-wash);
+}
+
+/* --- ventana mensual: héroes + buscados (widget Mensual, dentro del mural) --- */
+.rmensual {
+  display: flex;
+  gap: var(--burnthesky-gap);
+  margin-top: var(--burnthesky-gap);
+}
+
+.rmes {
+  flex: 1 1 0;
+  min-width: 0;
+  background: var(--burnthesky-void-2);
+  border: 1px solid var(--burnthesky-line);
+}
+
+.rmes__img {
+  display: block;
+  width: 100%;
+  height: 230px;
+  object-fit: cover;
+  object-position: top center;
+  border-bottom: 1px solid var(--burnthesky-line);
+  filter: grayscale(1) brightness(.8) contrast(1.05);
+  transition: filter .4s ease;
+}
+
+.rmes:hover .rmes__img { filter: none; }
+
+.rmes__body { padding: 14px 16px 16px; }
+
+.rmes__tag {
+  display: inline-block;
+  margin-bottom: 8px;
+  padding: 2px 8px;
+  border: 1px solid var(--burnthesky-red);
+  color: var(--burnthesky-red-vivid);
+  font: var(--burnthesky-fs-xs) / 1.6 var(--burnthesky-ff-mono);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.rmes__name {
+  margin: 0 0 6px;
+  font: var(--burnthesky-fs-xl) / 1 var(--burnthesky-ff-display);
+  letter-spacing: -.5px;
+  text-transform: uppercase;
+  color: var(--burnthesky-white);
+}
+
+.rmes__desc {
+  margin: 0;
+  font-size: var(--burnthesky-fs-sm);
+  line-height: 1.7;
+  color: var(--burnthesky-gray-lt);
+}
+
+@media (max-width: 640px) {
+  .rmensual { flex-direction: column; }
+  #mural .rmuralcontainer > table,
+  #mural .rmuralcontainer > table > tbody,
+  #mural .rmuralcontainer > table > tbody > tr,
+  #mural .rmuralcontainer > table > tbody > tr > td,
+  #mural .rmuralinfo > tbody > tr > td { display: block; width: auto; }
+  #mural .rmuralcontainer > table > tbody > tr > td { padding: 0 0 var(--burnthesky-gap); }
+  #mural .rmuralinfo > tbody > tr > td { border-left: 0; border-top: 1px solid var(--burnthesky-line); }
+  #mural .rmuralinfo > tbody > tr > td:first-child { border-top: 0; }
+}
+
+
+/* ============================================================================
+   20 · RAIL LATERAL (la navbar, a la izquierda)
+   Como la captura de referencia: rail fijo de 60px con iconos, sin texto.
+   Cada enlace lleva su icono FontAwesome por href; lo no mapeado sale
+   con un punto. En móvil vuelve a barra superior.
+   ========================================================================== */
+#page-header .navbar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: auto;
+  z-index: var(--burnthesky-z-navbar);
+  width: 60px;
+  height: auto;
+  padding: 14px 0;
+  overflow-x: visible;
+  overflow-y: auto;
+  background: rgba(9, 9, 9, .96);
+  border: 0;
+  border-right: 1px solid var(--burnthesky-line);
+  backdrop-filter: blur(4px);
+  scrollbar-width: none;
+}
+#page-header .navbar::-webkit-scrollbar { display: none; }
+
+#page-header .navbar::after {
+  left: -1px;
+  top: 20px;
+  bottom: auto;
+  width: 3px;
+  height: 110px;
+}
+
+#page-header .navbar ul.linklist.navlinks {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  height: auto;
+}
+
+#page-header .navbar ul.linklist.navlinks li { text-align: center; }
+
+#page-header a.mainmenu {
+  display: block;
+  padding: 9px 0;
+  font-size: 0;
+  letter-spacing: 0;
+  line-height: 1;
+  border-bottom: 0;
+}
+
+#page-header a.mainmenu::before {
+  font-family: "Font Awesome 6 Free", "FontAwesome";
+  font-weight: 900;
+  font-size: 15px;
+  content: "\f111";
+}
+
+#page-header a.mainmenu:hover { box-shadow: inset 2px 0 0 var(--burnthesky-red); }
+
+#page-header a.mainmenu[href="/"]::before { content: "\f015"; }
+#page-header a.mainmenu[href*="/calendar"]::before { content: "\f133"; }
+#page-header a.mainmenu[href*="/images"]::before { content: "\f03e"; }
+#page-header a.mainmenu[href*="active_topics"]::before,
+#page-header a.mainmenu[href*="/activity"]::before { content: "\f1e8"; }
+#page-header a.mainmenu[href*="/faq"]::before { content: "\f059"; }
+#page-header a.mainmenu[href*="/search"]::before { content: "\f002"; }
+#page-header a.mainmenu[href*="/memberlist"]::before { content: "\f0c0"; }
+#page-header a.mainmenu[href*="/groups"]::before { content: "\f500"; }
+#page-header a.mainmenu[href*="mode=editprofile"]::before,
+#page-header a.mainmenu[href*="/profile"]::before { content: "\f007"; }
+#page-header a.mainmenu[href*="/privmsg"]::before { content: "\f0e0"; }
+#page-header a.mainmenu[href*="logout"]::before { content: "\f011"; }
+#page-header a.mainmenu[href*="/login"]::before { content: "\f090"; }
+#page-header a.mainmenu[href*="/register"]::before { content: "\f234"; }
+
+#page-header .navbar .corners-top,
+#page-header .navbar .corners-bottom,
+#page-header .navbar #search-box { display: none !important; }
+
+#main { padding-left: 84px; }
+
+@media (max-width: 640px) {
+  #page-header .navbar {
+    top: 0;
+    bottom: auto;
+    left: 0;
+    right: 0;
+    width: auto;
+    height: var(--burnthesky-navbar-h);
+    padding: 0 100px 0 10px;
+    border-right: 0;
+    border-bottom: 1px solid var(--burnthesky-line);
+  }
+  #page-header .navbar::after {
+    left: 10px;
+    top: auto;
+    bottom: -1px;
+    width: 110px;
+    height: 3px;
+  }
+  #page-header .navbar ul.linklist.navlinks { flex-direction: row; }
+  #page-header a.mainmenu { padding: 0 9px; }
+  #main { padding-left: 0; }
+}
+
+
+/* ============================================================================
+   21 · POST DE LADO Y RESPUESTA RÁPIDA
+   La plantilla mete .postbody y .postprofile dentro de .rpostcontainer, así
+   que el reparto va aquí (order solo funciona entre hermanos flex).
+   ========================================================================== */
+.post .rpostcontainer {
+  display: flex;
+  align-items: stretch;
+}
+
+.post .rpostcontainer .postprofile {
+  order: 1;
+  flex: 0 0 var(--burnthesky-profile-w);
+}
+
+.post .rpostcontainer .postbody {
+  order: 2;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.post .rtopicbanner { margin-bottom: 0; }
+
+.post .rtopicbgimg img {
+  display: block;
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  object-position: center;
+  border-bottom: 1px solid var(--burnthesky-line);
+  filter: grayscale(1) brightness(.7);
+}
+
+.post .rtopicuser {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 12px 26px;
+  border-bottom: 1px solid var(--burnthesky-line);
+  font: var(--burnthesky-fs-lg) / 1.1 var(--burnthesky-ff-display);
+  text-transform: uppercase;
+}
+
+.post .rtopicuser b {
+  font: var(--burnthesky-fs-xs) / 1.4 var(--burnthesky-ff-mono);
+  font-weight: 400;
+  letter-spacing: 2px;
+  color: var(--burnthesky-red-vivid);
+}
+
+@media (max-width: 900px) {
+  .post .rpostcontainer { flex-direction: column; }
+  .post .rpostcontainer .postprofile { flex-basis: auto; }
+}
+
+/* Respuesta rápida en negro: contenedor, barra, botones y área fuente. El
+   iframe WYSIWYG es otro documento y no se alcanza por CSS: lo pinta
+   js-temas.js al cargar. */
+#quickreply,
+form[action*="quickreply"],
+.quickreply {
+  background: var(--burnthesky-void-2);
+  border: 1px solid var(--burnthesky-line);
+  padding: 18px;
+}
+
+.sceditor-container {
+  background: var(--burnthesky-void-2) !important;
+  border: 1px solid var(--burnthesky-line-2) !important;
+}
+
+.sceditor-toolbar {
+  background: var(--burnthesky-void) !important;
+  border-bottom: 1px solid var(--burnthesky-line) !important;
+}
+
+.sceditor-toolbar .sceditor-button {
+  filter: grayscale(1) brightness(1.6);
+}
+
+.sceditor-toolbar .sceditor-button:hover,
+.sceditor-toolbar .sceditor-button.active {
+  filter: none;
+  background: var(--burnthesky-red-wash) !important;
+}
+
+.sceditor-container textarea {
+  background: var(--burnthesky-void-3) !important;
+  color: var(--burnthesky-white) !important;
+}
+
+.sceditor-dropdown {
+  background: var(--burnthesky-void-2) !important;
+  border: 1px solid var(--burnthesky-line-2) !important;
+}
+
+
+/* ============================================================================
    17 · ACCESIBILIDAD
    ========================================================================== */
 :focus-visible {
