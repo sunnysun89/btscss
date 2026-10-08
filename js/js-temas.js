@@ -88,3 +88,35 @@
 
     document.addEventListener('DOMContentLoaded', main);
 }();
+
+/* Respuesta rápida en negro: el iframe WYSIWYG es otro documento y el CSS no
+   lo alcanza, así que se le inyecta el estilo al cargar (mismo origen, vale).
+   Tres pasadas porque el editor se crea tarde. */
+function btsDarkEditor() {
+  try {
+    document.querySelectorAll(".sceditor-container iframe").forEach(function (fr) {
+      try {
+        var d = fr.contentDocument || (fr.contentWindow && fr.contentWindow.document);
+        if (!d || d.getElementById("bts-ed")) return;
+        var s = d.createElement("style");
+        s.id = "bts-ed";
+        s.textContent = "html,body{background:#0d0d0d!important;color:#ebebeb!important;}" +
+          "body{font:13px/1.75 Arial,Helvetica,sans-serif;padding:12px;}" +
+          "a{color:#e52222;}blockquote{background:#090909;border:1px solid #1d1d1d;border-left:2px solid #c51515;color:#9a9a9a;}" +
+          "pre,.codebox{background:#050505;border:1px solid #1d1d1d;color:#cfcfcf;}";
+        d.head.appendChild(s);
+      } catch (e) {}
+    });
+  } catch (e) {}
+}
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", function () {
+    btsDarkEditor();
+    setTimeout(btsDarkEditor, 1500);
+    setTimeout(btsDarkEditor, 4000);
+  });
+} else {
+  btsDarkEditor();
+  setTimeout(btsDarkEditor, 1500);
+  setTimeout(btsDarkEditor, 4000);
+}
