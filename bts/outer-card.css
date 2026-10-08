@@ -1850,6 +1850,78 @@ p.copyright a:hover { color: var(--burnthesky-red-vivid); }
 
 
 /* ============================================================================
+   BTS-ADAPT · 18 · Parche de fondos claros (Burn The Sky)
+
+   Por qué existe: con los colores del panel sin resetear, fondos claros
+   (#fff, #ECF3F7) ganan en filas, celdas, paneles y tablas, y el foro sale
+   con bloques blancos. Este bloque los apaga con selectores largos para no
+   depender del orden de cascada. Todo lleva !important por el mismo motivo.
+
+   OJO iconos de tema: si se activan topic_read/topic_unread en el panel, hay
+   que QUITAR la línea `background-image: none` de las celdas (los iconos van
+   en el style inline del dl y este !important los taparía).
+   ========================================================================== */
+
+.forabg ul.topiclist.forums li.row dl.icon,
+.forabg ul.topiclist.forums li.row dl.icon dt,
+.forabg ul.topiclist.forums li.row dl.icon dd,
+.forabg ul.topiclist.topics li.row dl.icon,
+.forabg ul.topiclist.topics li.row dl.icon dt,
+.forabg ul.topiclist.topics li.row dl.icon dd,
+.forumbg ul.topiclist li.row dl.icon,
+.forumbg ul.topiclist li.row dl.icon dt,
+.forumbg ul.topiclist li.row dl.icon dd {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+.panel,
+.panel .inner {
+  background-color: var(--burnthesky-void-2) !important;
+}
+
+.panel dl,
+.panel dt,
+.panel dd,
+fieldset dl,
+fieldset dt,
+fieldset dd {
+  background-color: transparent !important;
+}
+
+table td,
+table th {
+  background-color: transparent !important;
+}
+
+table th {
+  background-color: var(--burnthesky-void) !important;
+}
+
+table tr:hover td {
+  background-color: var(--burnthesky-red-wash) !important;
+}
+
+#gfooter {
+  background: transparent !important;
+}
+
+/* Velo sobre la foto de fondo: sin él la nebulosa compite con el texto. */
+body {
+  background-image:
+    linear-gradient(rgba(9, 9, 9, .80), rgba(9, 9, 9, .88)),
+    var(--burnthesky-img-bg) !important;
+  background-position: center, center !important;
+  background-size: auto, cover !important;
+  background-attachment: scroll, fixed !important;
+}
+
+/* Hueco del icono 70px: si sigue el placeholder, se esconde (el JS lo
+   sustituye por el campo "icon" cuando existe). */
+.postprofile .rprofileicon img[src*="placehold"] { display: none; }
+
+
+/* ============================================================================
    17 · ACCESIBILIDAD
    ========================================================================== */
 :focus-visible {
