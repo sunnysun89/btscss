@@ -1,6 +1,9 @@
 {JAVASCRIPT}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<div class="rlogininfo">
 <!-- BEGIN switch_user_logged_in --><p class="right rightside">{LAST_VISIT_DATE}</p><!-- END switch_user_logged_in -->
-<p>{CURRENT_TIME}</p>
+<p class="rcurrtime">{CURRENT_TIME}</p>
+</div>
 {CAT_NAME}
 <br class="clear" />
 
@@ -47,92 +50,74 @@
 {CHATBOX_TOP}
 {BOARD_INDEX}
 
-<!-- BEGIN disable_viewonline -->
 
-<div class="panel bts-noticia">
-  <div class="inner">
-
-    <div class="bts-noticia-fila">
-
-      <!-- IF S_RECENT_TOPIC_LIST -->
-      <div class="bts-noticia-col">
-        <h3 class="bts-noticia-titulo">{L_RECENT_TOPICS}</h3>
-        <ul class="bts-noticia-temas">
-          <!-- BEGIN recent_topics -->
-          <li>
-            <a href="{topic_row_url}">{topic_row_title}</a>
-            <span class="gensmall">{topic_row_posts} &middot; {topic_row_time}</span>
-          </li>
-          <!-- END recent_topics -->
-        </ul>
-      </div>
-      <!-- ENDIF -->
-
-      <div class="bts-noticia-col">
-        <h3 class="bts-noticia-titulo">{L_STATISTICS}</h3>
-        <div class="bts-cifras">
-          <p>{TOTAL_POSTS}</p>
-          <p>{TOTAL_USERS}</p>
-          <p>{NEWEST_USER}</p>
-        </div>
-      </div>
-
-      <div class="bts-noticia-col bts-noticia-online">
-        <h3 class="bts-noticia-titulo"><a href="{U_VIEWONLINE}" rel="nofollow">{L_WHO_IS_ONLINE}</a></h3>
-        <p>{TOTAL_USERS_ONLINE}</p>
-        <p>{RECORD_USERS}</p>
-        <p>{LOGGED_IN_USER_LIST}</p>
-      </div>
-
-    </div>
-
-    <!-- BEGIN switch_group_legend -->
-    <div class="bts-noticia-leyenda">
-      <span class="bts-noticia-leyenda-titulo">{LEGEND}</span>
-      {GROUP_LEGEND}
-    </div>
-    <!-- END switch_group_legend -->
-
-<div class="panel bts-database">
-  <div class="inner">
-
-    <div class="bts-database-fila">
-
-      <div class="bts-database-col">
-        <h3 class="bts-database-titulo">El personal</h3>
-        <div data-bts-staff>
-          <p class="bts-staff-vacio">Administración, PNJ y narradores.</p>
-        </div>
-      </div>
-
-      <div class="bts-database-col">
-        <h3 class="bts-database-titulo">Bienvenida</h3>
-        <div class="bts-bienvenida" data-bts-avatar>
-          <span class="bts-bienvenida-cara" data-bts-avatar-slot></span>
-          <p>{NEWEST_USER}</p>
-        </div>
-      </div>
-
-      <div class="bts-database-col bts-database-online">
-        <h3 class="bts-database-titulo"><a href="{U_VIEWONLINE}" rel="nofollow">{L_WHO_IS_ONLINE}</a></h3>
-        <p>{TOTAL_USERS_ONLINE}</p>
-        <p>{LOGGED_IN_USER_LIST}</p>
-      </div>
-
-    </div>
-
-    <div class="bts-afiliaciones">
-      <h3 class="bts-afiliaciones-titulo">Afiliaciones</h3>
-      <ul class="bts-afiliaciones-grid">
-        <!-- <li><a href="URL"><img class="bts-afili" src="URL" alt="nombre"></a></li> -->
-      </ul>
-    </div>
-
-    <p class="bts-legal">Burn The Sky es un foro de rol sin ánimo de lucro. Todo lo publicado pertenece a sus autores.</p>
-
+<div id="rstatscontainer">
+  
+  <div class="rbgimg">
+    <div></div>
   </div>
-</div>
 
+  <div class="rforumstats">
+    
+    <div class="rtitle">{L_STATISTICS}</div>
+
+    <div class="rstatsc">
+      <p class="page-bottom rtotalposts">
+      {TOTAL_POSTS}
+      </p>
+      <p class="page-bottom rtotalusers">
+      {TOTAL_USERS}
+      </p>
+      <p class="page-bottom rrecordusers">
+      {RECORD_USERS}
+      </p>
+    </div>
+    
+  </div>
+
+<!-- BEGIN disable_viewonline -->
+        
+  <p class="rnewestuser">
+  {NEWEST_USER}
+  </p>
+  
+  <div class="rlogged">
+  <div class="rwindowheader"> <p> </p> <p> </p> <p> </p> <span><a href="{U_VIEWONLINE}" rel="nofollow">{L_WHO_IS_ONLINE}</a></span> </div>
+  
+      <div class="rloggedinlist">{LOGGED_IN_USER_LIST}</div>
+  
+      <div class="ruserstats">
+        <span>{TOTAL_USERS_ONLINE}</span>
+      </div>
+  
+  </div>
+  
+  <img src="{L_ONLINE_IMG}" id="i_whosonline" alt="{L_WHO_IS_ONLINE}" class="img-whois" loading="lazy" />
+    
+  <div class="ronlineuserslist">
+    <span>
+    {L_ONLINE_USERS}
+    {L_CONNECTED_MEMBERS}
+    </span>
+  </div>
+  
+  <div class="rgroupslegend">
+    <div class="rgroupsicon"></div>
+    <div class="rgroup">
+      <div class="rgroupleg">{GROUP_LEGEND}</div>
+    </div>
+  </div>
+
+<div id="rfooterreplace"></div>
+  
+  
+	     
+  <div class="rcredits">
+              Skinned by <a href="https://is.gd/rossr">Ross</a> 
+  </div>
+          
+</div>
+          
 	<!-- BEGIN switch_chatbox_activate -->
 	<div class="h3"><a href="{S_JOIN_CHAT}" target="ChatBox">{CHATBOX_NAME}</a></div>
 	<div class="page-bottom">

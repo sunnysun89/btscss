@@ -1,0 +1,1866 @@
+/* ============================================================================
+   BURN THE SKY · burnthesky.foroactivo.com
+   Hoja de estilos base · v1.0
+   Base visual: "Outer Card" — negro #090909, rojo señal, Impact, monoespaciada,
+   líneas de escaneo, motivos de anillo y esfera roja.
+
+   CONVENCIONES
+   · Variables CSS ............ --burnthesky-*
+   · Componentes propios ...... .bts-*  (BEM: bloque__elemento--modificador)
+   · Keyframes ................ burnthesky-*
+   · Selectores nativos de Foroactivo (phpBB3) van sin prefijo.
+   · Maquetación con FLEXBOX, no grid: el sanitizador de Foroactivo puede
+     reestructurar el DOM y romper grids que dependen de hijo directo.
+   · Se usa !important solo para anular floats/anchos/fondos nativos.
+
+   ÍNDICE
+   00  Fuentes
+   01  Variables
+   02  Base y reset
+   03  Elementos nativos ocultos / neutralizados
+   04  Layout general
+   05  Navbar y menú
+   06  Rutas, paginación y listas de enlaces
+   07  Categorías y foros (índice)
+   08  Lista de temas (viewforum)
+   09  Mensajes (viewtopic): perfil y cuerpo
+   10  Formularios y botones
+   11  Panel de usuario, pestañas, MP, miembros, login
+   12  Estadísticas y pie de página
+   13  Notificaciones y MultiSwitcher
+   14  Componentes .bts-*
+   15  Utilidades
+   16  Responsive
+   17  Accesibilidad
+   ========================================================================== */
+
+
+/* ============================================================================
+   00 · FUENTES
+   @import DEBE ser la primera regla de la hoja; si va después de cualquier
+   otra regla, el navegador la ignora.
+   · Anton ........ respaldo de Impact (Android, Linux)
+   · Courier Prime  respaldo de Courier New
+   ========================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap');
+
+
+/* ============================================================================
+   01 · VARIABLES
+   ========================================================================== */
+:root {
+
+  /* ---- Color · superficies y texto ---- */
+  --burnthesky-void:          #090909;   /* fondo principal */
+  --burnthesky-void-2:        #0d0d0d;   /* superficie 1 (cajas, categorías) */
+  --burnthesky-void-3:        #131313;   /* superficie 2 (inputs, filas alternas) */
+  --burnthesky-white:         #ebebeb;   /* texto principal */
+  --burnthesky-gray:          #6e6e6e;   /* decorativo (anillos, etiquetas mudas) */
+  --burnthesky-gray-lt:       #9a9a9a;   /* texto secundario legible */
+  --burnthesky-gray-dim:      #262626;   /* líneas tenues */
+  --burnthesky-line:          #1d1d1d;   /* separadores */
+  --burnthesky-line-2:        #2e2e2e;   /* bordes de controles */
+
+  /* ---- Color · rojo señal ---- */
+  --burnthesky-red:           #c51515;
+  --burnthesky-red-vivid:     #e52222;
+  --burnthesky-red-dark:      #6a0808;
+  --burnthesky-red-ghost:     rgba(197, 21, 21, .42);
+  --burnthesky-red-ghost-2:   rgba(197, 21, 21, .20);
+  --burnthesky-red-glow:      rgba(197, 21, 21, .48);
+  --burnthesky-red-wash:      rgba(197, 21, 21, .06);
+
+  /* ---- Color · por usuario (lo puede escribir un script JS) ---- */
+  --burnthesky-user-color:    var(--burnthesky-white);
+
+  /* ---- Tipografía ---- */
+  --burnthesky-ff-display:    'Impact', 'Anton', 'Arial Black', 'Franklin Gothic Medium', sans-serif;
+  --burnthesky-ff-mono:       'Courier New', 'Courier Prime', 'Lucida Console', monospace;
+  --burnthesky-ff-sans:       Arial, Helvetica, sans-serif;
+
+  --burnthesky-fs-2xs:        9px;
+  --burnthesky-fs-xs:         10px;
+  --burnthesky-fs-sm:         11px;
+  --burnthesky-fs-base:       13px;
+  --burnthesky-fs-md:         15px;
+  --burnthesky-fs-lg:         22px;
+  --burnthesky-fs-xl:         34px;
+  --burnthesky-fs-2xl:        56px;
+  --burnthesky-lh-body:       1.75;
+
+  /* ---- Layout ---- */
+  --burnthesky-w-main:        1120px;
+  --burnthesky-navbar-h:      46px;
+  --burnthesky-gap:           14px;
+  --burnthesky-pad:           20px;
+  --burnthesky-profile-w:     230px;     /* columna de perfil en los mensajes */
+  --burnthesky-frame-w:       200px;     /* marco de imagen (.bts-frame) */
+  --burnthesky-frame-h:       280px;
+  --burnthesky-switcher-size: 34px;      /* botón del MultiSwitcher */
+  --burnthesky-toolbar-right: 62px;      /* posición de las notificaciones */
+
+  /* ---- Imágenes ---- */
+  --burnthesky-img-bg:        url("img/fondo.jpg");
+  --burnthesky-img-banner:    url("img/cabecera.jpg");
+
+  /* ---- Efectos ---- */
+  --burnthesky-scan-alpha:    .10;
+  --burnthesky-scanlines:     repeating-linear-gradient(0deg,
+                                transparent 0, transparent 3px,
+                                rgba(0, 0, 0, var(--burnthesky-scan-alpha)) 3px,
+                                rgba(0, 0, 0, var(--burnthesky-scan-alpha)) 4px);
+  --burnthesky-ring:          radial-gradient(circle closest-side,
+                                var(--burnthesky-gray) 0, var(--burnthesky-gray) 42%,
+                                transparent 46%);
+  --burnthesky-ghost:         4px 4px 0 var(--burnthesky-red-ghost), 8px 8px 0 var(--burnthesky-red-ghost-2);
+  --burnthesky-ghost-sm:      2px 2px 0 var(--burnthesky-red-ghost), 4px 4px 0 var(--burnthesky-red-ghost-2);
+  --burnthesky-ease:          .25s ease;
+
+  /* ---- Capas ---- */
+  --burnthesky-z-navbar:      99;
+  --burnthesky-z-scan:        9000;
+  --burnthesky-z-toolbar:     9999;
+  --burnthesky-z-switcher:    10000;
+}
+
+
+/* ============================================================================
+   02 · BASE Y RESET
+   ========================================================================== */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: var(--burnthesky-red-dark) var(--burnthesky-void);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--burnthesky-void) var(--burnthesky-img-bg) center / cover fixed;
+  color: var(--burnthesky-white);
+  font: var(--burnthesky-fs-base) / var(--burnthesky-lh-body) var(--burnthesky-ff-sans);
+  text-align: left;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Líneas de escaneo sobre todo el sitio (ajustar con --burnthesky-scan-alpha) */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: var(--burnthesky-z-scan);
+  background: var(--burnthesky-scanlines);
+  pointer-events: none;
+}
+
+::selection { background: var(--burnthesky-red); color: #fff; }
+
+a {
+  color: var(--burnthesky-white);
+  text-decoration: none;
+  transition: color var(--burnthesky-ease);
+}
+a:hover { color: var(--burnthesky-red-vivid); text-decoration: none; }
+
+img { border: 0; max-width: 100%; }
+
+h1, h2, h3, h4 {
+  margin: 0;
+  font-family: var(--burnthesky-ff-display);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -.5px;
+  text-transform: uppercase;
+  color: var(--burnthesky-white);
+}
+
+p { margin: 0 0 1em; }
+
+hr {
+  height: 1px;
+  margin: 16px 0;
+  border: 0;
+  background: var(--burnthesky-line);
+}
+
+code, pre, kbd, samp { font-family: var(--burnthesky-ff-mono); }
+
+/* Clases de texto heredadas de phpBB */
+.gen, .genmed { font-size: var(--burnthesky-fs-base); }
+.gensmall     { font-size: var(--burnthesky-fs-sm); }
+.error, .errortext { color: var(--burnthesky-red-vivid); }
+
+/* Título de página (h1) — el único gran gesto tipográfico del foro */
+h1.page-title {
+  margin: 0 0 28px;
+  padding: 10px 0 0;
+  font-size: clamp(36px, 6vw, 64px);
+  line-height: .95;
+  letter-spacing: -2px;
+  text-shadow: var(--burnthesky-ghost);
+}
+h1.page-title a { color: inherit; }
+
+
+/* ============================================================================
+   03 · ELEMENTOS NATIVOS OCULTOS / NEUTRALIZADOS
+   ========================================================================== */
+
+/* Columna izquierda: fuera de pantalla, NO display:none, porque algunos
+   scripts leen su contenido para poblar widgets. */
+#content-container div#left {
+  position: fixed;
+  left: -9999px;
+  top: -9999px;
+  visibility: hidden;
+}
+
+span.corners-top,
+span.corners-bottom,
+ul#picture_legend { display: none !important; }
+
+/* Tooltip nativo (cachea los title al cargar; se anula por CSS) */
+#s-m-t-tooltip { display: none !important; }
+
+/* Contenedores nativos sin fondos ni bordes propios */
+#wrap, #page-body, #content-container, #main-content, #content {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+#page-header .headerbar {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+}
+
+
+/* ============================================================================
+   04 · LAYOUT GENERAL
+   ========================================================================== */
+#main {
+  width: min(var(--burnthesky-w-main), calc(100% - 32px));
+  margin: 0 auto;
+  padding: calc(var(--burnthesky-navbar-h) + 30px) 0 40px;
+}
+
+#main-content { padding: 0; }
+
+/* Segmento rojo de 110px: firma visual compartida por todas las cajas */
+.forabg::before,
+.forumbg::before,
+.post::before,
+#cp-main .panel::before,
+.bts-box::before,
+.bts-tablilla::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  z-index: 2;
+  width: 110px;
+  height: 3px;
+  background: var(--burnthesky-red);
+  pointer-events: none;
+}
+
+
+/* ============================================================================
+   05 · NAVBAR Y MENÚ
+   ========================================================================== */
+#page-header .navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--burnthesky-z-navbar);
+  height: var(--burnthesky-navbar-h);
+  padding: 0 140px 0 20px;
+  overflow: hidden;
+  background: rgba(9, 9, 9, .94);
+  border: 0;
+  border-bottom: 1px solid var(--burnthesky-line);
+  backdrop-filter: blur(4px);
+}
+
+#page-header .navbar::after {
+  content: '';
+  position: absolute;
+  left: 20px;
+  bottom: -1px;
+  width: 110px;
+  height: 3px;
+  background: var(--burnthesky-red);
+  pointer-events: none;
+}
+
+#page-header .navbar ul.linklist.navlinks {
+  display: flex !important;
+  align-items: center;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  white-space: nowrap;
+}
+
+#page-header .navbar ul.linklist.navlinks li {
+  float: none;
+  margin: 0;
+  padding: 0;
+}
+
+#page-header a.mainmenu {
+  display: inline-block;
+  padding: 0 14px;
+  font: var(--burnthesky-fs-sm) / var(--burnthesky-navbar-h) var(--burnthesky-ff-mono);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--burnthesky-gray-lt);
+  transition: color var(--burnthesky-ease), box-shadow var(--burnthesky-ease);
+}
+
+#page-header a.mainmenu:hover {
+  color: #fff;
+  box-shadow: inset 0 -2px 0 var(--burnthesky-red);
+}
+
+/* Buscador nativo */
+div#search-box { float: right; margin: 8px 0; }
+
+input#keywords {
+  width: 160px !important;
+  padding: 5px 10px;
+  font-size: var(--burnthesky-fs-xs);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+input#keywords ~ input.button2 { display: none; }
+
+
+/* ============================================================================
+   06 · RUTAS, PAGINACIÓN Y LISTAS DE ENLACES
+   ========================================================================== */
+.pathname-box,
+p.nomargin.path {
+  margin: 0 0 22px;
+  padding: 0;
+  font: var(--burnthesky-fs-xs) / 1.6 var(--burnthesky-ff-mono);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--burnthesky-gray-lt);
+}
+
+ul.linklist {
+  margin: 0 0 20px;
+  padding: 0;
+  list-style: none;
+  font: var(--burnthesky-fs-xs) / 1.6 var(--burnthesky-ff-mono);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--burnthesky-gray-lt);
+}
+ul.linklist li { display: inline-block; margin: 0 16px 0 0; }
+
+.pagination {
+  font: var(--burnthesky-fs-sm) / 1 var(--burnthesky-ff-mono);
+  color: var(--burnthesky-gray-lt);
+}
+
+.pagination a,
+.pagination strong {
+  display: inline-block;
+  min-width: 26px;
+  margin: 0 2px;
+  padding: 6px 8px;
+  border: 1px solid var(--burnthesky-line-2);
+  text-align: center;
+  font-weight: 400;
+  color: var(--burnthesky-gray-lt);
+}
+
+.pagination a:hover { border-color: var(--burnthesky-red); color: #fff; }
+
+.pagination strong {
+  border-color: var(--burnthesky-red);
+  background: var(--burnthesky-red);
+  color: #fff;
+}
+
+
+/* ============================================================================
+   07 · CATEGORÍAS Y FOROS (ÍNDICE)  ·  También cubre viewforum y MP
+   ========================================================================== */
+.forabg,
+.forumbg {
+  position: relative;
+  margin: 0 0 var(--burnthesky-gap) !important;
+  background: var(--burnthesky-void-2) !important;
+  border: 1px solid var(--burnthesky-line);
+}
+
+.forabg .inner,
+.forumbg .inner { padding: 0; }
+
+ul.topiclist,
+ul.pmlist {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+ul.topiclist li,
+ul.pmlist li { list-style: none; }
+
+ul.topiclist dl,
+ul.pmlist dl { margin: 0; padding: 0; }
+
+/* -- Estructura en filas: dt (título) + dd (columnas) -- */
+ul.topiclist li.header dl.icon,
+ul.topiclist li.row dl.icon,
+ul.pmlist li.row dl.icon {
+  display: flex !important;
+  align-items: center;
+  min-height: 0 !important;
+  padding: 0 !important;
+  background-image: none !important;   /* quita el icono nativo; borra esta línea para conservarlo */
+}
+
+ul.topiclist dl.icon dt,
+ul.pmlist dl.icon dt {
+  flex: 1 1 auto;
+  float: none !important;
+  width: auto !important;
+  min-width: 0;
+  margin: 0;
+  padding: 16px 20px !important;
+  color: var(--burnthesky-gray-lt);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+ul.topiclist dl.icon dd,
+ul.pmlist dl.icon dd {
+  float: none !important;
+  margin: 0;
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+ul.topiclist dd.dterm { flex: 1 1 auto; width: auto !important; min-width: 0; }
+
+ul.topiclist dd.topics,
+ul.topiclist dd.posts,
+ul.topiclist dd.views {
+  flex: 0 0 90px;
+  width: auto !important;
+  text-align: center;
+}
+
+ul.topiclist dd.lastpost {
+  flex: 0 0 260px;
+  width: auto !important;
+  padding: 12px 18px !important;
+  text-align: left;
+}
+
+/* -- Cabecera de categoría -- */
+ul.topiclist li.header {
+  background: var(--burnthesky-void);
+  border-bottom: 1px solid var(--burnthesky-line);
+}
+
+ul.topiclist li.header dt,
+ul.topiclist li.header dd {
+  padding: 12px 20px !important;
+  font: var(--burnthesky-fs-xs) / 1.4 var(--burnthesky-ff-mono);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--burnthesky-gray-lt);
+}
+
+ul.topiclist li.header dt b { font-weight: 400; }
+
+.table-title { padding: 0; }
+
+.table-title h2,
+.table-title h2 a,
+.table-title a {
+  font: var(--burnthesky-fs-lg) / 1 var(--burnthesky-ff-display);
+  letter-spacing: -.5px;
+  text-transform: uppercase;
+  color: var(--burnthesky-white);
+}
+
+.table-title h2::before {
+  content: '';
+  display: inline-block;
+  position: relative;
+  top: -2px;
+  width: 14px;
+  height: 14px;
+  margin-right: 12px;
+  border: 2px solid var(--burnthesky-gray);
+  border-radius: 50%;
+  background: var(--burnthesky-ring);
+  vertical-align: middle;
+}
+
+.table-title a:hover { color: var(--burnthesky-red-vivid); }
+
+/* -- Filas de foro / tema -- */
+ul.topiclist li.row,
+ul.pmlist li.row {
+  position: relative;
+  background: transparent !important;
+  border-top: 1px solid var(--burnthesky-line);
+  transition: background var(--burnthesky-ease), box-shadow var(--burnthesky-ease);
+}
+
+ul.topiclist li.row:first-child,
+ul.pmlist li.row:first-child { border-top: 0; }
+
+ul.topiclist li.row:hover,
+ul.pmlist li.row:hover {
+  background: var(--burnthesky-red-wash) !important;
+  box-shadow: inset 3px 0 0 var(--burnthesky-red);
+}
+
+h2.hierarchy,
+h3.hierarchy {
+  margin: 0;
+  font: inherit;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+a.forumtitle,
+a.topictitle {
+  font: var(--burnthesky-fs-lg) / 1.1 var(--burnthesky-ff-display);
+  letter-spacing: -.3px;
+  text-transform: uppercase;
+  color: var(--burnthesky-white);
+  transition: color var(--burnthesky-ease), text-shadow var(--burnthesky-ease);
+}
+
+a.forumtitle:hover,
+a.topictitle:hover {
+  color: var(--burnthesky-red-vivid);
+  text-shadow: var(--burnthesky-ghost-sm);
+}
+
+/* Contadores: número grande + etiqueta mono debajo */
+ul.topiclist li.row dd.topics,
+ul.topiclist li.row dd.posts,
+ul.topiclist li.row dd.views {
+  font: var(--burnthesky-fs-lg) / 1 var(--burnthesky-ff-display);
+  color: var(--burnthesky-white);
+}
+
+ul.topiclist li.row dd dfn {
+  display: block;
+  margin-top: 5px;
+  font: var(--burnthesky-fs-2xs) / 1 var(--burnthesky-ff-mono);
+  font-style: normal;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--burnthesky-gray-lt);
+}
+
+/* Último mensaje */
+ul.topiclist dd.lastpost { font: var(--burnthesky-fs-sm) / 1.6 var(--burnthesky-ff-mono); }
+ul.topiclist dd.lastpost dfn { display: none; }
+ul.topiclist dd.lastpost > span { display: block; color: var(--burnthesky-gray-lt); }
+ul.topiclist dd.lastpost a { color: var(--burnthesky-white); }
+ul.topiclist dd.lastpost a:hover { color: var(--burnthesky-red-vivid); }
+
+.lastpost-avatar img {
+  float: left;
+  width: 44px;
+  height: 44px;
+  margin: 0 10px 0 0;
+  border: 1px solid var(--burnthesky-red-dark);
+  border-radius: 50%;
+  object-fit: cover;
+  filter: grayscale(1) brightness(.85);
+  transition: filter .4s ease;
+}
+ul.topiclist li.row:hover .lastpost-avatar img { filter: none; }
+
+
+/* ============================================================================
+   08 · LISTA DE TEMAS (VIEWFORUM)
+   Las filas comparten el bloque 07. Aquí solo lo específico de temas.
+   ========================================================================== */
+ul.topiclist.topics a.topictitle { font-size: 19px; }
+
+ul.topiclist.topics li.row dl.icon dt {
+  font: var(--burnthesky-fs-sm) / 1.7 var(--burnthesky-ff-mono);
+  letter-spacing: 1px;
+}
+
+.rules {
+  margin: 0 0 var(--burnthesky-gap);
+  padding: 14px 18px;
+  background: var(--burnthesky-void-2);
+  border: 1px solid var(--burnthesky-line);
+  border-left: 3px solid var(--burnthesky-red);
+  color: var(--burnthesky-gray-lt);
+}
+
+
+/* ============================================================================
+   09 · MENSAJES (VIEWTOPIC)
+   .post > .inner > (.postprofile + .postbody). Se fuerza el orden con
+   `order`, así que no importa cuál va primero en el DOM.
+   ========================================================================== */
+.post {
+  position: relative;
+  margin: 0 0 var(--burnthesky-gap) !important;
+  background: var(--burnthesky-void-2) !important;
+  border: 1px solid var(--burnthesky-line);
+}
+.post.bg2,
+.post.row2 { background: #0f0f0f !important; }
+
+.post .inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  padding: 0;
+}
+
+/* -- Columna de perfil -- */
+.postprofile {
+  order: 1;
+  flex: 0 0 var(--burnthesky-profile-w);
+  float: none !important;
+  width: var(--burnthesky-profile-w) !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 22px 20px !important;
+  background: var(--burnthesky-void) !important;
+  border: 0 !important;
+  border-right: 1px solid var(--burnthesky-line) !important;
+  font: var(--burnthesky-fs-sm) / 1.6 var(--burnthesky-ff-mono);
+  color: var(--burnthesky-gray-lt);
+  text-align: left;
+}
+
+.postprofile dt {
+  margin: 0 0 12px;
+  padding: 0 !important;
+  border: 0 !important;
+  font: var(--burnthesky-fs-lg) / 1.05 var(--burnthesky-ff-display);
+  text-transform: uppercase;
+  text-align: left;
+}
+
+.postprofile dt a { color: var(--burnthesky-user-color, var(--burnthesky-white)); }
+.postprofile dt a:hover { color: var(--burnthesky-red-vivid); }
+
+.postprofile dt img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 0 10px;
+  border: 1px solid var(--burnthesky-red-dark);
+  filter: grayscale(1) brightness(.72) contrast(1.1);
+  transition: filter .4s ease;
+}
+.postprofile:hover dt img { filter: none; }
+
+.postprofile dd { margin: 0 0 5px !important; padding: 0; }
+
+.postprofile dd strong {
+  font-size: var(--burnthesky-fs-xs);
+  font-weight: 400;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--burnthesky-gray);
+}
+
+/* Campos de perfil personalizados */
+.postprofile-field { margin: 0 0 12px; }
+
+.postprofile-field-label {
+  display: block;
+  font: var(--burnthesky-fs-xs) / 1.2 var(--burnthesky-ff-mono);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--burnthesky-user-color, var(--burnthesky-red));
+}
+
+.postprofile-field-content { font-size: var(--burnthesky-fs-sm); letter-spacing: .5px; }
+
+/* -- Cuerpo del mensaje -- */
+.postbody {
+  order: 2;
+  flex: 1 1 0;
+  float: none !important;
+  width: auto !important;
+  min-width: 0;
+  margin: 0 !important;
+  padding: 22px 26px !important;
+}
+
+.postbody h3,
+.postbody h2.topic-title {
+  margin: 0 0 6px;
+  font: 24px / 1.1 var(--burnthesky-ff-display);
+  letter-spacing: -.5px;
+  text-transform: uppercase;
+}
+.postbody h3 a,
+.postbody h2.topic-title a { color: var(--burnthesky-white); }
+.postbody h3 a:hover,
+.postbody h2.topic-title a:hover { color: var(--burnthesky-red-vivid); }
+
+p.author {
+  clear: both;
+  margin: 0 0 18px;
+  padding: 0 0 12px !important;
+  border-bottom: 1px solid var(--burnthesky-line);
+  font: var(--burnthesky-fs-xs) / 1.5 var(--burnthesky-ff-mono);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--burnthesky-gray-lt);
+  text-align: left;
+}
+p.author img { padding-right: 7px; vertical-align: middle; }
+
+.postbody .content {
+  min-height: 60px;
+  padding: 0 !important;
+  font-size: 14px;
+  line-height: 1.8;
+  color: #d6d6d6;
+  overflow-wrap: anywhere;
+}
+
+.postbody .content a {
+  text-decoration: underline;
+  text-decoration-color: var(--burnthesky-red);
+  text-underline-offset: 3px;
+}
+.postbody .content a:hover { text-decoration-color: var(--burnthesky-red-vivid); }
+
+.postbody .content img { max-width: 100%; height: auto; }
+
+blockquote {
+  margin: 14px 0;
+  padding: 12px 16px;
+  background: var(--burnthesky-void);
+  border: 1px solid var(--burnthesky-line);
+  border-left: 2px solid var(--burnthesky-red);
+  color: var(--burnthesky-gray-lt);
+  font-size: 13px;
+}
+
+blockquote cite {
+  display: block;
+  margin: 0 0 6px;
+  font: var(--burnthesky-fs-xs) / 1.4 var(--burnthesky-ff-mono);
+  font-style: normal;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--burnthesky-red-vivid);
+}
+
+blockquote blockquote { margin: 10px 0 0; }
+
+.codebox,
+dl.codebox,
+pre {
+  margin: 14px 0;
+  padding: 12px 16px;
+  background: #050505;
+  border: 1px solid var(--burnthesky-line);
+  color: #cfcfcf;
+  font: 12px / 1.6 var(--burnthesky-ff-mono);
+  overflow: auto;
+}
+
+.signature {
+  margin-top: 22px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--burnthesky-line-2);
+  font-size: var(--burnthesky-fs-sm);
+  color: var(--burnthesky-gray);
+}
+
+/* Iconos de acción (citar, editar, borrar…): se conservan los nativos */
+.postbody ul.profile-icons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  float: none;
+  margin: 16px 0 0;
+  padding: 10px 0 0;
+  border-top: 1px solid var(--burnthesky-line);
+  list-style: none;
+}
+.postbody ul.profile-icons li { float: none; margin: 0; }
+.postbody ul.profile-icons li a {
+  opacity: .6;
+  filter: grayscale(1) brightness(1.3);
+  transition: opacity var(--burnthesky-ease), filter var(--burnthesky-ease);
+}
+.postbody ul.profile-icons li a:hover { opacity: 1; filter: none; }
+
+.back2top {
+  order: 3;
+  flex: 0 0 100%;
+  padding: 6px 16px;
+  border-top: 1px solid var(--burnthesky-line);
+  font: var(--burnthesky-fs-xs) / 1.4 var(--burnthesky-ff-mono);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-align: right;
+}
+
+/* Botón de reputación / "me gusta" */
+button.rep-button.fa_like {
+  padding: 6px 12px;
+  background: var(--burnthesky-void);
+  border: 1px solid var(--burnthesky-line-2) !important;
+  color: var(--burnthesky-gray-lt);
+  font: var(--burnthesky-fs-xs) / 1.4 var(--burnthesky-ff-mono);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color var(--burnthesky-ease), color var(--burnthesky-ease);
+}
+button.rep-button.fa_like:hover {
+  border-color: var(--burnthesky-red) !important;
+  color: #fff;
+}
+
+
+/* ============================================================================
+   10 · FORMULARIOS Y BOTONES
+   ========================================================================== */
+input.inputbox,
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+input[type="url"],
+input[type="search"],
+textarea,
+select {
+  padding: 8px 10px;
+  background: var(--burnthesky-void-3);
+  border: 1px solid var(--burnthesky-line-2) !important;
+  border-radius: 0;
+  color: var(--burnthesky-white);
+  font: 12px / 1.5 var(--burnthesky-ff-mono);
+  letter-spacing: .5px;
+  transition: border-color var(--burnthesky-ease), box-shadow var(--burnthesky-ease);
+}
+
+textarea {
+  min-height: 120px;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+input.inputbox:focus,
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+input[type="number"]:focus,
+input[type="url"]:focus,
+input[type="search"]:focus,
+textarea:focus,
+select:focus {
+  outline: 0;
+  border-color: var(--burnthesky-red) !important;
+  box-shadow: 3px 3px 0 var(--burnthesky-red-ghost-2);
+}
+
+::placeholder { color: var(--burnthesky-gray); opacity: 1; }
+
+/* Botones: secundario por defecto */
+a.button1, a.button2,
+input.button1, input.button2,
+input.btnmain, input.btnlite,
+input[type="submit"], input[type="reset"], input[type="button"],
+button.button2,
+.bts-btn {
+  display: inline-block;
+  padding: 8px 16px;
+  background: var(--burnthesky-void) !important;
+  background-image: none !important;
+  border: 1px solid var(--burnthesky-line-2);
+  border-radius: 0;
+  color: var(--burnthesky-white);
+  font: var(--burnthesky-fs-xs) / 1.4 var(--burnthesky-ff-mono);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background var(--burnthesky-ease), border-color var(--burnthesky-ease),
+              color var(--burnthesky-ease), box-shadow var(--burnthesky-ease);
+}
+
+a.button1:hover, a.button2:hover,
+input.button1:hover, input.button2:hover,
+input.btnmain:hover, input.btnlite:hover,
+input[type="submit"]:hover, input[type="reset"]:hover, input[type="button"]:hover,
+button.button2:hover,
+.bts-btn:hover {
+  border-color: var(--burnthesky-red);
+  color: #fff;
+  box-shadow: 3px 3px 0 var(--burnthesky-red-ghost-2);
+}
+
+/* Botón principal: relleno rojo */
+a.button1, input.button1, input.btnmain,
+input[type="submit"].button1,
+.bts-btn--red {
+  background: var(--burnthesky-red) !important;
+  border-color: var(--burnthesky-red);
+  color: #fff;
+}
+
+a.button1:hover, input.button1:hover, input.btnmain:hover,
+input[type="submit"].button1:hover,
+.bts-btn--red:hover {
+  background: var(--burnthesky-red-vivid) !important;
+  border-color: var(--burnthesky-red-vivid);
+}
+
+
+/* ============================================================================
+   11 · PANEL DE USUARIO, PESTAÑAS, MP, MIEMBROS, LOGIN
+   ========================================================================== */
+fieldset { margin: 0; padding: 0; border: 0; }
+
+.panel {
+  margin: 0 0 var(--burnthesky-gap);
+  padding: 22px;
+  background: var(--burnthesky-void-2);
+  border: 1px solid var(--burnthesky-line);
+  color: var(--burnthesky-white);
+}
+#cp-main .panel { position: relative; }
+.panel p { line-height: 1.8; }
+
+.panel h3 {
+  margin: 0 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--burnthesky-line);
+  font-size: 20px;
+}
+
+fieldset dl {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin: 0 0 12px;
+  text-align: left;
+}
+
+fieldset dt {
+  flex: 0 0 200px;
+  float: none !important;
+  width: auto !important;
+  font: var(--burnthesky-fs-xs) / 1.5 var(--burnthesky-ff-mono);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--burnthesky-gray-lt);
+}
+
+fieldset dd { flex: 1 1 auto; float: none !important; margin: 0 !important; }
+fieldset dl:hover dt label { color: #fff; }
+dt label { font-weight: 400; }
+
+/* -- Pestañas -- */
+div#tabs { margin: 0 0 -1px; padding: 0; }
+
+div#tabs ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+div#tabs ul li {
+  float: none;
+  margin: 0 4px 0 0;
+  background: none !important;
+}
+
+div#tabs ul li a,
+div#tabs ul li a span {
+  background: none !important;
+}
+
+div#tabs ul li a {
+  display: block;
+  padding: 10px 18px;
+  border: 1px solid var(--burnthesky-line);
+  border-bottom: 0;
+  color: var(--burnthesky-gray-lt);
+}
+
+div#tabs ul li a span {
+  float: none;
+  padding: 0;
+  font: var(--burnthesky-fs-xs) / 1.4 var(--burnthesky-ff-mono);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+div#tabs ul li a:hover { color: #fff; }
+
+div#tabs ul li.activetab a {
+  background: var(--burnthesky-void-2) !important;
+  box-shadow: inset 0 2px 0 var(--burnthesky-red);
+  color: #fff;
+}
+
+/* -- Mensajes privados -- */
+ul#privmsgs-menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+}
+
+ul#privmsgs-menu li {
+  margin: 0;
+  font: var(--burnthesky-fs-xs) / 1.4 var(--burnthesky-ff-mono);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+img#i_msg_inbox, img#i_msg_sentbox,
+img#i_msg_outbox, img#i_msg_savebox { display: none; }
+
+.curr_privmsg { opacity: 1; }
+
+/* -- Lista de miembros y tablas -- */
+table { width: 100%; border-collapse: collapse; }
+
+table.table1,
+table#memberlist {
+  background: var(--burnthesky-void-2);
+  border: 1px solid var(--burnthesky-line);
+}
+
+table th {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--burnthesky-red);
+  font: var(--burnthesky-fs-xs) / 1.4 var(--burnthesky-ff-mono);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-align: left;
+  color: var(--burnthesky-gray-lt);
+  background: var(--burnthesky-void);
+}
+
+table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--burnthesky-line);
+  color: var(--burnthesky-white);
+}
+
+table tr:hover td { background: var(--burnthesky-red-wash); }
+
+/* -- Login / acuerdo de registro -- */
+fieldset.fld_connexion {
+  max-width: 540px;
+  margin: 30px auto;
+  padding: 32px;
+  background: var(--burnthesky-void-2) !important;
+  border: 1px solid var(--burnthesky-line);
+}
+
+form#frmAgreement .inner {
+  padding: 24px;
+  background: var(--burnthesky-void-2);
+  border: 1px solid var(--burnthesky-line);
+}
+form#frmAgreement .inner p.center { text-align: center; }
+
+
+/* ============================================================================
+   12 · ESTADÍSTICAS Y PIE DE PÁGINA
+   ========================================================================== */
+.h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 14px;
+  padding: 0 0 10px;
+  border-bottom: 1px solid var(--burnthesky-line);
+  font: var(--burnthesky-fs-sm) / 1.4 var(--burnthesky-ff-mono);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--burnthesky-white);
+}
+
+.h3::before {
+  content: '';
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid var(--burnthesky-gray);
+  border-radius: 50%;
+  background: var(--burnthesky-ring);
+}
+
+.h3 a { color: inherit; }
+
+p.page-bottom {
+  margin: 0 0 8px;
+  font: var(--burnthesky-fs-sm) / 1.8 var(--burnthesky-ff-mono);
+  letter-spacing: 1px;
+  color: var(--burnthesky-gray-lt);
+}
+p.page-bottom strong { font-weight: 400; color: var(--burnthesky-white); }
+
+#page-footer {
+  width: min(var(--burnthesky-w-main), calc(100% - 32px));
+  margin: 40px auto 0;
+  padding: 20px 0 40px;
+  border-top: 1px solid var(--burnthesky-line);
+  font: var(--burnthesky-fs-xs) / 1.8 var(--burnthesky-ff-mono);
+  letter-spacing: 1px;
+  color: var(--burnthesky-gray);
+}
+
+p.copyright { margin: 0; text-align: left; }
+p.copyright a { color: var(--burnthesky-gray-lt); }
+p.copyright a:hover { color: var(--burnthesky-red-vivid); }
+
+
+/* ============================================================================
+   13 · NOTIFICACIONES Y MULTISWITCHER
+   La toolbar nativa se oculta salvo la campana de notificaciones.
+   Para recuperar la toolbar completa, comenta este bloque (tres reglas).
+   ========================================================================== */
+#fa_toolbar_hidden { display: none !important; }
+
+#fa_toolbar *:not(#fa_notifications):not(#notif_list):not(#notif_list *):not(#fa_right):not(#live_notif) {
+  display: none !important;
+}
+
+#fa_toolbar {
+  display: block !important;
+  position: fixed !important;
+  top: calc((var(--burnthesky-navbar-h) - 20px) / 2) !important;
+  right: var(--burnthesky-toolbar-right) !important;
+  z-index: var(--burnthesky-z-toolbar) !important;
+  width: auto !important;
+  height: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  background: transparent !important;
+  border: 0 !important;
+}
+
+#fa_toolbar #fa_right {
+  display: block !important;
+  float: none;
+  background: transparent !important;
+}
+
+#fa_toolbar #fa_notifications {
+  display: inline-block !important;
+  color: var(--burnthesky-gray-lt) !important;
+  font: var(--burnthesky-fs-sm) / 20px var(--burnthesky-ff-mono) !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+  cursor: pointer !important;
+}
+#fa_toolbar #fa_notifications:hover { color: #fff !important; }
+
+#fa_toolbar #notif_list {
+  position: fixed !important;
+  top: calc(var(--burnthesky-navbar-h) + 4px) !important;
+  right: var(--burnthesky-toolbar-right) !important;
+  width: 300px;
+  max-height: 400px !important;
+  overflow-y: auto !important;
+  background: var(--burnthesky-void) !important;
+  border: 1px solid var(--burnthesky-line-2) !important;
+  border-top: 2px solid var(--burnthesky-red) !important;
+  color: var(--burnthesky-white);
+}
+
+/* -- MultiSwitcher (los IDs y clases los usa el script: no renombrar) -- */
+#szSw {
+  position: fixed;
+  top: calc((var(--burnthesky-navbar-h) - var(--burnthesky-switcher-size)) / 2);
+  right: 15px;
+  z-index: var(--burnthesky-z-switcher);
+  font-family: var(--burnthesky-ff-mono);
+}
+
+#szSwBtn {
+  width: var(--burnthesky-switcher-size);
+  height: var(--burnthesky-switcher-size);
+  border: 1px solid var(--burnthesky-line-2);
+  border-radius: 0;
+  background: var(--burnthesky-void);
+  color: var(--burnthesky-white);
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color var(--burnthesky-ease), color var(--burnthesky-ease);
+}
+#szSwBtn:hover,
+#szSw.open #szSwBtn {
+  border-color: var(--burnthesky-red);
+  color: var(--burnthesky-red-vivid);
+}
+
+#szSwPanel {
+  position: absolute;
+  top: calc(var(--burnthesky-switcher-size) + 8px);
+  right: 0;
+  width: 280px;
+  background: var(--burnthesky-void);
+  border: 1px solid var(--burnthesky-line-2);
+  border-top: 2px solid var(--burnthesky-red);
+  color: var(--burnthesky-white);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-6px);
+  transition: opacity var(--burnthesky-ease), transform var(--burnthesky-ease),
+              visibility var(--burnthesky-ease);
+}
+
+#szSw.open #szSwPanel {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: none;
+}
+
+#szSwHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  background: var(--burnthesky-void-2);
+  border-bottom: 1px solid var(--burnthesky-line);
+}
+
+#szSwHead b {
+  font-size: var(--burnthesky-fs-sm);
+  font-weight: 400;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+#szSwHead .actions { display: flex; gap: 6px; }
+
+#szSwHead button {
+  padding: 6px 8px;
+  background: var(--burnthesky-void-3);
+  border: 1px solid var(--burnthesky-line-2);
+  border-radius: 0;
+  color: var(--burnthesky-white);
+  font: var(--burnthesky-fs-xs) / 1 var(--burnthesky-ff-mono);
+  cursor: pointer;
+  transition: border-color var(--burnthesky-ease);
+}
+#szSwHead button:hover { border-color: var(--burnthesky-red); }
+
+#szSwBody { padding: 10px; }
+
+#szSwList { margin: 0; padding: 0; list-style: none; }
+
+#szSwList li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px;
+  border-left: 2px solid transparent;
+  cursor: pointer;
+  transition: background var(--burnthesky-ease), border-color var(--burnthesky-ease);
+}
+
+#szSwList li:hover {
+  background: var(--burnthesky-red-wash);
+  border-left-color: var(--burnthesky-red);
+}
+
+#szSwList li.szSw-active { opacity: .6; }
+
+#szSwList img {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: rgba(255, 255, 255, .12);
+}
+
+#szSwList .meta { display: flex; flex-direction: column; }
+#szSwList .nick { font-size: var(--burnthesky-fs-base); }
+#szSwList .sub  { font-size: var(--burnthesky-fs-sm); color: var(--burnthesky-gray-lt); }
+
+#szSwAdd { display: flex; gap: 6px; margin-top: 10px; }
+#szSwAdd input { flex: 1 1 auto; min-width: 0; }
+
+
+/* ============================================================================
+   14 · COMPONENTES .bts-*  (para las plantillas y fichas que vienen después)
+   ========================================================================== */
+
+/* ---- Anillo (círculo con punto) ----
+   <i class="bts-ring"></i>   <i class="bts-ring bts-ring--sm"></i> */
+.bts-ring {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--burnthesky-gray);
+  border-radius: 50%;
+  background: var(--burnthesky-ring);
+  vertical-align: middle;
+}
+.bts-ring--sm { width: 11px; height: 11px; border-width: 1.5px; }
+
+/* ---- Fila de etiqueta: anillo + línea + texto ----
+   <div class="bts-rrow"><i class="bts-ring bts-ring--sm"></i>
+        <span class="bts-rrow__dash"></span><span class="bts-rrow__txt">TEXTO</span></div> */
+.bts-rrow { display: flex; align-items: center; gap: 6px; }
+.bts-rrow__dash { flex: 1 1 auto; min-width: 20px; height: 1px; background: var(--burnthesky-gray-dim); }
+.bts-rrow__txt {
+  font: var(--burnthesky-fs-2xs) / 1 var(--burnthesky-ff-mono);
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--burnthesky-gray-lt);
+}
+
+/* ---- Barra morse y separador ---- */
+.bts-morse { display: flex; align-items: center; gap: 10px; margin: 6px 0; }
+.bts-morse__seg { flex-shrink: 0; width: 110px; height: 6px; background: var(--burnthesky-red); }
+.bts-morse__code {
+  flex: 1 1 auto;
+  overflow: hidden;
+  font: var(--burnthesky-fs-xs) / 1 var(--burnthesky-ff-mono);
+  letter-spacing: 3px;
+  white-space: nowrap;
+  color: var(--burnthesky-gray);
+}
+.bts-sep { height: 1px; margin: 6px 0; background: var(--burnthesky-line); }
+
+/* ---- Esferas ---- */
+.bts-globe {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 37% 31%,
+    var(--burnthesky-red-vivid) 0%, var(--burnthesky-red) 40%, var(--burnthesky-red-dark) 86%);
+  box-shadow: 0 0 18px var(--burnthesky-red-glow), 0 0 46px rgba(197, 21, 21, .18);
+}
+.bts-globe::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    linear-gradient(transparent calc(50% - .5px), rgba(0, 0, 0, .35) calc(50% - .5px),
+      rgba(0, 0, 0, .35) calc(50% + .5px), transparent calc(50% + .5px)),
+    repeating-linear-gradient(0deg, transparent 0, transparent 6px,
+      rgba(0, 0, 0, .22) 6px, rgba(0, 0, 0, .22) 7px);
+}
+.bts-globe::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 30% 24%, rgba(255, 255, 255, .24) 0%, transparent 50%);
+}
+.bts-globe--sm { width: 28px; height: 28px; }
+.bts-globe--pulse { animation: burnthesky-pulse 3.2s ease-in-out infinite; }
+
+@keyframes burnthesky-pulse {
+  0%, 100% { box-shadow: 0 0 18px var(--burnthesky-red-glow), 0 0 46px rgba(197, 21, 21, .18); }
+  50%      { box-shadow: 0 0 26px rgba(197, 21, 21, .70), 0 0 64px rgba(197, 21, 21, .28); }
+}
+
+.bts-globe-line {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border: 1.5px solid var(--burnthesky-gray);
+  border-radius: 50%;
+}
+.bts-globe-line::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 3px;
+  right: 3px;
+  height: 1px;
+  background: var(--burnthesky-gray);
+}
+.bts-globe-line::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: 50%;
+  width: 1px;
+  background: var(--burnthesky-gray);
+  transform: translateX(-50%);
+}
+
+/* ---- Marco de imagen con borde rojo ---- */
+.bts-frame {
+  position: relative;
+  flex-shrink: 0;
+  width: var(--burnthesky-frame-w);
+  height: var(--burnthesky-frame-h);
+  overflow: hidden;
+  background: #050505;
+  border: 2px solid var(--burnthesky-red);
+}
+.bts-frame__img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: grayscale(100%) brightness(.55) contrast(1.1);
+  transition: filter .4s ease;
+}
+.bts-frame:hover .bts-frame__img { filter: none; }
+.bts-frame--color .bts-frame__img { filter: none; }
+.bts-frame__cap {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  padding: 5px 8px;
+  background: rgba(0, 0, 0, .5);
+  font: 8px / 1 var(--burnthesky-ff-mono);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .35);
+}
+
+/* ---- Caja genérica ---- */
+.bts-box {
+  position: relative;
+  margin: 0 0 var(--burnthesky-gap);
+  background: var(--burnthesky-void-2);
+  border: 1px solid var(--burnthesky-line);
+  text-align: left;
+}
+.bts-box__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--burnthesky-line);
+  font: var(--burnthesky-fs-sm) / 1 var(--burnthesky-ff-mono);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--burnthesky-white);
+}
+.bts-box__title::before {
+  content: '';
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid var(--burnthesky-gray);
+  border-radius: 50%;
+  background: var(--burnthesky-ring);
+}
+.bts-box__body { padding: 16px; }
+
+/* ---- Etiqueta ---- */
+.bts-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border: 1px solid var(--burnthesky-red);
+  color: var(--burnthesky-red-vivid);
+  font: var(--burnthesky-fs-xs) / 1.6 var(--burnthesky-ff-mono);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.bts-tag--dim { border-color: var(--burnthesky-line-2); color: var(--burnthesky-gray-lt); }
+
+/* ---- Tooltip propio ---- */
+.bts-tip { position: relative; display: inline-block; }
+.bts-tip__box {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  z-index: 50;
+  width: 180px;
+  padding: 8px 10px;
+  background: var(--burnthesky-void);
+  border: 1px solid var(--burnthesky-red);
+  color: var(--burnthesky-white);
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate(-50%, 6px);
+  transition: opacity var(--burnthesky-ease), transform var(--burnthesky-ease),
+              visibility var(--burnthesky-ease);
+}
+.bts-tip__box::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  background: var(--burnthesky-void);
+  border-right: 1px solid var(--burnthesky-red);
+  border-bottom: 1px solid var(--burnthesky-red);
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.bts-tip:hover .bts-tip__box,
+.bts-tip:focus-within .bts-tip__box {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+}
+.bts-tip__title {
+  display: block;
+  font: 14px / 1.3 var(--burnthesky-ff-display);
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+.bts-tip__desc {
+  display: block;
+  margin-top: 4px;
+  font-size: var(--burnthesky-fs-sm);
+  line-height: 1.4;
+  color: var(--burnthesky-gray-lt);
+}
+
+/* ---- Hero ---- */
+.bts-hero {
+  position: relative;
+  margin: 0 0 var(--burnthesky-gap);
+  padding: 26px 26px 20px;
+  overflow: hidden;
+  background: var(--burnthesky-void);
+  border: 1px solid #1a1a1a;
+}
+.bts-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--burnthesky-img-banner) center / cover;
+  filter: grayscale(1) brightness(.35) contrast(1.1);
+}
+.bts-hero__wm {
+  position: absolute;
+  top: 8px;
+  right: -6px;
+  font: 78px / .93 var(--burnthesky-ff-display);
+  letter-spacing: -3px;
+  text-transform: uppercase;
+  text-align: right;
+  color: rgba(255, 255, 255, .038);
+  pointer-events: none;
+  user-select: none;
+}
+.bts-hero__inner { position: relative; z-index: 1; }
+.bts-hero__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+.bts-hero__title {
+  margin: 0;
+  font-size: clamp(56px, 11vw, 120px);
+  line-height: .88;
+  letter-spacing: -3px;
+}
+.bts-hero__side { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
+.bts-hero__num {
+  font: clamp(40px, 7vw, 68px) / .88 var(--burnthesky-ff-display);
+  letter-spacing: -2px;
+  color: var(--burnthesky-red);
+  text-shadow: var(--burnthesky-ghost);
+}
+
+/* ---- Tablilla administrativa ---- */
+.bts-tablilla {
+  position: relative;
+  max-width: 700px;
+  margin: 20px auto;
+  background: var(--burnthesky-void-2);
+  border: 1px solid var(--burnthesky-line);
+  text-align: left;
+}
+.bts-tablilla__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 20px 14px;
+  border-bottom: 1px solid var(--burnthesky-line);
+  font: 12px / 1 var(--burnthesky-ff-mono);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--burnthesky-red-vivid);
+}
+.bts-tablilla__header::before {
+  content: '';
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid var(--burnthesky-red);
+  border-radius: 50%;
+  background: radial-gradient(circle closest-side,
+    var(--burnthesky-red) 0, var(--burnthesky-red) 42%, transparent 46%);
+}
+.bts-tablilla__content {
+  padding: 20px;
+  font-size: var(--burnthesky-fs-base);
+  line-height: 1.8;
+  color: #d0d0d0;
+}
+.bts-tablilla__content h4 {
+  margin: 20px 0 8px;
+  font: var(--burnthesky-fs-xs) / 1.5 var(--burnthesky-ff-mono);
+  letter-spacing: 2px;
+  color: var(--burnthesky-red-vivid);
+}
+.bts-tablilla__content h4:first-child { margin-top: 0; }
+.bts-tablilla__content ul,
+.bts-tablilla__content ol { margin: 0 0 10px; padding-left: 20px; }
+.bts-tablilla__content li { margin-bottom: 6px; }
+.bts-tablilla__content strong { color: #fff; }
+
+/* ---- Ficha / Outer Card (flexbox) ---- */
+.bts-card {
+  position: relative;
+  max-width: 760px;
+  margin: 20px auto;
+  padding: 26px 26px 62px;
+  overflow: hidden;
+  background: var(--burnthesky-void);
+  border: 1px solid #1a1a1a;
+  color: var(--burnthesky-white);
+  text-align: left;
+}
+.bts-card__wm {
+  position: absolute;
+  top: 8px;
+  right: -6px;
+  z-index: 0;
+  font: 78px / .93 var(--burnthesky-ff-display);
+  letter-spacing: -3px;
+  text-transform: uppercase;
+  text-align: right;
+  color: rgba(255, 255, 255, .038);
+  pointer-events: none;
+  user-select: none;
+}
+.bts-card__wm-btm {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  padding: 8px 26px 10px;
+  overflow: hidden;
+  font: var(--burnthesky-fs-xs) / 2.2 var(--burnthesky-ff-mono);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, .05);
+  pointer-events: none;
+  user-select: none;
+}
+.bts-card__header {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.bts-card__title {
+  margin: 0;
+  font-size: 80px;
+  line-height: .88;
+  letter-spacing: -3px;
+}
+.bts-card__side { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
+.bts-card__num {
+  font: 68px / .88 var(--burnthesky-ff-display);
+  letter-spacing: -2px;
+  color: var(--burnthesky-red);
+  text-shadow: var(--burnthesky-ghost);
+}
+.bts-card__main {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 18px;
+  margin: 10px 0 14px;
+}
+.bts-card__right { display: flex; flex: 1 1 0; flex-direction: column; gap: 10px; min-width: 0; }
+.bts-card__dims {
+  font: 37px / 1.06 var(--burnthesky-ff-display);
+  letter-spacing: -1px;
+  text-transform: uppercase;
+}
+.bts-card__dimrow { display: flex; align-items: center; }
+.bts-card__dimbar {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 26px;
+  height: 3px;
+  margin: 0 2px 3px;
+  background: var(--burnthesky-white);
+}
+.bts-card__dimbar--lg { width: 40px; }
+.bts-card__body { font-size: 12px; line-height: 1.7; color: var(--burnthesky-gray-lt); }
+.bts-card__body + .bts-card__body { margin-top: 6px; }
+.bts-card__btm {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 10px;
+}
+.bts-card__idx { font: 24px / 1 var(--burnthesky-ff-display); }
+.bts-card__btm-txt { flex: 1 1 0; font-size: var(--burnthesky-fs-sm); line-height: 1.65; color: var(--burnthesky-gray-lt); }
+.bts-card__brand { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.bts-card__brand-name { font: 24px / 1 var(--burnthesky-ff-display); letter-spacing: -1px; }
+.bts-card__footer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 8px;
+  border-top: 1px solid #1c1c1c;
+}
+.bts-card__fdots { display: flex; align-items: center; gap: 4px; }
+.bts-card__fdots--end { margin-left: auto; }
+.bts-card__fdot { width: 4px; height: 4px; border-radius: 50%; background: #2b2b2b; }
+.bts-card__fdot--md { width: 7px; height: 7px; }
+.bts-card__ftxt {
+  font: 8px / 1 var(--burnthesky-ff-mono);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #2e2e2e;
+}
+
+
+/* ============================================================================
+   15 · UTILIDADES
+   ========================================================================== */
+.bts-display { font-family: var(--burnthesky-ff-display); font-weight: 400; text-transform: uppercase; }
+.bts-mono    { font-family: var(--burnthesky-ff-mono); }
+.bts-red     { color: var(--burnthesky-red-vivid); }
+.bts-dim     { color: var(--burnthesky-gray-lt); }
+.bts-ghost   { text-shadow: var(--burnthesky-ghost); }
+.bts-center  { text-align: center; }
+.bts-hide    { display: none !important; }
+
+.bts-scan { position: relative; }
+.bts-scan::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  background: var(--burnthesky-scanlines);
+  pointer-events: none;
+}
+
+
+/* ============================================================================
+   16 · RESPONSIVE
+   ========================================================================== */
+@media (max-width: 900px) {
+  :root { --burnthesky-profile-w: 100%; }
+
+  .postprofile {
+    border-right: 0 !important;
+    border-bottom: 1px solid var(--burnthesky-line) !important;
+  }
+
+  ul.topiclist dd.views { display: none; }
+  ul.topiclist dd.lastpost { flex-basis: 200px; }
+
+  .bts-card__title  { font-size: 56px; }
+  .bts-card__num    { font-size: 48px; }
+  .bts-card__main   { flex-direction: column; }
+  .bts-card__dims   { font-size: 30px; }
+}
+
+@media (max-width: 640px) {
+  :root { --burnthesky-navbar-h: 44px; }
+
+  #page-header .navbar { padding: 0 100px 0 10px; }
+  #page-header .navbar::after { left: 10px; }
+  #page-header a.mainmenu { padding: 0 9px; letter-spacing: 2px; }
+
+  ul.topiclist dd.lastpost { display: none; }
+  ul.topiclist dd.topics,
+  ul.topiclist dd.posts { flex-basis: 64px; }
+  ul.topiclist dl.icon dt { padding: 14px !important; }
+
+  .postbody { padding: 18px 16px !important; }
+
+  fieldset dl { flex-direction: column; align-items: stretch; gap: 4px; }
+  fieldset dt { flex-basis: auto; }
+
+  .bts-hero__wm,
+  .bts-card__wm { display: none; }
+  .bts-card { padding: 20px 18px 54px; }
+  .bts-card__title { font-size: 44px; letter-spacing: -2px; }
+  .bts-card__num   { font-size: 38px; }
+  .bts-card__btm   { flex-wrap: wrap; }
+}
+
+
+/* ============================================================================
+   17 · ACCESIBILIDAD
+   ========================================================================== */
+:focus-visible {
+  outline: 1px solid var(--burnthesky-red-vivid);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation: none !important;
+    transition-duration: .01ms !important;
+  }
+}
