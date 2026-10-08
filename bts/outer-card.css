@@ -2901,6 +2901,33 @@ form[action*="quickreply"],
 
 
 /* ============================================================================
+   22 · AJUSTES BTS (Burn The Sky)
+
+   Parche de notificaciones: la campana vive a 62px del borde para dejar
+   sitio al MultiSwitcher; sin él instalado flotaba separada. Con :has, la
+   posición se adapta sola según exista #szSw o no.
+   ========================================================================== */
+#fa_toolbar {
+  right: 15px !important;
+}
+
+body:has(#szSw) #fa_toolbar {
+  right: var(--burnthesky-toolbar-right) !important;
+}
+
+/* Pestañas del perfil que sobran: se quedan Perfil y Premios. Los href van
+   con el id del usuario (/u1wall, /u1stats...), así que se caza por palabra
+   dentro de las pestañas; fuera de ahí no se toca nada. */
+div#tabs a[href*="wall"],
+div#tabs a[href*="stats"],
+div#tabs a[href*="friends"],
+div#tabs a[href*="groups"],
+div#tabs a[href*="contact"] {
+  display: none !important;
+}
+
+
+/* ============================================================================
    17 · ACCESIBILIDAD
    ========================================================================== */
 :focus-visible {
