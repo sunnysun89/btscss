@@ -2928,6 +2928,320 @@ div#tabs a[href*="contact"] {
 
 
 /* ============================================================================
+   22 · NOTIFICACIONES, RAIL, PERFIL, STATS Y FOOTER (Burn The Sky)
+   ========================================================================== */
+
+/* La campana a la derecha: sin left:auto, el left:0 nativo gana y sale a la
+   izquierda aunque right esté puesto (LTR: left manda). */
+#fa_toolbar {
+  left: auto !important;
+  right: 15px !important;
+}
+
+body:has(#szSw) #fa_toolbar {
+  right: var(--burnthesky-toolbar-right) !important;
+}
+
+/* El rail tapa 60px: la cabecera se desplaza; en móvil el rail vuelve arriba
+   y el desplazamiento sobra. */
+#page-header { padding-left: 60px; }
+
+/* Perfil: fuera wall, stats, friends, groups y contact. Se quedan Perfil
+   (span pegado al h3) y Premios. El de amigos se caza por estructura: su h3
+   empieza por texto, el del avatar por el span. */
+div#tabs a[href*="wall"],
+div#tabs a[href*="stats"],
+div#tabs a[href*="friends"],
+div#tabs a[href*="groups"],
+div#tabs a[href*="contact"] {
+  display: none !important;
+}
+
+#profile-advanced-right .module:has(> .inner > .h3):not(:has(> .inner > .h3 > span:first-child)) {
+  display: none !important;
+}
+
+/* --- bloque de estadísticas --- */
+#rstatscontainer {
+  background: var(--burnthesky-void-2);
+  border: 1px solid var(--burnthesky-line);
+  padding: 22px;
+}
+
+#rstatscontainer .rbgimg > div {
+  height: 120px;
+  background: linear-gradient(180deg, transparent, rgba(197,21,21,.12)),
+    repeating-linear-gradient(0deg, transparent 0 3px, rgba(0,0,0,.25) 3px 4px);
+  border: 1px solid var(--burnthesky-line);
+}
+
+#rstatscontainer .rtitle {
+  margin: 18px 0 12px;
+  font: var(--burnthesky-fs-sm) / 1.4 var(--burnthesky-ff-mono);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--burnthesky-white);
+}
+
+#rstatscontainer .rstatsc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--burnthesky-gap);
+}
+
+#rstatscontainer .rstatsc p.page-bottom {
+  flex: 1 1 0;
+  min-width: 140px;
+  margin: 0;
+  padding: 14px;
+  background: var(--burnthesky-void);
+  border: 1px solid var(--burnthesky-line);
+  text-align: center;
+}
+
+#rstatscontainer .rstatsc strong {
+  display: block;
+  font: var(--burnthesky-fs-2xl) / 1 var(--burnthesky-ff-display);
+  font-weight: 400;
+  color: var(--burnthesky-white);
+}
+
+#rstatscontainer .rnewestuser {
+  margin: 16px 0 4px;
+  font: var(--burnthesky-fs-sm) / 1.7 var(--burnthesky-ff-mono);
+  letter-spacing: 1px;
+  color: var(--burnthesky-gray-lt);
+  text-align: center;
+}
+
+#rstatscontainer .rnewestuser em { font-style: normal; }
+
+#rstatscontainer .rnewestuser strong {
+  font: var(--burnthesky-fs-lg) / 1.2 var(--burnthesky-ff-display);
+  display: block;
+}
+
+#rstatscontainer .rlogged {
+  margin-top: 14px;
+  background: var(--burnthesky-void);
+  border: 1px solid var(--burnthesky-line);
+  padding: 14px 16px;
+}
+
+#rstatscontainer .ruserstats,
+#rstatscontainer .rloggedinlist {
+  font: var(--burnthesky-fs-sm) / 1.8 var(--burnthesky-ff-mono);
+  color: var(--burnthesky-gray-lt);
+}
+
+#rstatscontainer .ruserstats a,
+#rstatscontainer .rloggedinlist a { font-weight: 700; }
+
+#rstatscontainer .ronlineuserslist {
+  margin-top: 10px;
+  font-size: var(--burnthesky-fs-sm);
+  line-height: 1.8;
+  color: var(--burnthesky-gray-lt);
+}
+
+#rstatscontainer .rgroupslegend { margin-top: 14px; }
+
+#rstatscontainer .rgroupleg { margin-bottom: 10px; }
+
+#rstatscontainer .rgroupleg b {
+  font: var(--burnthesky-fs-xs) / 1.5 var(--burnthesky-ff-mono);
+  font-weight: 400;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* barras de miembros por grupo (las pinta js-indice.js) */
+#rstatscontainer .rgroupmembers {
+  height: 5px;
+  margin-top: 5px;
+  background: var(--burnthesky-void);
+}
+
+#rstatscontainer .rgroupmembers > div { height: 100%; }
+
+#rstatscontainer .rcredits {
+  margin-top: 14px;
+  font: var(--burnthesky-fs-xs) / 1.6 var(--burnthesky-ff-mono);
+  letter-spacing: 1px;
+  color: var(--burnthesky-gray);
+  text-align: center;
+}
+
+/* --- bloque DATABASE (lo inyecta js-indice.js) --- */
+.rdb {
+  margin: 0 0 var(--burnthesky-gap);
+  background: var(--burnthesky-void-2);
+  border: 1px solid var(--burnthesky-line);
+}
+
+.rdb__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 22px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--burnthesky-line);
+}
+
+.rdb__title {
+  font: var(--burnthesky-fs-lg) / 1 var(--burnthesky-ff-display);
+  letter-spacing: -.5px;
+  color: var(--burnthesky-white);
+}
+
+.rdb__pill {
+  font: var(--burnthesky-fs-xs) / 1.4 var(--burnthesky-ff-mono);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--burnthesky-gray-lt);
+  border: 1px solid var(--burnthesky-line-2);
+  padding: 5px 12px;
+}
+
+.rdb__pill b { color: var(--burnthesky-red-vivid); font-weight: 400; }
+
+.rdb__cols {
+  display: flex;
+  gap: var(--burnthesky-gap);
+  padding: 18px;
+}
+
+.rdb__donut {
+  position: relative;
+  flex: 0 0 190px;
+  width: 190px;
+  height: 190px;
+  border-radius: 50%;
+  margin: 0 auto;
+}
+
+.rdb__donut::after {
+  content: '';
+  position: absolute;
+  inset: 24%;
+  border-radius: 50%;
+  background: var(--burnthesky-void-2);
+}
+
+.rdb__legend {
+  flex: 1 1 0;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  align-self: center;
+}
+
+.rdb__legend li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 3px 0;
+  font: var(--burnthesky-fs-xs) / 1.5 var(--burnthesky-ff-mono);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--burnthesky-gray-lt);
+}
+
+.rdb__legend i {
+  width: 9px;
+  height: 9px;
+  flex: none;
+  border-radius: 2px;
+  transform: translateY(1px);
+}
+
+.rdb__legend b { margin-left: auto; color: var(--burnthesky-white); font-weight: 400; }
+
+.rdb__legal {
+  padding: 0 18px 16px;
+  font-size: var(--burnthesky-fs-sm);
+  line-height: 1.7;
+  color: var(--burnthesky-gray-lt);
+}
+
+/* --- pie con afiliados --- */
+#rneonfooter {
+  margin-top: var(--burnthesky-gap);
+  background: var(--burnthesky-void-2);
+  border: 1px solid var(--burnthesky-line);
+  padding: 18px;
+}
+
+#rneonfooter .rtitle {
+  margin-bottom: 12px;
+  text-align: center;
+  font: var(--burnthesky-fs-sm) / 1.4 var(--burnthesky-ff-mono);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--burnthesky-white);
+}
+
+#rneonfooter table { width: 100%; }
+
+#rneonfooter td.raffiliates,
+#rneonfooter td.rpartners {
+  text-align: center;
+  padding: 6px;
+  vertical-align: middle;
+}
+
+#rneonfooter td.raffiliates img,
+#rneonfooter td.rpartners img {
+  display: inline-block;
+  margin: 3px;
+  border: 1px solid var(--burnthesky-line-2);
+  filter: grayscale(1) brightness(.8);
+  transition: filter .4s ease, border-color var(--burnthesky-ease);
+  vertical-align: middle;
+}
+
+#rneonfooter td.raffiliates a:hover img,
+#rneonfooter td.rpartners a:hover img {
+  filter: none;
+  border-color: var(--burnthesky-red);
+}
+
+/* --- chatbox --- */
+#frame_chatbox,
+.chatbox {
+  background: var(--burnthesky-void-2);
+  border: 1px solid var(--burnthesky-line);
+}
+
+#chatbox_popup {
+  background: var(--burnthesky-void-2);
+  border: 1px solid var(--burnthesky-line-2);
+  border-top: 2px solid var(--burnthesky-red);
+}
+
+/* --- fila de login del pie --- */
+form[name="form_login"] .user_login_form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+}
+
+form[name="form_login"] .user_login_form label {
+  font: var(--burnthesky-fs-xs) / 1.4 var(--burnthesky-ff-mono);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--burnthesky-gray-lt);
+}
+
+@media (max-width: 640px) {
+  #page-header { padding-left: 0; }
+  .rdb__cols { flex-direction: column; }
+}
+
+
+/* ============================================================================
    17 · ACCESIBILIDAD
    ========================================================================== */
 :focus-visible {
