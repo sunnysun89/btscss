@@ -1850,6 +1850,1001 @@ p.copyright a:hover { color: var(--burnthesky-red-vivid); }
 
 
 /* ============================================================================
+   BTS-ADAPT · 18 · Parche de fondos claros (Burn The Sky) */
+
+/* Estructura mínima: los tokens de línea y caja del autor no se leen
+   (línea 1.15, caja 1.02 contra el fondo: las separaciones no existen).
+   Se suben lo justo para que existan, sin cambiar el color: */
+:root {
+  --burnthesky-void-2:        #111114;
+  --burnthesky-line:          #2b2b2e;
+  --burnthesky-line-2:        #414146;
+  --burnthesky-red-vivid:     #ef4545;
+}
+
+   Por qué existe: con los colores del panel sin resetear, fondos claros
+   (#fff, #ECF3F7) ganan en filas, celdas, paneles y tablas, y el foro sale
+   con bloques blancos. Este bloque los apaga con selectores largos para no
+   depender del orden de cascada. Todo lleva !important por el mismo motivo.
+
+   OJO iconos de tema: si se activan topic_read/topic_unread en el panel, hay
+   que QUITAR la línea `background-image: none` de las celdas (los iconos van
+   en el style inline del dl y este !important los taparía).
+   ========================================================================== */
+
+.forabg ul.topiclist.forums li.row dl.icon,
+.forabg ul.topiclist.forums li.row dl.icon dt,
+.forabg ul.topiclist.forums li.row dl.icon dd,
+.forabg ul.topiclist.topics li.row dl.icon,
+.forabg ul.topiclist.topics li.row dl.icon dt,
+.forabg ul.topiclist.topics li.row dl.icon dd,
+.forumbg ul.topiclist li.row dl.icon,
+.forumbg ul.topiclist li.row dl.icon dt,
+.forumbg ul.topiclist li.row dl.icon dd {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+.panel,
+.panel .inner {
+  background-color: var(--burnthesky-void-2) !important;
+}
+
+.panel dl,
+.panel dt,
+.panel dd,
+fieldset dl,
+fieldset dt,
+fieldset dd {
+  background-color: transparent !important;
+}
+
+table td,
+table th {
+  background-color: transparent !important;
+}
+
+table th {
+  background-color: var(--burnthesky-void) !important;
+}
+
+table tr:hover td {
+  background-color: var(--burnthesky-red-wash) !important;
+}
+
+#gfooter {
+  background: transparent !important;
+}
+
+/* Velo sobre la foto de fondo: sin él la nebulosa compite con el texto. */
+body {
+  background-image:
+    linear-gradient(rgba(9, 9, 9, .80), rgba(9, 9, 9, .88)),
+    var(--burnthesky-img-bg) !important;
+  background-position: center, center !important;
+  background-size: auto, cover !important;
+  background-attachment: scroll, fixed !important;
+}
+
+/* Hueco del icono 70px: si sigue el placeholder, se esconde (el JS lo
+   sustituye por el campo "icon" cuando existe). */
+.postprofile .rprofileicon img[src*="placehold"] { display: none; }
+
+
+/* ============================================================================
+   19 · MURAL, TABLÓN Y MENSUAL (Burn The Sky)
+
+   La hoja no trae nada de esto: sin estas reglas el mural sale sin vestir.
+   Lenguaje común: cabeceras de ventana con 3 puntos + título mono, como la
+   captura de referencia (weekly most active / staff / recent topics).
+   ========================================================================== */
+
+/* --- cabecera de ventana: 3 puntos + título --- */
+.rwindowheader {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--burnthesky-line);
+}
+
+.rwindowheader p {
+  width: 9px;
+  height: 9px;
+  margin: 0;
+  border-radius: 50%;
+}
+
+.rwindowheader p:nth-child(1) { background: var(--burnthesky-red-vivid); }
+.rwindowheader p:nth-child(2) { background: var(--burnthesky-gray); }
+.rwindowheader p:nth-child(3) { background: var(--burnthesky-gray-lt); }
+
+.rwindowheader span {
+  margin-left: auto;
+  font: var(--burnthesky-fs-xs) / 1.4 var(--burnthesky-ff-mono);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--burnthesky-gray-lt);
+  white-space: nowrap;
+}
+
+/* --- hero del widget Banner --- */
+#headercontainer #header {
+  position: relative;
+  padding: 30px 26px;
+  background: var(--burnthesky-void-2);
+  border: 1px solid var(--burnthesky-line);
+  overflow: hidden;
+}
+
+#headercontainer .rtitle {
+  font: clamp(48px, 8vw, 96px) / .9 var(--burnthesky-ff-display);
+  letter-spacing: -2px;
+  text-transform: uppercase;
+  color: var(--burnthesky-white);
+  text-shadow: var(--burnthesky-ghost);
+}
+
+#headercontainer .rdesc {
+  margin-top: 10px;
+  max-width: 60ch;
+  font: var(--burnthesky-fs-sm) / 1.7 var(--burnthesky-ff-mono);
+  letter-spacing: 1px;
+  color: var(--burnthesky-gray-lt);
+}
+
+#headercontainer .rbgimg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: grayscale(1) brightness(.3);
+  pointer-events: none;
+}
+
+#headercontainer .position { position: relative; }
+
+/* --- tabla del mural --- */
+#mural { margin-top: var(--burnthesky-gap); }
+
+#mural .rbgname,
+#mural .rwelcomesub {
+  font: var(--burnthesky-fs-sm) / 1.6 var(--burnthesky-ff-mono);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--burnthesky-gray-lt);
+  margin-bottom: 8px;
+}
+
+#mural .rwelcomesub span { color: var(--burnthesky-red-vivid); }
+
+#mural .rmuralcontainer > table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+#mural .rmuralcontainer > table > tbody > tr > td {
+  vertical-align: top;
+  padding: 0 0 0 var(--burnthesky-gap);
+}
+
+/* Sin columna de avatar: la primera celda del mural (PROFILE + retrato) se
+   retira entera, esté en el widget viejo o en el nuevo. */
+#mural .rmuralcontainer > table > tbody > tr > td:first-child {
+  display: none !important;
+}
+
+#mural .rmuralavatar > div:last-child { margin-top: 10px; }
+
+#mural .rmuralavatar img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--burnthesky-red-dark);
+  filter: grayscale(1) brightness(.8);
+}
+
+#mural .rmuralinfo {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  background: var(--burnthesky-void-2);
+  border: 1px solid var(--burnthesky-line);
+}
+
+#mural .rmuralinfo > tbody > tr > td {
+  vertical-align: top;
+  padding: 0 0 14px;
+  border-left: 1px solid var(--burnthesky-line);
+}
+
+#mural .rmuralinfo > tbody > tr > td:first-child { border-left: 0; }
+
+/* usuarios activos con barra */
+#mural .ruser { margin: 8px 12px; }
+
+#mural .ruser > span {
+  display: block;
+  font: var(--burnthesky-fs-sm) / 1.5 var(--burnthesky-ff-mono);
+  color: var(--burnthesky-white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#mural .ruser > div {
+  height: 5px;
+  margin-top: 4px;
+  background: var(--burnthesky-void);
+}
+
+#mural .ruser > div > div { height: 100%; }
+
+/* staff en círculos */
+#mural .rstaffc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px;
+  justify-content: center;
+}
+
+#mural .rstaffmemb img {
+  display: block;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--burnthesky-line-2);
+  filter: grayscale(1) brightness(.85);
+  transition: filter .4s ease, border-color var(--burnthesky-ease);
+}
+
+#mural .rstaffmemb a:hover img { filter: none; border-color: var(--burnthesky-red); }
+
+/* últimos temas */
+#mural .rsubsrecent { padding: 6px 12px 12px; }
+
+#mural .rsubsrecent a {
+  font: var(--burnthesky-fs-sm) / 1.6 var(--burnthesky-ff-mono);
+  color: var(--burnthesky-white);
+}
+
+#mural .rsubsrecent,
+#mural .rsubsrecent div {
+  font: var(--burnthesky-fs-xs) / 1.7 var(--burnthesky-ff-mono);
+  color: var(--burnthesky-gray-lt);
+}
+
+/* barra de navegación del mural */
+#mural .rmuralnav {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: var(--burnthesky-gap);
+  background: var(--burnthesky-void);
+  border: 1px solid var(--burnthesky-line);
+}
+
+#mural .rmuralnav a {
+  flex: 1 1 auto;
+  padding: 12px 8px;
+  text-align: center;
+  font: var(--burnthesky-fs-xs) / 1.4 var(--burnthesky-ff-mono);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--burnthesky-gray-lt);
+  border-left: 1px solid var(--burnthesky-line);
+  transition: color var(--burnthesky-ease), background var(--burnthesky-ease);
+}
+
+#mural .rmuralnav a:first-child { border-left: 0; }
+
+#mural .rmuralnav a:hover {
+  color: #fff;
+  background: var(--burnthesky-red-wash);
+}
+
+/* --- mensual: rotación automática, una tarjeta visible por grupo ---
+   Sin JavaScript: las 3 tarjetas se apilan y un keyframe las turna (9s por
+   ciclo, 3s cada una). Solo CSS, así funciona esté o no instalado el JS.
+   En móvil o sin movimiento: tarjetas apiladas, todas visibles. */
+.rmensual {
+  margin-top: var(--burnthesky-gap);
+}
+
+.rmes3 {
+  position: relative;
+  height: 350px;
+  margin-bottom: var(--burnthesky-gap);
+}
+
+.rmensual__grupo:last-child .rmes3 { margin-bottom: 0; }
+
+.rmes3-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 250px;
+  background: var(--burnthesky-void-2);
+  border: 1px solid var(--burnthesky-line);
+  opacity: 0;
+  visibility: hidden;
+  animation: rmes3-rot 9s infinite;
+}
+
+.rmes3 > .rmes3-card:nth-child(1) { animation-delay: 0s; }
+.rmes3 > .rmes3-card:nth-child(2) { animation-delay: 3s; }
+.rmes3 > .rmes3-card:nth-child(3) { animation-delay: 6s; }
+
+@keyframes rmes3-rot {
+  0% { opacity: 0; visibility: hidden; }
+  5% { opacity: 1; visibility: visible; }
+  33% { opacity: 1; visibility: visible; }
+  38%, 100% { opacity: 0; visibility: hidden; }
+}
+
+.rmes3:hover .rmes3-card { animation-play-state: paused; }
+
+.rmes3-card__img {
+  display: block;
+  width: 250px;
+  height: 236px;
+  object-fit: cover;
+  object-position: top center;
+  border-bottom: 1px solid var(--burnthesky-line);
+  filter: grayscale(1) brightness(.8) contrast(1.05);
+  transition: filter .4s ease;
+}
+
+.rmes3-card:hover .rmes3-card__img { filter: none; }
+
+.rmes3-card__body { padding: 10px 12px 12px; }
+
+.rmes3-card__tag {
+  display: inline-block;
+  margin-bottom: 6px;
+  padding: 2px 8px;
+  border: 1px solid var(--burnthesky-red);
+  color: var(--burnthesky-red-vivid);
+  font: var(--burnthesky-fs-xs) / 1.6 var(--burnthesky-ff-mono);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.rmes3-card__name {
+  margin: 0 0 4px;
+  font: var(--burnthesky-fs-md) / 1.1 var(--burnthesky-ff-display);
+  letter-spacing: 0;
+  text-transform: uppercase;
+  color: var(--burnthesky-white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rmes3-card__sub {
+  margin: 0;
+  font: var(--burnthesky-fs-xs) / 1.6 var(--burnthesky-ff-mono);
+  letter-spacing: 1px;
+  color: var(--burnthesky-gray-lt);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- ventana de búsquedas (sustituye a "weekly most active") --- */
+#mural .rbusq { padding: 12px; text-align: center; }
+
+#mural .rbusq img {
+  display: block;
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  object-position: top center;
+  border: 1px solid var(--burnthesky-line-2);
+  filter: grayscale(1) brightness(.8);
+  transition: filter .4s ease;
+}
+
+#mural .rbusq a:hover img { filter: none; }
+
+#mural .rbusq b {
+  display: block;
+  margin: 10px 0 4px;
+  font: var(--burnthesky-fs-md) / 1.2 var(--burnthesky-ff-display);
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  color: var(--burnthesky-white);
+}
+
+#mural .rbusq span {
+  display: block;
+  font: var(--burnthesky-fs-xs) / 1.6 var(--burnthesky-ff-mono);
+  letter-spacing: 1px;
+  color: var(--burnthesky-gray-lt);
+}
+
+@media (max-width: 640px) {
+  .rmes3 { height: auto; }
+  .rmes3-card {
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    animation: none;
+    width: 100%;
+    margin-bottom: var(--burnthesky-gap);
+  }
+  .rmes3-card:last-child { margin-bottom: 0; }
+  .rmes3-card__img { width: 100%; height: 210px; }
+  #mural .rmuralcontainer > table,
+  #mural .rmuralcontainer > table > tbody,
+  #mural .rmuralcontainer > table > tbody > tr,
+  #mural .rmuralcontainer > table > tbody > tr > td,
+  #mural .rmuralinfo > tbody > tr > td { display: block; width: auto; }
+  #mural .rmuralcontainer > table > tbody > tr > td { padding: 0 0 var(--burnthesky-gap); }
+  #mural .rmuralinfo > tbody > tr > td { border-left: 0; border-top: 1px solid var(--burnthesky-line); }
+  #mural .rmuralinfo > tbody > tr > td:first-child { border-top: 0; }
+}
+
+
+/* ============================================================================
+   20 · RAIL LATERAL (la navbar, a la izquierda)
+   Como la captura de referencia: rail fijo de 60px con iconos, sin texto.
+   Cada enlace lleva su icono FontAwesome por href; lo no mapeado sale
+   con un punto. En móvil vuelve a barra superior.
+   ========================================================================== */
+#page-header .navbar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: auto;
+  z-index: var(--burnthesky-z-navbar);
+  width: 60px;
+  height: auto;
+  padding: 14px 0;
+  overflow-x: visible;
+  overflow-y: auto;
+  background: rgba(9, 9, 9, .96);
+  border: 0;
+  border-right: 1px solid var(--burnthesky-line);
+  backdrop-filter: blur(4px);
+  scrollbar-width: none;
+}
+#page-header .navbar::-webkit-scrollbar { display: none; }
+
+#page-header .navbar::after {
+  left: -1px;
+  top: 20px;
+  bottom: auto;
+  width: 3px;
+  height: 110px;
+}
+
+#page-header .navbar ul.linklist.navlinks {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  height: auto;
+}
+
+#page-header .navbar ul.linklist.navlinks li { text-align: center; }
+
+#page-header a.mainmenu {
+  display: block;
+  padding: 9px 0;
+  font-size: 0;
+  letter-spacing: 0;
+  line-height: 1;
+  border-bottom: 0;
+}
+
+#page-header a.mainmenu::before {
+  font-family: "Font Awesome 6 Free", "FontAwesome";
+  font-weight: 900;
+  font-size: 15px;
+  content: "\f111";
+}
+
+#page-header a.mainmenu:hover { box-shadow: inset 2px 0 0 var(--burnthesky-red); }
+
+#page-header a.mainmenu[href="/"]::before { content: "\f015"; }
+#page-header a.mainmenu[href*="/calendar"]::before { content: "\f133"; }
+#page-header a.mainmenu[href*="/images"]::before { content: "\f03e"; }
+#page-header a.mainmenu[href*="active_topics"]::before,
+#page-header a.mainmenu[href*="/activity"]::before { content: "\f1e8"; }
+#page-header a.mainmenu[href*="/faq"]::before { content: "\f059"; }
+#page-header a.mainmenu[href*="/search"]::before { content: "\f002"; }
+#page-header a.mainmenu[href*="/memberlist"]::before { content: "\f0c0"; }
+#page-header a.mainmenu[href*="/groups"]::before { content: "\f500"; }
+#page-header a.mainmenu[href*="mode=editprofile"]::before,
+#page-header a.mainmenu[href*="/profile"]::before { content: "\f007"; }
+#page-header a.mainmenu[href*="/privmsg"]::before { content: "\f0e0"; }
+#page-header a.mainmenu[href*="logout"]::before { content: "\f011"; }
+#page-header a.mainmenu[href*="/login"]::before { content: "\f090"; }
+#page-header a.mainmenu[href*="/register"]::before { content: "\f234"; }
+
+#page-header .navbar .corners-top,
+#page-header .navbar .corners-bottom,
+#page-header .navbar #search-box { display: none !important; }
+
+#main { padding-left: 84px; }
+
+@media (max-width: 640px) {
+  #page-header .navbar {
+    top: 0;
+    bottom: auto;
+    left: 0;
+    right: 0;
+    width: auto;
+    height: var(--burnthesky-navbar-h);
+    padding: 0 100px 0 10px;
+    border-right: 0;
+    border-bottom: 1px solid var(--burnthesky-line);
+  }
+  #page-header .navbar::after {
+    left: 10px;
+    top: auto;
+    bottom: -1px;
+    width: 110px;
+    height: 3px;
+  }
+  #page-header .navbar ul.linklist.navlinks { flex-direction: row; }
+  #page-header a.mainmenu { padding: 0 9px; }
+  #main { padding-left: 0; }
+}
+
+
+/* ============================================================================
+   21 · POST DE LADO Y RESPUESTA RÁPIDA
+   La plantilla mete .postbody y .postprofile dentro de .rpostcontainer, así
+   que el reparto va aquí (order solo funciona entre hermanos flex).
+   ========================================================================== */
+.post .rpostcontainer {
+  display: flex;
+  align-items: stretch;
+}
+
+.post .rpostcontainer .postprofile {
+  order: 1;
+  flex: 0 0 var(--burnthesky-profile-w);
+}
+
+.post .rpostcontainer .postbody {
+  order: 2;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.post .rtopicbanner { margin-bottom: 0; }
+
+.post .rtopicbgimg img {
+  display: block;
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  object-position: center;
+  border-bottom: 1px solid var(--burnthesky-line);
+  filter: grayscale(1) brightness(.7);
+}
+
+.post .rtopicuser {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 12px 26px;
+  border-bottom: 1px solid var(--burnthesky-line);
+  font: var(--burnthesky-fs-lg) / 1.1 var(--burnthesky-ff-display);
+  text-transform: uppercase;
+}
+
+.post .rtopicuser b {
+  font: var(--burnthesky-fs-xs) / 1.4 var(--burnthesky-ff-mono);
+  font-weight: 400;
+  letter-spacing: 2px;
+  color: var(--burnthesky-red-vivid);
+}
+
+@media (max-width: 900px) {
+  .post .rpostcontainer { flex-direction: column; }
+  .post .rpostcontainer .postprofile { flex-basis: auto; }
+}
+
+/* Respuesta rápida en negro: contenedor, barra, botones y área fuente. El
+   iframe WYSIWYG es otro documento y no se alcanza por CSS: lo pinta
+   js-temas.js al cargar. */
+#quickreply,
+form[action*="quickreply"],
+.quickreply {
+  background: var(--burnthesky-void-2);
+  border: 1px solid var(--burnthesky-line);
+  padding: 18px;
+}
+
+.sceditor-container {
+  background: var(--burnthesky-void-2) !important;
+  border: 1px solid var(--burnthesky-line-2) !important;
+}
+
+.sceditor-toolbar {
+  background: var(--burnthesky-void) !important;
+  border-bottom: 1px solid var(--burnthesky-line) !important;
+}
+
+.sceditor-toolbar .sceditor-button {
+  filter: grayscale(1) brightness(1.6);
+}
+
+.sceditor-toolbar .sceditor-button:hover,
+.sceditor-toolbar .sceditor-button.active {
+  filter: none;
+  background: var(--burnthesky-red-wash) !important;
+}
+
+.sceditor-container textarea {
+  background: var(--burnthesky-void-3) !important;
+  color: var(--burnthesky-white) !important;
+}
+
+.sceditor-dropdown {
+  background: var(--burnthesky-void-2) !important;
+  border: 1px solid var(--burnthesky-line-2) !important;
+}
+
+
+/* ============================================================================
+   22 · NOTIFICACIONES, RAIL, PERFIL, STATS Y FOOTER (Burn The Sky)
+   ========================================================================== */
+
+/* La campana a la derecha. Triple amarre: la barra va fijada a la derecha
+   con ancho ajustado, y ADEMÁS el hijo #fa_right va fijo al viewport. Si la
+   barra heredara cualquier cosa rara, el hijo la ignora y se queda a la
+   derecha igual. */
+#fa_toolbar {
+  left: auto !important;
+  right: 15px !important;
+  width: max-content !important;
+  max-width: calc(100vw - 30px);
+}
+
+#fa_toolbar #fa_right {
+  position: fixed !important;
+  top: 13px !important;
+  right: 15px !important;
+  left: auto !important;
+  z-index: var(--burnthesky-z-toolbar) !important;
+}
+
+body:has(#szSw) #fa_toolbar {
+  right: var(--burnthesky-toolbar-right) !important;
+}
+
+/* El rail tapa 60px: la cabecera se desplaza con él; en móvil el rail vuelve
+   arriba y el desplazamiento sobra. Sin esto el título del banner queda
+   detrás del rail. */
+#page-header { padding-left: 60px; }
+
+/* Perfil: fuera wall, stats, friends, groups y contact. Se quedan Perfil
+   (span pegado al h3) y Premios. El de amigos se caza por estructura: su h3
+   empieza por texto, el del avatar por el span. */
+div#tabs a[href*="wall"],
+div#tabs a[href*="stats"],
+div#tabs a[href*="friends"],
+div#tabs a[href*="groups"],
+div#tabs a[href*="contact"] {
+  display: none !important;
+}
+
+#profile-advanced-right .module:has(> .inner > .h3):not(:has(> .inner > .h3 > span:first-child)) {
+  display: none !important;
+}
+
+/* --- bloque de estadísticas --- */
+#rstatscontainer {
+  background: var(--burnthesky-void-2);
+  border: 1px solid var(--burnthesky-line);
+  padding: 22px;
+}
+
+#rstatscontainer .rbgimg > div {
+  height: 120px;
+  background: linear-gradient(180deg, transparent, rgba(197,21,21,.12)),
+    repeating-linear-gradient(0deg, transparent 0 3px, rgba(0,0,0,.25) 3px 4px);
+  border: 1px solid var(--burnthesky-line);
+}
+
+#rstatscontainer .rtitle {
+  margin: 18px 0 12px;
+  font: var(--burnthesky-fs-sm) / 1.4 var(--burnthesky-ff-mono);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--burnthesky-white);
+}
+
+#rstatscontainer .rstatsc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--burnthesky-gap);
+}
+
+#rstatscontainer .rstatsc p.page-bottom {
+  flex: 1 1 0;
+  min-width: 140px;
+  margin: 0;
+  padding: 14px;
+  background: var(--burnthesky-void);
+  border: 1px solid var(--burnthesky-line);
+  text-align: center;
+}
+
+#rstatscontainer .rstatsc strong {
+  display: block;
+  font: var(--burnthesky-fs-2xl) / 1 var(--burnthesky-ff-display);
+  font-weight: 400;
+  color: var(--burnthesky-white);
+}
+
+#rstatscontainer .rnewestuser {
+  margin: 16px 0 4px;
+  font: var(--burnthesky-fs-sm) / 1.7 var(--burnthesky-ff-mono);
+  letter-spacing: 1px;
+  color: var(--burnthesky-gray-lt);
+  text-align: center;
+}
+
+#rstatscontainer .rnewestuser em { font-style: normal; }
+
+#rstatscontainer .rnewestuser strong {
+  font: var(--burnthesky-fs-lg) / 1.2 var(--burnthesky-ff-display);
+  display: block;
+}
+
+#rstatscontainer .rlogged {
+  margin-top: 14px;
+  background: var(--burnthesky-void);
+  border: 1px solid var(--burnthesky-line);
+  padding: 14px 16px;
+}
+
+#rstatscontainer .ruserstats,
+#rstatscontainer .rloggedinlist {
+  font: var(--burnthesky-fs-sm) / 1.8 var(--burnthesky-ff-mono);
+  color: var(--burnthesky-gray-lt);
+}
+
+#rstatscontainer .ruserstats a,
+#rstatscontainer .rloggedinlist a { font-weight: 700; }
+
+#rstatscontainer .ronlineuserslist {
+  margin-top: 10px;
+  font-size: var(--burnthesky-fs-sm);
+  line-height: 1.8;
+  color: var(--burnthesky-gray-lt);
+}
+
+#rstatscontainer .rgroupslegend { margin-top: 14px; }
+
+#rstatscontainer .rgroupleg { margin-bottom: 10px; }
+
+#rstatscontainer .rgroupleg b {
+  font: var(--burnthesky-fs-xs) / 1.5 var(--burnthesky-ff-mono);
+  font-weight: 400;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* barras de miembros por grupo (las pinta js-indice.js) */
+#rstatscontainer .rgroupmembers {
+  height: 5px;
+  margin-top: 5px;
+  background: var(--burnthesky-void);
+}
+
+#rstatscontainer .rgroupmembers > div { height: 100%; }
+
+#rstatscontainer .rcredits {
+  margin-top: 14px;
+  font: var(--burnthesky-fs-xs) / 1.6 var(--burnthesky-ff-mono);
+  letter-spacing: 1px;
+  color: var(--burnthesky-gray);
+  text-align: center;
+}
+
+/* --- bloque DATABASE (lo inyecta js-indice.js) --- */
+.rdb {
+  margin: 0 0 var(--burnthesky-gap);
+  background: var(--burnthesky-void-2);
+  border: 1px solid var(--burnthesky-line);
+}
+
+.rdb__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 22px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--burnthesky-line);
+}
+
+.rdb__title {
+  font: var(--burnthesky-fs-lg) / 1 var(--burnthesky-ff-display);
+  letter-spacing: -.5px;
+  color: var(--burnthesky-white);
+}
+
+.rdb__pill {
+  font: var(--burnthesky-fs-xs) / 1.4 var(--burnthesky-ff-mono);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--burnthesky-gray-lt);
+  border: 1px solid var(--burnthesky-line-2);
+  padding: 5px 12px;
+}
+
+.rdb__pill b { color: var(--burnthesky-red-vivid); font-weight: 400; }
+
+.rdb__cols {
+  display: flex;
+  gap: var(--burnthesky-gap);
+  padding: 18px;
+}
+
+.rdb__donut {
+  position: relative;
+  flex: 0 0 190px;
+  width: 190px;
+  height: 190px;
+  border-radius: 50%;
+  margin: 0 auto;
+}
+
+.rdb__donut::after {
+  content: '';
+  position: absolute;
+  inset: 24%;
+  border-radius: 50%;
+  background: var(--burnthesky-void-2);
+}
+
+.rdb__legend {
+  flex: 1 1 0;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  align-self: center;
+}
+
+.rdb__legend li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 3px 0;
+  font: var(--burnthesky-fs-xs) / 1.5 var(--burnthesky-ff-mono);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--burnthesky-gray-lt);
+}
+
+.rdb__legend i {
+  width: 9px;
+  height: 9px;
+  flex: none;
+  border-radius: 2px;
+  transform: translateY(1px);
+}
+
+.rdb__legend b { margin-left: auto; color: var(--burnthesky-white); font-weight: 400; }
+
+.rdb__legal {
+  padding: 0 18px 16px;
+  font-size: var(--burnthesky-fs-sm);
+  line-height: 1.7;
+  color: var(--burnthesky-gray-lt);
+}
+
+/* --- pie con afiliados --- */
+#rneonfooter {
+  margin-top: var(--burnthesky-gap);
+  background: var(--burnthesky-void-2);
+  border: 1px solid var(--burnthesky-line);
+  padding: 18px;
+}
+
+#rneonfooter .rtitle {
+  margin-bottom: 12px;
+  text-align: center;
+  font: var(--burnthesky-fs-sm) / 1.4 var(--burnthesky-ff-mono);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--burnthesky-white);
+}
+
+#rneonfooter table { width: 100%; }
+
+#rneonfooter td.raffiliates,
+#rneonfooter td.rpartners {
+  text-align: center;
+  padding: 6px;
+  vertical-align: middle;
+}
+
+#rneonfooter td.raffiliates img,
+#rneonfooter td.rpartners img {
+  display: inline-block;
+  margin: 3px;
+  border: 1px solid var(--burnthesky-line-2);
+  filter: grayscale(1) brightness(.8);
+  transition: filter .4s ease, border-color var(--burnthesky-ease);
+  vertical-align: middle;
+}
+
+#rneonfooter td.raffiliates a:hover img,
+#rneonfooter td.rpartners a:hover img {
+  filter: none;
+  border-color: var(--burnthesky-red);
+}
+
+/* --- chatbox --- */
+#frame_chatbox,
+.chatbox {
+  background: var(--burnthesky-void-2);
+  border: 1px solid var(--burnthesky-line);
+}
+
+#chatbox_popup {
+  background: var(--burnthesky-void-2);
+  border: 1px solid var(--burnthesky-line-2);
+  border-top: 2px solid var(--burnthesky-red);
+}
+
+/* --- fila de login del pie --- */
+form[name="form_login"] .user_login_form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+}
+
+form[name="form_login"] .user_login_form label {
+  font: var(--burnthesky-fs-xs) / 1.4 var(--burnthesky-ff-mono);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--burnthesky-gray-lt);
+}
+
+@media (max-width: 640px) {
+  #page-header { padding-left: 0; }
+  .rdb__cols { flex-direction: column; }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  .rmes3-card { animation: none; opacity: 0; visibility: hidden; }
+  .rmes3-card:first-child { opacity: 1; visibility: visible; }
+}
+
+
+/* ============================================================================
+   17 · ACCESIBILIDAD
+   ========================================================================== */
+:focus-visible {
+  outline: 1px solid var(--burnthesky-red-vivid);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation: none !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+
+/* ============================================================================
    BURN THE SKY · PARCHE v1.3
    PEGAR AL FINAL de la hoja base v1.0 (después de la sección 17).
    Añade las secciones 18-21. No modifica ninguna regla anterior: todo lo que
