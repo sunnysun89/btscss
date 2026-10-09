@@ -50,24 +50,6 @@
 				<tbody></tbody>
 				<tr style="">
 
-					<td class="rmuralavatar">
-
-						<div class="rwindowheader">
-							<p>
-							</p>
-							<p>
-							</p>
-							<p>
-							</p>
-							<span>Profile</span>
-						</div>
-
-						<div>
-							<img src="https://placehold.co/250x400" />
-						</div>
-
-					</td>
-
 					<td>
 
 						<table class="rmuralinfo">
@@ -83,11 +65,13 @@
 										</p>
 										<p>
 										</p>
-										<span>Weekly most active</span>
+										<span>Búsquedas</span>
 									</div>
 
-									<div class="ractiveusers">
-										<!-- lo rellena js-banner.js con el widget semanal -->
+									<div class="rbusq">
+										<a href="/"><img src="https://placehold.co/400x140" alt="Búsqueda" loading="lazy" /></a>
+										<b>Búsqueda</b>
+										<span>Subtítulo de ejemplo: qué se busca</span>
 									</div>
 
 								</td>
@@ -148,10 +132,10 @@
 
 		</div>
 
-		<!-- Ventana mensual: contenido manual cada mes -->
+		<!-- Ventana mensual: 3 tarjetas por grupo, contenido manual cada mes -->
 		<div class="rmensual">
 
-			<div class="rmes">
+			<div class="rmensual__grupo">
 				<div class="rwindowheader">
 					<p>
 					</p>
@@ -161,15 +145,35 @@
 					</p>
 					<span>Héroes del mes</span>
 				</div>
-				<img class="rmes__img" src="https://placehold.co/600x400" alt="Héroe del mes" loading="lazy" />
-				<div class="rmes__body">
-					<span class="rmes__tag">Monthly heroes</span>
-					<h4 class="rmes__name">Nombre Apellido</h4>
-					<p class="rmes__desc">Una línea sobre por qué este personaje marca el mes.</p>
+				<div class="rmes3">
+					<div class="rmes3-card">
+						<img class="rmes3-card__img" src="https://placehold.co/250x190" alt="Héroe del mes" loading="lazy" />
+						<div class="rmes3-card__body">
+							<span class="rmes3-card__tag">Monthly heroes</span>
+							<h4 class="rmes3-card__name">Nombre Apellido</h4>
+							<p class="rmes3-card__sub">Por qué marca el mes</p>
+						</div>
+					</div>
+					<div class="rmes3-card">
+						<img class="rmes3-card__img" src="https://placehold.co/250x190" alt="Héroe del mes" loading="lazy" />
+						<div class="rmes3-card__body">
+							<span class="rmes3-card__tag">Monthly heroes</span>
+							<h4 class="rmes3-card__name">Nombre Apellido</h4>
+							<p class="rmes3-card__sub">Por qué marca el mes</p>
+						</div>
+					</div>
+					<div class="rmes3-card">
+						<img class="rmes3-card__img" src="https://placehold.co/250x190" alt="Héroe del mes" loading="lazy" />
+						<div class="rmes3-card__body">
+							<span class="rmes3-card__tag">Monthly heroes</span>
+							<h4 class="rmes3-card__name">Nombre Apellido</h4>
+							<p class="rmes3-card__sub">Por qué marca el mes</p>
+						</div>
+					</div>
 				</div>
 			</div>
 
-			<div class="rmes">
+			<div class="rmensual__grupo">
 				<div class="rwindowheader">
 					<p>
 					</p>
@@ -179,11 +183,31 @@
 					</p>
 					<span>Los más buscados</span>
 				</div>
-				<img class="rmes__img" src="https://placehold.co/600x400" alt="El más buscado" loading="lazy" />
-				<div class="rmes__body">
-					<span class="rmes__tag">Most wanted</span>
-					<h4 class="rmes__name">Nombre Apellido</h4>
-					<p class="rmes__desc">Recompensa, último avistamiento y por qué lo quiere la ciudad.</p>
+				<div class="rmes3">
+					<div class="rmes3-card">
+						<img class="rmes3-card__img" src="https://placehold.co/250x190" alt="El más buscado" loading="lazy" />
+						<div class="rmes3-card__body">
+							<span class="rmes3-card__tag">Most wanted</span>
+							<h4 class="rmes3-card__name">Nombre Apellido</h4>
+							<p class="rmes3-card__sub">Recompensa y último avistamiento</p>
+						</div>
+					</div>
+					<div class="rmes3-card">
+						<img class="rmes3-card__img" src="https://placehold.co/250x190" alt="El más buscado" loading="lazy" />
+						<div class="rmes3-card__body">
+							<span class="rmes3-card__tag">Most wanted</span>
+							<h4 class="rmes3-card__name">Nombre Apellido</h4>
+							<p class="rmes3-card__sub">Recompensa y último avistamiento</p>
+						</div>
+					</div>
+					<div class="rmes3-card">
+						<img class="rmes3-card__img" src="https://placehold.co/250x190" alt="El más buscado" loading="lazy" />
+						<div class="rmes3-card__body">
+							<span class="rmes3-card__tag">Most wanted</span>
+							<h4 class="rmes3-card__name">Nombre Apellido</h4>
+							<p class="rmes3-card__sub">Recompensa y último avistamiento</p>
+						</div>
+					</div>
 				</div>
 			</div>
 
