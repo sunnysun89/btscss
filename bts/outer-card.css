@@ -2145,30 +2145,51 @@ body {
   background: var(--burnthesky-red-wash);
 }
 
-/* --- ventana mensual: 3 tarjetas de 250x300 por grupo (héroes + buscados) --- */
+/* --- mensual: rotación automática, una tarjeta visible por grupo ---
+   Sin JavaScript: las 3 tarjetas se apilan y un keyframe las turna (9s por
+   ciclo, 3s cada una). Solo CSS, así funciona esté o no instalado el JS.
+   En móvil o sin movimiento: tarjetas apiladas, todas visibles. */
 .rmensual {
   margin-top: var(--burnthesky-gap);
 }
 
-.rmensual__grupo { margin-bottom: var(--burnthesky-gap); }
-.rmensual__grupo:last-child { margin-bottom: 0; }
-
 .rmes3 {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--burnthesky-gap);
+  position: relative;
+  height: 350px;
+  margin-bottom: var(--burnthesky-gap);
 }
 
+.rmensual__grupo:last-child .rmes3 { margin-bottom: 0; }
+
 .rmes3-card {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 250px;
   background: var(--burnthesky-void-2);
   border: 1px solid var(--burnthesky-line);
+  opacity: 0;
+  visibility: hidden;
+  animation: rmes3-rot 9s infinite;
 }
+
+.rmes3 > .rmes3-card:nth-child(1) { animation-delay: 0s; }
+.rmes3 > .rmes3-card:nth-child(2) { animation-delay: 3s; }
+.rmes3 > .rmes3-card:nth-child(3) { animation-delay: 6s; }
+
+@keyframes rmes3-rot {
+  0% { opacity: 0; visibility: hidden; }
+  5% { opacity: 1; visibility: visible; }
+  33% { opacity: 1; visibility: visible; }
+  38%, 100% { opacity: 0; visibility: hidden; }
+}
+
+.rmes3:hover .rmes3-card { animation-play-state: paused; }
 
 .rmes3-card__img {
   display: block;
   width: 250px;
-  height: 190px;
+  height: 236px;
   object-fit: cover;
   object-position: top center;
   border-bottom: 1px solid var(--burnthesky-line);
@@ -2246,9 +2267,17 @@ body {
 }
 
 @media (max-width: 640px) {
-  .rmes3-card,
-  .rmes3-card__img { width: 100%; }
-  .rmes3-card__img { height: 210px; }
+  .rmes3 { height: auto; }
+  .rmes3-card {
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    animation: none;
+    width: 100%;
+    margin-bottom: var(--burnthesky-gap);
+  }
+  .rmes3-card:last-child { margin-bottom: 0; }
+  .rmes3-card__img { width: 100%; height: 210px; }
   #mural .rmuralcontainer > table,
   #mural .rmuralcontainer > table > tbody,
   #mural .rmuralcontainer > table > tbody > tr,
@@ -2466,39 +2495,13 @@ form[action*="quickreply"],
 
 
 /* ============================================================================
-   22 · AJUSTES BTS (Burn The Sky)
-
-   Parche de notificaciones: la campana vive a 62px del borde para dejar
-   sitio al MultiSwitcher; sin él instalado flotaba separada. Con :has, la
-   posición se adapta sola según exista #szSw o no.
-   ========================================================================== */
-#fa_toolbar {
-  right: 15px !important;
-}
-
-body:has(#szSw) #fa_toolbar {
-  right: var(--burnthesky-toolbar-right) !important;
-}
-
-/* Pestañas del perfil que sobran: se quedan Perfil y Premios. Los href van
-   con el id del usuario (/u1wall, /u1stats...), así que se caza por palabra
-   dentro de las pestañas; fuera de ahí no se toca nada. */
-div#tabs a[href*="wall"],
-div#tabs a[href*="stats"],
-div#tabs a[href*="friends"],
-div#tabs a[href*="groups"],
-div#tabs a[href*="contact"] {
-  display: none !important;
-}
-
-
-/* ============================================================================
    22 · NOTIFICACIONES, RAIL, PERFIL, STATS Y FOOTER (Burn The Sky)
    ========================================================================== */
 
-/* La campana a la derecha, con ancho ajustado: sin width, una barra con
-   left heredado se estira a todo el ancho y el contenido cae a la izquierda.
-   Con max-content + right, no hay manera de que acabe en otro sitio. */
+/* La campana a la derecha. Triple amarre: la barra va fijada a la derecha
+   con ancho ajustado, y ADEMÁS el hijo #fa_right va fijo al viewport. Si la
+   barra heredara cualquier cosa rara, el hijo la ignora y se queda a la
+   derecha igual. */
 #fa_toolbar {
   left: auto !important;
   right: 15px !important;
@@ -2506,13 +2509,17 @@ div#tabs a[href*="contact"] {
   max-width: calc(100vw - 30px);
 }
 
+#fa_toolbar #fa_right {
+  position: fixed !important;
+  top: 13px !important;
+  right: 15px !important;
+  left: auto !important;
+  z-index: var(--burnthesky-z-toolbar) !important;
+}
+
 body:has(#szSw) #fa_toolbar {
   right: var(--burnthesky-toolbar-right) !important;
 }
-
-/* El rail tapa 60px: la cabecera se desplaza; en móvil el rail vuelve arriba
-   y el desplazamiento sobra. */
-#page-header { padding-left: 60px; }
 
 /* El rail tapa 60px: la cabecera se desplaza con él; en móvil el rail vuelve
    arriba y el desplazamiento sobra. Sin esto el título del banner queda
@@ -2811,6 +2818,12 @@ form[name="form_login"] .user_login_form label {
 @media (max-width: 640px) {
   #page-header { padding-left: 0; }
   .rdb__cols { flex-direction: column; }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  .rmes3-card { animation: none; opacity: 0; visibility: hidden; }
+  .rmes3-card:first-child { opacity: 1; visibility: visible; }
 }
 
 
