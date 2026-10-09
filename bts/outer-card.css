@@ -100,8 +100,8 @@
   --burnthesky-toolbar-right: 62px;      /* posición de las notificaciones */
 
   /* ---- Imágenes ---- */
-  --burnthesky-img-bg:        url("img/fondo.jpg");
-  --burnthesky-img-banner:    url("img/cabecera.jpg");
+  --burnthesky-img-bg:        url("https://i.imgur.com/XsTemW8.jpeg");
+  --burnthesky-img-banner:    url("https://i.imgur.com/j3PPf2b.jpeg");
 
   /* ---- Efectos ---- */
   --burnthesky-scan-alpha:    .10;
