@@ -2842,21 +2842,20 @@ form[name="form_login"] .user_login_form label {
     transition-duration: .01ms !important;
   }
 }
-
 /* ============================================================================
-   BURN THE SKY · PARCHE v1.1
+   BURN THE SKY · PARCHE v1.2
    PEGAR AL FINAL de la hoja base v1.0 (después de la sección 17).
    Añade las secciones 18-21. No modifica ninguna regla anterior: todo lo que
    necesita ganarle a la hoja base o a Foroactivo lleva !important o mayor
    especificidad, así que el orden "al final" es lo único que importa.
-
+ 
    18  Guardas de layout (sidebar #left y contenedores nativos)
    19  Notificaciones: la ventana se abre bajo la campana
    20  Banner y mural (hero, ventanas, staff, recent topics, nav)
-   21  Mensual: dos grupos, tres tarjetas de 250x300 rotando
+   21  Mensual: dos grupos, tres tarjetas de 250x300 rotando (siempre activo)
    ========================================================================== */
-
-
+ 
+ 
 /* ============================================================================
    18 · GUARDAS DE LAYOUT
    La regla base `#content-container div#left` solo funciona si el contenedor
@@ -2878,7 +2877,7 @@ form[name="form_login"] .user_login_form label {
   pointer-events: none !important;
   z-index: -1 !important;
 }
-
+ 
 /* Foroactivo reserva columnas laterales con márgenes, floats y anchos en
    estos contenedores. Sin sidebar visible no hay nada que reservar. */
 #outer-wrapper,
@@ -2890,10 +2889,10 @@ form[name="form_login"] .user_login_form label {
   padding: 0 !important;
   position: static !important;
 }
-
+ 
 #content { margin: 0 !important; }
-
-
+ 
+ 
 /* ============================================================================
    19 · NOTIFICACIONES
    Foroactivo posiciona #notif_list con left/bottom (la toolbar original va
@@ -2907,7 +2906,7 @@ form[name="form_login"] .user_login_form label {
   width: max-content !important;
   max-width: calc(100vw - 30px) !important;
 }
-
+ 
 #fa_toolbar #notif_list {
   position: fixed !important;
   top: calc(var(--burnthesky-navbar-h) + 4px) !important;
@@ -2921,8 +2920,8 @@ form[name="form_login"] .user_login_form label {
   max-height: min(400px, calc(100vh - var(--burnthesky-navbar-h) - 20px)) !important;
   z-index: var(--burnthesky-z-toolbar) !important;
 }
-
-
+ 
+ 
 /* ============================================================================
    20 · BANNER Y MURAL
    El JS mueve #startindex a #rheader, que está FUERA de #main: por eso hay
@@ -2933,10 +2932,10 @@ form[name="form_login"] .user_login_form label {
   margin: 0 auto;
   padding: calc(var(--burnthesky-navbar-h) + 30px) 0 0;
 }
-
+ 
 /* Con el banner arriba, #main ya no necesita su propio hueco de navbar. */
 #startindex ~ .conteneur_minwidth_IE #main { padding-top: var(--burnthesky-gap); }
-
+ 
 /* -- Cabecera de ventana: tres puntos + título -- */
 .rwindowheader {
   display: flex;
@@ -2945,7 +2944,7 @@ form[name="form_login"] .user_login_form label {
   padding: 10px 12px;
   border-bottom: 1px solid var(--burnthesky-line);
 }
-
+ 
 .rwindowheader p {
   flex-shrink: 0;
   width: 9px;
@@ -2957,7 +2956,7 @@ form[name="form_login"] .user_login_form label {
 .rwindowheader p:nth-child(1) { background: var(--burnthesky-red-vivid); }
 .rwindowheader p:nth-child(2) { background: var(--burnthesky-gray); }
 .rwindowheader p:nth-child(3) { background: var(--burnthesky-gray-lt); }
-
+ 
 .rwindowheader span {
   margin-left: auto;
   font: var(--burnthesky-fs-xs) / 1.4 var(--burnthesky-ff-mono);
@@ -2966,7 +2965,7 @@ form[name="form_login"] .user_login_form label {
   white-space: nowrap;
   color: var(--burnthesky-gray-lt);
 }
-
+ 
 /* -- Hero -- */
 #headercontainer #header {
   position: relative;
@@ -2975,7 +2974,7 @@ form[name="form_login"] .user_login_form label {
   background: var(--burnthesky-void-2);
   border: 1px solid var(--burnthesky-line);
 }
-
+ 
 #headercontainer #header::before {
   content: '';
   position: absolute;
@@ -2987,7 +2986,7 @@ form[name="form_login"] .user_login_form label {
   background: var(--burnthesky-red);
   pointer-events: none;
 }
-
+ 
 #headercontainer .rbgimg {
   position: absolute;
   inset: 0;
@@ -2995,9 +2994,9 @@ form[name="form_login"] .user_login_form label {
   filter: grayscale(1) brightness(.3);
   pointer-events: none;
 }
-
+ 
 #headercontainer .position { position: relative; z-index: 1; }
-
+ 
 #headercontainer .rtitle {
   font: clamp(48px, 8vw, 96px) / .9 var(--burnthesky-ff-display);
   letter-spacing: -2px;
@@ -3005,7 +3004,7 @@ form[name="form_login"] .user_login_form label {
   color: var(--burnthesky-white);
   text-shadow: var(--burnthesky-ghost);
 }
-
+ 
 #headercontainer .rdesc {
   max-width: 60ch;
   margin-top: 12px;
@@ -3013,13 +3012,13 @@ form[name="form_login"] .user_login_form label {
   letter-spacing: 1px;
   color: var(--burnthesky-gray-lt);
 }
-
+ 
 /* -- Mural -- */
 #mural {
   position: relative;
   margin-top: var(--burnthesky-gap);
 }
-
+ 
 /* .rbgname: marca de agua, como el .bts-hero__wm */
 #mural .rbgname {
   position: absolute;
@@ -3033,7 +3032,7 @@ form[name="form_login"] .user_login_form label {
   pointer-events: none;
   user-select: none;
 }
-
+ 
 #mural .rwelcomesub {
   position: relative;
   margin: 0 0 10px;
@@ -3043,10 +3042,10 @@ form[name="form_login"] .user_login_form label {
   color: var(--burnthesky-gray-lt);
 }
 #mural .rwelcomesub span { color: var(--burnthesky-red-vivid); }
-
+ 
 /* decoración vacía del widget original */
 #mural > .rbgimg { display: none; }
-
+ 
 /* Las tablas del widget son solo maquetación: se anulan las reglas globales
    de `table td` (bordes, relleno, hover rojo) de la sección 11. */
 #mural table,
@@ -3056,17 +3055,22 @@ form[name="form_login"] .user_login_form label {
   padding: 0;
 }
 #mural table tr:hover td { background: transparent !important; }
-
+ 
 #mural .rmuralcontainer { position: relative; }
-
+ 
 #mural .rmuralcontainer > table {
   width: 100%;
   table-layout: fixed;
   border-collapse: collapse;
 }
-
-#mural .rmuralcontainer > table > tbody > tr > td { vertical-align: top; }
-
+ 
+/* La hoja del repo oculta esta celda (`td:first-child {display:none}`) pensando
+   en un widget viejo con columna de avatar. En este widget es la ÚNICA celda y
+   contiene búsquedas, staff y recent topics: se vuelve a mostrar. */
+#mural .rmuralcontainer > table > tbody > tr > td:first-child { display: table-cell !important; }
+ 
+#mural .rmuralcontainer > table > tbody > tr > td { vertical-align: top; padding: 0; }
+ 
 #mural .rmuralinfo {
   width: 100%;
   table-layout: fixed;
@@ -3074,7 +3078,7 @@ form[name="form_login"] .user_login_form label {
   background: var(--burnthesky-void-2) !important;
   border: 1px solid var(--burnthesky-line);
 }
-
+ 
 #mural .rmuralinfo > tbody > tr > td {
   vertical-align: top;
   border-left: 1px solid var(--burnthesky-line);
@@ -3083,10 +3087,10 @@ form[name="form_login"] .user_login_form label {
 #mural .rmuralinfo > tbody > tr > td:nth-child(1) { width: 28%; }
 #mural .rmuralinfo > tbody > tr > td:nth-child(2) { width: 28%; }
 #mural .rmuralinfo > tbody > tr > td:nth-child(3) { width: 44%; }
-
+ 
 /* Búsquedas */
 #mural .rbusq { padding: 12px; text-align: center; }
-
+ 
 #mural .rbusq img {
   display: block;
   width: 100%;
@@ -3099,7 +3103,7 @@ form[name="form_login"] .user_login_form label {
   transition: filter .4s ease;
 }
 #mural .rbusq a:hover img { filter: none; }
-
+ 
 #mural .rbusq strong {
   display: block;
   margin: 10px 0 4px;
@@ -3108,14 +3112,14 @@ form[name="form_login"] .user_login_form label {
   text-transform: uppercase;
   color: var(--burnthesky-white);
 }
-
+ 
 #mural .rbusq span {
   display: block;
   font: var(--burnthesky-fs-xs) / 1.6 var(--burnthesky-ff-mono);
   letter-spacing: 1px;
   color: var(--burnthesky-gray-lt);
 }
-
+ 
 /* Staff */
 #mural .rstaffc {
   display: flex;
@@ -3124,11 +3128,12 @@ form[name="form_login"] .user_login_form label {
   gap: 8px;
   padding: 12px;
 }
-
+ 
 #mural .rstaffmemb img {
   display: block;
   width: 64px;
   height: 96px;
+  border-radius: 0;
   object-fit: cover;
   object-position: top center;
   background: #050505;
@@ -3137,7 +3142,7 @@ form[name="form_login"] .user_login_form label {
   transition: filter .4s ease, border-color var(--burnthesky-ease);
 }
 #mural .rstaffmemb a:hover img { filter: none; border-color: var(--burnthesky-red); }
-
+ 
 /* Recent topics. El JS sustituye .rsubsrecent por #comments_scroll_div (el
    widget estándar), que ya no lleva esa clase: se estilan los dos. */
 #mural .rsubsrecent,
@@ -3150,7 +3155,7 @@ form[name="form_login"] .user_login_form label {
   font: var(--burnthesky-fs-xs) / 1.7 var(--burnthesky-ff-mono);
   color: var(--burnthesky-gray-lt);
 }
-
+ 
 #mural .rsubsrecent *,
 #mural #comments_scroll_div * {
   background: transparent !important;
@@ -3158,12 +3163,12 @@ form[name="form_login"] .user_login_form label {
   font-size: var(--burnthesky-fs-xs) !important;
   color: var(--burnthesky-gray-lt) !important;
 }
-
+ 
 #mural .rsubsrecent a,
 #mural #comments_scroll_div a { color: var(--burnthesky-white) !important; }
 #mural .rsubsrecent a:hover,
 #mural #comments_scroll_div a:hover { color: var(--burnthesky-red-vivid) !important; }
-
+ 
 /* Navegación */
 #mural .rmuralnav {
   display: flex;
@@ -3172,7 +3177,7 @@ form[name="form_login"] .user_login_form label {
   background: var(--burnthesky-void);
   border: 1px solid var(--burnthesky-line);
 }
-
+ 
 #mural .rmuralnav a {
   flex: 1 1 auto;
   padding: 12px 8px;
@@ -3186,17 +3191,19 @@ form[name="form_login"] .user_login_form label {
 }
 #mural .rmuralnav a:first-child { border-left: 0; }
 #mural .rmuralnav a:hover { color: #fff; background: var(--burnthesky-red-wash); }
-
-
+ 
+ 
 /* ============================================================================
    21 · MENSUAL
    Dos grupos (Héroes del mes / Los más buscados), tres tarjetas cada uno,
    imagen 250x300 y texto al lado. Solo CSS, sin JS.
-
-   Estado base (sin animación): carrusel con scroll horizontal y snap. Siempre
-   se ve algo: es lo que obtienen móvil y quien tiene "reducir movimiento".
-   Con movimiento permitido y pantalla ancha: rotación automática, una tarjeta
-   visible por grupo (9 s por ciclo, 3 s cada una). Hover = pausa.
+ 
+   Rotación automática SIEMPRE activa: una tarjeta visible por grupo, 9 s por
+   ciclo (3 s cada una), fundido cruzado. Hover = pausa.
+   "Reducir movimiento": la sección 17 apaga todas las animaciones con
+   !important, y por eso las tarjetas se quedaban fijas. Aquí se reactiva
+   SOLO esta rotación (con !important); es un fundido de opacidad, sin
+   desplazamientos.
    ========================================================================== */
 .rmensual {
   display: flex;
@@ -3204,7 +3211,7 @@ form[name="form_login"] .user_login_form label {
   gap: var(--burnthesky-gap);
   margin-top: var(--burnthesky-gap);
 }
-
+ 
 .rmensual__grupo {
   position: relative;
   flex: 1 1 0;
@@ -3212,7 +3219,7 @@ form[name="form_login"] .user_login_form label {
   background: var(--burnthesky-void-2);
   border: 1px solid var(--burnthesky-line);
 }
-
+ 
 .rmensual__grupo::before {
   content: '';
   position: absolute;
@@ -3224,24 +3231,63 @@ form[name="form_login"] .user_login_form label {
   background: var(--burnthesky-red);
   pointer-events: none;
 }
-
+ 
+/* Escenario: las 3 tarjetas se apilan una sobre otra */
 .rmes3 {
-  display: flex;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: thin;
-  scrollbar-color: var(--burnthesky-red-dark) var(--burnthesky-void);
-}
-
-.rmes3-card {
   position: relative;
-  display: flex;
-  flex: 0 0 100%;
-  min-width: 0;
-  scroll-snap-align: start;
-  background: var(--burnthesky-void);
+  display: block;
+  height: 300px;
+  margin: 0;
+  overflow: hidden;
 }
-
+ 
+.rmes3-card {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  width: auto;
+  min-width: 0;
+  margin: 0;
+  background: var(--burnthesky-void);
+  border: 0;
+  opacity: 0;
+  visibility: hidden;
+  animation: burnthesky-rotate 9s infinite;
+}
+ 
+.rmes3 > .rmes3-card:nth-child(1) { animation-delay: 0s; }
+.rmes3 > .rmes3-card:nth-child(2) { animation-delay: 3s; }
+.rmes3 > .rmes3-card:nth-child(3) { animation-delay: 6s; }
+ 
+/* barra de progreso del turno */
+.rmes3-card::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--burnthesky-red);
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: burnthesky-progress 9s linear infinite;
+}
+.rmes3 > .rmes3-card:nth-child(1)::after { animation-delay: 0s; }
+.rmes3 > .rmes3-card:nth-child(2)::after { animation-delay: 3s; }
+.rmes3 > .rmes3-card:nth-child(3)::after { animation-delay: 6s; }
+ 
+.rmes3:hover .rmes3-card,
+.rmes3:hover .rmes3-card::after { animation-play-state: paused; }
+ 
+/* Contra la sección 17 (reducir movimiento): solo la rotación sigue viva */
+@media (prefers-reduced-motion: reduce) {
+  .rmes3 > .rmes3-card { animation: burnthesky-rotate 9s infinite !important; }
+  .rmes3 > .rmes3-card:nth-child(1) { animation-delay: 0s !important; }
+  .rmes3 > .rmes3-card:nth-child(2) { animation-delay: 3s !important; }
+  .rmes3 > .rmes3-card:nth-child(3) { animation-delay: 6s !important; }
+  .rmes3:hover .rmes3-card { animation-play-state: paused !important; }
+}
+ 
 .rmes3-card__img {
   display: block;
   flex: 0 0 250px;
@@ -3256,7 +3302,7 @@ form[name="form_login"] .user_login_form label {
   transition: filter .4s ease;
 }
 .rmes3-card:hover .rmes3-card__img { filter: none; }
-
+ 
 .rmes3-card__body {
   display: flex;
   flex: 1 1 0;
@@ -3265,7 +3311,7 @@ form[name="form_login"] .user_login_form label {
   min-width: 0;
   padding: 20px 24px;
 }
-
+ 
 .rmes3-card__tag {
   align-self: flex-start;
   margin-bottom: 12px;
@@ -3276,65 +3322,27 @@ form[name="form_login"] .user_login_form label {
   letter-spacing: 2px;
   text-transform: uppercase;
 }
-
+ 
 .rmes3-card__name {
   margin: 0 0 8px;
   font: var(--burnthesky-fs-lg) / 1.05 var(--burnthesky-ff-display);
   letter-spacing: -.3px;
   text-transform: uppercase;
   color: var(--burnthesky-white);
+  white-space: normal;
+  overflow: visible;
   overflow-wrap: anywhere;
 }
-
+ 
 .rmes3-card__sub {
   margin: 0;
   font: var(--burnthesky-fs-sm) / 1.7 var(--burnthesky-ff-mono);
   letter-spacing: 1px;
   color: var(--burnthesky-gray-lt);
+  white-space: normal;
+  overflow: visible;
 }
-
-/* -- Rotación automática -- */
-@media (prefers-reduced-motion: no-preference) and (min-width: 901px) {
-  .rmes3 {
-    position: relative;
-    display: block;
-    height: 300px;
-    overflow: hidden;
-  }
-
-  .rmes3-card {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    visibility: hidden;
-    animation: burnthesky-rotate 9s infinite;
-  }
-
-  .rmes3 > .rmes3-card:nth-child(1) { animation-delay: 0s; }
-  .rmes3 > .rmes3-card:nth-child(2) { animation-delay: 3s; }
-  .rmes3 > .rmes3-card:nth-child(3) { animation-delay: 6s; }
-
-  /* barra de progreso del turno de cada tarjeta */
-  .rmes3-card::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 2px;
-    background: var(--burnthesky-red);
-    transform: scaleX(0);
-    transform-origin: left;
-    animation: burnthesky-progress 9s linear infinite;
-  }
-  .rmes3 > .rmes3-card:nth-child(1)::after { animation-delay: 0s; }
-  .rmes3 > .rmes3-card:nth-child(2)::after { animation-delay: 3s; }
-  .rmes3 > .rmes3-card:nth-child(3)::after { animation-delay: 6s; }
-
-  .rmes3:hover .rmes3-card,
-  .rmes3:hover .rmes3-card::after { animation-play-state: paused; }
-}
-
+ 
 @keyframes burnthesky-rotate {
   0%        { opacity: 0; visibility: visible; }
   4%        { opacity: 1; visibility: visible; }
@@ -3343,32 +3351,34 @@ form[name="form_login"] .user_login_form label {
   37.4%,
   100%      { opacity: 0; visibility: hidden; }
 }
-
+ 
 @keyframes burnthesky-progress {
   0%        { transform: scaleX(0); }
   33.3%     { transform: scaleX(1); }
   100%      { transform: scaleX(1); }
 }
-
-/* -- Responsive del mural y el mensual -- */
+ 
+/* -- Responsive -- */
 @media (max-width: 900px) {
   .rmensual { flex-direction: column; align-items: stretch; }
   #mural .rbgname { display: none; }
 }
-
+ 
 @media (max-width: 640px) {
   #mural .rmuralcontainer > table,
   #mural .rmuralcontainer > table > tbody,
   #mural .rmuralcontainer > table > tbody > tr,
-  #mural .rmuralcontainer > table > tbody > tr > td,
+  #mural .rmuralcontainer > table > tbody > tr > td:first-child,
   #mural .rmuralinfo,
   #mural .rmuralinfo > tbody,
   #mural .rmuralinfo > tbody > tr,
-  #mural .rmuralinfo > tbody > tr > td { display: block; width: auto !important; }
-
+  #mural .rmuralinfo > tbody > tr > td { display: block !important; width: auto !important; }
+ 
   #mural .rmuralinfo > tbody > tr > td { border-left: 0; border-top: 1px solid var(--burnthesky-line); }
   #mural .rmuralinfo > tbody > tr > td:first-child { border-top: 0; }
-
+ 
+  .rmes3 { height: 440px; }
   .rmes3-card { flex-direction: column; }
-  .rmes3-card__img { flex-basis: auto; width: 100%; height: 300px; border-right: 0; border-bottom: 1px solid var(--burnthesky-line); }
+  .rmes3-card__img { flex: 0 0 280px; width: 100%; height: 280px; border-right: 0; border-bottom: 1px solid var(--burnthesky-line); }
 }
+ 
