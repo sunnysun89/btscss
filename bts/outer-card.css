@@ -4169,19 +4169,3 @@ li.row:hover .rforimg { filter: none; }
   padding: 0 14px 14px;
 }
 .rdb__g--apart { flex: 1 1 calc(50% - 10px); }
-
-/* BTS — PRUEBA TEMPORAL DE TRANSICIONES */
-:root {
-  --burnthesky-ease: 5s linear !important;
-}
-
-.lastpost-avatar img,
-.postprofile dt img,
-.rmes3-card__img,
-#mural .rbusq img,
-#mural .rstaffmemb img,
-#rneonfooter td.raffiliates img,
-#rneonfooter td.rpartners img,
-.rforimg {
-  transition: filter 5s linear !important;
-}
