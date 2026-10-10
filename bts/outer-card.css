@@ -117,8 +117,8 @@
   /* VELOCIDAD DE LOS HOVERS: se cambian aquí y afectan a todo el foro.
      --burnthesky-ease ..... enlaces, tarjetas, botones, bordes, sombras
      --burnthesky-ease-img . imágenes (de gris a color) */
-  --burnthesky-ease:          .6s cubic-bezier(.22, .61, .36, 1);
-  --burnthesky-ease-img:      .9s ease;
+  --burnthesky-ease:          2s cubic-bezier(.22, .61, .36, 1);
+  --burnthesky-ease-img:      2s ease;
 
   /* ---- Capas ---- */
   --burnthesky-z-navbar:      99;
