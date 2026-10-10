@@ -16,9 +16,9 @@ jQuery(document).ready(function(){
   
   let maxHeight = 0;
   
-  $(".rgroupleg").html($(".rgroupleg").html().replaceAll("[", ""));
-  $(".rgroupleg").html($(".rgroupleg").html().replaceAll("]", ""));
-  $(".rgroupleg").html($(".rgroupleg").html().replaceAll("&nbsp;", ""));
+  if ($(".rgroupleg").length) {
+    $(".rgroupleg").html($(".rgroupleg").html().replaceAll("[", "").replaceAll("]", "").replaceAll("&nbsp;", ""));
+  }
   
   $(".rgroupslegend .gensmall").each(function( index ) {
     let height = parseInt($(this).css("height"));

@@ -7,8 +7,8 @@ jQuery(document).ready(function(){
   
   $("#rheader").replaceWith($("#left #startindex"));
   $("#mural .rmuralinfo .rsubsrecent").replaceWith($("#left #comments_scroll_div"));
-  var replace = $("#mural .rmuralinfo td:nth-child(3) div").html().replace("»", ">");
-  $("#mural .rmuralinfo .rsubsrecent").html(replace);
+  var rec = $("#mural .rmuralinfo td:nth-child(3) div").html();
+  if (rec) $("#mural .rmuralinfo .rsubsrecent").html(rec.replace("»", ">"));
   if (document.querySelector('.mod-login-avatar') !== null) {
     $("#mural .rintro .ricon img").replaceWith($(".mod-login-avatar img"));
   }

@@ -9,6 +9,8 @@
 /* --- js-banner.js --- */
 (function(){
 /* --- banner: solo si hay mural que mover --- */
+/* Las comprobaciones se hacen con el DOM listo: si el script carga en la cabecera, aún no existe nada. */
+function btsRun(){
 if (!document.querySelector('#left #startindex')) return;
 /* Banner: todas las páginas.
    Mueve el widget Banner (#startindex) a #rheader, los últimos temas a la
@@ -19,8 +21,8 @@ jQuery(document).ready(function(){
   
   $("#rheader").replaceWith($("#left #startindex"));
   $("#mural .rmuralinfo .rsubsrecent").replaceWith($("#left #comments_scroll_div"));
-  var replace = $("#mural .rmuralinfo td:nth-child(3) div").html().replace("»", ">");
-  $("#mural .rmuralinfo .rsubsrecent").html(replace);
+  var rec = $("#mural .rmuralinfo td:nth-child(3) div").html();
+  if (rec) $("#mural .rmuralinfo .rsubsrecent").html(rec.replace("»", ">"));
   if (document.querySelector('.mod-login-avatar') !== null) {
     $("#mural .rintro .ricon img").replaceWith($(".mod-login-avatar img"));
   }
@@ -64,10 +66,14 @@ jQuery(document).ready(function(){
   
 });
 
+}
+if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", btsRun); } else { btsRun(); }
 })();
 /* --- js-indice.js --- */
 (function(){
 /* --- índice: solo con bloque de estadísticas --- */
+/* Las comprobaciones se hacen con el DOM listo: si el script carga en la cabecera, aún no existe nada. */
+function btsRun(){
 if (!document.querySelector('#rstatscontainer')) return;
 /* Índice: solo para el índice.
    Reescribe las cifras de estadísticas con textos propios (en español) y
@@ -87,9 +93,9 @@ jQuery(document).ready(function(){
   
   let maxHeight = 0;
   
-  $(".rgroupleg").html($(".rgroupleg").html().replaceAll("[", ""));
-  $(".rgroupleg").html($(".rgroupleg").html().replaceAll("]", ""));
-  $(".rgroupleg").html($(".rgroupleg").html().replaceAll("&nbsp;", ""));
+  if ($(".rgroupleg").length) {
+    $(".rgroupleg").html($(".rgroupleg").html().replaceAll("[", "").replaceAll("]", "").replaceAll("&nbsp;", ""));
+  }
   
   $(".rgroupslegend .gensmall").each(function( index ) {
     let height = parseInt($(this).css("height"));
@@ -199,10 +205,14 @@ jQuery(document).ready(function(){
 
 });
 
+}
+if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", btsRun); } else { btsRun(); }
 })();
 /* --- js-temas.js --- */
 (function(){
 /* --- temas: solo con posts o editor --- */
+/* Las comprobaciones se hacen con el DOM listo: si el script carga en la cabecera, aún no existe nada. */
+function btsRun(){
 if (!document.querySelector('.post') && !document.querySelector('.sceditor-container')) return;
 /* Temas: solo para los temas.
    Campos de perfil con clase slugificada, color del autor como
@@ -327,10 +337,14 @@ if (document.readyState === "loading") {
   setTimeout(btsDarkEditor, 4000);
 }
 
+}
+if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", btsRun); } else { btsRun(); }
 })();
 /* --- js-subforos.js --- */
 (function(){
 /* --- subforos: solo con lista de temas --- */
+/* Las comprobaciones se hacen con el DOM listo: si el script carga en la cabecera, aún no existe nada. */
+function btsRun(){
 if (!document.querySelector('ul.topiclist.topics')) return;
 /* Subforos: solo para los subforos.
    Marco .rbgimg en cabeceras y filas, y color del autor del último mensaje
@@ -348,6 +362,8 @@ jQuery(document).ready(function() {
   
 });
 
+}
+if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", btsRun); } else { btsRun(); }
 })();
 /* --- js-categorias.js --- */
 /* Categorías: índice y páginas con subforos (lista de foros).
@@ -389,6 +405,7 @@ jQuery(document).ready(function() {
    usar en ordenadores compartidos. Para olvidar una cuenta, doble clic en su
    nombre (pide confirmación). */
 (function () {
+  function btsSw() {
   "use strict";
   if (window.__szSw) return;
   window.__szSw = true;
@@ -553,4 +570,6 @@ jQuery(document).ready(function() {
     if (!root.classList.contains("open")) return;
     if (!root.contains(ev.target)) root.classList.remove("open");
   });
+  }
+  if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", btsSw); } else { btsSw(); }
 })();
