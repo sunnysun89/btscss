@@ -4169,3 +4169,13 @@ li.row:hover .rforimg { filter: none; }
   padding: 0 14px 14px;
 }
 .rdb__g--apart { flex: 1 1 calc(50% - 10px); }
+
+/* 24.5 — hovers más suaves */
+.lastpost-avatar img,
+.postprofile dt img,
+#rneonfooter td.raffiliates img,
+#rneonfooter td.rpartners img,
+.rforimg {
+  transition-duration: 2s;
+  transition-timing-function: ease-in-out;
+}
