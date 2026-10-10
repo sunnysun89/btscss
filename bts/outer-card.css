@@ -3592,7 +3592,7 @@ form[name="form_login"] .user_login_form label {
   top: -1px;
   left: -1px;
   z-index: 2;
-  width: 110px;
+  width: 250px;
   height: 3px;
   background: var(--burnthesky-red);
   pointer-events: none;
