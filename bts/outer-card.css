@@ -3815,982 +3815,333 @@ form[name="form_login"] .user_login_form label {
   #rneonfooter td.raffiliates { border-right: 0; border-bottom: 1px solid var(--burnthesky-line); }
 }
 
-/* ============================================================================
-   BURN THE SKY · PARCHE v1.4
-   Va AL FINAL de la hoja, después de la sección 22. No toca el banner, el
-   mural ni el mensual. Añade:
-
-   23  Cabecera nativa: el título del sitio ya no se duplica
-   24  Categorías y foros del índice (filas, columnas, descripciones)
-   25  Lista de temas de un subforo
-   ========================================================================== */
-
-:root {
-  /* Anchos de columna compartidos por cabecera y filas: si se tocan, se
-     tocan los dos a la vez y las columnas siguen alineadas. */
-  --burnthesky-col-stat:      96px;      /* temas / mensajes / respuestas / vistas */
-  --burnthesky-col-last:      290px;     /* último mensaje */
-  --burnthesky-row-pad:       26px;      /* margen interior izquierdo de las filas */
-  --burnthesky-forum-img-h:   96px;      /* alto de la imagen de descripción (.rforimg) */
-}
-
 
 /* ============================================================================
-   23 · CABECERA NATIVA
-   Foroactivo pinta el título del sitio y su descripción dentro de
-   #page-header .headerbar (#logo-desc). El banner ya dice lo mismo, así que
-   el texto aparecía dos veces: arriba, en el banner, y otra vez entre el
-   banner y la primera categoría.
+   23 · CATEGORÍAS Y FOROS (v2)  ·  también la caja de subforos de viewforum
 
-   No se usa display:none: el título del sitio es el h1/título del documento
-   y los lectores de pantalla y los buscadores lo siguen leyendo. Se saca del
-   flujo y se recorta a 1px.
-   ========================================================================== */
-#page-header .headerbar {
-  position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
-  margin: -1px !important;
-  padding: 0 !important;
-  overflow: hidden !important;
-  clip: rect(0 0 0 0) !important;
-  clip-path: inset(50%) !important;
-  white-space: nowrap !important;
-  border: 0 !important;
-}
-
-
-/* ============================================================================
-   24 · CATEGORÍAS Y FOROS DEL ÍNDICE
-
-   Estructura real (plantilla index_box):
-     .forabg > .inner > ul.topiclist  > li.header > dl.icon > dd×4
+   ESTRUCTURA REAL (plantilla index_box):
+     .forabg > .inner > ul.topiclist   > li.header > dl.icon > dd.dterm + dd×3
                       > ul.topiclist.forums > li.row
-        li.row  = h2.hierarchy (título)  +  {FORUM_DESC}  +  dl.icon (cifras)
+       li.row = h3.hierarchy (título) + {descripción} + dl.icon (cifras y último)
+   La descripción llega de tres formas, las tres cubiertas:
+     · texto plano (nodo suelto)           → tarjeta vertical simple
+     · .rsingleforum (ancho completo)      → imagen | título+texto+enlaces | cifras
+     · .rdoubleforum (medio ancho)         → dos por fila, imagen arriba
 
-   La descripción llega de tres formas y las tres están cubiertas:
-     · texto plano                     (nodo de texto suelto)
-     · .rsingleforum  (ancho completo) (imagen + texto + enlaces)
-     · .rdoubleforum  (medio ancho)    (dos foros lado a lado)
+   REGLA DE ORO: nada se coloca por "auto-placement". Cada pieza tiene
+   columna y fila explícitas, o va en un flex en columna con `order`; por eso
+   un foro con texto plano, con imagen o doble no desordena a los demás.
 
-   Layout de la fila: grid de DOS columnas. Los hijos de li.row los pone la
-   plantilla, no el usuario, así que el reparto es estable. Título y
-   descripción van a la izquierda; las cifras y el último mensaje, a la
-   derecha, centrados en vertical. Lo que no se pueda seleccionar (texto
-   suelto) cae solo en la primera celda libre de la columna izquierda.
+   AJUSTES RÁPIDOS (variables):
+   --burnthesky-forimg-w ..... ancho de la imagen de un foro simple
+   --burnthesky-forimg-h ..... alto de la imagen de un foro doble
+   --burnthesky-fortitle ..... tamaño del título de cada foro
+   --burnthesky-col-stat ..... ancho de las casillas Temas / Mensajes
+   --burnthesky-col-last ..... ancho del bloque Último mensaje
    ========================================================================== */
+:root {
+  --burnthesky-forimg-w: 230px;
+  --burnthesky-forimg-h: 150px;
+  --burnthesky-fortitle: 26px;
+  --burnthesky-col-stat: 96px;
+  --burnthesky-col-last: 260px;
+}
 
-/* -- Cabecera de la categoría: mismas columnas que las filas -- */
-.forabg ul.topiclist li.header dl.icon { min-height: 0; }
+/* -- el título y la descripción nativos duplicaban los del banner -- */
+#page-header #logo-desc { display: none !important; }
+
+/* -- cabecera de categoría: ventana con tres puntos y título grande -- */
+.forabg ul.topiclist li.header dd.topics,
+.forabg ul.topiclist li.header dd.posts,
+.forabg ul.topiclist li.header dd.lastpost { display: none !important; }
 
 .forabg ul.topiclist li.header dd.dterm {
   flex: 1 1 auto;
-  padding: 16px var(--burnthesky-row-pad) !important;
-}
-
-.forabg ul.topiclist li.header dd.topics,
-.forabg ul.topiclist li.header dd.posts {
-  flex: 0 0 var(--burnthesky-col-stat);
   width: auto !important;
-  padding: 16px 0 !important;
-  text-align: center;
-}
-
-.forabg ul.topiclist li.header dd.lastpost {
-  flex: 0 0 var(--burnthesky-col-last);
-  width: auto !important;
-  padding: 16px 0 16px 22px !important;
+  padding: 12px 18px !important;
 }
 
 .forabg .table-title {
   display: flex;
   align-items: center;
-  gap: 12px;
-  font: var(--burnthesky-fs-lg) / 1 var(--burnthesky-ff-display);
+  font: 20px / 1 var(--burnthesky-ff-display);
   letter-spacing: -.3px;
   text-transform: uppercase;
   color: var(--burnthesky-white);
 }
-
-/* Anillo de categoría (antes solo salía si el título iba dentro de un h2). */
 .forabg .table-title::before {
   content: '';
-  flex: none;
-  width: 14px;
-  height: 14px;
-  border: 2px solid var(--burnthesky-gray);
+  flex-shrink: 0;
+  width: 9px;
+  height: 9px;
+  margin-right: 46px;
   border-radius: 50%;
-  background: var(--burnthesky-ring);
+  background: var(--burnthesky-red-vivid);
+  box-shadow: 16px 0 0 var(--burnthesky-gray), 32px 0 0 var(--burnthesky-gray-lt);
 }
+.table-title .rbgimg { display: none; }
 
-.table-title .rbgimg,
-ul.topiclist li.row dl.icon > .rbgimg,
-ul.topiclist li.header dt > .rbgimg { display: none; }
-
-/* -- Fila -- */
+/* -- contenedor de tarjetas -- */
 .forabg ul.topiclist.forums {
   display: flex;
   flex-wrap: wrap;
+  gap: 12px;
+  padding: 14px;
 }
 
+/* -- tarjeta (base: texto plano) -- */
 .forabg ul.topiclist.forums > li.row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  grid-auto-rows: auto;
-  align-content: center;
-  row-gap: 0;
-  flex: 0 0 100%;
+  position: relative;
+  display: flex;
+  flex: 1 1 100%;
+  flex-wrap: wrap;
+  align-content: flex-start;
   min-width: 0;
-  padding: 20px 0 20px var(--burnthesky-row-pad);
+  padding: 18px 22px;
+  background: var(--burnthesky-void) !important;
+  border: 1px solid var(--burnthesky-line) !important;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #c4c4c4;
+  transition: transform var(--burnthesky-ease), border-color var(--burnthesky-ease),
+              box-shadow var(--burnthesky-ease);
 }
 
-/* Título (fila 1, izquierda). Antes quedaba en línea con el texto. */
+.forabg ul.topiclist.forums > li.row:hover {
+  transform: translateY(-2px);
+  background: var(--burnthesky-void) !important;
+  border-color: var(--burnthesky-red) !important;
+  box-shadow: 4px 4px 0 var(--burnthesky-red-ghost-2) !important;
+}
+
+/* título */
 .forabg li.row > h2.hierarchy,
 .forabg li.row > h3.hierarchy,
 .forabg li.row > h4.hierarchy {
-  grid-column: 1;
-  grid-row: 1;
-  display: block;
-  margin: 0 0 8px;
-  padding-right: 24px;
+  display: block !important;
+  flex: 1 1 100%;
+  margin: 0 0 6px;
+  padding: 0;
 }
 
 .forabg a.forumtitle {
   display: inline-block;
-  font: 26px / 1.05 var(--burnthesky-ff-display);
+  font: var(--burnthesky-fortitle) / 1.05 var(--burnthesky-ff-display);
   letter-spacing: -.4px;
 }
-
-/* Todo lo demás de la izquierda (descripción) cae en la columna 1, debajo del
-   título. Texto suelto o .rsingleforum / .rdoubleforum. */
-.forabg li.row > :not(h2):not(h3):not(h4):not(dl) { grid-column: 1; }
-
-.forabg li.row {
-  font: 13px / 1.75 var(--burnthesky-ff-sans);
-  color: #b0b0b0;
+.forabg a.forumtitle::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 10px;
+  background: var(--burnthesky-red);
+  vertical-align: middle;
+  transform: translateY(-3px);
 }
 
-/* Cifras y último mensaje (columna 2, ocupa todas las filas del grid). */
-.forabg li.row > dl.icon {
-  grid-column: 2;
-  grid-row: 1 / span 4;
-  align-self: stretch;
-  display: flex !important;
-  align-items: stretch;
-  margin: -20px 0;               /* compensa el padding vertical de la fila */
-  border-left: 1px solid var(--burnthesky-line);
-}
-
-.forabg li.row dl.icon dd.topics,
-.forabg li.row dl.icon dd.posts {
-  flex: 0 0 var(--burnthesky-col-stat);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: auto !important;
-  padding: 0 !important;
-  font: 28px / 1 var(--burnthesky-ff-display);
-  color: var(--burnthesky-white);
-  text-align: center;
-}
-
-.forabg li.row dl.icon dd.posts { border-left: 1px solid var(--burnthesky-line) !important; }
-
-.forabg li.row dl.icon dd dfn {
-  margin-top: 7px;
-  font: var(--burnthesky-fs-2xs) / 1 var(--burnthesky-ff-mono);
-  letter-spacing: 2px;
-  color: var(--burnthesky-gray-lt);
-}
-
-.forabg li.row dl.icon dd.lastpost {
-  flex: 0 0 var(--burnthesky-col-last);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: auto !important;
-  padding: 0 20px 0 22px !important;
-  border-left: 1px solid var(--burnthesky-line) !important;
-  font: var(--burnthesky-fs-sm) / 1.65 var(--burnthesky-ff-mono);
-  color: var(--burnthesky-gray-lt);
-  text-align: left;
-  overflow: hidden;
-}
-
-.forabg li.row dl.icon dd.lastpost .lastpost-avatar { flex: none; }
-.forabg li.row dl.icon dd.lastpost .lastpost-avatar img { float: none; margin: 0; display: block; }
-
-.forabg li.row dl.icon dd.lastpost dfn,
-.forumbg ul.topiclist.topics li.row dl.icon dd.lastpost dfn { display: none; }
-
-/* El título del último tema (Foroactivo ya lo recorta con "…"): una línea. */
-.forabg li.row dl.icon dd.lastpost > span:last-child {
-  display: block;
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
-.forabg li.row dl.icon dd.lastpost a:first-child {
-  color: var(--burnthesky-white);
-  text-decoration: none;
-}
-
-/* -- Descripciones -- */
-.rsingleforum,
-.rdoubleforum {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  min-width: 0;
-  padding-right: 24px;
-}
-
+/* descripción y enlaces (plantillas del panel) */
 .rfordesc {
-  max-width: 78ch;
-  color: #b0b0b0;
+  max-width: 72ch;
+  margin: 0 0 10px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #c4c4c4;
 }
 
-/* La imagen de la descripción solo se enseña si es una imagen real: con la de
-   ejemplo (placehold.co) se esconde, igual que el icono de perfil. */
-.rforimg { display: none; }
-
-.rforimg[style*="url"]:not([style*="placehold"]) {
-  display: block;
-  height: var(--burnthesky-forum-img-h);
-  background-size: cover !important;
-  background-position: center !important;
-  border: 1px solid var(--burnthesky-line);
-  filter: grayscale(1) brightness(.7);
-  transition: filter .4s ease;
-}
-
-li.row:hover .rforimg[style*="url"]:not([style*="placehold"]) { filter: none; }
-
-/* Enlaces de la descripción: mismo lenguaje que la barra del mural. */
 .rforlinks {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
 }
-
 .rforlinks a {
+  display: inline-block;
   padding: 3px 10px;
   border: 1px solid var(--burnthesky-line-2);
-  font: var(--burnthesky-fs-xs) / 1.5 var(--burnthesky-ff-mono);
+  font: var(--burnthesky-fs-xs) / 1.6 var(--burnthesky-ff-mono);
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--burnthesky-gray-lt);
-  transition: color var(--burnthesky-ease), border-color var(--burnthesky-ease),
+  transition: border-color var(--burnthesky-ease), color var(--burnthesky-ease),
               background var(--burnthesky-ease);
 }
-
-.rforlinks a::before { content: '> '; color: var(--burnthesky-red-vivid); }
-
 .rforlinks a:hover {
   border-color: var(--burnthesky-red);
   background: var(--burnthesky-red-wash);
   color: #fff;
 }
 
-/* -- Hover: toda la fila responde, no solo el título -- */
-.forabg ul.topiclist.forums > li.row:hover a.forumtitle {
-  color: var(--burnthesky-red-vivid);
-  text-shadow: var(--burnthesky-ghost-sm);
+/* imagen del foro */
+.rforimg {
+  background-color: #050505;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  filter: grayscale(1) brightness(.75);
+  transition: filter .4s ease;
 }
+li.row:hover .rforimg { filter: none; }
 
-/* -- Foros de medio ancho (.rdoubleforum): dos por fila --
-   Las cifras bajan debajo del texto, a todo el ancho de la mitad. */
-.forabg ul.topiclist.forums > li.row:has(> .rdoubleforum) {
-  flex-basis: 50%;
-  grid-template-columns: minmax(0, 1fr);
-  padding-right: 0;
-}
-
-.forabg ul.topiclist.forums > li.row:has(> .rdoubleforum) > dl.icon {
-  grid-column: 1;
-  grid-row: auto;
-  margin: 12px 0 -20px;
-  border-left: 0;
+/* -- cifras y último mensaje (dl.icon) -- */
+.forabg ul.topiclist.forums li.row > dl.icon {
+  display: flex !important;
+  flex: 1 1 100%;
+  align-items: stretch;
+  margin: 14px 0 0;
   border-top: 1px solid var(--burnthesky-line);
 }
 
-.forabg li.row:has(> .rdoubleforum) dl.icon dd.topics,
-.forabg li.row:has(> .rdoubleforum) dl.icon dd.posts { flex: 0 0 var(--burnthesky-col-stat); padding: 14px 0 !important; }
-.forabg li.row:has(> .rdoubleforum) dl.icon dd.posts { border-left: 1px solid var(--burnthesky-line) !important; }
-.forabg li.row:has(> .rdoubleforum) dl.icon dd.lastpost { flex: 1 1 0; min-width: 0; padding: 14px 20px 14px 22px !important; }
-
-/* Pareja de dobles: divisoria vertical entre las dos mitades. */
-.forabg ul.topiclist.forums > li.row:has(> .rdoubleforum) + li.row:has(> .rdoubleforum) {
-  border-left: 1px solid var(--burnthesky-line);
-  padding-left: calc(var(--burnthesky-row-pad) - 1px);
-}
-
-/* Un doble sin pareja no deja la fila a medias. */
-.forabg ul.topiclist.forums > li.row:has(> .rdoubleforum):last-child { flex-grow: 1; }
-
-/* -- Responsive -- */
-@media (max-width: 900px) {
-  /* Sin columnas, las etiquetas de la cabecera no tienen a qué apuntar. */
-  .forabg ul.topiclist li.header dd.topics,
-  .forabg ul.topiclist li.header dd.posts,
-  .forabg ul.topiclist li.header dd.lastpost { display: none; }
-  .forabg ul.topiclist li.header dd.dterm { padding-left: 18px !important; }
-
-  .forabg ul.topiclist.forums > li.row {
-    grid-template-columns: minmax(0, 1fr);
-    padding: 18px 0 0 18px;
-  }
-
-  .forabg li.row > dl.icon {
-    grid-column: 1;
-    grid-row: auto;
-    flex-wrap: wrap;
-    margin: 6px 0 0 -18px;
-    border-left: 0;
-    border-top: 1px solid var(--burnthesky-line);
-  }
-
-  .forabg li.row dl.icon dd.topics,
-  .forabg li.row dl.icon dd.posts { padding: 14px 0 !important; }
-
-  .forabg li.row dl.icon dd.lastpost {
-    flex: 1 1 0;
-    min-width: 0;
-    padding: 12px 16px 12px 20px !important;
-    border-left: 0 !important;
-  }
-
-  /* Los dobles repiten aquí lo de la fila normal: sus reglas de escritorio
-     tienen más peso y, sin esto, el bloque de cifras se recortaba. */
-  .forabg ul.topiclist.forums > li.row:has(> .rdoubleforum) { flex-basis: 100%; padding: 18px 0 0 18px; }
-  .forabg ul.topiclist.forums > li.row:has(> .rdoubleforum) > dl.icon { margin: 6px 0 0 -18px; }
-  .forabg li.row:has(> .rdoubleforum) dl.icon dd.lastpost { padding: 12px 16px 12px 20px !important; }
-  .forabg ul.topiclist.forums > li.row:has(> .rdoubleforum) + li.row:has(> .rdoubleforum) {
-    border-left: 0;
-    padding-left: 18px;
-  }
-}
-
-@media (max-width: 560px) {
-  .forabg li.row dl.icon dd.lastpost,
-  .forabg li.row:has(> .rdoubleforum) dl.icon dd.lastpost { flex-basis: 100%; border-top: 1px solid var(--burnthesky-line); }
-  .forabg a.forumtitle { font-size: 22px; }
-}
-
-
-/* ============================================================================
-   25 · LISTA DE TEMAS DE UN SUBFORO
-   Estructura estándar de phpBB3 (la plantilla viewforum_body no está en el
-   repositorio, así que esto sigue el marcado nativo):
-     .forumbg > .inner > ul.topiclist > li.header > dl.icon > dt + dd×3
-              > ul.topiclist.topics > li.row > dl.icon > dt + dd×3
-   js-subforos.js añade un .rbgimg vacío dentro de cada dl y del dt de la
-   cabecera: se anula arriba (sección 24) para que no ocupe una columna.
-   ========================================================================== */
-.forumbg ul.topiclist li.header dl.icon,
-.forumbg ul.topiclist.topics li.row dl.icon {
-  display: flex !important;
-  align-items: stretch;
-}
-
-/* Cabecera: mismas columnas que las filas. */
-.forumbg ul.topiclist li.header dt {
-  flex: 1 1 auto;
-  padding: 16px var(--burnthesky-row-pad) !important;
-  font: var(--burnthesky-fs-xs) / 1.4 var(--burnthesky-ff-mono);
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--burnthesky-gray-lt);
-}
-
-.forumbg ul.topiclist li.header dd.posts,
-.forumbg ul.topiclist li.header dd.views {
-  flex: 0 0 var(--burnthesky-col-stat);
-  width: auto !important;
-  padding: 16px 0 !important;
-  text-align: center;
-}
-
-.forumbg ul.topiclist li.header dd.lastpost {
-  flex: 0 0 var(--burnthesky-col-last);
-  width: auto !important;
-  padding: 16px 0 16px 22px !important;
-}
-
-/* Filas */
-.forumbg ul.topiclist.topics li.row dl.icon dt {
-  flex: 1 1 auto;
-  min-width: 0;
-  padding: 18px 24px 18px var(--burnthesky-row-pad) !important;
-  font: var(--burnthesky-fs-sm) / 1.8 var(--burnthesky-ff-mono);
-  letter-spacing: 1px;
-  color: var(--burnthesky-gray-lt);
-}
-
-.forumbg ul.topiclist.topics a.topictitle {
-  display: inline-block;
-  margin-bottom: 2px;
-  font: 22px / 1.1 var(--burnthesky-ff-display);
-  letter-spacing: -.3px;
-}
-
-.forumbg ul.topiclist.topics li.row dl.icon dd.posts,
-.forumbg ul.topiclist.topics li.row dl.icon dd.views {
-  flex: 0 0 var(--burnthesky-col-stat);
+.forabg ul.topiclist.forums li.row dd.topics,
+.forabg ul.topiclist.forums li.row dd.posts {
   display: flex;
+  flex: 0 0 var(--burnthesky-col-stat);
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: auto !important;
-  padding: 0 !important;
+  padding: 10px 0 !important;
   border-left: 1px solid var(--burnthesky-line) !important;
-  font: 24px / 1 var(--burnthesky-ff-display);
-  color: var(--burnthesky-white);
-  text-align: center;
+  font-size: 28px;
+  transition: background var(--burnthesky-ease);
 }
+.forabg ul.topiclist.forums li.row dd.topics { border-left: 0 !important; }
+.forabg ul.topiclist.forums li.row:hover dd.topics,
+.forabg ul.topiclist.forums li.row:hover dd.posts { background: var(--burnthesky-red-wash); }
 
-.forumbg ul.topiclist.topics li.row dl.icon dd dfn {
-  margin-top: 7px;
-  font: var(--burnthesky-fs-2xs) / 1 var(--burnthesky-ff-mono);
-  letter-spacing: 2px;
-  color: var(--burnthesky-gray-lt);
-}
-
-.forumbg ul.topiclist.topics li.row dl.icon dd.lastpost {
-  flex: 0 0 var(--burnthesky-col-last);
+.forabg ul.topiclist.forums li.row dd.lastpost {
   display: flex;
+  flex: 1 1 auto;
   align-items: center;
-  width: auto !important;
-  padding: 0 20px 0 22px !important;
+  gap: 12px;
+  min-width: 0;
+  padding: 10px 0 10px 18px !important;
   border-left: 1px solid var(--burnthesky-line) !important;
-  font: var(--burnthesky-fs-sm) / 1.65 var(--burnthesky-ff-mono);
-  color: var(--burnthesky-gray-lt);
+  font: 12px / 1.65 var(--burnthesky-ff-mono);
+  letter-spacing: .3px;
+  text-align: left;
+}
+.forabg ul.topiclist.forums li.row dd.lastpost .lastpost-avatar { flex: 0 0 auto; }
+.forabg ul.topiclist.forums li.row dd.lastpost .lastpost-avatar img { float: none; margin: 0; }
+.forabg ul.topiclist.forums li.row dd.lastpost > span:not(.lastpost-avatar) { min-width: 0; color: var(--burnthesky-gray-lt); }
+.forabg ul.topiclist.forums li.row dd.lastpost > span > a:first-child { color: var(--burnthesky-white); font-size: 13px; }
+
+/* ============================================================================
+   FORO SIMPLE (.rsingleforum): imagen | texto | cifras
+   .rsingleforum pasa a display:contents para que sus hijos sean piezas de la
+   rejilla de la tarjeta, cada una con su celda explícita.
+   ========================================================================== */
+.forabg ul.topiclist.forums > li.row:has(> .rsingleforum) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-content: stretch;
+  padding: 0;
+}
+.forabg ul.topiclist.forums > li.row:has(> .rsingleforum .rforimg) { padding-left: var(--burnthesky-forimg-w); }
+
+.forabg li.row:has(> .rsingleforum) > .rsingleforum { display: contents; }
+
+.forabg li.row:has(> .rsingleforum) > h2.hierarchy,
+.forabg li.row:has(> .rsingleforum) > h3.hierarchy,
+.forabg li.row:has(> .rsingleforum) > h4.hierarchy {
+  grid-column: 1;
+  grid-row: 1;
+  margin: 0;
+  padding: 20px 24px 6px;
+}
+.rsingleforum .rfordesc  { grid-column: 1; grid-row: 2; margin: 0; padding: 0 24px 10px; }
+.rsingleforum .rforlinks { grid-column: 1; grid-row: 3; align-content: flex-start; padding: 4px 24px 20px; }
+
+.forabg ul.topiclist.forums li.row:has(> .rsingleforum) > dl.icon {
+  grid-column: 2;
+  grid-row: 1 / span 3;
+  margin: 0;
+  border-top: 0;
+  border-left: 1px solid var(--burnthesky-line);
+}
+.forabg ul.topiclist.forums li.row:has(> .rsingleforum) dd.topics { border-left: 0 !important; }
+.forabg ul.topiclist.forums li.row:has(> .rsingleforum) dd.lastpost {
+  flex: 0 0 var(--burnthesky-col-last);
+  padding: 10px 18px !important;
 }
 
-.forumbg ul.topiclist.topics li.row dl.icon dd.lastpost > span { display: block; min-width: 0; }
+.rsingleforum .rforimg {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: var(--burnthesky-forimg-w);
+  border-right: 1px solid var(--burnthesky-line);
+}
 
+/* ============================================================================
+   FORO DOBLE (.rdoubleforum): dos por fila, imagen arriba, cifras abajo.
+   La tarjeta es un flex en columna; el orden lo da `order`, no el DOM.
+   ========================================================================== */
+.forabg ul.topiclist.forums > li.row:has(> .rdoubleforum) {
+  flex: 1 1 calc(50% - 6px);
+  flex-direction: column;
+  flex-wrap: nowrap;
+  padding: 0;
+}
+.forabg li.row:has(> .rdoubleforum) > .rdoubleforum { display: contents; }
+
+.rdoubleforum .rforimg {
+  order: -1;
+  height: var(--burnthesky-forimg-h);
+  border-bottom: 1px solid var(--burnthesky-line);
+}
+
+.forabg li.row:has(> .rdoubleforum) > h2.hierarchy,
+.forabg li.row:has(> .rdoubleforum) > h3.hierarchy,
+.forabg li.row:has(> .rdoubleforum) > h4.hierarchy { order: 0; padding: 18px 22px 6px; margin: 0; flex: 0 0 auto; }
+.rdoubleforum .rfordesc  { order: 1; margin: 0; padding: 0 22px 10px; max-width: none; }
+.rdoubleforum .rforlinks { order: 2; padding: 4px 22px 18px; }
+
+.forabg ul.topiclist.forums li.row:has(> .rdoubleforum) > dl.icon {
+  order: 3;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  margin: auto 0 0;
+}
+.forabg ul.topiclist.forums li.row:has(> .rdoubleforum) dd.topics,
+.forabg ul.topiclist.forums li.row:has(> .rdoubleforum) dd.posts { flex: 1 1 50%; }
+.forabg ul.topiclist.forums li.row:has(> .rdoubleforum) dd.lastpost {
+  flex: 1 1 100%;
+  padding: 10px 22px !important;
+  border-left: 0 !important;
+  border-top: 1px solid var(--burnthesky-line);
+}
+
+/* -- responsive -- */
 @media (max-width: 900px) {
-  .forumbg ul.topiclist li.header dd.views,
-  .forumbg ul.topiclist.topics li.row dl.icon dd.views { display: none; }
-  .forumbg ul.topiclist li.header dd.lastpost,
-  .forumbg ul.topiclist.topics li.row dl.icon dd.lastpost { flex-basis: 200px; }
+  .forabg ul.topiclist.forums > li.row:has(> .rdoubleforum) { flex-basis: 100%; }
+  .forabg ul.topiclist.forums li.row dd.lastpost { flex-basis: 200px; }
 }
 
 @media (max-width: 640px) {
-  .forumbg ul.topiclist li.header dd.lastpost,
-  .forumbg ul.topiclist.topics li.row dl.icon dd.lastpost { display: none; }
-  .forumbg ul.topiclist.topics li.row dl.icon dt { padding: 14px 16px !important; }
-  .forumbg ul.topiclist.topics a.topictitle { font-size: 19px; }
-}
+  .forabg ul.topiclist.forums { padding: 10px; }
 
-
-/* ============================================================================
-   BURN THE SKY · PARCHE v1.5
-   Va AL FINAL de la hoja, después de la sección 25. Reescribe el aspecto de
-   los foros que llevan descripción con estructura (.rsingleforum y
-   .rdoubleforum). Los foros con texto plano siguen con la sección 24.
-
-   26  Foros con imagen y de medio ancho (como las capturas de referencia)
-
-   Cómo se reparte cada categoría (se decide sola, por lo que contiene):
-     · con .rsingleforum  → TARJETAS ANCHAS: texto | imagen | retrato del
-                            último autor. Se alternan izquierda/derecha.
-     · con .rdoubleforum  → REJILLA SIN CAJAS: 2 columnas (3 si la categoría
-                            tiene 3 o 6 foros), título, texto, enlaces en
-                            viñetas y último mensaje.
-
-   Piezas del HTML que usa (todas ya existen en tus plantillas):
-     li.row > h2.hierarchy (título) + .rsingleforum|.rdoubleforum
-              (.rforimg + .rfordesc + .rforlinks) + dl.icon (cifras y último
-              mensaje, con el avatar en .lastpost-avatar)
-   El color de la franja y del nombre sale de --user-color, que pone
-   js-categorias.js (color del grupo de quien escribió el último mensaje).
-   ========================================================================== */
-
-:root {
-  --burnthesky-fcard-h:        200px;    /* alto mínimo de la tarjeta ancha */
-  --burnthesky-fcard-text-w:   290px;    /* columna de texto de la tarjeta */
-  --burnthesky-fcard-avatar-w: 150px;    /* columna del retrato */
-  --burnthesky-fcard-bar:      16px;     /* franja de color a un lado */
-  --burnthesky-fgrid-gap:      48px;     /* hueco entre columnas de la rejilla */
-}
-
-
-/* ---------------------------------------------------------------------------
-   26.1 · Categoría sin caja: título grande y línea
-   --------------------------------------------------------------------------- */
-.forabg:has(.rsingleforum),
-.forabg:has(.rdoubleforum) {
-  margin-bottom: 44px !important;
-  background: transparent !important;
-  border: 0 !important;
-}
-
-.forabg:has(.rsingleforum)::before,
-.forabg:has(.rdoubleforum)::before { display: none; }
-
-.forabg:has(.rsingleforum) ul.topiclist li.header,
-.forabg:has(.rdoubleforum) ul.topiclist li.header {
-  background: transparent;
-  border: 0;
-}
-
-/* Las cifras ya van dentro de cada foro: las etiquetas de columna sobran. */
-.forabg:has(.rsingleforum) ul.topiclist li.header dd.topics,
-.forabg:has(.rsingleforum) ul.topiclist li.header dd.posts,
-.forabg:has(.rsingleforum) ul.topiclist li.header dd.lastpost,
-.forabg:has(.rdoubleforum) ul.topiclist li.header dd.topics,
-.forabg:has(.rdoubleforum) ul.topiclist li.header dd.posts,
-.forabg:has(.rdoubleforum) ul.topiclist li.header dd.lastpost { display: none; }
-
-.forabg:has(.rsingleforum) ul.topiclist li.header dd.dterm,
-.forabg:has(.rdoubleforum) ul.topiclist li.header dd.dterm { padding: 0 0 22px !important; }
-
-.forabg:has(.rsingleforum) .table-title,
-.forabg:has(.rdoubleforum) .table-title {
-  gap: 24px;
-  font-size: clamp(34px, 5vw, 52px);
-  line-height: .95;
-  letter-spacing: -1px;
-  text-shadow: var(--burnthesky-ghost);
-}
-
-.forabg:has(.rsingleforum) .table-title::before,
-.forabg:has(.rdoubleforum) .table-title::before { display: none; }
-
-/* La línea que sigue al título: segmento rojo de firma + filo gris. */
-.forabg:has(.rsingleforum) .table-title::after,
-.forabg:has(.rdoubleforum) .table-title::after {
-  content: '';
-  flex: 1 1 auto;
-  align-self: center;
-  height: 6px;
-  min-width: 40px;
-  background:
-    linear-gradient(var(--burnthesky-red), var(--burnthesky-red)) left center / 110px 6px no-repeat,
-    linear-gradient(var(--burnthesky-line-2), var(--burnthesky-line-2)) center / 100% 1px no-repeat;
-}
-
-/* Las filas dejan de pintar su propio fondo y su hover de la sección 7. */
-.forabg:has(.rsingleforum) ul.topiclist.forums,
-.forabg:has(.rdoubleforum) ul.topiclist.forums { background: transparent; }
-
-
-/* ---------------------------------------------------------------------------
-   26.2 · TARJETAS ANCHAS  (.rsingleforum)
-   La fila es un grid de tres columnas. .rsingleforum, dl.icon y dd.lastpost
-   usan display:contents: así sus hijos (imagen, texto, avatar, cifras) pasan
-   a ser celdas directas del grid de la fila y se pueden colocar a mano.
-   --------------------------------------------------------------------------- */
-.forabg:has(.rsingleforum) ul.topiclist.forums {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.forabg:has(.rsingleforum) ul.topiclist.forums > li.row {
-  position: relative;
-  display: grid;
-  grid-template-columns: var(--burnthesky-fcard-text-w) minmax(0, 1fr) var(--burnthesky-fcard-avatar-w);
-  grid-template-rows: auto auto auto 1fr auto;
-  flex: 0 0 auto;
-  min-height: var(--burnthesky-fcard-h);
-  padding: 0 !important;
-  overflow: hidden;
-  background: var(--burnthesky-void-2) !important;
-  border: 1px solid var(--burnthesky-line) !important;
-  border-right: var(--burnthesky-fcard-bar) solid var(--user-color, var(--burnthesky-red)) !important;
-  box-shadow: none !important;
-  transition: border-color var(--burnthesky-ease);
-}
-
-.forabg:has(.rsingleforum) ul.topiclist.forums > li.row:hover {
-  background: var(--burnthesky-void-2) !important;
-  box-shadow: none !important;
-}
-
-.forabg:has(.rsingleforum) li.row > .rsingleforum,
-.forabg:has(.rsingleforum) li.row > dl.icon,
-.forabg:has(.rsingleforum) li.row > dl.icon dd.lastpost { display: contents !important; }
-
-/* Texto, columna 1 */
-.forabg:has(.rsingleforum) li.row > h2.hierarchy,
-.forabg:has(.rsingleforum) li.row > h3.hierarchy,
-.forabg:has(.rsingleforum) li.row > h4.hierarchy {
-  grid-column: 1;
-  grid-row: 1;
-  align-self: start;
-  margin: 0;
-  padding: 24px 22px 0 28px;
-}
-
-.forabg:has(.rsingleforum) a.forumtitle {
-  font-size: 32px;
-  line-height: 1;
-}
-
-.forabg:has(.rsingleforum) .rfordesc {
-  grid-column: 1;
-  grid-row: 2;
-  max-width: none;
-  padding: 10px 22px 0 28px;
-  font: 12px / 1.75 var(--burnthesky-ff-sans);
-  color: #b4b4b4;
-  text-align: justify;
-  hyphens: auto;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 5;
-  overflow: hidden;
-}
-
-.forabg:has(.rsingleforum) .rforlinks {
-  grid-column: 1;
-  grid-row: 3;
-  padding: 12px 22px 0 28px;
-}
-
-/* Imagen central: ocupa todo el alto, un poco apagada como en las capturas. */
-.forabg:has(.rsingleforum) .rforimg {
-  grid-column: 2;
-  grid-row: 1 / -1;
-  display: block;
-  height: auto;
-  min-height: 100%;
-  background-size: cover !important;
-  background-position: center !important;
-  border: 0;
-  filter: brightness(.72) saturate(.9);
-  transition: filter .4s ease;
-}
-
-.forabg:has(.rsingleforum) li.row:hover .rforimg { filter: none; }
-
-/* Retrato del último autor: columna 3, a sangre. */
-.forabg:has(.rsingleforum) li.row .lastpost-avatar {
-  grid-column: 3;
-  grid-row: 1 / -1;
-  display: block;
-  min-height: 0;
-}
-
-.forabg:has(.rsingleforum) li.row .lastpost-avatar img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  max-width: none;
-  margin: 0;
-  border: 0;
-  border-radius: 0;
-  object-fit: cover;
-  object-position: top center;
-  filter: none;
-}
-
-/* Último mensaje, abajo en la columna de texto. */
-.forabg:has(.rsingleforum) li.row dl.icon dd.lastpost > span:last-child {
-  grid-column: 1;
-  grid-row: 5;
-  align-self: end;
-  min-width: 0;
-  padding: 14px 22px 20px 28px;
-  font: var(--burnthesky-fs-xs) / 1.6 var(--burnthesky-ff-mono);
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--burnthesky-gray-lt);
-}
-
-.forabg:has(.rsingleforum) li.row dl.icon dd.lastpost br { display: none; }
-
-.forabg:has(.rsingleforum) li.row dl.icon dd.lastpost a:first-child {
-  display: inline;
-  color: var(--burnthesky-gray-lt);
-}
-
-.forabg:has(.rsingleforum) li.row dl.icon dd.lastpost a:first-child::after,
-.forabg:has(.rdoubleforum) li.row dl.icon dd.lastpost a:first-child::after { content: ' \2014  '; color: var(--burnthesky-gray); }
-
-.forabg:has(.rsingleforum) li.row dl.icon dd.lastpost .color-groups {
-  display: block;
-  margin-top: 2px;
-  font: 22px / 1.1 var(--burnthesky-ff-display);
-  letter-spacing: 0;
-  text-transform: uppercase;
-}
-
-/* Cifras: dos etiquetas sobre la imagen, abajo, una a cada lado. */
-.forabg:has(.rsingleforum) li.row dl.icon dd.topics,
-.forabg:has(.rsingleforum) li.row dl.icon dd.posts {
-  grid-column: 2;
-  grid-row: 5;
-  position: relative;
-  z-index: 2;
-  align-self: end;
-  display: inline-flex !important;
-  flex-direction: row;
-  align-items: baseline;
-  gap: 6px;
-  width: auto !important;
-  margin: 0 14px 14px;
-  padding: 5px 10px !important;
-  background: rgba(9, 9, 9, .72);
-  border: 1px solid var(--burnthesky-line-2) !important;
-  font: var(--burnthesky-fs-xs) / 1.4 var(--burnthesky-ff-mono);
-  letter-spacing: 1px;
-  color: var(--burnthesky-white);
-}
-
-.forabg:has(.rsingleforum) li.row dl.icon dd.topics { justify-self: start; }
-.forabg:has(.rsingleforum) li.row dl.icon dd.posts  { justify-self: end; }
-
-.forabg:has(.rsingleforum) li.row dl.icon dd dfn {
-  display: inline;
-  margin: 0;
-  font: inherit;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--burnthesky-gray-lt);
-}
-
-/* -- Alternancia: las pares llevan el texto a la derecha y el retrato a la
-      izquierda, con la franja de color en el lado izquierdo. -- */
-.forabg:has(.rsingleforum) ul.topiclist.forums > li.row:nth-child(even) {
-  grid-template-columns: var(--burnthesky-fcard-avatar-w) minmax(0, 1fr) var(--burnthesky-fcard-text-w);
-  border-right: 1px solid var(--burnthesky-line) !important;
-  border-left: var(--burnthesky-fcard-bar) solid var(--user-color, var(--burnthesky-red)) !important;
-}
-
-.forabg:has(.rsingleforum) li.row:nth-child(even) > h2.hierarchy,
-.forabg:has(.rsingleforum) li.row:nth-child(even) > h3.hierarchy,
-.forabg:has(.rsingleforum) li.row:nth-child(even) > h4.hierarchy,
-.forabg:has(.rsingleforum) li.row:nth-child(even) .rfordesc,
-.forabg:has(.rsingleforum) li.row:nth-child(even) .rforlinks,
-.forabg:has(.rsingleforum) li.row:nth-child(even) dl.icon dd.lastpost > span:last-child { grid-column: 3; }
-
-.forabg:has(.rsingleforum) li.row:nth-child(even) .lastpost-avatar { grid-column: 1; }
-
-/* -- Pantallas estrechas: imagen arriba, texto debajo, sin retrato. -- */
-@media (max-width: 900px) {
-  .forabg:has(.rsingleforum) ul.topiclist.forums > li.row,
-  .forabg:has(.rsingleforum) ul.topiclist.forums > li.row:nth-child(even) {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: 190px auto auto auto auto;
-    min-height: 0;
-    border-width: 1px !important;
-    border-style: solid !important;
-    border-color: var(--burnthesky-line) !important;
-    border-top: var(--burnthesky-fcard-bar) solid var(--user-color, var(--burnthesky-red)) !important;
+  .forabg ul.topiclist.forums > li.row:has(> .rsingleforum) {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    padding: 0 !important;
   }
-
-  .forabg:has(.rsingleforum) .rforimg,
-  .forabg:has(.rsingleforum) li.row:nth-child(even) .rforimg { grid-column: 1; grid-row: 1; min-height: 190px; }
-
-  .forabg:has(.rsingleforum) li.row > h2.hierarchy,
-  .forabg:has(.rsingleforum) li.row:nth-child(even) > h2.hierarchy,
-  .forabg:has(.rsingleforum) li.row > h3.hierarchy,
-  .forabg:has(.rsingleforum) li.row:nth-child(even) > h3.hierarchy { grid-column: 1; grid-row: 2; padding: 20px 20px 0; }
-
-  .forabg:has(.rsingleforum) .rfordesc,
-  .forabg:has(.rsingleforum) li.row:nth-child(even) .rfordesc { grid-column: 1; grid-row: 3; padding: 10px 20px 0; }
-
-  .forabg:has(.rsingleforum) .rforlinks,
-  .forabg:has(.rsingleforum) li.row:nth-child(even) .rforlinks { grid-column: 1; grid-row: 4; padding: 12px 20px 0; }
-
-  .forabg:has(.rsingleforum) li.row dl.icon dd.lastpost > span:last-child,
-  .forabg:has(.rsingleforum) li.row:nth-child(even) dl.icon dd.lastpost > span:last-child { grid-column: 1; grid-row: 5; padding: 14px 20px 20px; }
-
-  .forabg:has(.rsingleforum) li.row .lastpost-avatar,
-  .forabg:has(.rsingleforum) li.row:nth-child(even) .lastpost-avatar { display: none; }
-
-  /* Las cifras pasan a flotar sobre la imagen (fila 1). */
-  .forabg:has(.rsingleforum) li.row dl.icon dd.topics,
-  .forabg:has(.rsingleforum) li.row dl.icon dd.posts { grid-column: 1; grid-row: 1; }
-}
-
-
-/* ---------------------------------------------------------------------------
-   26.3 · REJILLA DE MEDIO ANCHO  (.rdoubleforum)
-   Dos columnas; tres si la categoría tiene exactamente 3 o 6 foros (consulta
-   por cantidad: el primer li que es también el 3.º/6.º empezando por el
-   final marca la lista entera). Sin cajas ni fondos.
-   --------------------------------------------------------------------------- */
-.forabg:has(.rdoubleforum) ul.topiclist.forums {
-  display: flex;
-  flex-wrap: wrap;
-  column-gap: var(--burnthesky-fgrid-gap);
-  row-gap: 40px;
-}
-
-.forabg:has(.rdoubleforum) ul.topiclist.forums > li.row {
-  display: flex;
-  flex-direction: column;
-  flex: 0 0 calc((100% - var(--burnthesky-fgrid-gap)) / 2);
-  min-width: 0;
-  padding: 0 !important;
-  background: transparent !important;
-  border: 0 !important;
-  box-shadow: none !important;
-}
-
-.forabg:has(.rdoubleforum) ul.topiclist.forums > li.row:hover {
-  background: transparent !important;
-  box-shadow: none !important;
-}
-
-/* Tres columnas cuando la categoría tiene 3 o 6 foros. */
-.forabg:has(.rdoubleforum) ul.topiclist.forums > li.row:first-child:nth-last-child(3),
-.forabg:has(.rdoubleforum) ul.topiclist.forums > li.row:first-child:nth-last-child(3) ~ li.row,
-.forabg:has(.rdoubleforum) ul.topiclist.forums > li.row:first-child:nth-last-child(6),
-.forabg:has(.rdoubleforum) ul.topiclist.forums > li.row:first-child:nth-last-child(6) ~ li.row {
-  flex-basis: calc((100% - 2 * var(--burnthesky-fgrid-gap)) / 3);
-}
-
-/* Un foro suelto en la última fila ocupa el ancho entero. */
-.forabg:has(.rdoubleforum) ul.topiclist.forums > li.row:last-child:nth-child(odd):not(:only-child):not(:nth-child(3)) { flex-basis: 100%; }
-
-.forabg:has(.rdoubleforum) li.row > h2.hierarchy,
-.forabg:has(.rdoubleforum) li.row > h3.hierarchy,
-.forabg:has(.rdoubleforum) li.row > h4.hierarchy {
-  margin: 0 0 10px;
-  padding: 0;
-}
-
-.forabg:has(.rdoubleforum) a.forumtitle {
-  font-size: 36px;
-  line-height: 1;
-  letter-spacing: -.6px;
-  text-shadow: var(--burnthesky-ghost-sm);
-}
-
-.forabg:has(.rdoubleforum) ul.topiclist.forums > li.row:hover a.forumtitle {
-  color: var(--burnthesky-red-vivid);
-  text-shadow: var(--burnthesky-ghost-sm);
-}
-
-.forabg:has(.rdoubleforum) .rdoubleforum { padding: 0 0 14px; gap: 12px; }
-
-/* En la rejilla la imagen no se enseña (como en las capturas). */
-.forabg:has(.rdoubleforum) .rforimg { display: none !important; }
-
-.forabg:has(.rdoubleforum) .rfordesc {
-  max-width: 62ch;
-  font: 12px / 1.75 var(--burnthesky-ff-sans);
-  color: #a9a9a9;
-  text-align: justify;
-  hyphens: auto;
-}
-
-/* Enlaces en dos columnas con viñeta roja, sin marco. */
-.forabg:has(.rdoubleforum) .rforlinks {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2px 12px;
-  margin-top: 4px;
-}
-
-.forabg:has(.rdoubleforum) .rforlinks a {
-  flex: 0 0 calc(50% - 6px);
-  min-width: 0;
-  padding: 2px 0;
-  background: none;
-  border: 0;
-  font: 10px / 1.6 var(--burnthesky-ff-mono);
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--burnthesky-white);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.forabg:has(.rdoubleforum) .rforlinks a::before {
-  content: '';
-  display: inline-block;
-  width: 5px;
-  height: 5px;
-  margin-right: 10px;
-  vertical-align: middle;
-  background: var(--burnthesky-red);
-}
-
-.forabg:has(.rdoubleforum) .rforlinks a:hover {
-  background: none;
-  color: var(--burnthesky-red-vivid);
-}
-
-/* Cifras y último mensaje: una línea al pie, el autor a la derecha. */
-.forabg:has(.rdoubleforum) li.row > dl.icon {
-  display: flex !important;
-  align-items: flex-start;
-  justify-content: flex-start;
-  gap: 16px;
-  margin: auto 0 0 !important;
-  border: 0 !important;
-  border-top: 1px solid var(--burnthesky-line) !important;
-}
-
-.forabg:has(.rdoubleforum) li.row dl.icon dd.topics,
-.forabg:has(.rdoubleforum) li.row dl.icon dd.posts {
-  flex: none;
-  display: inline-flex !important;
-  flex-direction: row;
-  align-items: baseline;
-  gap: 6px;
-  width: auto !important;
-  padding: 10px 0 0 !important;
-  border: 0 !important;
-  font: var(--burnthesky-fs-xs) / 1.4 var(--burnthesky-ff-mono);
-  letter-spacing: 1px;
-  color: var(--burnthesky-white);
-}
-
-.forabg:has(.rdoubleforum) li.row dl.icon dd dfn {
-  display: inline;
-  margin: 0;
-  font: inherit;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--burnthesky-gray-lt);
-}
-
-.forabg:has(.rdoubleforum) li.row dl.icon dd.lastpost {
-  flex: 1 1 0;
-  display: block;
-  min-width: 0;
-  padding: 10px 0 0 !important;
-  border: 0 !important;
-  font: var(--burnthesky-fs-xs) / 1.6 var(--burnthesky-ff-mono);
-  letter-spacing: 1px;
-  text-align: right;
-  text-transform: uppercase;
-  color: var(--burnthesky-gray-lt);
-}
-
-.forabg:has(.rdoubleforum) li.row dl.icon dd.lastpost .lastpost-avatar { display: none; }
-.forabg:has(.rdoubleforum) li.row dl.icon dd.lastpost br { display: none; }
-
-.forabg:has(.rdoubleforum) li.row dl.icon dd.lastpost a:first-child {
-  display: inline;
-  color: var(--burnthesky-gray-lt);
-}
-
-.forabg:has(.rdoubleforum) li.row dl.icon dd.lastpost .color-groups {
-  display: block;
-  margin-top: 2px;
-  font: 20px / 1.1 var(--burnthesky-ff-display);
-  letter-spacing: 0;
-}
-
-@media (max-width: 900px) {
-  .forabg:has(.rdoubleforum) ul.topiclist.forums > li.row,
-  .forabg:has(.rdoubleforum) ul.topiclist.forums > li.row:first-child:nth-last-child(3),
-  .forabg:has(.rdoubleforum) ul.topiclist.forums > li.row:first-child:nth-last-child(3) ~ li.row,
-  .forabg:has(.rdoubleforum) ul.topiclist.forums > li.row:first-child:nth-last-child(6),
-  .forabg:has(.rdoubleforum) ul.topiclist.forums > li.row:first-child:nth-last-child(6) ~ li.row { flex-basis: 100%; }
-}
-
-@media (max-width: 560px) {
-  .forabg:has(.rdoubleforum) .rforlinks a { flex-basis: 100%; }
-  .forabg:has(.rdoubleforum) a.forumtitle { font-size: 30px; }
+  .forabg li.row:has(> .rsingleforum) > h3.hierarchy { padding: 18px 20px 6px; }
+  .rsingleforum .rfordesc  { padding: 0 20px 10px; }
+  .rsingleforum .rforlinks { padding: 4px 20px 18px; }
+  .rsingleforum .rforimg {
+    position: static;
+    order: -1;
+    width: auto;
+    height: var(--burnthesky-forimg-h);
+    border-right: 0;
+    border-bottom: 1px solid var(--burnthesky-line);
+  }
+  .forabg ul.topiclist.forums li.row:has(> .rsingleforum) > dl.icon {
+    border-left: 0;
+    border-top: 1px solid var(--burnthesky-line);
+  }
+  .forabg ul.topiclist.forums li.row dd.topics,
+  .forabg ul.topiclist.forums li.row dd.posts { flex: 1 1 50%; }
+  .forabg ul.topiclist.forums li.row dd.lastpost { display: none !important; }
 }
