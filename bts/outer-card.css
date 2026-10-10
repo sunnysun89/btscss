@@ -2586,7 +2586,7 @@ div#tabs a[href*="contact"] {
   color: var(--burnthesky-white);
 }
 
-#rstatscontainer .rnewestuser {
+#rstatscontainer user {
   margin: 16px 0 4px;
   font: var(--burnthesky-fs-sm) / 1.7 var(--burnthesky-ff-mono);
   letter-spacing: 1px;
@@ -2594,9 +2594,9 @@ div#tabs a[href*="contact"] {
   text-align: center;
 }
 
-#rstatscontainer .rnewestuser em { font-style: normal; }
+#rstatscontainer user em { font-style: normal; }
 
-#rstatscontainer .rnewestuser strong {
+#rstatscontainer user strong {
   font: var(--burnthesky-fs-lg) / 1.2 var(--burnthesky-ff-display);
   display: block;
 }
@@ -3592,7 +3592,7 @@ form[name="form_login"] .user_login_form label {
   top: -1px;
   left: -1px;
   z-index: 2;
-  width: 250px;
+  width: 110px;
   height: 3px;
   background: var(--burnthesky-red);
   pointer-events: none;
