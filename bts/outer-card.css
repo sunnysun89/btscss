@@ -4170,12 +4170,18 @@ li.row:hover .rforimg { filter: none; }
 }
 .rdb__g--apart { flex: 1 1 calc(50% - 10px); }
 
-/* 24.5 — hovers más suaves */
+/* BTS — PRUEBA TEMPORAL DE TRANSICIONES */
+:root {
+  --burnthesky-ease: 5s linear !important;
+}
+
 .lastpost-avatar img,
 .postprofile dt img,
+.rmes3-card__img,
+#mural .rbusq img,
+#mural .rstaffmemb img,
 #rneonfooter td.raffiliates img,
 #rneonfooter td.rpartners img,
 .rforimg {
-  transition-duration: 2s;
-  transition-timing-function: ease-in-out;
+  transition: filter 5s linear !important;
 }
