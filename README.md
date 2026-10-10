@@ -27,6 +27,9 @@ Solo el fundador (u1) puede editar plantillas.
 8. **JavaScript** (`skin/js/`, Módulos → Gestión de códigos Javascript):
    `js-banner.js` + `js-botones.js` en todas las páginas; `js-indice.js` solo
    índice; `js-temas.js` solo temas; `js-subforos.js` solo subforos.
+   `js-categorias.js` en índice y páginas con subforos (pasa el color del
+   grupo del último autor a cada tarjeta de foro como `--user-color`). Si se
+   pega `bts.js` (todo en uno) ya va incluido.
 9. **Perfil.** Campos personalizados de imagen: `icon` (70x70) y `post cover`
    (800x300). Si se renombran, cambiar `js-temas.js` también.
 
@@ -54,4 +57,5 @@ Solo el fundador (u1) puede editar plantillas.
 | `js/js-banner.js`, `js-botones.js` | Todas las páginas |
 | `js/js-indice.js` | Índice (cadenas en español) |
 | `js/js-temas.js`, `js/js-subforos.js` | Temas / subforos |
+| `js/js-categorias.js` | Color de grupo en las tarjetas de foro |
 | `cabecera.html` | Fuentes + FA + link a la hoja |
