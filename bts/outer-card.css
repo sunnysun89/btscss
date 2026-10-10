@@ -1861,8 +1861,8 @@ p.copyright a:hover { color: var(--burnthesky-red-vivid); }
   --burnthesky-line-2:        #414146;
   --burnthesky-red-vivid:     #ef4545;
 }
-
-   Por qué existe: con los colores del panel sin resetear, fondos claros
+/* ============================================================================
+Por qué existe: con los colores del panel sin resetear, fondos claros
    (#fff, #ECF3F7) ganan en filas, celdas, paneles y tablas, y el foro sale
    con bloques blancos. Este bloque los apaga con selectores largos para no
    depender del orden de cascada. Todo lleva !important por el mismo motivo.
