@@ -3208,9 +3208,41 @@ form[name="form_login"] .user_login_form label {
 
 /* Recent topics (lista que construye js-banner.js) */
 #mural .rrecent {
+  position: relative;
   max-height: 340px;
-  padding: 4px 0;
-  overflow-y: auto;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Scroll AUTOMÁTICO: js-banner.js duplica la lista dentro de .rrecent__track
+   y añade .rrecent--auto solo si no cabe entera en la ventana. La pista sube
+   la mitad de su altura (= una copia) y vuelve a empezar sin salto.
+   Pausa al pasar el ratón.
+   · altura de la ventana ..... max-height de .rrecent (arriba)
+   · velocidad ................ la fija el JS (px por segundo, SPEED en js-banner.js)
+   Con "reducir movimiento" se mantiene: es un desplazamiento lento y pausable. */
+#mural .rrecent__track { display: flex; flex-direction: column; }
+
+#mural .rrecent--auto {
+  -webkit-mask-image: linear-gradient(transparent, #000 7%, #000 93%, transparent);
+          mask-image: linear-gradient(transparent, #000 7%, #000 93%, transparent);
+}
+#mural .rrecent--auto .rrecent__track {
+  animation: burnthesky-recent-scroll var(--rrecent-dur, 30s) linear infinite;
+  will-change: transform;
+}
+#mural .rrecent--auto:hover .rrecent__track { animation-play-state: paused; }
+
+@keyframes burnthesky-recent-scroll {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #mural .rrecent--auto .rrecent__track {
+    animation: burnthesky-recent-scroll var(--rrecent-dur, 30s) linear infinite !important;
+  }
+  #mural .rrecent--auto:hover .rrecent__track { animation-play-state: paused !important; }
 }
 
 #mural .rrecent__item {
@@ -3222,7 +3254,7 @@ form[name="form_login"] .user_login_form label {
   border-left: 2px solid transparent;
   transition: background var(--burnthesky-ease), border-color var(--burnthesky-ease);
 }
-#mural .rrecent__item:last-child { border-bottom: 0; }
+#mural .rrecent__item:last-child { border-bottom: 1px solid var(--burnthesky-line); }
 #mural .rrecent__item:hover { background: var(--burnthesky-red-wash); border-left-color: var(--burnthesky-red); }
 
 #mural .rrecent__title {
