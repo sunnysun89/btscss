@@ -16,7 +16,7 @@ Solo el fundador (u1) puede editar plantillas.
    `cabecera.html`); no se pega en el panel.
 5. **Plantillas** (`skin/plantillas/`, pegar y publicar cada una):
    `overall_header.html`, `index_body.html`, `index_box.html`,
-   `viewtopic_body.html`, `privmsgs_body.html`.
+   `viewtopic_body.html`, `privmsgs_body.html`, `profile_view_body.html` (perfil).
 6. **Descripciones de foro** (campo Descripción de cada foro en el panel):
    `descripcion-foro-simple.html` (ancho completo) o
    `descripcion-foro-doble.html` (medio ancho). Sustituir texto e imágenes.
@@ -30,7 +30,8 @@ Solo el fundador (u1) puede editar plantillas.
    `js-categorias.js` en índice y páginas con subforos (pasa el color del
    grupo del último autor a cada tarjeta de foro como `--user-color`). Si se
    pega `bts.js` (todo en uno) ya va incluido.
-9. **Perfil.** Campos personalizados de imagen: `icon` (70x70) y `post cover`
+9. **Ficha de perfil** (`profile_view_body.html` + `js-perfil.js`, solo la página de perfil; ya va en `bts.js`). Crear en el panel estos campos, con estos nombres: Apodos, Alias, Edad, Orientación, Estado sentimental, Ocupación, Facción, Alianza, Ubicación, Frase, Banner (imagen), Música, Implante 1, Implante 2, Inventario, Medallero. Música: `[u]TÍTULO[/u][b]Artista[/b][i]enlace de YouTube[/i]`. Inventario y Medallero: una imagen por objeto o medalla.
+10. **Perfil (mensajes).** Campos personalizados de imagen: `icon` (70x70) y `post cover`
    (800x300). Si se renombran, cambiar `js-temas.js` también.
 
 ## Pendiente (la CSS los referencia pero no vienen en las instrucciones)

@@ -1,0 +1,134 @@
+<!--
+  Burn The Sky — PERFIL (profile_view_body)
+
+  Panel → Visualización → Plantillas → Perfil → profile_view_body.
+  Solo el fundador puede editar plantillas.
+
+  CÓMO FUNCIONA
+  · Esta plantilla vuelca TODOS los campos del perfil, sin nombrarlos, dentro
+    de #rperfil-campos (oculto). js-perfil.js los reparte en la ficha según el
+    NOMBRE del campo, ignorando mayúsculas y tildes. Si creas o renombras un
+    campo, no hay que tocar la plantilla.
+  · Campos que reconoce (el nombre exacto del panel; entre paréntesis, otros
+    nombres que también valen):
+      Apodos · Alias (alter ego, superhéroe) · Edad · Orientación ·
+      Estado sentimental · Ocupación · Facción (equipo, grupo) ·
+      Alianza (dúo, dupla, pareja) · Ubicación · Frase ·
+      Banner (imagen pequeña, URL o [img]) ·
+      Música (formato abajo) ·
+      Implante 1 · Implante 2 ·
+      Inventario · Medallero (imágenes; una por objeto/medalla)
+  · Cualquier otro campo se muestra al final de la ficha, en "Otros datos".
+  · Música: [u]TÍTULO[/u][b]Artista[/b][i]https://youtu.be/ID[/i]
+
+  VARIABLES NATIVAS usadas (si alguna sale vacía en tu foro, pega aquí la
+  plantilla original y la adapto): {USERNAME} {AVATAR_IMG} {POSTER_RANK}
+  {RANK_IMG} {POSTS} {JOINED} {LAST_VISIT} {ONLINE_IMG} {PM_IMG} {EMAIL_IMG}
+  {SEARCH_IMG} {U_SEARCH_USER} {U_EDIT_PROFILE}
+-->
+
+<div class="rperfil" id="rperfil">
+
+	<div class="rperfil__top">
+		<span class="rperfil__clock" aria-hidden="true"></span>
+		<span class="rperfil__last">Última conexión: <b>{LAST_VISIT}</b></span>
+		<span class="rperfil__online">{ONLINE_IMG}</span>
+	</div>
+
+	<div class="rperfil__cols">
+
+		<!-- Columna 1: avatar -->
+		<div class="rperfil__avatar">
+			<div class="rperfil__avatarimg">{AVATAR_IMG}</div>
+			<div class="rperfil__rank">
+				<span class="rperfil__rankname">{POSTER_RANK}</span>
+				<span class="rperfil__rankimg">{RANK_IMG}</span>
+			</div>
+		</div>
+
+		<!-- Columna 2: identidad y datos -->
+		<div class="rperfil__main">
+
+			<div class="rperfil__id">
+				<div class="rperfil__idicon" aria-hidden="true"></div>
+				<div class="rperfil__idtxt">
+					<h1 class="rperfil__alias" data-slot="alias">{USERNAME}</h1>
+					<span class="rperfil__player">Jugador: <b>{USERNAME}</b></span>
+				</div>
+			</div>
+
+			<div class="rperfil__nicks" data-slot="apodos" data-label="Apodos"></div>
+
+			<div class="rperfil__tiles">
+				<div class="rtile" data-slot="edad"        data-label="Edad"></div>
+				<div class="rtile" data-slot="orientacion" data-label="Orientación"></div>
+				<div class="rtile" data-slot="sentimental" data-label="Estado sentimental"></div>
+				<div class="rtile" data-slot="ocupacion"   data-label="Ocupación"></div>
+				<div class="rtile" data-slot="faccion"     data-label="Facción"></div>
+				<div class="rtile" data-slot="alianza"     data-label="Alianza"></div>
+				<div class="rtile rtile--wide" data-slot="ubicacion" data-label="Ubicación"></div>
+			</div>
+
+			<blockquote class="rperfil__quote" data-slot="frase"></blockquote>
+		</div>
+
+		<!-- Columna 3: banner, música y acciones -->
+		<div class="rperfil__side">
+
+			<div class="rperfil__now" data-slot="musica">
+				<span class="rperfil__chip">Reproduciendo</span>
+				<span class="rperfil__song"></span>
+				<span class="rperfil__artist"></span>
+				<button type="button" class="rperfil__play" aria-label="Reproducir" aria-pressed="false"></button>
+			</div>
+
+			<div class="rperfil__banner" data-slot="banner"></div>
+
+			<div class="rperfil__actions">
+				<a href="{U_SEARCH_USER}" title="Buscar sus mensajes">{SEARCH_IMG}</a>
+				<a href="{U_EDIT_PROFILE}" title="Editar perfil">Editar</a>
+				<span class="rperfil__contact">{PM_IMG}{EMAIL_IMG}</span>
+			</div>
+		</div>
+	</div>
+
+	<div class="rperfil__foot">
+		<span class="rperfil__stat"><b>{POSTS}</b> mensajes escritos</span>
+		<span class="rperfil__join">Inscripción: <b>{JOINED}</b></span>
+	</div>
+
+	<!-- Inventario y medallero (siempre debajo de la ficha) -->
+	<div class="rinv">
+		<div class="rinv__head">Inventario y medallero</div>
+		<div class="rinv__cols">
+			<section class="rinv__box rinv__box--imp">
+				<h3>Implantes</h3>
+				<div class="rinv__implants">
+					<div class="rimp" data-slot="implante1" data-label="Implante 01"></div>
+					<div class="rimp" data-slot="implante2" data-label="Implante 02"></div>
+				</div>
+			</section>
+			<section class="rinv__box">
+				<h3>Inventario</h3>
+				<div class="rinv__grid" data-slot="inventario" data-min="12"></div>
+			</section>
+			<section class="rinv__box">
+				<h3>Medallero</h3>
+				<div class="rinv__grid" data-slot="medallero" data-min="12"></div>
+			</section>
+		</div>
+	</div>
+
+	<div class="rperfil__extra" id="rperfil-extra"></div>
+
+	<!-- Volcado genérico de campos del perfil: lo lee js-perfil.js -->
+	<div id="rperfil-campos" hidden>
+		<!-- BEGIN profile_field -->
+		<div class="rpf">
+			<span class="rpf-l">{profile_field.LABEL}</span>
+			<div class="rpf-c">{profile_field.CONTENT}</div>
+		</div>
+		<!-- END profile_field -->
+	</div>
+
+</div>
