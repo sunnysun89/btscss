@@ -20,9 +20,46 @@ if (!document.querySelector('#left #startindex')) return;
 jQuery(document).ready(function(){
   
   $("#rheader").replaceWith($("#left #startindex"));
-  $("#mural .rmuralinfo .rsubsrecent").replaceWith($("#left #comments_scroll_div"));
-  var rec = $("#mural .rmuralinfo td:nth-child(3) div").html();
-  if (rec) $("#mural .rmuralinfo .rsubsrecent").html(rec.replace("»", ">"));
+  /* Recent topics: se lee la lista del widget estándar (#comments_scroll_div,
+     que se queda donde está para que su script siga funcionando) y se pinta
+     una lista .rrecent propia en la ventana del mural. Se reintenta hasta 8 s
+     porque el widget rellena su contenido después de cargar la página. */
+  (function btsRecent() {
+    var intentos = 0;
+    var t = setInterval(function () {
+      intentos++;
+      var cont = $("#mural .rsubsrecent, #mural .rrecent").first();
+      var src = $("#comments_scroll_div").first();
+      var enlaces = src.find("a[href]").filter(function () { return /\/t\d+/.test($(this).attr("href")); });
+      if (cont.length && enlaces.length) {
+        clearInterval(t);
+        var lista = $('<div class="rrecent"></div>');
+        var vistos = {};
+        enlaces.each(function () {
+          var a = $(this), href = a.attr("href");
+          if (vistos[href]) return;
+          vistos[href] = 1;
+          var bloque = a.closest(".gensmall, p, li, div").not(src);
+          if (!bloque.length || bloque.is(src)) bloque = a.parent();
+          var autor = bloque.find("a[href]").not(a).first().text().trim();
+          var resto = bloque.text().replace(a.text(), "");
+          var fecha = resto.indexOf("»") > -1 ? resto.split("»").slice(1).join("»") : "";
+          fecha = fecha.replace(/\s+/g, " ").trim();
+          var item = $('<a class="rrecent__item"></a>').attr("href", href);
+          item.append($('<span class="rrecent__title"></span>').text(a.text().trim()));
+          var meta = $('<span class="rrecent__meta"></span>');
+          if (autor) { meta.append("por ").append($("<b></b>").text(autor)); }
+          if (fecha) { meta.append((autor ? " · " : "") + fecha); }
+          item.append(meta);
+          lista.append(item);
+        });
+        cont.replaceWith(lista);
+      } else if (intentos > 80) {
+        clearInterval(t);
+        if (cont.length) cont.replaceWith('<p class="rrecent__empty">Sin temas recientes.</p>');
+      }
+    }, 100);
+  })();
   if (document.querySelector('.mod-login-avatar') !== null) {
     $("#mural .rintro .ricon img").replaceWith($(".mod-login-avatar img"));
   }
@@ -155,51 +192,65 @@ jQuery(document).ready(function(){
   
   $("#rfooterreplace").replaceWith($("#rneonfooter"));
 
-  /* Bloque DATABASE: pastillas + donut de grupos con los conteos de la
-     leyenda (title "Grupo: N"). Sin datos no se pinta nada. */
+  /* Bloque DATABASE: pastillas + donut de grupos (con el total en el centro)
+     + una tarjeta por grupo con su color, cifra y barra. Datos de la leyenda
+     (title "Grupo: N"). Sin datos no se pinta nada. */
   try {
     var grupos = [];
     var total = 0;
-    $("#rstatscontainer .rgroupleg").each(function () {
-      var txt = $(this).text().trim();
+    /* La leyenda nativa es UN solo .rgroupleg con un <b><span class="gensmall"
+       title="Grupo: N"> por grupo: se recorre cada .gensmall, no el contenedor. */
+    var fuentes = $("#rstatscontainer .rgroupleg .gensmall[title], .rgroupslegend .gensmall[title]");
+    fuentes = fuentes.filter(function (i) { return fuentes.index(this) === i; });
+    fuentes.each(function () {
+      var tit = $(this).attr("title") || "";
+      var partes = tit.split(":");
+      var txt = (partes[0] || $(this).text()).trim();
       if (!txt) return;
-      var tit = $(this).attr("title") || $(this).find("[title]").first().attr("title") || "";
-      var num = tit.match(/(\d+)/);
-      var n = num ? parseInt(num[1], 10) : 0;
-      var col = "var(--burnthesky-gray)";
-      var pintado = $(this).find("[style*='color']").first();
-      if (!pintado.length) pintado = $(this);
-      var c = pintado.css("color") || "";
-      var hex = pintado.attr("style") || "";
-      var hm = hex.match(/color\s*:\s*(#[0-9a-fA-F]{3,8})/);
-      if (hm) col = hm[1];
-      else if (/^rgb/.test(c)) col = c;
-      grupos.push({ nombre: txt.split("\n")[0].trim().slice(0, 24), n: n, color: col });
+      var n = parseInt((partes[1] || "").replace(/\D/g, ""), 10) || 0;
+      var col = $(this).css("color") || "#9a9a9a";
+      grupos.push({ nombre: txt.slice(0, 28), n: n, color: col });
       total += n;
     });
-    if (grupos.length && total > 0) {
-      var acc = 0;
-      var partes = [];
-      var lis = "";
-      grupos.forEach(function (g) {
-        var pct = g.n / total * 100;
-        var ini = acc;
-        acc += pct;
-        partes.push(g.color + " " + ini.toFixed(1) + "% " + acc.toFixed(1) + "%");
-        lis += '<li><i style="background:' + g.color + '"></i>' + g.nombre + "<b>" + g.n + "</b></li>";
-      });
+    if (grupos.length) {
       var posts = $("p.page-bottom.rtotalposts strong").text() || "";
       var users = $("p.page-bottom.rtotalusers strong").text() || "";
       var newest = $("p.rnewestuser strong").text() || "";
+      var esc = function (s) { return $("<div>").text(s).html(); };
+      var gradiente = function (activo) {
+        var acc = 0, partes = [];
+        grupos.forEach(function (g, i) {
+          if (!g.n) return;
+          var pct = g.n / total * 100, ini = acc;
+          acc += pct;
+          var c = (activo === null || activo === i) ? g.color : "color-mix(in srgb, " + g.color + " 18%, #090909)";
+          partes.push(c + " " + ini.toFixed(2) + "% " + acc.toFixed(2) + "%");
+        });
+        return partes.length ? "conic-gradient(" + partes.join(", ") + ")" : "conic-gradient(#2b2b2e 0 100%)";
+      };
+      var tarjetas = grupos.map(function (g, i) {
+        var pct = total ? Math.round(g.n / total * 100) : 0;
+        return '<div class="rdb__g" tabindex="0" data-i="' + i + '" style="--g:' + g.color +
+          ';--g-soft:color-mix(in srgb, ' + g.color + ' 14%, #090909);--g-glow:color-mix(in srgb, ' + g.color + ' 40%, transparent)">' +
+          '<span class="rdb__gname">' + esc(g.nombre) + '</span><span class="rdb__gcount">' + g.n + '</span>' +
+          '<span class="rdb__gbar"><i style="width:' + pct + '%"></i></span></div>';
+      }).join("");
       var rdb =
         '<div class="rdb"><div class="rdb__bar"><span class="rdb__title">Database</span>' +
-        '<span class="rdb__pill">Total episodios <b>' + posts + "</b></span>" +
-        '<span class="rdb__pill">Population <b>' + users + "</b></span>" +
-        '<span class="rdb__pill">Newest <b>' + newest + "</b></span></div>" +
-        '<div class="rdb__cols"><div class="rdb__donut" style="background: conic-gradient(' + partes.join(", ") + ')"></div>' +
-        '<ul class="rdb__legend">' + lis + "</ul></div>" +
+        '<span class="rdb__pill">Total episodios <b>' + esc(posts) + "</b></span>" +
+        '<span class="rdb__pill">Población <b>' + esc(users) + "</b></span>" +
+        '<span class="rdb__pill">Último <b>' + esc(newest) + "</b></span></div>" +
+        '<div class="rdb__cols"><div class="rdb__donut" style="background:' + gradiente(null) + '">' +
+        '<div class="rdb__dtxt"><b>' + total + '</b><span>miembros</span></div></div>' +
+        '<div class="rdb__groups">' + tarjetas + "</div></div>" +
         '<p class="rdb__legal">Burn The Sky y todo su contenido pertenecen a sus administradores y miembros. Prohibida su reproducción total o parcial.</p></div>';
-      $("#rstatscontainer").before(rdb);
+      var $rdb = $(rdb);
+      $rdb.find(".rdb__g").on("mouseenter focus", function () {
+        $rdb.find(".rdb__donut").css("background", gradiente(+$(this).attr("data-i")));
+      }).on("mouseleave blur", function () {
+        $rdb.find(".rdb__donut").css("background", gradiente(null));
+      });
+      $("#rstatscontainer").before($rdb).addClass("rdb-ready");
     }
   } catch (e) {}
 

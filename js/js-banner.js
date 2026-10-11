@@ -6,9 +6,46 @@
 jQuery(document).ready(function(){
   
   $("#rheader").replaceWith($("#left #startindex"));
-  $("#mural .rmuralinfo .rsubsrecent").replaceWith($("#left #comments_scroll_div"));
-  var rec = $("#mural .rmuralinfo td:nth-child(3) div").html();
-  if (rec) $("#mural .rmuralinfo .rsubsrecent").html(rec.replace("»", ">"));
+  /* Recent topics: se lee la lista del widget estándar (#comments_scroll_div,
+     que se queda donde está para que su script siga funcionando) y se pinta
+     una lista .rrecent propia en la ventana del mural. Se reintenta hasta 8 s
+     porque el widget rellena su contenido después de cargar la página. */
+  (function btsRecent() {
+    var intentos = 0;
+    var t = setInterval(function () {
+      intentos++;
+      var cont = $("#mural .rsubsrecent, #mural .rrecent").first();
+      var src = $("#comments_scroll_div").first();
+      var enlaces = src.find("a[href]").filter(function () { return /\/t\d+/.test($(this).attr("href")); });
+      if (cont.length && enlaces.length) {
+        clearInterval(t);
+        var lista = $('<div class="rrecent"></div>');
+        var vistos = {};
+        enlaces.each(function () {
+          var a = $(this), href = a.attr("href");
+          if (vistos[href]) return;
+          vistos[href] = 1;
+          var bloque = a.closest(".gensmall, p, li, div").not(src);
+          if (!bloque.length || bloque.is(src)) bloque = a.parent();
+          var autor = bloque.find("a[href]").not(a).first().text().trim();
+          var resto = bloque.text().replace(a.text(), "");
+          var fecha = resto.indexOf("»") > -1 ? resto.split("»").slice(1).join("»") : "";
+          fecha = fecha.replace(/\s+/g, " ").trim();
+          var item = $('<a class="rrecent__item"></a>').attr("href", href);
+          item.append($('<span class="rrecent__title"></span>').text(a.text().trim()));
+          var meta = $('<span class="rrecent__meta"></span>');
+          if (autor) { meta.append("por ").append($("<b></b>").text(autor)); }
+          if (fecha) { meta.append((autor ? " · " : "") + fecha); }
+          item.append(meta);
+          lista.append(item);
+        });
+        cont.replaceWith(lista);
+      } else if (intentos > 80) {
+        clearInterval(t);
+        if (cont.length) cont.replaceWith('<p class="rrecent__empty">Sin temas recientes.</p>');
+      }
+    }, 100);
+  })();
   if (document.querySelector('.mod-login-avatar') !== null) {
     $("#mural .rintro .ricon img").replaceWith($(".mod-login-avatar img"));
   }
