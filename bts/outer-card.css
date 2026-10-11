@@ -2098,9 +2098,9 @@ body {
 
 #mural .rstaffmemb img {
   display: block;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  border-radius: 100%;
   object-fit: cover;
   border: 1px solid var(--burnthesky-line-2);
   filter: grayscale(1) brightness(.85);
@@ -3178,8 +3178,8 @@ form[name="form_login"] .user_login_form label {
 
 #mural .rstaffmemb img {
   display: block;
-  width: 64px;
-  height: 96px;
+  width: 60px;
+  height: 90px;
   border-radius: 0;
   object-fit: cover;
   object-position: top center;
