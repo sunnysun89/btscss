@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Anton&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap');
 /* ============================================================================
    BURN THE SKY · burnthesky.foroactivo.com
    Hoja de estilos base · v1.0
@@ -43,7 +42,7 @@
    · Anton ........ respaldo de Impact (Android, Linux)
    · Courier Prime  respaldo de Courier New
    ========================================================================== */
-
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap');
 
 
 /* ============================================================================
@@ -118,8 +117,9 @@
   /* VELOCIDAD DE LOS HOVERS: se cambian aquí y afectan a todo el foro.
      --burnthesky-ease ..... enlaces, tarjetas, botones, bordes, sombras
      --burnthesky-ease-img . imágenes (de gris a color) */
-  --burnthesky-ease:          all 2s cubic-bezier(.22, .61, .36, 1);
-  --burnthesky-ease-img:      all 2s ease-out;
+  --burnthesky-css:           "v1.8";   /* la consola la muestra al cargar: sirve para saber si el navegador tiene el CSS nuevo */
+  --burnthesky-ease:          2s cubic-bezier(.22, .61, .36, 1);
+  --burnthesky-ease-img:      2s ease;
 
   /* ---- Capas ---- */
   --burnthesky-z-navbar:      99;
@@ -391,6 +391,7 @@ ul.linklist li { display: inline-block; margin: 0 16px 0 0; }
 }
 
 .pagination a:hover { border-color: var(--burnthesky-red); color: #fff; }
+.pagination a { transition: color var(--burnthesky-ease), border-color var(--burnthesky-ease), background var(--burnthesky-ease); }
 
 .pagination strong {
   border-color: var(--burnthesky-red);
@@ -4178,3 +4179,24 @@ li.row:hover .rforimg { filter: none; }
   padding: 0 14px 14px;
 }
 .rdb__g--apart { flex: 1 1 calc(50% - 10px); }
+
+
+/* ============================================================================
+   25 · SUAVIDAD DE LOS HOVERS
+   Las imágenes que pasan de gris a color animan `filter`; con will-change el
+   navegador las pone en su propia capa y la transición va por GPU, sin
+   repintar toda la página en cada fotograma.
+   ========================================================================== */
+.rforimg,
+.rmes3-card__img,
+#mural .rbusq img,
+#mural .rstaffmemb img,
+#rneonfooter td.raffiliates img,
+#rneonfooter td.rpartners img,
+.postprofile dt img,
+.lastpost-avatar img,
+.bts-frame__img { will-change: filter; }
+
+.rdb__g { transition: color var(--burnthesky-ease), transform var(--burnthesky-ease),
+          border-color var(--burnthesky-ease), background var(--burnthesky-ease),
+          box-shadow var(--burnthesky-ease); }
