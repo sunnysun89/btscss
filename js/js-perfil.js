@@ -18,6 +18,9 @@
     var mu = location.pathname.match(/^\/u(\d+)/);
     if (!mu || !main || main.querySelector("#rperfil")) return null;
 
+    /* Foroactivo guarda dos versiones de cada valor: .field_uneditable (el texto)
+       y .field_editable (el formulario oculto de edición). Solo vale la primera. */
+    var valor = function (el) { return el.querySelector(".field_uneditable") || el; };
     var pares = [];
     var tomar = function (lab, val, caja) {
       var l = (lab.textContent || "").replace(/\s*:\s*$/, "").replace(/\s+/g, " ").trim();
@@ -65,7 +68,7 @@
     var root = cont.firstElementChild;
 
     var dato = function (re) {
-      for (var i = 0; i < pares.length; i++) if (re.test(pares[i].raw.toLowerCase())) return pares[i].el;
+      for (var i = 0; i < pares.length; i++) if (re.test(pares[i].raw.toLowerCase())) return valor(pares[i].el);
       return null;
     };
     var ligar = function (nom, fn) { root.querySelectorAll('[data-bind="' + nom + '"]').forEach(fn); };
@@ -74,30 +77,49 @@
     ligar("estatus", function (e) { e.textContent = enlinea ? "● En línea" : ""; });
 
     /* avatar: la primera imagen grande que no sea contenido de un campo */
-    var av = null;
+    var av = main.querySelector("#profile-advanced-right .module img:not([src*='empty.gif'])");
     main.querySelectorAll("img").forEach(function (im) {
       if (av) return;
       for (var i = 0; i < pares.length; i++) if (pares[i].el.contains(im)) return;
       var w = im.width || im.offsetWidth || parseInt(im.getAttribute("width"), 10) || 0;
       if (w >= 80) av = im;
     });
-    ligar("avatar", function (e) { if (av) e.appendChild(av.cloneNode(true)); });
+    ligar("avatar", function (e) {
+      if (!av) return;
+      var im = new Image();
+      im.alt = av.alt || "";
+      im.src = av.getAttribute("data-src") || av.currentSrc || av.src;
+      e.appendChild(im);
+    });
 
     /* rango nativo: texto "Rango: X" de la zona del avatar (no el campo Rango) */
     var rn = "";
     if (av) {
       var z = av.parentNode;
       while (z.parentNode && z.parentNode !== main && !z.parentNode.contains(pares[0].caja)) z = z.parentNode;
-      z.querySelectorAll("*").forEach(function (e) {
-        if (rn || e.children.length) return;
-        var m = (e.textContent || "").trim().match(/^Rango\s*:\s*(.+)$/i);
+      var tw = document.createTreeWalker(z, NodeFilter.SHOW_TEXT, null), nodo;
+      while (!rn && (nodo = tw.nextNode())) {
+        var m = (nodo.nodeValue || "").trim().match(/^Rango\s*:\s*(.+)$/i);
         if (m) rn = m[1].trim();
-      });
+      }
     }
     ligar("rangonativo", function (e) { e.textContent = rn; });
 
     var ult = dato(/^(última|ultima) (visita|conexión|conexion)/);
-    ligar("ultima", function (e) { if (ult) e.textContent = ult.textContent.trim(); else if (e.parentNode) e.parentNode.style.display = "none"; });
+    ligar("ultima", function (e) { e.textContent = ult ? ult.textContent.trim() : (enlinea ? "ahora mismo" : "—"); });
+    /* "Tu última visita fue: ..." (el <p> de la parte alta de la página) va junto a la etiqueta */
+    var visita = null;
+    main.querySelectorAll("p").forEach(function (q) {
+      if (!visita && /^\s*Tu .ltima visita/i.test(q.textContent)) visita = q;
+    });
+    var last = root.querySelector(".rperfil__last");
+    if (visita && last) {
+      var v = document.createElement("span");
+      v.className = "rperfil__visit";
+      v.textContent = visita.textContent.replace(/\s+/g, " ").trim();
+      last.parentNode.insertBefore(v, last.nextSibling);
+      visita.style.display = "none";
+    }
     var msg = dato(/^mensajes$/);
     ligar("mensajes", function (e) { e.textContent = msg ? msg.textContent.trim() : "0"; });
 
@@ -108,7 +130,7 @@
       if (/^(mensajes|estatus|última visita|ultima visita)$/.test(k)) return;
       var f = document.createElement("div"); f.className = "rpf";
       var l = document.createElement("span"); l.className = "rpf-l"; l.textContent = p.raw;
-      var c = document.createElement("div"); c.className = "rpf-c"; c.innerHTML = p.el.innerHTML;
+      var c = document.createElement("div"); c.className = "rpf-c"; c.innerHTML = valor(p.el).innerHTML;
       f.appendChild(l); f.appendChild(c); vol.appendChild(f);
     });
 
@@ -124,6 +146,8 @@
     envoltorio.parentNode.insertBefore(root, envoltorio);
     envoltorio.setAttribute("data-bts-oculto", "1");
     envoltorio.style.display = "none";
+    var derecha = document.getElementById("profile-advanced-right");
+    if (derecha) { derecha.setAttribute("data-bts-oculto", "1"); derecha.style.display = "none"; }
     return root;
   }
 

@@ -4720,3 +4720,15 @@ li.row:hover .rforimg { filter: none; }
 .rdate--cal .rdate__tip, .rdate--cake .rdate__tip { left: auto; right: 0; transform: translate(0, 6px); }
 .rdate--cal:hover .rdate__tip, .rdate--cal:focus-visible .rdate__tip,
 .rdate--cake:hover .rdate__tip, .rdate--cake:focus-visible .rdate__tip { transform: translate(0, 0); }
+
+/* barra superior: última conexión + "Tu última visita fue" */
+.rperfil__top { flex-wrap: wrap; row-gap: 6px; }
+.rperfil__visit {
+  padding-left: 14px; margin-left: 2px;
+  border-left: 1px solid var(--burnthesky-line-2);
+  color: var(--burnthesky-gray-lt);
+}
+.rperfil__last b { display: inline !important; }
+.rstat .rtile__v { hyphens: manual; font-size: 18px; }
+.rstat--power .rtile__v { font-size: 24px; }
+.rtile__v .field_uneditable, .rimp__d .field_uneditable { display: inline; }
