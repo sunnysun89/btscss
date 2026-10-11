@@ -2246,7 +2246,7 @@ body {
 #mural .rbusq img {
   display: block;
   width: 100%;
-  height: 140px;
+  height: 120px;
   object-fit: cover;
   object-position: top center;
   border: 1px solid var(--burnthesky-line-2);
