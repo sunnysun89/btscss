@@ -11,7 +11,7 @@
      Si la plantilla profile_view_body NO está instalada (o no se aplica), se
      lee el perfil que pinta Foroactivo (pares "Etiqueta : valor") y se monta
      la ficha encima; lo nativo queda oculto, no borrado. */
-  var MARCADO = "<div class=\"rperfil\" id=\"rperfil\"> <div class=\"rperfil__top\"> <span class=\"rperfil__clock\" aria-hidden=\"true\"></span> <span class=\"rperfil__last\">Última conexión: <b><span data-bind=\"ultima\"></span></b></span> <span class=\"rperfil__online\"><span data-bind=\"estatus\"></span></span> </div> <div class=\"rperfil__cols\"> <div class=\"rperfil__avatar\"> <div class=\"rperfil__avatarimg\"><span data-bind=\"avatar\"></span></div> <div class=\"rperfil__rank\"> <span class=\"rperfil__rankname\"><span data-bind=\"rangonativo\"></span></span> <span class=\"rperfil__rankimg\"></span> </div> </div> <div class=\"rperfil__main\"> <div class=\"rperfil__id\"> <div class=\"rperfil__idicon\" aria-hidden=\"true\"></div> <div class=\"rperfil__idtxt\"> <h1 class=\"rperfil__alias\" data-slot=\"alias\"><span data-bind=\"usuario\"></span></h1> <span class=\"rperfil__player\">Jugador: <b><span data-bind=\"usuario\"></span></b></span> </div> </div> <div class=\"rperfil__nicks\" data-slot=\"apodos\" data-label=\"Apodos\"></div> <div class=\"rperfil__tiles\"> <div class=\"rtile\" data-slot=\"edad\" data-label=\"Edad\"></div> <div class=\"rtile\" data-slot=\"orientacion\" data-label=\"Orientación\"></div> <div class=\"rtile\" data-slot=\"sentimental\" data-label=\"Estado sentimental\"></div> <div class=\"rtile\" data-slot=\"ocupacion\" data-label=\"Ocupación\"></div> <div class=\"rtile\" data-slot=\"faccion\" data-label=\"Facción\"></div> <div class=\"rtile\" data-slot=\"alianza\" data-label=\"Alianza\"></div> <div class=\"rtile rtile--wide\" data-slot=\"ubicacion\" data-label=\"Ubicación\"></div> </div> <div class=\"rperfil__stats\"> <div class=\"rstat rstat--power\" data-slot=\"nivel\" data-label=\"Nivel de poder\"></div> <div class=\"rstat\" data-slot=\"rango\" data-label=\"Rango\"></div> <div class=\"rstat\" data-slot=\"creditos\" data-label=\"Créditos\"></div> </div> <div class=\"rperfil__powers-wrap\"> <h3>Poderes</h3> <div class=\"rperfil__powers\" data-slot=\"poderes\"></div> </div> <blockquote class=\"rperfil__quote\" data-slot=\"frase\"></blockquote> </div> <div class=\"rperfil__side\"> <div class=\"rperfil__now\" data-slot=\"musica\"> <span class=\"rperfil__chip\">Reproduciendo</span> <span class=\"rperfil__song\"></span> <span class=\"rperfil__artist\"></span> <button type=\"button\" class=\"rperfil__play\" aria-label=\"Reproducir\" aria-pressed=\"false\"></button> </div> <div class=\"rperfil__banner\" data-slot=\"banner\"></div> <div class=\"rperfil__actions\"> <a href=\"#BUSCAR#\" title=\"Buscar sus mensajes\">Mensajes</a> <a href=\"#EDITAR#\" title=\"Editar perfil\">Editar</a> <button type=\"button\" class=\"rdate rdate--cake\" data-slot=\"nacimiento\" data-label=\"Fecha de nacimiento\" data-short=\"Nacimiento · \"><span class=\"rdate__ico\"></span><span class=\"rdate__tip\"></span></button> <button type=\"button\" class=\"rdate rdate--cal\" data-slot=\"inscripcion\" data-label=\"Fecha de inscripción\" data-short=\"Inscripción · \" data-fallback=\"#INSCRIPCION#\"><span class=\"rdate__ico\"></span><span class=\"rdate__tip\"></span></button> <span class=\"rperfil__contact\"><a href=\"#MP#\" title=\"Mensaje privado\">MP</a></span> </div> </div> </div> <div class=\"rperfil__foot\"> <span class=\"rperfil__stat\"><b><span data-bind=\"mensajes\"></span></b> mensajes escritos</span> </div> <div class=\"rinv\"> <div class=\"rinv__head\">Inventario y medallero</div> <div class=\"rinv__cols\"> <section class=\"rinv__box rinv__box--imp\"> <h3>Implantes</h3> <div class=\"rinv__implants\"> <div class=\"rimp\" data-slot=\"implante1\" data-label=\"Implante 01\"></div> <div class=\"rimp\" data-slot=\"implante2\" data-label=\"Implante 02\"></div> </div> </section> <section class=\"rinv__box\"> <h3>Inventario</h3> <div class=\"rinv__grid\" data-slot=\"inventario\" data-min=\"12\"></div> </section> <section class=\"rinv__box\"> <h3>Medallero</h3> <div class=\"rinv__grid\" data-slot=\"medallero\" data-min=\"12\"></div> </section> </div> </div> <div class=\"rperfil__extra\" id=\"rperfil-extra\"></div> <div id=\"rperfil-campos\" hidden></div> </div>";
+  var MARCADO = "<div class=\"rperfil\" id=\"rperfil\"> <div class=\"rperfil__top\"> <span class=\"rperfil__clock\" aria-hidden=\"true\"></span> <span class=\"rperfil__last\">Última conexión: <b><span data-bind=\"ultima\"></span></b></span> <span class=\"rperfil__online\"><span data-bind=\"estatus\"></span></span> </div> <div class=\"rperfil__cols\"> <div class=\"rperfil__avatar\"> <div class=\"rperfil__avatarimg\"><span data-bind=\"avatar\"></span></div> <div class=\"rperfil__rank\"> <span class=\"rperfil__rankname\"><span data-bind=\"rangonativo\"></span></span> <span class=\"rperfil__rankimg\"></span> </div> </div> <div class=\"rperfil__main\"> <div class=\"rperfil__id\"> <div class=\"rperfil__idicon\" aria-hidden=\"true\"></div> <div class=\"rperfil__idtxt\"> <h1 class=\"rperfil__alias\" data-slot=\"alias\"><span data-bind=\"usuario\"></span></h1> </div> </div> <div class=\"rperfil__nicks\" data-slot=\"apodos\" data-label=\"Apodos\"></div> <div class=\"rperfil__tiles\"> <div class=\"rtile\" data-slot=\"edad\" data-label=\"Edad\"></div> <div class=\"rtile\" data-slot=\"orientacion\" data-label=\"Orientación\"></div> <div class=\"rtile\" data-slot=\"sentimental\" data-label=\"Estado sentimental\"></div> <div class=\"rtile\" data-slot=\"ocupacion\" data-label=\"Ocupación\"></div> <div class=\"rtile\" data-slot=\"faccion\" data-label=\"Facción\"></div> <div class=\"rtile\" data-slot=\"alianza\" data-label=\"Alianza\"></div> <div class=\"rtile rtile--wide\" data-slot=\"ubicacion\" data-label=\"Ubicación\"></div> </div> <div class=\"rperfil__stats\"> <div class=\"rstat rstat--power\" data-slot=\"nivel\" data-label=\"Nivel de poder\"></div> <div class=\"rstat\" data-slot=\"rango\" data-label=\"Rango\"></div> <div class=\"rstat\" data-slot=\"creditos\" data-label=\"Créditos\"></div> </div> <div class=\"rperfil__powers-wrap\"> <h3>Poderes</h3> <div class=\"rperfil__powers\" data-slot=\"poderes\"></div> </div> <blockquote class=\"rperfil__quote\" data-slot=\"frase\"></blockquote> </div> <div class=\"rperfil__side\"> <div class=\"rperfil__now\" data-slot=\"musica\"> <span class=\"rperfil__chip\">Reproduciendo</span> <span class=\"rperfil__song\"></span> <span class=\"rperfil__artist\"></span> <button type=\"button\" class=\"rperfil__play\" aria-label=\"Reproducir\" aria-pressed=\"false\"></button> </div> <div class=\"rperfil__banner\" data-slot=\"banner\"></div> <div class=\"rperfil__actions\"> <a href=\"#BUSCAR#\" title=\"Buscar sus mensajes\">Mensajes</a> <a href=\"#EDITAR#\" title=\"Editar perfil\">Editar</a> <button type=\"button\" class=\"rdate rdate--cake\" data-slot=\"nacimiento\" data-label=\"Fecha de nacimiento\" data-short=\"Nacimiento · \"><span class=\"rdate__ico\"></span><span class=\"rdate__tip\"></span></button> <button type=\"button\" class=\"rdate rdate--cal\" data-slot=\"inscripcion\" data-label=\"Fecha de inscripción\" data-short=\"Inscripción · \" data-fallback=\"#INSCRIPCION#\"><span class=\"rdate__ico\"></span><span class=\"rdate__tip\"></span></button> <span class=\"rperfil__contact\"><a href=\"#MP#\" title=\"Mensaje privado\">MP</a></span> </div> </div> </div> <div class=\"rperfil__foot\"> <span class=\"rperfil__stat\"><b><span data-bind=\"mensajes\"></span></b> mensajes escritos</span> </div> <div class=\"rinv\"> <div class=\"rinv__head\">Inventario y medallero</div> <div class=\"rinv__cols\"> <section class=\"rinv__box rinv__box--imp\"> <h3>Implantes</h3> <div class=\"rinv__implants\"> <div class=\"rimp\" data-slot=\"implante1\" data-label=\"Implante 01\"></div> <div class=\"rimp\" data-slot=\"implante2\" data-label=\"Implante 02\"></div> </div> </section> <section class=\"rinv__box\"> <h3>Inventario</h3> <div class=\"rinv__grid\" data-slot=\"inventario\" data-min=\"12\"></div> </section> <section class=\"rinv__box\"> <h3>Medallero</h3> <div class=\"rinv__grid\" data-slot=\"medallero\" data-min=\"12\"></div> </section> </div> </div> <div class=\"rperfil__extra\" id=\"rperfil-extra\"></div> <div id=\"rperfil-campos\" hidden></div> </div>";
 
   function nativo() {
     var main = document.getElementById("main-content") || document.getElementById("content") || document.body;
@@ -106,22 +106,19 @@
     ligar("rangonativo", function (e) { e.textContent = rn; });
 
     var ult = dato(/^(última|ultima) (visita|conexión|conexion)/);
-    ligar("ultima", function (e) { e.textContent = ult ? ult.textContent.trim() : (enlinea ? "ahora mismo" : "—"); });
-    /* "Tu última visita fue: ..." (el <p> de la parte alta de la página) va junto a la etiqueta */
+    /* "Última conexión": el valor sale de "Tu última visita fue: ..." (el <p> de
+       la parte alta de la página); si no existe, del campo "Última visita". */
     var visita = null;
     main.querySelectorAll("p").forEach(function (q) {
       if (!visita && /^\s*Tu .ltima visita/i.test(q.textContent)) visita = q;
     });
-    var last = root.querySelector(".rperfil__last");
-    if (visita && last) {
-      var v = document.createElement("span");
-      v.className = "rperfil__visit";
-      v.textContent = visita.textContent.replace(/\s+/g, " ").trim();
-      last.parentNode.insertBefore(v, last.nextSibling);
-      visita.style.display = "none";
-    }
-    var msg = dato(/^mensajes$/);
-    ligar("mensajes", function (e) { e.textContent = msg ? msg.textContent.trim() : "0"; });
+    var fecha = "";
+    if (visita) fecha = visita.textContent.replace(/\s+/g, " ").replace(/^\s*Tu .ltima visita fue\s*:?\s*/i, "").trim();
+    else if (ult) fecha = ult.textContent.trim();
+    ligar("ultima", function (e) {
+      if (fecha) e.textContent = fecha; else if (e.parentNode) e.parentNode.style.display = "none";
+    });
+    if (visita) visita.style.display = "none";
 
     /* los pares pasan al volcado genérico; Estatus y Mensajes ya se usaron */
     var vol = root.querySelector("#rperfil-campos");
@@ -331,50 +328,85 @@
       }
     });
 
-    /* 6. Música */
+    /* 6. Música
+       Formato del campo:  [u]TÍTULO[/u][b]Artista[/b][i]https://youtu.be/ID[/i]
+       Sirve tanto si el campo interpreta el BBCode (llega como <u>/<strong>/<em>)
+       como si lo deja en texto crudo (los campos de una línea no lo interpretan). */
     var hm = root.querySelector('[data-slot="musica"]');
     if (hm) {
       var cm = buscar("musica");
-      var titulo = "", artista = "", url = "";
+      var titulo = "", artista = "", url = "", id = "";
       if (cm && !vacio(cm.el)) {
+        var crudo = cm.el.textContent.replace(/ /g, " ");
+        var bb = function (t) { var m = crudo.match(new RegExp("\\[" + t + "\\]([\\s\\S]*?)\\[/" + t + "\\]", "i")); return m ? m[1].trim() : ""; };
         var u = cm.el.querySelector("u, [style*='underline']");
         var b = cm.el.querySelector("strong, b");
-        var i = cm.el.querySelector("em, i");
+        titulo = bb("u") || (u ? u.textContent.trim() : "");
+        artista = bb("b") || (b ? b.textContent.trim() : "");
         var a2 = cm.el.querySelector("a[href]");
-        titulo = u ? u.textContent.trim() : "";
-        artista = b ? b.textContent.trim() : "";
-        url = (a2 && a2.getAttribute("href")) || (i ? i.textContent.trim() : "") || cm.el.textContent;
+        url = (a2 && a2.getAttribute("href")) || crudo;
+        var m = url.match(/(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:watch\?(?:[^\s\]\)]*&)?v=|embed\/|shorts\/|live\/)|[?&]v=)([\w-]{11})/) ||
+                crudo.match(/(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:watch\?(?:[^\s\]\)]*&)?v=|embed\/|shorts\/|live\/)|[?&]v=)([\w-]{11})/);
+        id = m ? m[1] : "";
       }
-      var id = (url.match(/(?:youtu\.be\/|[?&]v=|\/embed\/|\/shorts\/)([\w-]{11})/) || [])[1];
       if (!id) {
         hm.classList.add("is-empty");
       } else {
         hm.querySelector(".rperfil__song").textContent = titulo || "Sin título";
         hm.querySelector(".rperfil__artist").textContent = artista;
         var btn = hm.querySelector(".rperfil__play");
-        var marco = null;
-        var cmd = function (f) {
-          if (marco && marco.contentWindow)
-            marco.contentWindow.postMessage(JSON.stringify({ event: "command", func: f, args: "" }), "*");
+        var jug = null, listo = false, quiere = false;
+        var estado = function (suena) {
+          btn.setAttribute("aria-pressed", suena ? "true" : "false");
+          btn.setAttribute("aria-label", suena ? "Pausar" : "Reproducir");
+          hm.classList.toggle("is-playing", !!suena);
         };
-        btn.addEventListener("click", function () {
-          var suena = btn.getAttribute("aria-pressed") === "true";
-          if (!marco) {
-            marco = document.createElement("iframe");
-            marco.className = "rperfil__yt";
-            marco.setAttribute("allow", "autoplay; encrypted-media");
-            marco.setAttribute("title", "Música: " + titulo);
-            marco.src = "https://www.youtube-nocookie.com/embed/" + id +
-              "?autoplay=1&controls=0&enablejsapi=1&playsinline=1&loop=1&playlist=" + id;
-            hm.appendChild(marco);
-            btn.setAttribute("aria-pressed", "true"); hm.classList.add("is-playing");
-            btn.setAttribute("aria-label", "Pausar");
-            return;
+
+        /* Hueco del reproductor: 200x200 fuera de pantalla (YouTube no reproduce
+           si el reproductor es diminuto u oculto con display/visibility). */
+        var hueco = document.createElement("div");
+        hueco.className = "rperfil__yt";
+        var diana = document.createElement("div");
+        hueco.appendChild(diana);
+        hm.appendChild(hueco);
+
+        var crear = function () {
+          if (jug || !window.YT || !YT.Player) return;
+          jug = new YT.Player(diana, {
+            width: 200, height: 200, videoId: id,
+            playerVars: { controls: 0, playsinline: 1, rel: 0, modestbranding: 1, loop: 1, playlist: id, origin: location.origin },
+            events: {
+              onReady: function () { listo = true; if (quiere) { jug.playVideo(); } },
+              onStateChange: function (e) {
+                if (e.data === 1) estado(true);
+                else if (e.data === 2 || e.data === 0 || e.data === 5) estado(false);
+              },
+              onError: function () {
+                hm.classList.add("is-error");
+                hm.querySelector(".rperfil__artist").textContent = "No se reproduce aquí · pulsa para abrir en YouTube";
+                estado(false);
+              }
+            }
+          });
+        };
+        /* La API de YouTube se carga una sola vez, aunque haya varios reproductores */
+        if (window.YT && YT.Player) crear();
+        else {
+          var previo = window.onYouTubeIframeAPIReady;
+          window.onYouTubeIframeAPIReady = function () { if (previo) { try { previo(); } catch (e) {} } crear(); };
+          if (!document.getElementById("bts-yt-api")) {
+            var sc = document.createElement("script");
+            sc.id = "bts-yt-api"; sc.src = "https://www.youtube.com/iframe_api"; sc.async = true;
+            document.head.appendChild(sc);
           }
-          cmd(suena ? "pauseVideo" : "playVideo");
-          btn.setAttribute("aria-pressed", suena ? "false" : "true");
-          btn.setAttribute("aria-label", suena ? "Reproducir" : "Pausar");
-          hm.classList.toggle("is-playing", !suena);
+        }
+
+        btn.addEventListener("click", function () {
+          if (hm.classList.contains("is-error")) { window.open("https://youtu.be/" + id, "_blank", "noopener"); return; }
+          if (!jug || !listo) { quiere = true; estado(true); return; }   /* aún cargando: sonará al estar listo */
+          var st = jug.getPlayerState();
+          if (st === 1 || st === 3) { quiere = false; jug.pauseVideo(); estado(false); }
+          else { quiere = true; jug.playVideo(); estado(true); }
         });
       }
     }

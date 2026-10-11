@@ -4496,8 +4496,9 @@ li.row:hover .rforimg { filter: none; }
 @keyframes burnthesky-pf-pulse { 50% { opacity: .45; } }
 @media (prefers-reduced-motion: reduce) { .rperfil__now.is-playing .rperfil__chip { animation: none; } }
 .rperfil__yt {
-  position: absolute; width: 1px; height: 1px;
-  overflow: hidden; clip: rect(0 0 0 0); border: 0; opacity: 0; pointer-events: none;
+  position: fixed; left: -9999px; top: 0;
+  width: 200px; height: 200px;
+  border: 0; opacity: 0; pointer-events: none;
 }
 
 .rperfil__banner {
@@ -4732,3 +4733,129 @@ li.row:hover .rforimg { filter: none; }
 .rstat .rtile__v { hyphens: manual; font-size: 18px; }
 .rstat--power .rtile__v { font-size: 24px; }
 .rtile__v .field_uneditable, .rimp__d .field_uneditable { display: inline; }
+
+
+/* ============================================================================
+   25 · EDITAR PERFIL (panel de usuario: /profile?mode=editprofile y pestañas)
+   Referencia: secciones con título grande y línea, filas etiqueta | campo
+   relleno, pestañas como botones centrados, botones de acción al pie.
+   AJUSTES: --burnthesky-ucp-label-w (ancho de la columna de etiquetas)
+            --burnthesky-ucp-field-w (ancho de los campos de una línea)
+   ========================================================================== */
+:root {
+  --burnthesky-ucp-label-w: 36%;
+  --burnthesky-ucp-field-w: 420px;
+}
+
+/* -- pestañas: botones centrados, en varias filas -- */
+#cp-main ~ *, body:has(#cp-main) div#tabs { margin: 0 0 24px; }
+body:has(#cp-main) div#tabs ul { justify-content: center; gap: 8px; }
+body:has(#cp-main) div#tabs ul li { margin: 0; }
+body:has(#cp-main) div#tabs ul li a {
+  padding: 9px 20px;
+  background: var(--burnthesky-void-2) !important;
+  border: 1px solid var(--burnthesky-line-2);
+  border-radius: 0;
+  transition: border-color var(--burnthesky-ease), background var(--burnthesky-ease), color var(--burnthesky-ease);
+}
+body:has(#cp-main) div#tabs ul li a:hover { border-color: var(--burnthesky-red); background: var(--burnthesky-red-wash) !important; }
+body:has(#cp-main) div#tabs ul li.activetab a {
+  border-color: var(--burnthesky-red);
+  box-shadow: 3px 3px 0 var(--burnthesky-red-ghost-2);
+  background: var(--burnthesky-red-wash) !important;
+}
+
+/* -- el panel deja de ser una caja: cada sección es un bloque con título -- */
+#cp-main .panel, #cp-main .panel .inner {
+  padding: 0;
+  background: transparent !important;
+  border: 0;
+  box-shadow: none;
+}
+#cp-main .panel { margin: 0 0 var(--burnthesky-gap); }
+#cp-main .panel::before { display: none; }
+
+#cp-main h2, #cp-main .panel h3, #cp-main h3 {
+  margin: 34px 0 22px !important;
+  padding: 0 0 10px !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--burnthesky-gray-lt) !important;
+  font: var(--burnthesky-fs-xl) / 1 var(--burnthesky-ff-display) !important;
+  letter-spacing: -.3px;
+  text-transform: uppercase;
+  color: var(--burnthesky-white);
+  text-shadow: var(--burnthesky-ghost-sm);
+}
+#cp-main > h2:first-child, #cp-main .panel:first-child h3:first-child { margin-top: 8px !important; }
+
+#cp-main p { color: var(--burnthesky-gray-lt); font-size: 12px; line-height: 1.7; }
+
+/* -- filas: etiqueta atenuada a la izquierda, campo relleno a la derecha -- */
+#cp-main fieldset dl {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  margin: 0 0 22px;
+  padding: 0;
+  border: 0;
+}
+#cp-main fieldset dt {
+  flex: 0 0 var(--burnthesky-ucp-label-w);
+  padding: 10px 0 0 48px;
+  font: var(--burnthesky-fs-sm) / 1.5 var(--burnthesky-ff-mono);
+  letter-spacing: 1px;
+  text-transform: none;
+  color: var(--burnthesky-gray);
+}
+#cp-main fieldset dt label { color: inherit; }
+#cp-main fieldset dt span { color: inherit !important; }
+#cp-main fieldset dl:hover dt, #cp-main fieldset dl:hover dt label { color: var(--burnthesky-white); }
+#cp-main fieldset dd { flex: 1 1 auto; min-width: 0; margin: 0 !important; color: var(--burnthesky-white); font-size: 12px; line-height: 1.7; }
+#cp-main fieldset dd span.gensmall, #cp-main fieldset dd .gensmall { display: block; margin-top: 6px; color: var(--burnthesky-gray); font-size: 11px; }
+
+/* campos rellenos, sin caja */
+#cp-main input.inputbox, #cp-main input[type="text"], #cp-main input[type="password"],
+#cp-main input[type="email"], #cp-main input[type="url"], #cp-main textarea, #cp-main select {
+  box-sizing: border-box;
+  max-width: 100%;
+  padding: 10px 12px;
+  background: var(--burnthesky-void-3) !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--burnthesky-line-2) !important;
+  border-radius: 0;
+  font: 13px / 1.5 var(--burnthesky-ff-sans);
+  color: var(--burnthesky-white) !important;
+  transition: border-color var(--burnthesky-ease), background var(--burnthesky-ease), box-shadow var(--burnthesky-ease);
+}
+#cp-main input.inputbox:not([size]):not([style*="width"]), #cp-main input[type="text"]:not([style*="width"]),
+#cp-main input[type="password"]:not([style*="width"]) { width: var(--burnthesky-ucp-field-w); }
+#cp-main textarea { width: 100% !important; min-height: 130px; font-family: var(--burnthesky-ff-mono); resize: vertical; }
+#cp-main select { padding-right: 28px; }
+#cp-main input:focus, #cp-main textarea:focus, #cp-main select:focus {
+  outline: 0;
+  background: var(--burnthesky-void-2) !important;
+  border-bottom-color: var(--burnthesky-red) !important;
+  box-shadow: 0 8px 14px -10px var(--burnthesky-red-glow);
+}
+#cp-main input[type="radio"], #cp-main input[type="checkbox"] { accent-color: var(--burnthesky-red); }
+
+/* enlaces de dentro del panel (Modificar, etc.) */
+#cp-main dd a { color: var(--burnthesky-white); }
+#cp-main dd a:hover { color: var(--burnthesky-red-vivid); }
+
+/* botones de acción al pie: centrados */
+#cp-main fieldset.submit-buttons, #cp-main .submit-buttons, #cp-main p.buttons {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
+  margin: 28px 0 8px; padding: 0; border: 0;
+}
+
+/* premios, exportación y otros bloques con enlaces */
+#cp-main .panel .inner > p, #cp-main .panel .inner > div { color: var(--burnthesky-gray-lt); }
+
+@media (max-width: 800px) {
+  #cp-main fieldset dl { flex-direction: column; gap: 6px; }
+  #cp-main fieldset dt { flex-basis: auto; padding: 0; }
+  body:has(#cp-main) div#tabs ul li a { padding: 8px 12px; }
+  #cp-main input.inputbox:not([size]):not([style*="width"]), #cp-main input[type="text"]:not([style*="width"]),
+  #cp-main input[type="password"]:not([style*="width"]) { width: 100%; }
+}
