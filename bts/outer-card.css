@@ -117,7 +117,7 @@
   /* VELOCIDAD DE LOS HOVERS: se cambian aquí y afectan a todo el foro.
      --burnthesky-ease ..... enlaces, tarjetas, botones, bordes, sombras
      --burnthesky-ease-img . imágenes (de gris a color) */
-  --burnthesky-css:           "v1.8";   /* la consola la muestra al cargar: sirve para saber si el navegador tiene el CSS nuevo */
+  --burnthesky-css:           "v1.9";   /* la consola la muestra al cargar: sirve para saber si el navegador tiene el CSS nuevo */
   --burnthesky-ease:          2s cubic-bezier(.22, .61, .36, 1);
   --burnthesky-ease-img:      2s ease;
 
@@ -4200,3 +4200,28 @@ li.row:hover .rforimg { filter: none; }
 .rdb__g { transition: color var(--burnthesky-ease), transform var(--burnthesky-ease),
           border-color var(--burnthesky-ease), background var(--burnthesky-ease),
           box-shadow var(--burnthesky-ease); }
+
+
+/* ============================================================================
+   26 · DONUT DE GRUPOS: el atenuado al pasar el ratón ahora se anima
+   Un conic-gradient no se puede animar directamente. Cada porción lleva su
+   opacidad en una variable --aN registrada como <number>; esas variables SÍ
+   se pueden animar. El JS (js-indice.js) solo cambia los valores de --aN.
+   Navegadores sin @property: el atenuado sigue funcionando, pero instantáneo.
+   ========================================================================== */
+@property --a0 { syntax: '<number>'; inherits: false; initial-value: 1; }
+@property --a1 { syntax: '<number>'; inherits: false; initial-value: 1; }
+@property --a2 { syntax: '<number>'; inherits: false; initial-value: 1; }
+@property --a3 { syntax: '<number>'; inherits: false; initial-value: 1; }
+@property --a4 { syntax: '<number>'; inherits: false; initial-value: 1; }
+@property --a5 { syntax: '<number>'; inherits: false; initial-value: 1; }
+@property --a6 { syntax: '<number>'; inherits: false; initial-value: 1; }
+@property --a7 { syntax: '<number>'; inherits: false; initial-value: 1; }
+@property --a8 { syntax: '<number>'; inherits: false; initial-value: 1; }
+@property --a9 { syntax: '<number>'; inherits: false; initial-value: 1; }
+@property --a10 { syntax: '<number>'; inherits: false; initial-value: 1; }
+@property --a11 { syntax: '<number>'; inherits: false; initial-value: 1; }
+
+.rdb__donut { transition: --a0 var(--burnthesky-ease), --a1 var(--burnthesky-ease), --a2 var(--burnthesky-ease), --a3 var(--burnthesky-ease), --a4 var(--burnthesky-ease), --a5 var(--burnthesky-ease), --a6 var(--burnthesky-ease), --a7 var(--burnthesky-ease), --a8 var(--burnthesky-ease), --a9 var(--burnthesky-ease), --a10 var(--burnthesky-ease), --a11 var(--burnthesky-ease); }
+
+.rdb__dtxt { transition: opacity .35s ease; }
