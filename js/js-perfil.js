@@ -7,8 +7,128 @@
    El audio sale de un iframe de YouTube diminuto que solo se crea al pulsar
    el botón; nada suena sin que el visitante lo pida. */
 (function () {
+  /* ---- Perfil nativo ------------------------------------------------------
+     Si la plantilla profile_view_body NO está instalada (o no se aplica), se
+     lee el perfil que pinta Foroactivo (pares "Etiqueta : valor") y se monta
+     la ficha encima; lo nativo queda oculto, no borrado. */
+  var MARCADO = "<div class=\"rperfil\" id=\"rperfil\"> <div class=\"rperfil__top\"> <span class=\"rperfil__clock\" aria-hidden=\"true\"></span> <span class=\"rperfil__last\">Última conexión: <b><span data-bind=\"ultima\"></span></b></span> <span class=\"rperfil__online\"><span data-bind=\"estatus\"></span></span> </div> <div class=\"rperfil__cols\"> <div class=\"rperfil__avatar\"> <div class=\"rperfil__avatarimg\"><span data-bind=\"avatar\"></span></div> <div class=\"rperfil__rank\"> <span class=\"rperfil__rankname\"><span data-bind=\"rangonativo\"></span></span> <span class=\"rperfil__rankimg\"></span> </div> </div> <div class=\"rperfil__main\"> <div class=\"rperfil__id\"> <div class=\"rperfil__idicon\" aria-hidden=\"true\"></div> <div class=\"rperfil__idtxt\"> <h1 class=\"rperfil__alias\" data-slot=\"alias\"><span data-bind=\"usuario\"></span></h1> <span class=\"rperfil__player\">Jugador: <b><span data-bind=\"usuario\"></span></b></span> </div> </div> <div class=\"rperfil__nicks\" data-slot=\"apodos\" data-label=\"Apodos\"></div> <div class=\"rperfil__tiles\"> <div class=\"rtile\" data-slot=\"edad\" data-label=\"Edad\"></div> <div class=\"rtile\" data-slot=\"orientacion\" data-label=\"Orientación\"></div> <div class=\"rtile\" data-slot=\"sentimental\" data-label=\"Estado sentimental\"></div> <div class=\"rtile\" data-slot=\"ocupacion\" data-label=\"Ocupación\"></div> <div class=\"rtile\" data-slot=\"faccion\" data-label=\"Facción\"></div> <div class=\"rtile\" data-slot=\"alianza\" data-label=\"Alianza\"></div> <div class=\"rtile rtile--wide\" data-slot=\"ubicacion\" data-label=\"Ubicación\"></div> </div> <div class=\"rperfil__stats\"> <div class=\"rstat rstat--power\" data-slot=\"nivel\" data-label=\"Nivel de poder\"></div> <div class=\"rstat\" data-slot=\"rango\" data-label=\"Rango\"></div> <div class=\"rstat\" data-slot=\"creditos\" data-label=\"Créditos\"></div> </div> <div class=\"rperfil__powers-wrap\"> <h3>Poderes</h3> <div class=\"rperfil__powers\" data-slot=\"poderes\"></div> </div> <blockquote class=\"rperfil__quote\" data-slot=\"frase\"></blockquote> </div> <div class=\"rperfil__side\"> <div class=\"rperfil__now\" data-slot=\"musica\"> <span class=\"rperfil__chip\">Reproduciendo</span> <span class=\"rperfil__song\"></span> <span class=\"rperfil__artist\"></span> <button type=\"button\" class=\"rperfil__play\" aria-label=\"Reproducir\" aria-pressed=\"false\"></button> </div> <div class=\"rperfil__banner\" data-slot=\"banner\"></div> <div class=\"rperfil__actions\"> <a href=\"#BUSCAR#\" title=\"Buscar sus mensajes\">Mensajes</a> <a href=\"#EDITAR#\" title=\"Editar perfil\">Editar</a> <button type=\"button\" class=\"rdate rdate--cake\" data-slot=\"nacimiento\" data-label=\"Fecha de nacimiento\" data-short=\"Nacimiento · \"><span class=\"rdate__ico\"></span><span class=\"rdate__tip\"></span></button> <button type=\"button\" class=\"rdate rdate--cal\" data-slot=\"inscripcion\" data-label=\"Fecha de inscripción\" data-short=\"Inscripción · \" data-fallback=\"#INSCRIPCION#\"><span class=\"rdate__ico\"></span><span class=\"rdate__tip\"></span></button> <span class=\"rperfil__contact\"><a href=\"#MP#\" title=\"Mensaje privado\">MP</a></span> </div> </div> </div> <div class=\"rperfil__foot\"> <span class=\"rperfil__stat\"><b><span data-bind=\"mensajes\"></span></b> mensajes escritos</span> </div> <div class=\"rinv\"> <div class=\"rinv__head\">Inventario y medallero</div> <div class=\"rinv__cols\"> <section class=\"rinv__box rinv__box--imp\"> <h3>Implantes</h3> <div class=\"rinv__implants\"> <div class=\"rimp\" data-slot=\"implante1\" data-label=\"Implante 01\"></div> <div class=\"rimp\" data-slot=\"implante2\" data-label=\"Implante 02\"></div> </div> </section> <section class=\"rinv__box\"> <h3>Inventario</h3> <div class=\"rinv__grid\" data-slot=\"inventario\" data-min=\"12\"></div> </section> <section class=\"rinv__box\"> <h3>Medallero</h3> <div class=\"rinv__grid\" data-slot=\"medallero\" data-min=\"12\"></div> </section> </div> </div> <div class=\"rperfil__extra\" id=\"rperfil-extra\"></div> <div id=\"rperfil-campos\" hidden></div> </div>";
+
+  function nativo() {
+    var main = document.getElementById("main-content") || document.getElementById("content") || document.body;
+    var mu = location.pathname.match(/^\/u(\d+)/);
+    if (!mu || !main || main.querySelector("#rperfil")) return null;
+
+    var pares = [];
+    var tomar = function (lab, val, caja) {
+      var l = (lab.textContent || "").replace(/\s*:\s*$/, "").replace(/\s+/g, " ").trim();
+      if (!l || l.length > 60) return;
+      pares.push({ raw: l, el: val, caja: caja });
+    };
+    main.querySelectorAll("dl").forEach(function (dl) {
+      var dts = dl.querySelectorAll(":scope > dt");
+      dts.forEach(function (dt) {
+        var dd = dt.nextElementSibling;
+        if (dd && dd.tagName === "DD") tomar(dt, dd, dl);
+      });
+    });
+    if (pares.length < 2) {
+      main.querySelectorAll("tr").forEach(function (tr) {
+        var td = tr.children;
+        if (td.length === 2) tomar(td[0], td[1], tr);
+      });
+    }
+    var claves = ["edad", "alias", "medallero", "inventario", "poderes", "facción", "ocupación", "ubicación"];
+    var vistos = 0;
+    pares.forEach(function (p) { if (claves.indexOf(p.raw.toLowerCase()) > -1) vistos++; });
+    if (vistos < 2) return null;
+
+    /* contenedor nativo a ocultar: el hijo directo de main que contiene los pares */
+    var primero = pares[0].caja, envoltorio = primero;
+    while (envoltorio.parentNode && envoltorio.parentNode !== main) envoltorio = envoltorio.parentNode;
+    if (envoltorio.parentNode !== main) return null;
+
+    var id = mu[1];
+    var titulo = (main.querySelector("h1") || document.querySelector("h1") || {}).textContent || "";
+    var nombre = (titulo.split("::")[1] || "").replace(/\(.*\)/, "").trim();
+    if (!nombre) {
+      var m1 = main.textContent.match(/Todo sobre\s+([^\n\r]+?)\s{2,}/);
+      nombre = m1 ? m1[1].trim() : "";
+    }
+    var enlinea = /\(\s*en l[ií]nea\s*\)/i.test(main.textContent);
+
+    var cont = document.createElement("div");
+    var html = MARCADO.replace("#BUSCAR#", "/search?search_author=" + encodeURIComponent(nombre) + "&show_results=posts")
+      .replace("#EDITAR#", "/profile?mode=editprofile&u=" + id)
+      .replace("#MP#", "/privmsg?mode=post&u=" + id)
+      .replace("#INSCRIPCION#", "");
+    cont.innerHTML = html;
+    var root = cont.firstElementChild;
+
+    var dato = function (re) {
+      for (var i = 0; i < pares.length; i++) if (re.test(pares[i].raw.toLowerCase())) return pares[i].el;
+      return null;
+    };
+    var ligar = function (nom, fn) { root.querySelectorAll('[data-bind="' + nom + '"]').forEach(fn); };
+
+    ligar("usuario", function (e) { e.textContent = nombre; });
+    ligar("estatus", function (e) { e.textContent = enlinea ? "● En línea" : ""; });
+
+    /* avatar: la primera imagen grande que no sea contenido de un campo */
+    var av = null;
+    main.querySelectorAll("img").forEach(function (im) {
+      if (av) return;
+      for (var i = 0; i < pares.length; i++) if (pares[i].el.contains(im)) return;
+      var w = im.width || im.offsetWidth || parseInt(im.getAttribute("width"), 10) || 0;
+      if (w >= 80) av = im;
+    });
+    ligar("avatar", function (e) { if (av) e.appendChild(av.cloneNode(true)); });
+
+    /* rango nativo: texto "Rango: X" de la zona del avatar (no el campo Rango) */
+    var rn = "";
+    if (av) {
+      var z = av.parentNode;
+      while (z.parentNode && z.parentNode !== main && !z.parentNode.contains(pares[0].caja)) z = z.parentNode;
+      z.querySelectorAll("*").forEach(function (e) {
+        if (rn || e.children.length) return;
+        var m = (e.textContent || "").trim().match(/^Rango\s*:\s*(.+)$/i);
+        if (m) rn = m[1].trim();
+      });
+    }
+    ligar("rangonativo", function (e) { e.textContent = rn; });
+
+    var ult = dato(/^(última|ultima) (visita|conexión|conexion)/);
+    ligar("ultima", function (e) { if (ult) e.textContent = ult.textContent.trim(); else if (e.parentNode) e.parentNode.style.display = "none"; });
+    var msg = dato(/^mensajes$/);
+    ligar("mensajes", function (e) { e.textContent = msg ? msg.textContent.trim() : "0"; });
+
+    /* los pares pasan al volcado genérico; Estatus y Mensajes ya se usaron */
+    var vol = root.querySelector("#rperfil-campos");
+    pares.forEach(function (p) {
+      var k = p.raw.toLowerCase();
+      if (/^(mensajes|estatus|última visita|ultima visita)$/.test(k)) return;
+      var f = document.createElement("div"); f.className = "rpf";
+      var l = document.createElement("span"); l.className = "rpf-l"; l.textContent = p.raw;
+      var c = document.createElement("div"); c.className = "rpf-c"; c.innerHTML = p.el.innerHTML;
+      f.appendChild(l); f.appendChild(c); vol.appendChild(f);
+    });
+
+    /* enlaces de administración ("Administrar el usuario : Perfil") a los botones */
+    var acciones = root.querySelector(".rperfil__actions");
+    main.querySelectorAll("a[href]").forEach(function (a) {
+      var tx = (a.parentNode && a.parentNode.textContent || "").trim();
+      if (/^Administrar/i.test(tx) && !envoltorio.isSameNode(a) && acciones) {
+        var b = a.cloneNode(true); b.textContent = "Admin"; b.title = tx; acciones.insertBefore(b, acciones.firstChild);
+      }
+    });
+
+    envoltorio.parentNode.insertBefore(root, envoltorio);
+    envoltorio.setAttribute("data-bts-oculto", "1");
+    envoltorio.style.display = "none";
+    return root;
+  }
+
   function run() {
-    var root = document.getElementById("rperfil");
+    var root = document.getElementById("rperfil") || nativo();
     if (!root || root.getAttribute("data-ready")) return;
     root.setAttribute("data-ready", "1");
 
@@ -29,7 +149,7 @@
       alianza: ["alianza", "duo", "dupla", "pareja", "alianza duo dupla pareja", "alianza duo dupla o pareja"],
       ubicacion: ["ubicacion", "residencia", "lugar"],
       frase: ["frase", "cita", "lema"],
-      banner: ["banner", "banner pequeno", "cabecera"],
+      banner: ["banner", "banner imagen", "banner pequeno", "cabecera"],
       musica: ["musica", "cancion", "tema musical"],
       nivel: ["nivel de poder", "nivel poder", "poder nivel", "nivel"],
       poderes: ["poderes", "poder", "habilidades"],
@@ -52,7 +172,7 @@
     });
 
     /* Respaldo por parte del nombre (tolera erratas: "inscriptión", "nacimento"...) */
-    var PARCIAL = { nacimiento: /nacim|cumple/, inscripcion: /inscri|registro/, nivel: /^nivel/, creditos: /credit/ };
+    var PARCIAL = { banner: /^banner/, nacimiento: /nacim|cumple/, inscripcion: /inscri|registro/, nivel: /^nivel/, creditos: /credit/ };
     function buscar(slot) {
       var syn = SINONIMOS[slot] || [slot], i;
       for (i = 0; i < campos.length; i++) {
