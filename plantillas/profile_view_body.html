@@ -14,6 +14,9 @@
       Apodos · Alias (alter ego, superhéroe) · Edad · Orientación ·
       Estado sentimental · Ocupación · Facción (equipo, grupo) ·
       Alianza (dúo, dupla, pareja) · Ubicación · Frase ·
+      Nivel de poder · Poderes · Rango · Créditos ·
+      Fecha de nacimiento · Fecha de inscripción (estas dos solo se ven al
+        pasar el ratón por su botón) ·
       Banner (imagen pequeña, URL o [img]) ·
       Música (formato abajo) ·
       Implante 1 · Implante 2 ·
@@ -69,6 +72,17 @@
 				<div class="rtile rtile--wide" data-slot="ubicacion" data-label="Ubicación"></div>
 			</div>
 
+			<div class="rperfil__stats">
+				<div class="rstat rstat--power" data-slot="nivel"    data-label="Nivel de poder"></div>
+				<div class="rstat"              data-slot="rango"    data-label="Rango"></div>
+				<div class="rstat"              data-slot="creditos" data-label="Créditos"></div>
+			</div>
+
+			<div class="rperfil__powers-wrap">
+				<h3>Poderes</h3>
+				<div class="rperfil__powers" data-slot="poderes"></div>
+			</div>
+
 			<blockquote class="rperfil__quote" data-slot="frase"></blockquote>
 		</div>
 
@@ -87,6 +101,8 @@
 			<div class="rperfil__actions">
 				<a href="{U_SEARCH_USER}" title="Buscar sus mensajes">{SEARCH_IMG}</a>
 				<a href="{U_EDIT_PROFILE}" title="Editar perfil">Editar</a>
+				<button type="button" class="rdate rdate--cake" data-slot="nacimiento" data-label="Fecha de nacimiento" data-short="Nacimiento · "><span class="rdate__ico"></span><span class="rdate__tip"></span></button>
+				<button type="button" class="rdate rdate--cal" data-slot="inscripcion" data-label="Fecha de inscripción" data-short="Inscripción · " data-fallback="{JOINED}"><span class="rdate__ico"></span><span class="rdate__tip"></span></button>
 				<span class="rperfil__contact">{PM_IMG}{EMAIL_IMG}</span>
 			</div>
 		</div>
@@ -94,7 +110,6 @@
 
 	<div class="rperfil__foot">
 		<span class="rperfil__stat"><b>{POSTS}</b> mensajes escritos</span>
-		<span class="rperfil__join">Inscripción: <b>{JOINED}</b></span>
 	</div>
 
 	<!-- Inventario y medallero (siempre debajo de la ficha) -->

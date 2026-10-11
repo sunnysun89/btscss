@@ -31,6 +31,12 @@
       frase: ["frase", "cita", "lema"],
       banner: ["banner", "banner pequeno", "cabecera"],
       musica: ["musica", "cancion", "tema musical"],
+      nivel: ["nivel de poder", "nivel poder", "poder nivel", "nivel"],
+      poderes: ["poderes", "poder", "habilidades"],
+      rango: ["rango"],
+      creditos: ["creditos", "credito"],
+      nacimiento: ["fecha de nacimiento", "fecha nacimiento", "nacimiento", "cumpleanos"],
+      inscripcion: ["fecha de inscripcion", "fecha inscripcion", "inscripcion", "fecha de registro"],
       implante1: ["implante 1", "implante 01", "implante i", "implante uno"],
       implante2: ["implante 2", "implante 02", "implante ii", "implante dos"],
       inventario: ["inventario"],
@@ -45,11 +51,18 @@
       campos.push({ raw: l.textContent.replace(/\s*:\s*$/, "").trim(), key: norm(l.textContent), el: c, used: false });
     });
 
+    /* Respaldo por parte del nombre (tolera erratas: "inscriptión", "nacimento"...) */
+    var PARCIAL = { nacimiento: /nacim|cumple/, inscripcion: /inscri|registro/, nivel: /^nivel/, creditos: /credit/ };
     function buscar(slot) {
-      var syn = SINONIMOS[slot] || [slot];
-      for (var i = 0; i < campos.length; i++) {
+      var syn = SINONIMOS[slot] || [slot], i;
+      for (i = 0; i < campos.length; i++) {
         if (campos[i].used) continue;
         if (syn.indexOf(campos[i].key) > -1) { campos[i].used = true; return campos[i]; }
+      }
+      if (PARCIAL[slot]) {
+        for (i = 0; i < campos.length; i++) {
+          if (!campos[i].used && PARCIAL[slot].test(campos[i].key)) { campos[i].used = true; return campos[i]; }
+        }
       }
       return null;
     }
@@ -60,7 +73,7 @@
     /* 2. Huecos de texto: apodos, alias, tiles y frase */
     root.querySelectorAll("[data-slot]").forEach(function (hueco) {
       var slot = hueco.getAttribute("data-slot");
-      if (/^(musica|banner|implante1|implante2|inventario|medallero)$/.test(slot)) return;
+      if (/^(musica|banner|implante1|implante2|inventario|medallero|poderes|nacimiento|inscripcion)$/.test(slot)) return;
       var c = buscar(slot);
       var tiene = c && !vacio(c.el);
       if (slot === "alias") { if (tiene) hueco.innerHTML = c.el.innerHTML; return; }
@@ -82,6 +95,32 @@
       if (tiene) v.innerHTML = c.el.innerHTML; else { v.textContent = "—"; hueco.classList.add("is-empty"); }
       hueco.innerHTML = "";
       hueco.appendChild(v); hueco.appendChild(l);
+    });
+
+    /* 2b. Poderes: una etiqueta por poder (separados por coma, punto y coma,
+       barra, salto de línea o viñeta) */
+    var hp = root.querySelector('[data-slot="poderes"]');
+    if (hp) {
+      var cp = buscar("poderes");
+      if (cp && !vacio(cp.el)) {
+        var tmp = cp.el.cloneNode(true);
+        tmp.querySelectorAll("br").forEach(function (b) { b.replaceWith(document.createTextNode("\n")); });
+        var lista = tmp.textContent.split(/[,;\/|·•\n]+/).map(function (x) { return x.trim(); }).filter(Boolean);
+        hp.innerHTML = "";
+        lista.forEach(function (x) { var e = document.createElement("span"); e.textContent = x; hp.appendChild(e); });
+      } else hp.classList.add("is-empty");
+    }
+
+    /* 2c. Fechas: solo se ven al pasar el ratón (o enfocar con teclado) por el botón */
+    ["nacimiento", "inscripcion"].forEach(function (slot) {
+      var bt = root.querySelector('[data-slot="' + slot + '"]');
+      if (!bt) return;
+      var cf = buscar(slot);
+      var txt = cf && !vacio(cf.el) ? cf.el.textContent.replace(/\s+/g, " ").trim() : (bt.getAttribute("data-fallback") || "").replace(/^\{.*\}$/, "").trim();
+      var tip = bt.querySelector(".rdate__tip");
+      if (tip) tip.textContent = (bt.getAttribute("data-short") || "") + (txt || "Sin fecha");
+      bt.setAttribute("aria-label", (bt.getAttribute("data-label") || slot) + ": " + (txt || "sin fecha"));
+      if (!txt) bt.classList.add("is-empty");
     });
 
     /* 3. Banner pequeño: imagen del campo, o una URL escrita a mano */
