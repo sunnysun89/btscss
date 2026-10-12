@@ -4859,3 +4859,15 @@ body:has(#cp-main) div#tabs ul li.activetab a {
   #cp-main input.inputbox:not([size]):not([style*="width"]), #cp-main input[type="text"]:not([style*="width"]),
   #cp-main input[type="password"]:not([style*="width"]) { width: 100%; }
 }
+
+
+/* ==========================================================================
+   26 · LIMPIEZA: textos por defecto y donut
+   · Título nativo "Ver el perfil :: Usuario" fuera (la ficha ya trae el alias)
+   · Donut de grupos fuera: quedan las tarjetas de grupo con su barra
+   ========================================================================== */
+body:has(#rperfil) h1.page-title { display: none !important; }
+
+.rdb__donut { display: none !important; }
+.rdb__cols { display: block; padding: 22px; }
+.rdb__groups { width: 100%; }
