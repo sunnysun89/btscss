@@ -2562,7 +2562,8 @@ div#tabs a[href*="contact"] {
   border: 1px solid var(--burnthesky-line);
 }
 
-#rstatscontainer .rtitle {
+#rstatscontainer .rtitle,
+.rforumstats .rtitle {
   margin: 18px 0 12px;
   font: var(--burnthesky-fs-sm) / 1.4 var(--burnthesky-ff-mono);
   letter-spacing: 3px;
@@ -2570,13 +2571,13 @@ div#tabs a[href*="contact"] {
   color: var(--burnthesky-white);
 }
 
-#rstatscontainer .rstatsc {
+.rforumstats .rstatsc {
   display: flex;
   flex-wrap: wrap;
   gap: var(--burnthesky-gap);
 }
 
-#rstatscontainer .rstatsc p.page-bottom {
+.rforumstats .rstatsc p.page-bottom {
   flex: 1 1 0;
   min-width: 140px;
   margin: 0;
@@ -2586,7 +2587,7 @@ div#tabs a[href*="contact"] {
   text-align: center;
 }
 
-#rstatscontainer .rstatsc strong {
+.rforumstats .rstatsc strong {
   display: block;
   font: var(--burnthesky-fs-2xl) / 1 var(--burnthesky-ff-display);
   font-weight: 400;
@@ -3560,7 +3561,7 @@ form[name="form_login"] .user_login_form label {
 #rstatscontainer.rdb-ready .rgroupslegend { display: none !important; }
 
 /* -- cabecera de ventana con tres puntos (sin tocar el HTML) -- */
-#rstatscontainer .rforumstats .rtitle,
+.rforumstats .rtitle,
 #rneonfooter .rtitle {
   display: flex;
   align-items: center;
@@ -3573,7 +3574,7 @@ form[name="form_login"] .user_login_form label {
   text-align: left;
   color: var(--burnthesky-gray-lt);
 }
-#rstatscontainer .rforumstats .rtitle::before,
+.rforumstats .rtitle::before,
 #rneonfooter .rtitle::before {
   content: '';
   flex-shrink: 0;
@@ -3586,7 +3587,7 @@ form[name="form_login"] .user_login_form label {
 }
 
 /* -- ventanas -- */
-#rstatscontainer .rforumstats,
+.rforumstats,
 #rstatscontainer .rnewestuser,
 #rstatscontainer .rlogged,
 #rneonfooter {
@@ -3594,7 +3595,7 @@ form[name="form_login"] .user_login_form label {
   background: var(--burnthesky-void-2);
   border: 1px solid var(--burnthesky-line);
 }
-#rstatscontainer .rforumstats::before,
+.rforumstats::before,
 #rstatscontainer .rnewestuser::before,
 #rstatscontainer .rlogged::before,
 #rneonfooter::before {
@@ -3610,21 +3611,21 @@ form[name="form_login"] .user_login_form label {
 }
 
 /* -- estadísticas: tres casillas con número grande -- */
-#rstatscontainer .rstatsc { padding: 14px; }
+.rforumstats .rstatsc { padding: 14px; }
 
-#rstatscontainer .rstatsc p.page-bottom {
+.rforumstats .rstatsc p.page-bottom {
   font: var(--burnthesky-fs-xs) / 1.6 var(--burnthesky-ff-mono);
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--burnthesky-gray-lt);
   transition: transform var(--burnthesky-ease), border-color var(--burnthesky-ease), box-shadow var(--burnthesky-ease);
 }
-#rstatscontainer .rstatsc p.page-bottom:hover {
+.rforumstats .rstatsc p.page-bottom:hover {
   transform: translateY(-3px);
   border-color: var(--burnthesky-red);
   box-shadow: 4px 4px 0 var(--burnthesky-red-ghost-2);
 }
-#rstatscontainer .rstatsc strong { margin-bottom: 6px; }
+.rforumstats .rstatsc strong { margin-bottom: 6px; }
 
 /* -- último usuario: tarjeta de bienvenida -- */
 #rstatscontainer > .rnewestuser {
