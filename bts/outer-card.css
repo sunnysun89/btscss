@@ -4892,3 +4892,49 @@ body:has(#rperfil) h1.page-title { display: none !important; }
     margin-right: 16px;
   }
 }
+
+
+/* ============================================================================
+   28 · PERFIL EN PESTAÑAS + ESTADÍSTICAS SOBRE DATABASE
+   · .rperfil__tabs: barra de pestañas bajo la barra de última conexión
+   · .rperfil__panel: contenido de cada pestaña (el inventario queda fuera)
+   · Al subir las estadísticas sobre Database, llevan su propio margen inferior
+   ========================================================================== */
+#rstatscontainer.rdb-ready { margin-bottom: var(--burnthesky-gap); }
+
+.rperfil__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.rperfil__tab {
+  appearance: none;
+  padding: 10px 20px;
+  background: var(--burnthesky-void-2);
+  border: 1px solid var(--burnthesky-line);
+  color: var(--burnthesky-gray-lt);
+  font: var(--burnthesky-fs-xs) / 1 var(--burnthesky-ff-mono);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color var(--burnthesky-ease), border-color var(--burnthesky-ease), background var(--burnthesky-ease);
+}
+.rperfil__tab:hover,
+.rperfil__tab:focus-visible { color: var(--burnthesky-white); border-color: var(--burnthesky-line-2); outline: 0; }
+.rperfil__tab.is-on {
+  color: var(--burnthesky-white);
+  border-color: var(--burnthesky-red);
+  border-bottom-color: var(--burnthesky-red-vivid);
+  background: var(--burnthesky-void-3);
+}
+.rperfil__panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--burnthesky-gap);
+}
+.rperfil__panel[hidden] { display: none !important; }
+.rperfil__panel--vacio {
+  min-height: 140px;
+  background: var(--burnthesky-void-2);
+  border: 1px dashed var(--burnthesky-line-2);
+}
