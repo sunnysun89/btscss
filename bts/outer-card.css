@@ -4900,7 +4900,8 @@ body:has(#rperfil) h1.page-title { display: none !important; }
    · .rperfil__panel: contenido de cada pestaña (el inventario queda fuera)
    · Al subir las estadísticas sobre Database, llevan su propio margen inferior
    ========================================================================== */
-#rstatscontainer.rdb-ready { margin-bottom: var(--burnthesky-gap); }
+/* ventana Estadísticas movida sobre Database (la mueve js-ajustes.js) */
+.rforumstats--arriba { margin: 0 0 var(--burnthesky-gap); }
 
 .rperfil__tabs {
   display: flex;

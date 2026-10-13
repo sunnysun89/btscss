@@ -1,5 +1,5 @@
 /* --- js-ajustes.js --- */
-/* 1) Índice: la ventana de estadísticas (#rstatscontainer) va ARRIBA de Database.
+/* 1) Índice: la ventana Estadísticas (.rforumstats) va ARRIBA de Database.
    2) Perfil: la ficha se reparte en tres pestañas; el inventario y medallero
       (.rinv) se quedan fuera de las pestañas, siempre visibles.
    Ambos esperan a que el resto de scripts hayan pintado su parte. */
@@ -9,13 +9,15 @@
     if (intentos > 0) setTimeout(function () { esperar(fn, intentos - 1); }, 100);
   }
 
-  /* 1. Estadísticas encima de Database */
+  /* 1. Solo la ventana "Estadísticas" (mensajes, miembros, récord) va ARRIBA de Database;
+        último usuario, conectados y afiliados se quedan donde estaban. */
   function ordenarIndice() {
-    var st = document.getElementById("rstatscontainer");
-    if (!st) return true;                       /* no es el índice */
+    var st = document.querySelector("#rstatscontainer .rforumstats");
+    if (!st) return !document.getElementById("rstatscontainer");   /* no es el índice */
     var rdb = document.querySelector(".rdb");
     if (!rdb) return false;                     /* Database aún no existe */
-    if (rdb.nextElementSibling === st) rdb.parentNode.insertBefore(st, rdb);
+    st.classList.add("rforumstats--arriba");
+    rdb.parentNode.insertBefore(st, rdb);
     return true;
   }
 
