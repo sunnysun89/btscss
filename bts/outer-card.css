@@ -4999,3 +4999,14 @@ body:has(#rperfil) h1.page-title { display: none !important; }
   color: inherit;
   text-decoration: none;
 }
+/* ============================================================================
+tamaño de afiliados
+========================================================================== */
+#rneonfooter td.raffiliates img {
+  width: 50px;
+  height: 50px;
+}
+#rneonfooter td.rpartners img {
+  width: 100px;
+  height: 50px;
+}
