@@ -4940,3 +4940,44 @@ body:has(#rperfil) h1.page-title { display: none !important; }
   background: var(--burnthesky-void-2);
   border: 1px dashed var(--burnthesky-line-2);
 }
+
+
+/* ============================================================================
+   29 · CABECERA DE VENTANA (tres puntos) EN DATABASE Y BIENVENIDA
+   Mismo remate que "Estadísticas" y "Quién está en línea": barra superior con
+   los tres puntos rojo/gris/gris claro y una línea debajo.
+   ========================================================================== */
+/* -- Database: los puntos antes del título; las pastillas, a la derecha -- */
+.rdb__bar { padding: 11px 14px; gap: 10px 14px; }
+.rdb__bar::before {
+  content: '';
+  flex-shrink: 0;
+  width: 9px;
+  height: 9px;
+  margin-right: 46px;
+  border-radius: 50%;
+  background: var(--burnthesky-red-vivid);
+  box-shadow: 16px 0 0 var(--burnthesky-gray), 32px 0 0 var(--burnthesky-gray-lt);
+}
+.rdb__title {
+  font: var(--burnthesky-fs-xs) / 1.4 var(--burnthesky-ff-mono);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--burnthesky-gray-lt);
+}
+.rdb__title + .rdb__pill { margin-left: auto; }
+
+/* -- Bienvenida (.rnewestuser): barra superior dibujada con un pseudoelemento -- */
+#rstatscontainer .rnewestuser::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 36px;
+  border-bottom: 1px solid var(--burnthesky-line);
+  background:
+    radial-gradient(circle 4.5px at 18.5px 50%, var(--burnthesky-red-vivid) 98%, transparent) no-repeat,
+    radial-gradient(circle 4.5px at 34.5px 50%, var(--burnthesky-gray) 98%, transparent) no-repeat,
+    radial-gradient(circle 4.5px at 50.5px 50%, var(--burnthesky-gray-lt) 98%, transparent) no-repeat;
+  pointer-events: none;
+}
+#rstatscontainer > .rnewestuser { padding-top: 62px; }
