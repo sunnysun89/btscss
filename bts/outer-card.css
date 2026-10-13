@@ -4981,3 +4981,21 @@ body:has(#rperfil) h1.page-title { display: none !important; }
   pointer-events: none;
 }
 #rstatscontainer > .rnewestuser { padding-top: 62px; }
+
+
+/* ============================================================================
+   30 · BIENVENIDA Y "¿QUIÉN ESTÁ EN LÍNEA?" A LA MISMA ALTURA
+   · La bienvenida arrastraba un margin (16px arriba / 4px abajo) que le ganaba
+     al margin:0 del contenedor, y por eso no se estiraba igual que su vecina.
+   · El título de "¿Quién está en línea?" deja de ser un enlace a /viewonline
+     (se ve como texto y no responde al clic).
+   ========================================================================== */
+#rstatscontainer > .rnewestuser { margin: 0; align-self: stretch; }
+#rstatscontainer > .rlogged { align-self: stretch; }
+
+#rstatscontainer .rlogged .rwindowheader a[href*="viewonline"] {
+  pointer-events: none;
+  cursor: default;
+  color: inherit;
+  text-decoration: none;
+}
