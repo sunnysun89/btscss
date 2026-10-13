@@ -4177,7 +4177,9 @@ li.row:hover .rforimg { filter: none; }
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  padding: 0 14px 14px;
+  margin: 0 22px;
+  padding: 18px 0 22px;
+  border-top: 1px solid var(--burnthesky-line-2);
 }
 .rdb__g--apart { flex: 1 1 calc(50% - 10px); }
 
@@ -4871,3 +4873,22 @@ body:has(#rperfil) h1.page-title { display: none !important; }
 .rdb__donut { display: none !important; }
 .rdb__cols { display: block; padding: 22px; }
 .rdb__groups { width: 100%; }
+
+
+/* ============================================================================
+   27 · ANCHO IGUAL PARA BANNER, FOROS, CATEGORÍAS Y FOOTER
+   #main llevaba padding-left:84px (hueco de la barra lateral) y eso lo hacía
+   más estrecho que el banner (#startindex). Ahora todos comparten el mismo
+   ancho y, en pantallas justas, el mismo margen para esquivar la barra.
+   ========================================================================== */
+#main { padding-left: 0; }
+
+@media (min-width: 641px) and (max-width: 1260px) {
+  #main,
+  #startindex,
+  #page-footer {
+    width: auto;
+    margin-left: 78px;
+    margin-right: 16px;
+  }
+}

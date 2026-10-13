@@ -367,11 +367,10 @@ jQuery(document).ready(function(){
         decir(ref);
       });
 
-    /* grupos aparte: bajo los contadores de la ventana de estadísticas */
+    /* grupos aparte: bajo los demás grupos de la ventana Database */
     if (apartes) {
       var $ap = $('<div class="rdb__apart"></div>').html(apartes);
-      var $st = $("#rstatscontainer .rforumstats .rstatsc").first();
-      if ($st.length) $st.after($ap); else $rdb.find(".rdb__cols").after($ap);
+      $rdb.find(".rdb__cols").after($ap);   /* debajo de los demás grupos, separados por una línea */
     }
 
     $("#rstatscontainer").before($rdb).addClass("rdb-ready");
