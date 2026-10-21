@@ -5057,3 +5057,177 @@ html, body { overflow-x: clip; }   /* el ancho 100vw incluye la barra de scroll 
   /* #startindex lleva margen izquierdo para esquivar la barra lateral */
   #headercontainer #header { margin-left: -78px; }
 }
+
+
+/* ============================================================================
+   32 · FOOTER REORDENADO + GRUPOS EN CUADRADOS DE 70px
+   Esquema (de arriba abajo):
+     Estadísticas (ancho completo)
+     [ Conectados ahora  |  Bienvenida + avatar ]
+     [ Conectados 48 h   |  (la bienvenida ocupa las dos filas) ]
+     Database: grupos en cuadrados · Authority / Missing aparte, centrados
+     Créditos
+     Afiliados
+   js-ajustes.js mete .rdb dentro de #rstatscontainer; aquí se coloca con grid.
+   Ajustes rápidos:  --burnthesky-grp-size (lado del cuadrado de grupo)
+   ========================================================================== */
+:root { --burnthesky-grp-size: 70px; }
+
+/* -- rbgname: sin texto de marca de agua en el mural -- */
+#mural .rbgname { display: none !important; }
+
+/* -- rejilla del footer -- */
+#rstatscontainer {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+  grid-template-areas:
+    "logged newest"
+    "online newest"
+    "rdb    rdb"
+    "credits credits"
+    "neon   neon";
+  align-items: stretch;
+}
+#rstatscontainer > .rlogged         { grid-area: logged; flex: none; }
+#rstatscontainer > .ronlineuserslist{ grid-area: online; }
+#rstatscontainer > .rnewestuser     { grid-area: newest; flex: none; }
+#rstatscontainer > .rdb             { grid-area: rdb; margin: 0; }
+#rstatscontainer > .rcredits        { grid-area: credits; }
+#rstatscontainer > #rneonfooter     { grid-area: neon; }
+#rstatscontainer > .rgroupslegend   { grid-column: 1 / -1; }
+#rstatscontainer > #rfooterreplace:empty { display: none; }
+
+/* -- "Conectados en las últimas 48 horas": ventana con cabecera de tres puntos -- */
+#rstatscontainer > .ronlineuserslist {
+  position: relative;
+  margin: 0;
+  padding: 52px 16px 16px;
+  background: var(--burnthesky-void-2);
+  border: 1px solid var(--burnthesky-line);
+  font: var(--burnthesky-fs-sm) / 1.7 var(--burnthesky-ff-mono);
+  letter-spacing: .5px;
+  color: var(--burnthesky-gray-lt);
+  overflow-wrap: anywhere;
+}
+#rstatscontainer .ronlineuserslist::before {
+  content: '';
+  position: absolute;
+  top: -1px; left: -1px;
+  z-index: 2;
+  width: 110px; height: 3px;
+  background: var(--burnthesky-red);
+  pointer-events: none;
+}
+#rstatscontainer .ronlineuserslist::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 36px;
+  border-bottom: 1px solid var(--burnthesky-line);
+  background:
+    radial-gradient(circle 4.5px at 18.5px 50%, var(--burnthesky-red-vivid) 98%, transparent) no-repeat,
+    radial-gradient(circle 4.5px at 34.5px 50%, var(--burnthesky-gray) 98%, transparent) no-repeat,
+    radial-gradient(circle 4.5px at 50.5px 50%, var(--burnthesky-gray-lt) 98%, transparent) no-repeat;
+  pointer-events: none;
+}
+
+/* -- Bienvenida: columna alta con el avatar del último usuario -- */
+#rstatscontainer > .rnewestuser { padding-bottom: 26px; }
+.rnewest__avatar {
+  display: block;
+  width: min(100%, 190px);
+  aspect-ratio: 1;
+  margin-top: 14px;
+  object-fit: cover;
+  border: 1px solid var(--burnthesky-line-2);
+  background: var(--burnthesky-void);
+}
+
+/* -- Créditos: tira fina de ancho completo -- */
+#rstatscontainer > .rcredits {
+  margin: 0;
+  padding: 14px;
+  background: var(--burnthesky-void-2);
+  border: 1px solid var(--burnthesky-line);
+}
+
+/* -- Database: solo el título; las pastillas ya salen en Estadísticas -- */
+.rdb__pill { display: none; }
+.rdb__cols { display: block; padding: 24px 22px; }
+.rdb__groups { justify-content: center; gap: 14px; }
+
+/* -- Grupos: cuadrados con icono; el nombre sale al pasar el ratón -- */
+.rdb__g,
+.rdb__g--apart {
+  flex: 0 0 var(--burnthesky-grp-size);
+  width: var(--burnthesky-grp-size);
+  height: var(--burnthesky-grp-size);
+  min-width: 0;
+  padding: 0;
+  gap: 0;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  border: 1px solid var(--burnthesky-line-2);
+  border-bottom: 3px solid var(--g, var(--burnthesky-gray));
+}
+.rdb__gico {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: var(--g, var(--burnthesky-gray-lt));
+  transition: transform var(--burnthesky-ease), filter var(--burnthesky-ease);
+}
+.rdb__gico svg { width: 34px; height: 34px; }
+.rdb__gico img { max-width: 44px; max-height: 44px; display: block; }
+.rdb__g:hover .rdb__gico { transform: scale(1.1); filter: drop-shadow(0 0 8px var(--g-glow, transparent)); }
+
+.rdb__gname {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  z-index: 20;
+  flex: none;
+  padding: 6px 10px;
+  background: var(--burnthesky-void);
+  border: 1px solid var(--burnthesky-line-2);
+  font: var(--burnthesky-fs-xs) / 1.2 var(--burnthesky-ff-mono);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--burnthesky-white);
+  opacity: 0;
+  transform: translate(-50%, 4px);
+  pointer-events: none;
+  transition: opacity var(--burnthesky-ease), transform var(--burnthesky-ease);
+}
+.rdb__g:hover .rdb__gname,
+.rdb__g:focus-visible .rdb__gname { opacity: 1; transform: translate(-50%, 0); }
+.rdb__gcount {
+  position: absolute;
+  top: 4px; right: 6px;
+  font: var(--burnthesky-fs-xs) / 1 var(--burnthesky-ff-mono);
+  color: var(--burnthesky-gray-lt);
+}
+.rdb__gbar { display: none; }
+
+/* -- Authority / Missing: caja propia, más estrecha y centrada -- */
+.rdb__apart {
+  justify-content: center;
+  gap: 14px;
+  width: fit-content;
+  max-width: calc(100% - 44px);
+  margin: 0 auto 24px;
+  padding: 18px 26px;
+  background: var(--burnthesky-void);
+  border: 1px solid var(--burnthesky-line);
+}
+
+@media (max-width: 900px) {
+  #rstatscontainer {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "newest" "logged" "online" "rdb" "credits" "neon";
+  }
+}
