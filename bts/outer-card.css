@@ -5231,3 +5231,96 @@ html, body { overflow-x: clip; }   /* el ancho 100vw incluye la barra de scroll 
     grid-template-areas: "newest" "logged" "online" "rdb" "credits" "neon";
   }
 }
+
+
+/* ============================================================================
+   33 · GRUPOS ANCHOS, "CONECTADOS 48h" Y AVATAR DE 230px
+   · Los cuadrados de grupo se reparten en una sola fila de al menos 980px
+     (--burnthesky-grp-row-w), siguen siendo cuadrados y crecen con el ancho.
+   · Authority / Missing: cuadrados fijos de --burnthesky-grp-apart.
+   · La ventana de 48h es más alta que la de conectados ahora.
+   · El avatar del último usuario mide 230px de alto; el nombre sube.
+   ========================================================================== */
+:root {
+  --burnthesky-grp-row-w: 980px;
+  --burnthesky-grp-apart: 96px;
+  --burnthesky-avatar-new: 230px;
+}
+
+/* -- grupos: una fila de cuadrados que reparte el ancho -- */
+.rdb__groups {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 14px;
+  width: 100%;
+  min-width: min(100%, var(--burnthesky-grp-row-w));
+}
+.rdb__groups .rdb__g {
+  flex: none;
+  width: auto;
+  height: auto;
+  aspect-ratio: 1;
+}
+.rdb__groups .rdb__gico svg { width: 42%; height: 42%; }
+.rdb__groups .rdb__gico img { max-width: 52%; max-height: 52%; }
+.rdb__groups .rdb__gcount { top: 8px; right: 10px; font-size: var(--burnthesky-fs-sm); }
+
+.rdb__apart .rdb__g {
+  flex: 0 0 var(--burnthesky-grp-apart);
+  width: var(--burnthesky-grp-apart);
+  height: var(--burnthesky-grp-apart);
+  aspect-ratio: auto;
+}
+.rdb__apart .rdb__gico svg { width: 40px; height: 40px; }
+
+@media (max-width: 900px) {
+  .rdb__groups {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+    min-width: 0;
+  }
+}
+
+/* -- filas del footer: la de 48h absorbe el alto sobrante (más grande que la de arriba) -- */
+#rstatscontainer { grid-template-rows: auto 1fr auto auto auto; }
+#rstatscontainer > .ronlineuserslist { min-height: 190px; }
+
+/* -- contenido de la ventana de 48h -- */
+.r48__title {
+  position: absolute;
+  top: 0; left: 62px; right: 16px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  font: var(--burnthesky-fs-xs) / 1.4 var(--burnthesky-ff-mono);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--burnthesky-gray-lt);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.r48__list { display: flex; flex-wrap: wrap; gap: 6px 8px; align-content: flex-start; }
+.r48__u {
+  padding: 4px 10px;
+  border: 1px solid var(--burnthesky-line-2);
+  background: var(--burnthesky-void);
+  font: var(--burnthesky-fs-sm) / 1.4 var(--burnthesky-ff-mono);
+  letter-spacing: .5px;
+  color: var(--burnthesky-white);
+  transition: border-color var(--burnthesky-ease), color var(--burnthesky-ease);
+}
+.r48__u:hover { border-color: var(--burnthesky-red); color: var(--burnthesky-red-vivid); }
+.r48__vacio { color: var(--burnthesky-gray); }
+
+/* -- bienvenida: el avatar de 230px empuja el nombre hacia arriba sin deformar la ventana -- */
+#rstatscontainer > .rnewestuser { justify-content: center; padding-top: 52px; }
+.rnewest__avatar {
+  flex: none;
+  width: var(--burnthesky-avatar-new);
+  height: var(--burnthesky-avatar-new);
+  max-width: 100%;
+  margin-top: 16px;
+  aspect-ratio: auto;
+  object-fit: cover;
+}
