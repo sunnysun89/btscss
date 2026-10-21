@@ -99,7 +99,7 @@
   --burnthesky-frame-w:       200px;     /* marco de imagen (.bts-frame) */
   --burnthesky-frame-h:       280px;
   --burnthesky-switcher-size: 34px;      /* botón del MultiSwitcher */
-  --burnthesky-toolbar-right: 62px;      /* posición de las notificaciones */
+  --burnthesky-toolbar-right: 42px;      /* posición de las notificaciones */
 
   /* ---- Imágenes ---- */
   --burnthesky-img-bg:        url("https://i.imgur.com/XsTemW8.jpeg");
