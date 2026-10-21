@@ -1187,12 +1187,14 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     var pintar = function (usuarios) {
       lista.innerHTML = "";
       if (!usuarios || !usuarios.length) { lista.innerHTML = '<span class="r48__vacio">Nadie se ha conectado en las últimas 48 horas.</span>'; return; }
-      usuarios.forEach(function (u) {
+      var enlaces = usuarios.map(function (u) {
         var a = document.createElement("a");
         a.className = "r48__u"; a.href = u.href; a.textContent = u.nombre;
-        if (u.color) a.style.color = u.color;
-        lista.appendChild(a);
+        var c = u.color || colorPagina(u.href);
+        if (c) a.style.color = c;
+        return a;
       });
+      conSeparadores(lista, enlaces);
     };
     var ahora = ahoraDelForo(), limite = ahora.getTime() - 48 * 3600 * 1000;
     var clave = "bts-48h", guardado = null;
@@ -1218,6 +1220,34 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     intentar(0);
   }
 
+  /* Color de grupo de un usuario: el que trae su enlace en la lista de miembros; si falta,
+     se busca en cualquier otro enlace a su perfil de la página (autores de mensajes, último usuario…). */
+  function colorDeEnlace(a) {
+    if (!a) return "";
+    var sp = a.querySelector("[style*='color'], font[color]");
+    if (sp) return sp.style.color || sp.getAttribute("color") || "";
+    return a.style.color || "";
+  }
+  var mapaColores = null;
+  function colorPagina(href) {
+    if (!mapaColores) {
+      mapaColores = {};
+      document.querySelectorAll("a[href*='/u']").forEach(function (a) {
+        var h = a.getAttribute("href"), c = colorDeEnlace(a);
+        if (c && !mapaColores[h]) mapaColores[h] = c;
+      });
+    }
+    return mapaColores[href] || "";
+  }
+  /* Nombres separados por " · " (sin cajas) */
+  function conSeparadores(lista, enlaces) {
+    lista.innerHTML = "";
+    enlaces.forEach(function (a, i) {
+      if (i) { var sp = document.createElement("span"); sp.className = "r48__sep"; sp.textContent = " · "; lista.appendChild(sp); }
+      lista.appendChild(a);
+    });
+  }
+
   /* "¿Quién está en línea?": los nombres pasan al mismo estilo de etiqueta que los de 48h
      (se quitan las comas y el texto suelto; la etiqueta "Usuarios registrados:" queda arriba) */
   function estiloConectados() {
@@ -1231,7 +1261,11 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     etiqueta = etiqueta.replace(/\s+/g, " ").trim();
     var lista = document.createElement("div");
     lista.className = "r48__list";
-    enlaces.forEach(function (a) { a.classList.add("r48__u"); lista.appendChild(a); });
+    enlaces.forEach(function (a) {
+      a.classList.add("r48__u");
+      if (!colorDeEnlace(a)) { var c = colorPagina(a.getAttribute("href")); if (c) a.style.color = c; }
+    });
+    conSeparadores(lista, enlaces);
     caja.innerHTML = "";
     if (etiqueta) { var l = document.createElement("div"); l.className = "rlog__label"; l.textContent = etiqueta; caja.appendChild(l); }
     caja.appendChild(lista);

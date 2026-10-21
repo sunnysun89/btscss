@@ -5394,3 +5394,24 @@ html, body { overflow-x: clip; }   /* el ancho 100vw incluye la barra de scroll 
 @media (max-width: 640px) {
   .rforumstats .rstatsc p.page-bottom { flex-basis: 100%; }
 }
+
+
+/* ============================================================================
+   35 · NOMBRES SIN RECUADRO, SEPARADOS POR " · "
+   Aplica a "¿Quién está en línea?" y "Conectados en las últimas 48h".
+   Cada nombre conserva el color de su grupo (lo pone js-ajustes.js).
+   ========================================================================== */
+.r48__list { display: block; line-height: 2; }
+.r48__u,
+#rstatscontainer .rloggedinlist a.r48__u {
+  display: inline;
+  padding: 0;
+  background: none;
+  border: 0;
+  font-weight: 400;
+  text-decoration: none;
+  transition: opacity var(--burnthesky-ease);
+}
+.r48__u:hover { opacity: .65; }
+.r48__sep { color: var(--burnthesky-gray); white-space: pre-wrap; }
+.r48__u strong { font-weight: 400; }
