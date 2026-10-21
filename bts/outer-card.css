@@ -5324,3 +5324,73 @@ html, body { overflow-x: clip; }   /* el ancho 100vw incluye la barra de scroll 
   aspect-ratio: auto;
   object-fit: cover;
 }
+
+
+/* ============================================================================
+   34 · LISTAS CON SCROLL, NOMBRES EN ETIQUETA Y ESTADÍSTICAS BAJAS
+   · "¿Quién está en línea?" usa las mismas etiquetas (.r48__u) que la de 48h.
+   · Si hay muchos usuarios, la lista de cada ventana hace scroll por dentro y la
+     ventana no crece. Ajustes: --burnthesky-list-max-h (conectados ahora).
+   · Estadísticas: título más fino y cifra + texto en una sola línea (≈ 85px).
+   ========================================================================== */
+:root { --burnthesky-list-max-h: 84px; }
+
+/* -- scroll fino y oscuro -- */
+.r48__list,
+#rstatscontainer .rloggedinlist {
+  scrollbar-width: thin;
+  scrollbar-color: var(--burnthesky-line-2) transparent;
+}
+.r48__list::-webkit-scrollbar,
+#rstatscontainer .rloggedinlist::-webkit-scrollbar { width: 6px; }
+.r48__list::-webkit-scrollbar-thumb,
+#rstatscontainer .rloggedinlist::-webkit-scrollbar-thumb { background: var(--burnthesky-line-2); }
+
+/* -- ¿Quién está en línea?: lista con tope de alto y scroll -- */
+#rstatscontainer .rloggedinlist {
+  max-height: var(--burnthesky-list-max-h);
+  overflow-y: auto;
+  padding-bottom: 4px;
+}
+.rlog__label {
+  margin-bottom: 8px;
+  font: var(--burnthesky-fs-xs) / 1.4 var(--burnthesky-ff-mono);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--burnthesky-gray);
+}
+#rstatscontainer .rloggedinlist .r48__list { overflow: visible; }
+#rstatscontainer .rloggedinlist a.r48__u { font-weight: 400; }
+
+/* -- 48h: la lista ocupa el hueco de la ventana sin hacerla crecer -- */
+#rstatscontainer > .ronlineuserslist .r48__list {
+  position: absolute;
+  top: 52px; left: 16px; right: 16px; bottom: 16px;
+  overflow-y: auto;
+}
+
+/* -- Estadísticas: baja (título fino, cifra y texto en línea) -- */
+.rforumstats .rtitle { padding: 7px 14px; }
+.rforumstats .rstatsc { padding: 8px 14px; gap: 10px; }
+.rforumstats .rstatsc p.page-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 6px 12px;
+  font-size: 10px;
+  line-height: 1.35;
+  letter-spacing: 1px;
+  text-align: left;
+}
+.rforumstats .rstatsc strong {
+  display: inline;
+  flex: none;
+  margin: 0;
+  font-size: 28px;
+  line-height: 1;
+}
+@media (max-width: 640px) {
+  .rforumstats .rstatsc p.page-bottom { flex-basis: 100%; }
+}

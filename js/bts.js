@@ -1218,6 +1218,25 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     intentar(0);
   }
 
+  /* "¿Quién está en línea?": los nombres pasan al mismo estilo de etiqueta que los de 48h
+     (se quitan las comas y el texto suelto; la etiqueta "Usuarios registrados:" queda arriba) */
+  function estiloConectados() {
+    var caja = document.querySelector("#rstatscontainer .rloggedinlist");
+    if (!caja || caja.querySelector(".r48__list")) return;
+    var enlaces = Array.prototype.slice.call(caja.querySelectorAll("a[href]"));
+    if (!enlaces.length) return;
+    var primero = enlaces[0], etiqueta = "";
+    var n = caja.firstChild;
+    while (n && !(n === primero || (n.contains && n.contains(primero)))) { etiqueta += n.textContent; n = n.nextSibling; }
+    etiqueta = etiqueta.replace(/\s+/g, " ").trim();
+    var lista = document.createElement("div");
+    lista.className = "r48__list";
+    enlaces.forEach(function (a) { a.classList.add("r48__u"); lista.appendChild(a); });
+    caja.innerHTML = "";
+    if (etiqueta) { var l = document.createElement("div"); l.className = "rlog__label"; l.textContent = etiqueta; caja.appendChild(l); }
+    caja.appendChild(lista);
+  }
+
   function ordenarIndice() {
     var cont = document.getElementById("rstatscontainer");
     if (!cont) return true;                       /* no es el índice */
@@ -1232,6 +1251,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     iconosGrupos(rdb);
     avatarNuevo();
     conectados48();
+    estiloConectados();
     return true;
   }
 
