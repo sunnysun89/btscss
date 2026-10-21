@@ -39,10 +39,12 @@
    00 · FUENTES
    @import DEBE ser la primera regla de la hoja; si va después de cualquier
    otra regla, el navegador la ignora.
-   · Anton ........ respaldo de Impact (Android, Linux)
-   · Courier Prime  respaldo de Courier New
+   · Outfit ....... títulos y cifras grandes (solo el peso 600: con font-weight
+                    normal el navegador usa ese mismo peso, así los títulos
+                    salen firmes sin tocar cada regla)
+   · Inter ........ texto, etiquetas y campos
    ========================================================================== */
-@import url('https://fonts.googleapis.com/css2?family=Anton&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@600&family=Inter:wght@400;500;600&display=swap');
 
 
 /* ============================================================================
@@ -74,9 +76,9 @@
   --burnthesky-user-color:    var(--burnthesky-white);
 
   /* ---- Tipografía ---- */
-  --burnthesky-ff-display:    'Impact', 'Anton', 'Arial Black', 'Franklin Gothic Medium', sans-serif;
-  --burnthesky-ff-mono:       'Courier New', 'Courier Prime', 'Lucida Console', monospace;
-  --burnthesky-ff-sans:       Arial, Helvetica, sans-serif;
+  --burnthesky-ff-display:    'Outfit', 'Inter', 'Segoe UI', Arial, sans-serif;
+  --burnthesky-ff-mono:       'Inter', 'Segoe UI', Arial, sans-serif;   /* nombre heredado: ya no es monoespaciada */
+  --burnthesky-ff-sans:       'Inter', 'Segoe UI', Arial, sans-serif;
 
   --burnthesky-fs-2xs:        9px;
   --burnthesky-fs-xs:         10px;
@@ -112,8 +114,8 @@
   --burnthesky-ring:          radial-gradient(circle closest-side,
                                 var(--burnthesky-gray) 0, var(--burnthesky-gray) 42%,
                                 transparent 46%);
-  --burnthesky-ghost:         4px 4px 0 var(--burnthesky-red-ghost), 8px 8px 0 var(--burnthesky-red-ghost-2);
-  --burnthesky-ghost-sm:      2px 2px 0 var(--burnthesky-red-ghost), 4px 4px 0 var(--burnthesky-red-ghost-2);
+  --burnthesky-ghost:         0 0 0 transparent;   /* sombra roja desplazada: apagada para un look más limpio (antes: 4px 4px 0 red-ghost, 8px 8px 0 red-ghost-2) */
+  --burnthesky-ghost-sm:      0 0 0 transparent;   /* (antes: 2px 2px 0 red-ghost, 4px 4px 0 red-ghost-2) */
   /* VELOCIDAD DE LOS HOVERS: se cambian aquí y afectan a todo el foro.
      --burnthesky-ease ..... enlaces, tarjetas, botones, bordes, sombras
      --burnthesky-ease-img . imágenes (de gris a color) */
@@ -5009,4 +5011,49 @@ tamaño de afiliados
 #rneonfooter td.rpartners img {
   width: 100px;
   height: 50px;
+}
+
+
+/* ============================================================================
+   31 · BANNER SIN CUADRO
+   Solo la imagen a todo lo ancho de la pantalla, con "Burn The Sky" y la
+   descripción corta centrados encima. Sin borde, sin segmento rojo, sin marco.
+   · --burnthesky-banner-h ... alto del banner. Por defecto conserva el alto de
+     antes (ancho del foro × 9/16); pon un valor fijo (p. ej. 420px) para cambiarlo.
+   · Si prefieres la imagen solo al ancho del foro, borra el bloque "A sangre"
+     (width y margin-left) de #headercontainer #header.
+   ========================================================================== */
+:root {
+  --burnthesky-banner-h: calc(min(var(--burnthesky-w-main), 100vw - 32px) * 9 / 16);
+}
+html, body { overflow-x: clip; }   /* el ancho 100vw incluye la barra de scroll */
+
+#headercontainer #header {
+  /* A sangre: de borde a borde de la pantalla */
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  /* alto */
+  height: var(--burnthesky-banner-h);
+  min-height: 0;
+  max-height: none;
+  aspect-ratio: auto;
+  /* centrado y sin cuadro */
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--burnthesky-pad);
+  text-align: center;
+  background: transparent;
+  border: 0;
+}
+#headercontainer #header::before { display: none; }
+#headercontainer #header::after {
+  background: linear-gradient(180deg, rgba(9, 9, 9, .15), rgba(9, 9, 9, .55));
+}
+#headercontainer .position { max-width: var(--burnthesky-w-main); }
+#headercontainer .rtitle { letter-spacing: -1px; text-shadow: none; }
+#headercontainer .rdesc  { max-width: 60ch; margin: 14px auto 0; text-transform: none; letter-spacing: .5px; }
+
+@media (min-width: 641px) and (max-width: 1260px) {
+  /* #startindex lleva margen izquierdo para esquivar la barra lateral */
+  #headercontainer #header { margin-left: -78px; }
 }
