@@ -54,18 +54,18 @@
 
   /* ---- Color · superficies y texto ---- */
   --burnthesky-void:          #090909;   /* fondo principal */
-  --burnthesky-void-2:        #0d0d0d;   /* superficie 1 (cajas, categorías) */
+  --burnthesky-void-2:        #111114;   /* superficie 1 (cajas, categorías) */
   --burnthesky-void-3:        #131313;   /* superficie 2 (inputs, filas alternas) */
   --burnthesky-white:         #ebebeb;   /* texto principal */
   --burnthesky-gray:          #6e6e6e;   /* decorativo (anillos, etiquetas mudas) */
   --burnthesky-gray-lt:       #9a9a9a;   /* texto secundario legible */
   --burnthesky-gray-dim:      #262626;   /* líneas tenues */
-  --burnthesky-line:          #1d1d1d;   /* separadores */
-  --burnthesky-line-2:        #2e2e2e;   /* bordes de controles */
+  --burnthesky-line:          #2b2b2e;   /* separadores */
+  --burnthesky-line-2:        #414146;   /* bordes de controles */
 
   /* ---- Color · rojo señal ---- */
   --burnthesky-red:           #c51515;
-  --burnthesky-red-vivid:     #e52222;
+  --burnthesky-red-vivid:     #ef4545;
   --burnthesky-red-dark:      #6a0808;
   --burnthesky-red-ghost:     rgba(197, 21, 21, .42);
   --burnthesky-red-ghost-2:   rgba(197, 21, 21, .20);
@@ -128,6 +128,81 @@
   --burnthesky-z-scan:        9000;
   --burnthesky-z-toolbar:     9999;
   --burnthesky-z-switcher:    10000;
+
+
+  /* ======================= PANEL DE CONTROL ======================= */
+
+  /* ---- Banner ---- */
+  --burnthesky-banner-w:          100vw;                 /* ancho de la imagen: 100vw = pantalla completa; o ej. 1120px */
+  --burnthesky-banner-h:          calc(min(var(--burnthesky-w-main), 100vw - 32px) * 9 / 16);
+  --burnthesky-banner-title:      clamp(48px, 8vw, 110px);
+  --burnthesky-banner-title-ls:   -1px;
+  --burnthesky-banner-desc:       var(--burnthesky-fs-sm);
+  --burnthesky-banner-desc-w:     60ch;
+  --burnthesky-banner-gray:       1;                     /* 0 = color, 1 = blanco y negro */
+  --burnthesky-banner-veil-top:   .15;                   /* oscurecido arriba (0 a 1) */
+  --burnthesky-banner-veil-bottom:.55;                   /* oscurecido abajo (0 a 1) */
+
+  /* ---- Ventanas ---- */
+  --burnthesky-radius:            0px;                   /* esquinas redondeadas de todas las ventanas */
+  --burnthesky-seg-w:             110px;                 /* segmento rojo de arriba: ancho */
+  --burnthesky-seg-h:             3px;                   /* segmento rojo de arriba: alto */
+  --burnthesky-lift:              3px;                   /* cuánto suben las tarjetas al pasar el ratón */
+  --burnthesky-dot-1:             var(--burnthesky-red-vivid);   /* tres puntos de la cabecera */
+  --burnthesky-dot-2:             var(--burnthesky-gray);
+  --burnthesky-dot-3:             var(--burnthesky-gray-lt);
+  --burnthesky-scroll-w:          6px;                   /* grosor del scroll de las listas */
+
+  /* ---- Estadísticas ---- */
+  --burnthesky-stat-num:          28px;                  /* tamaño de las cifras */
+
+  /* ---- Bienvenida y avatar del último usuario ---- */
+  --burnthesky-newest-name:       40px;                  /* tamaño del nombre */
+  --burnthesky-avatar-new:        230px;                 /* lado del avatar */
+
+  /* ---- Listas de usuarios (en línea / 48h) ---- */
+  --burnthesky-list-max-h:        84px;                  /* alto máximo de "¿Quién está en línea?" antes del scroll */
+  --burnthesky-48h-min-h:         190px;                 /* alto mínimo de la ventana de 48h */
+  --burnthesky-list-font:         var(--burnthesky-fs-sm);
+  --burnthesky-list-lh:           2;
+  --burnthesky-list-sep:          var(--burnthesky-gray);   /* color del " · " */
+
+  /* ---- Grupos (footer) ---- */
+  --burnthesky-grp-row-w:         980px;                 /* ancho mínimo de la fila de grupos */
+  --burnthesky-grp-gap:           14px;
+  --burnthesky-grp-icon:          42%;                   /* tamaño del icono dentro del cuadrado */
+  --burnthesky-grp-size:          70px;
+  --burnthesky-grp-apart:         96px;                  /* cuadrados de Authority / Missing */
+  --burnthesky-grp-apart-icon:    40px;
+
+  /* ---- Afiliados ---- */
+  --burnthesky-afil-w:            50px;
+  --burnthesky-afil-h:            50px;
+  --burnthesky-partner-w:         100px;
+  --burnthesky-partner-h:         50px;
+
+  /* ---- Banner (posición y brillo de la imagen) ---- */
+  --burnthesky-banner-ratio:      16 / 9;
+  --burnthesky-banner-max-h:      none;
+  --burnthesky-banner-pos:        center;                /* center, top, bottom, 50% 30%... */
+  --burnthesky-banner-dim:        .55;                   /* brillo de la imagen (0 negro, 1 normal) */
+
+  /* ---- Foros y categorías ---- */
+  --burnthesky-forimg-w:          230px;                 /* imagen de un foro simple: ancho */
+  --burnthesky-forimg-h:          150px;                 /* imagen de un foro doble: alto */
+  --burnthesky-fortitle:          26px;                  /* título de cada foro */
+  --burnthesky-col-stat:          96px;                  /* casillas Temas / Mensajes */
+  --burnthesky-col-last:          260px;                 /* bloque Último mensaje */
+
+  /* ---- Perfil ---- */
+  --burnthesky-pf-avatar-w:       250px;
+  --burnthesky-pf-side-w:         330px;
+  --burnthesky-pf-banner-h:       230px;
+  --burnthesky-pf-slot:           64px;                  /* casillas de inventario y medallero */
+
+  /* ---- Editar perfil ---- */
+  --burnthesky-ucp-label-w:       36%;
+  --burnthesky-ucp-field-w:       420px;
 }
 
 
@@ -270,8 +345,8 @@ ul#picture_legend { display: none !important; }
   top: -1px;
   left: -1px;
   z-index: 2;
-  width: 110px;
-  height: 3px;
+  width: var(--burnthesky-seg-w);
+  height: var(--burnthesky-seg-h);
   background: var(--burnthesky-red);
   pointer-events: none;
 }
@@ -300,8 +375,8 @@ ul#picture_legend { display: none !important; }
   position: absolute;
   left: 20px;
   bottom: -1px;
-  width: 110px;
-  height: 3px;
+  width: var(--burnthesky-seg-w);
+  height: var(--burnthesky-seg-h);
   background: var(--burnthesky-red);
   pointer-events: none;
 }
@@ -1863,12 +1938,7 @@ p.copyright a:hover { color: var(--burnthesky-red-vivid); }
 /* Estructura mínima: los tokens de línea y caja del autor no se leen
    (línea 1.15, caja 1.02 contra el fondo: las separaciones no existen).
    Se suben lo justo para que existan, sin cambiar el color: */
-:root {
-  --burnthesky-void-2:        #111114;
-  --burnthesky-line:          #2b2b2e;
-  --burnthesky-line-2:        #414146;
-  --burnthesky-red-vivid:     #ef4545;
-}
+
 /* ============================================================================
 Por qué existe: con los colores del panel sin resetear, fondos claros
    (#fff, #ECF3F7) ganan en filas, celdas, paneles y tablas, y el foro sale
@@ -2993,12 +3063,7 @@ form[name="form_login"] .user_login_form label {
                center 30%...
    · dim ..... brillo de la imagen: 0 negro, 1 original.
    ---------------------------------------------------------------------- */
-:root {
-  --burnthesky-banner-ratio: 16 / 9;
-  --burnthesky-banner-max-h: none;
-  --burnthesky-banner-pos:   center;
-  --burnthesky-banner-dim:   .55;
-}
+
 
 #headercontainer #header {
   position: relative;
@@ -3020,8 +3085,8 @@ form[name="form_login"] .user_login_form label {
   top: -1px;
   left: -1px;
   z-index: 3;
-  width: 110px;
-  height: 3px;
+  width: var(--burnthesky-seg-w);
+  height: var(--burnthesky-seg-h);
   background: var(--burnthesky-red);
   pointer-events: none;
 }
@@ -3040,7 +3105,7 @@ form[name="form_login"] .user_login_form label {
   position: absolute;
   inset: 0;
   background: var(--burnthesky-img-banner) var(--burnthesky-banner-pos) / cover no-repeat;
-  filter: grayscale(1) brightness(var(--burnthesky-banner-dim));
+  filter: grayscale(var(--burnthesky-banner-gray)) brightness(var(--burnthesky-banner-dim));
   pointer-events: none;
 }
 
@@ -3369,8 +3434,8 @@ form[name="form_login"] .user_login_form label {
   top: -1px;
   left: -1px;
   z-index: 2;
-  width: 110px;
-  height: 3px;
+  width: var(--burnthesky-seg-w);
+  height: var(--burnthesky-seg-h);
   background: var(--burnthesky-red);
   pointer-events: none;
 }
@@ -3584,8 +3649,8 @@ form[name="form_login"] .user_login_form label {
   height: 9px;
   margin-right: 46px;
   border-radius: 50%;
-  background: var(--burnthesky-red-vivid);
-  box-shadow: 16px 0 0 var(--burnthesky-gray), 32px 0 0 var(--burnthesky-gray-lt);
+  background: var(--burnthesky-dot-1);
+  box-shadow: 16px 0 0 var(--burnthesky-dot-2), 32px 0 0 var(--burnthesky-dot-3);
 }
 
 /* -- ventanas -- */
@@ -3606,8 +3671,8 @@ form[name="form_login"] .user_login_form label {
   top: -1px;
   left: -1px;
   z-index: 2;
-  width: 110px;
-  height: 3px;
+  width: var(--burnthesky-seg-w);
+  height: var(--burnthesky-seg-h);
   background: var(--burnthesky-red);
   pointer-events: none;
 }
@@ -3623,7 +3688,7 @@ form[name="form_login"] .user_login_form label {
   transition: transform var(--burnthesky-ease), border-color var(--burnthesky-ease), box-shadow var(--burnthesky-ease);
 }
 .rforumstats .rstatsc p.page-bottom:hover {
-  transform: translateY(-3px);
+  transform: translateY(calc(-1 * var(--burnthesky-lift)));
   border-color: var(--burnthesky-red);
   box-shadow: 4px 4px 0 var(--burnthesky-red-ghost-2);
 }
@@ -3646,7 +3711,7 @@ form[name="form_login"] .user_login_form label {
   color: var(--burnthesky-gray-lt);
 }
 #rstatscontainer .rnewestuser strong {
-  font-size: 40px;
+  font-size: var(--burnthesky-newest-name);
   line-height: 1;
   text-shadow: var(--burnthesky-ghost-sm);
 }
@@ -3667,8 +3732,8 @@ form[name="form_login"] .user_login_form label {
   top: -1px;
   left: -1px;
   z-index: 2;
-  width: 110px;
-  height: 3px;
+  width: var(--burnthesky-seg-w);
+  height: var(--burnthesky-seg-h);
   background: var(--burnthesky-red);
   pointer-events: none;
 }
@@ -3760,7 +3825,7 @@ form[name="form_login"] .user_login_form label {
 
 .rdb__g:hover,
 .rdb__g:focus-visible {
-  transform: translateY(-3px);
+  transform: translateY(calc(-1 * var(--burnthesky-lift)));
   background: var(--g-soft, var(--burnthesky-void-3));
   border-color: var(--g, var(--burnthesky-red));
   box-shadow: 4px 4px 0 var(--g-soft, transparent), 0 0 22px var(--g-glow, transparent);
@@ -3824,7 +3889,7 @@ form[name="form_login"] .user_login_form label {
 }
 #rneonfooter td.raffiliates a:hover,
 #rneonfooter td.rpartners a:hover {
-  transform: translateY(-3px);
+  transform: translateY(calc(-1 * var(--burnthesky-lift)));
   border-color: var(--burnthesky-red);
   box-shadow: 3px 3px 0 var(--burnthesky-red-ghost-2), 0 0 14px var(--burnthesky-red-glow);
 }
@@ -3864,13 +3929,7 @@ form[name="form_login"] .user_login_form label {
    --burnthesky-col-stat ..... ancho de las casillas Temas / Mensajes
    --burnthesky-col-last ..... ancho del bloque Último mensaje
    ========================================================================== */
-:root {
-  --burnthesky-forimg-w: 230px;
-  --burnthesky-forimg-h: 150px;
-  --burnthesky-fortitle: 26px;
-  --burnthesky-col-stat: 96px;
-  --burnthesky-col-last: 260px;
-}
+
 
 /* -- el título y la descripción nativos duplicaban los del banner -- */
 #page-header #logo-desc { display: none !important; }
@@ -3901,8 +3960,8 @@ form[name="form_login"] .user_login_form label {
   height: 9px;
   margin-right: 46px;
   border-radius: 50%;
-  background: var(--burnthesky-red-vivid);
-  box-shadow: 16px 0 0 var(--burnthesky-gray), 32px 0 0 var(--burnthesky-gray-lt);
+  background: var(--burnthesky-dot-1);
+  box-shadow: 16px 0 0 var(--burnthesky-dot-2), 32px 0 0 var(--burnthesky-dot-3);
 }
 .table-title .rbgimg { display: none; }
 
@@ -3962,7 +4021,7 @@ form[name="form_login"] .user_login_form label {
   margin-right: 10px;
   background: var(--burnthesky-red);
   vertical-align: middle;
-  transform: translateY(-3px);
+  transform: translateY(calc(-1 * var(--burnthesky-lift)));
 }
 
 /* descripción y enlaces (plantillas del panel) */
@@ -4242,12 +4301,7 @@ li.row:hover .rforimg { filter: none; }
    --burnthesky-pf-banner-h ... alto del banner pequeño
    --burnthesky-pf-slot ....... tamaño de cada casilla de inventario/medallero
    ========================================================================== */
-:root {
-  --burnthesky-pf-avatar-w: 250px;
-  --burnthesky-pf-side-w:   330px;
-  --burnthesky-pf-banner-h: 230px;
-  --burnthesky-pf-slot:     64px;
-}
+
 
 .rperfil {
   position: relative;
@@ -4270,7 +4324,7 @@ li.row:hover .rforimg { filter: none; }
   position: absolute;
   top: -1px; left: -1px;
   z-index: 2;
-  width: 110px; height: 3px;
+  width: var(--burnthesky-seg-w); height: var(--burnthesky-seg-h);
   background: var(--burnthesky-red);
   pointer-events: none;
 }
@@ -4407,7 +4461,7 @@ li.row:hover .rforimg { filter: none; }
   transform: rotate(45deg) scale(.8);
   background: linear-gradient(var(--burnthesky-red-ghost), var(--burnthesky-red-ghost)) center / 6px 6px no-repeat;
 }
-.rtile:hover { transform: translateY(-3px); border-color: var(--burnthesky-red); box-shadow: 4px 4px 0 var(--burnthesky-red-ghost-2); }
+.rtile:hover { transform: translateY(calc(-1 * var(--burnthesky-lift))); border-color: var(--burnthesky-red); box-shadow: 4px 4px 0 var(--burnthesky-red-ghost-2); }
 .rtile--wide { grid-column: 1 / -1; }
 .rtile__v {
   font: 14px / 1.2 var(--burnthesky-ff-display);
@@ -4555,8 +4609,8 @@ li.row:hover .rforimg { filter: none; }
   flex-shrink: 0;
   width: 9px; height: 9px; margin-right: 46px;
   border-radius: 50%;
-  background: var(--burnthesky-red-vivid);
-  box-shadow: 16px 0 0 var(--burnthesky-gray), 32px 0 0 var(--burnthesky-gray-lt);
+  background: var(--burnthesky-dot-1);
+  box-shadow: 16px 0 0 var(--burnthesky-dot-2), 32px 0 0 var(--burnthesky-dot-3);
 }
 .rinv__cols { display: grid; grid-template-columns: 300px minmax(0, 1fr) minmax(0, 1fr); }
 .rinv__box { min-width: 0; padding: 16px; border-left: 1px solid var(--burnthesky-line); }
@@ -4584,7 +4638,7 @@ li.row:hover .rforimg { filter: none; }
   clip-path: none;
   transition: transform var(--burnthesky-ease), border-color var(--burnthesky-ease), box-shadow var(--burnthesky-ease);
 }
-.rslot.is-on:hover { transform: translateY(-3px); border-color: var(--burnthesky-red); box-shadow: 3px 3px 0 var(--burnthesky-red-ghost-2); }
+.rslot.is-on:hover { transform: translateY(calc(-1 * var(--burnthesky-lift))); border-color: var(--burnthesky-red); box-shadow: 3px 3px 0 var(--burnthesky-red-ghost-2); }
 .rslot.is-on img { display: block; max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; }
 .rslot.is-on a { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
 
@@ -4599,7 +4653,7 @@ li.row:hover .rforimg { filter: none; }
   transition: transform var(--burnthesky-ease), border-color var(--burnthesky-ease), box-shadow var(--burnthesky-ease);
 }
 .rimp.is-on { border-left-color: var(--burnthesky-red); }
-.rimp:hover { transform: translateY(-3px); border-color: var(--burnthesky-red); box-shadow: 4px 4px 0 var(--burnthesky-red-ghost-2); }
+.rimp:hover { transform: translateY(calc(-1 * var(--burnthesky-lift))); border-color: var(--burnthesky-red); box-shadow: 4px 4px 0 var(--burnthesky-red-ghost-2); }
 .rimp__ico {
   flex: 0 0 56px; height: 56px;
   display: flex; align-items: center; justify-content: center;
@@ -4666,7 +4720,7 @@ li.row:hover .rforimg { filter: none; }
   border: 1px solid var(--burnthesky-line);
   transition: transform var(--burnthesky-ease), border-color var(--burnthesky-ease), box-shadow var(--burnthesky-ease);
 }
-.rstat:hover { transform: translateY(-3px); border-color: var(--burnthesky-red); box-shadow: 4px 4px 0 var(--burnthesky-red-ghost-2); }
+.rstat:hover { transform: translateY(calc(-1 * var(--burnthesky-lift))); border-color: var(--burnthesky-red); box-shadow: 4px 4px 0 var(--burnthesky-red-ghost-2); }
 .rstat--power { border-left: 3px solid var(--burnthesky-red); background: linear-gradient(90deg, var(--burnthesky-red-wash), transparent 70%), var(--burnthesky-void); }
 .rstat .rtile__v { font-size: 22px; line-height: 1; }
 .rstat--power .rtile__v { font-size: 24px; color: var(--burnthesky-red-vivid); text-shadow: var(--burnthesky-ghost-sm); }
@@ -4747,10 +4801,7 @@ li.row:hover .rforimg { filter: none; }
    AJUSTES: --burnthesky-ucp-label-w (ancho de la columna de etiquetas)
             --burnthesky-ucp-field-w (ancho de los campos de una línea)
    ========================================================================== */
-:root {
-  --burnthesky-ucp-label-w: 36%;
-  --burnthesky-ucp-field-w: 420px;
-}
+
 
 /* -- pestañas: botones centrados, en varias filas -- */
 #cp-main ~ *, body:has(#cp-main) div#tabs { margin: 0 0 24px; }
@@ -4958,8 +5009,8 @@ body:has(#rperfil) h1.page-title { display: none !important; }
   height: 9px;
   margin-right: 46px;
   border-radius: 50%;
-  background: var(--burnthesky-red-vivid);
-  box-shadow: 16px 0 0 var(--burnthesky-gray), 32px 0 0 var(--burnthesky-gray-lt);
+  background: var(--burnthesky-dot-1);
+  box-shadow: 16px 0 0 var(--burnthesky-dot-2), 32px 0 0 var(--burnthesky-dot-3);
 }
 .rdb__title {
   font: var(--burnthesky-fs-xs) / 1.4 var(--burnthesky-ff-mono);
@@ -4977,9 +5028,9 @@ body:has(#rperfil) h1.page-title { display: none !important; }
   height: 36px;
   border-bottom: 1px solid var(--burnthesky-line);
   background:
-    radial-gradient(circle 4.5px at 18.5px 50%, var(--burnthesky-red-vivid) 98%, transparent) no-repeat,
-    radial-gradient(circle 4.5px at 34.5px 50%, var(--burnthesky-gray) 98%, transparent) no-repeat,
-    radial-gradient(circle 4.5px at 50.5px 50%, var(--burnthesky-gray-lt) 98%, transparent) no-repeat;
+    radial-gradient(circle 4.5px at 18.5px 50%, var(--burnthesky-dot-1) 98%, transparent) no-repeat,
+    radial-gradient(circle 4.5px at 34.5px 50%, var(--burnthesky-dot-2) 98%, transparent) no-repeat,
+    radial-gradient(circle 4.5px at 50.5px 50%, var(--burnthesky-dot-3) 98%, transparent) no-repeat;
   pointer-events: none;
 }
 #rstatscontainer > .rnewestuser { padding-top: 62px; }
@@ -5005,12 +5056,12 @@ body:has(#rperfil) h1.page-title { display: none !important; }
 tamaño de afiliados
 ========================================================================== */
 #rneonfooter td.raffiliates img {
-  width: 50px;
-  height: 50px;
+  width: var(--burnthesky-afil-w);
+  height: var(--burnthesky-afil-h);
 }
 #rneonfooter td.rpartners img {
-  width: 100px;
-  height: 50px;
+  width: var(--burnthesky-partner-w);
+  height: var(--burnthesky-partner-h);
 }
 
 
@@ -5023,15 +5074,13 @@ tamaño de afiliados
    · Si prefieres la imagen solo al ancho del foro, borra el bloque "A sangre"
      (width y margin-left) de #headercontainer #header.
    ========================================================================== */
-:root {
-  --burnthesky-banner-h: calc(min(var(--burnthesky-w-main), 100vw - 32px) * 9 / 16);
-}
+
 html, body { overflow-x: clip; }   /* el ancho 100vw incluye la barra de scroll */
 
 #headercontainer #header {
   /* A sangre: de borde a borde de la pantalla */
-  width: 100vw;
-  margin-left: calc(50% - 50vw);
+  width: var(--burnthesky-banner-w);
+  margin-left: calc(50% - var(--burnthesky-banner-w) / 2);
   /* alto */
   height: var(--burnthesky-banner-h);
   min-height: 0;
@@ -5047,11 +5096,11 @@ html, body { overflow-x: clip; }   /* el ancho 100vw incluye la barra de scroll 
 }
 #headercontainer #header::before { display: none; }
 #headercontainer #header::after {
-  background: linear-gradient(180deg, rgba(9, 9, 9, .15), rgba(9, 9, 9, .55));
+  background: linear-gradient(180deg, rgba(9, 9, 9, var(--burnthesky-banner-veil-top)), rgba(9, 9, 9, var(--burnthesky-banner-veil-bottom)));
 }
 #headercontainer .position { max-width: var(--burnthesky-w-main); }
-#headercontainer .rtitle { letter-spacing: -1px; text-shadow: none; }
-#headercontainer .rdesc  { max-width: 60ch; margin: 14px auto 0; text-transform: none; letter-spacing: .5px; }
+#headercontainer .rtitle { font-size: var(--burnthesky-banner-title); letter-spacing: var(--burnthesky-banner-title-ls); text-shadow: none; }
+#headercontainer .rdesc  { max-width: var(--burnthesky-banner-desc-w); font-size: var(--burnthesky-banner-desc); margin: 14px auto 0; text-transform: none; letter-spacing: .5px; }
 
 @media (min-width: 641px) and (max-width: 1260px) {
   /* #startindex lleva margen izquierdo para esquivar la barra lateral */
@@ -5071,7 +5120,7 @@ html, body { overflow-x: clip; }   /* el ancho 100vw incluye la barra de scroll 
    js-ajustes.js mete .rdb dentro de #rstatscontainer; aquí se coloca con grid.
    Ajustes rápidos:  --burnthesky-grp-size (lado del cuadrado de grupo)
    ========================================================================== */
-:root { --burnthesky-grp-size: 70px; }
+
 
 /* -- rbgname: sin texto de marca de agua en el mural -- */
 #mural .rbgname { display: none !important; }
@@ -5114,7 +5163,7 @@ html, body { overflow-x: clip; }   /* el ancho 100vw incluye la barra de scroll 
   position: absolute;
   top: -1px; left: -1px;
   z-index: 2;
-  width: 110px; height: 3px;
+  width: var(--burnthesky-seg-w); height: var(--burnthesky-seg-h);
   background: var(--burnthesky-red);
   pointer-events: none;
 }
@@ -5125,9 +5174,9 @@ html, body { overflow-x: clip; }   /* el ancho 100vw incluye la barra de scroll 
   height: 36px;
   border-bottom: 1px solid var(--burnthesky-line);
   background:
-    radial-gradient(circle 4.5px at 18.5px 50%, var(--burnthesky-red-vivid) 98%, transparent) no-repeat,
-    radial-gradient(circle 4.5px at 34.5px 50%, var(--burnthesky-gray) 98%, transparent) no-repeat,
-    radial-gradient(circle 4.5px at 50.5px 50%, var(--burnthesky-gray-lt) 98%, transparent) no-repeat;
+    radial-gradient(circle 4.5px at 18.5px 50%, var(--burnthesky-dot-1) 98%, transparent) no-repeat,
+    radial-gradient(circle 4.5px at 34.5px 50%, var(--burnthesky-dot-2) 98%, transparent) no-repeat,
+    radial-gradient(circle 4.5px at 50.5px 50%, var(--burnthesky-dot-3) 98%, transparent) no-repeat;
   pointer-events: none;
 }
 
@@ -5241,18 +5290,14 @@ html, body { overflow-x: clip; }   /* el ancho 100vw incluye la barra de scroll 
    · La ventana de 48h es más alta que la de conectados ahora.
    · El avatar del último usuario mide 230px de alto; el nombre sube.
    ========================================================================== */
-:root {
-  --burnthesky-grp-row-w: 980px;
-  --burnthesky-grp-apart: 96px;
-  --burnthesky-avatar-new: 230px;
-}
+
 
 /* -- grupos: una fila de cuadrados que reparte el ancho -- */
 .rdb__groups {
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: minmax(0, 1fr);
-  gap: 14px;
+  gap: var(--burnthesky-grp-gap);
   width: 100%;
   min-width: min(100%, var(--burnthesky-grp-row-w));
 }
@@ -5262,7 +5307,7 @@ html, body { overflow-x: clip; }   /* el ancho 100vw incluye la barra de scroll 
   height: auto;
   aspect-ratio: 1;
 }
-.rdb__groups .rdb__gico svg { width: 42%; height: 42%; }
+.rdb__groups .rdb__gico svg { width: var(--burnthesky-grp-icon); height: var(--burnthesky-grp-icon); }
 .rdb__groups .rdb__gico img { max-width: 52%; max-height: 52%; }
 .rdb__groups .rdb__gcount { top: 8px; right: 10px; font-size: var(--burnthesky-fs-sm); }
 
@@ -5272,7 +5317,7 @@ html, body { overflow-x: clip; }   /* el ancho 100vw incluye la barra de scroll 
   height: var(--burnthesky-grp-apart);
   aspect-ratio: auto;
 }
-.rdb__apart .rdb__gico svg { width: 40px; height: 40px; }
+.rdb__apart .rdb__gico svg { width: var(--burnthesky-grp-apart-icon); height: var(--burnthesky-grp-apart-icon); }
 
 @media (max-width: 900px) {
   .rdb__groups {
@@ -5284,7 +5329,7 @@ html, body { overflow-x: clip; }   /* el ancho 100vw incluye la barra de scroll 
 
 /* -- filas del footer: la de 48h absorbe el alto sobrante (más grande que la de arriba) -- */
 #rstatscontainer { grid-template-rows: auto 1fr auto auto auto; }
-#rstatscontainer > .ronlineuserslist { min-height: 190px; }
+#rstatscontainer > .ronlineuserslist { min-height: var(--burnthesky-48h-min-h); }
 
 /* -- contenido de la ventana de 48h -- */
 .r48__title {
@@ -5333,7 +5378,7 @@ html, body { overflow-x: clip; }   /* el ancho 100vw incluye la barra de scroll 
      ventana no crece. Ajustes: --burnthesky-list-max-h (conectados ahora).
    · Estadísticas: título más fino y cifra + texto en una sola línea (≈ 85px).
    ========================================================================== */
-:root { --burnthesky-list-max-h: 84px; }
+
 
 /* -- scroll fino y oscuro -- */
 .r48__list,
@@ -5342,7 +5387,7 @@ html, body { overflow-x: clip; }   /* el ancho 100vw incluye la barra de scroll 
   scrollbar-color: var(--burnthesky-line-2) transparent;
 }
 .r48__list::-webkit-scrollbar,
-#rstatscontainer .rloggedinlist::-webkit-scrollbar { width: 6px; }
+#rstatscontainer .rloggedinlist::-webkit-scrollbar { width: var(--burnthesky-scroll-w); }
 .r48__list::-webkit-scrollbar-thumb,
 #rstatscontainer .rloggedinlist::-webkit-scrollbar-thumb { background: var(--burnthesky-line-2); }
 
@@ -5388,7 +5433,7 @@ html, body { overflow-x: clip; }   /* el ancho 100vw incluye la barra de scroll 
   display: inline;
   flex: none;
   margin: 0;
-  font-size: 28px;
+  font-size: var(--burnthesky-stat-num);
   line-height: 1;
 }
 @media (max-width: 640px) {
@@ -5401,7 +5446,7 @@ html, body { overflow-x: clip; }   /* el ancho 100vw incluye la barra de scroll 
    Aplica a "¿Quién está en línea?" y "Conectados en las últimas 48h".
    Cada nombre conserva el color de su grupo (lo pone js-ajustes.js).
    ========================================================================== */
-.r48__list { display: block; line-height: 2; }
+.r48__list { display: block; font-size: var(--burnthesky-list-font); line-height: var(--burnthesky-list-lh); }
 .r48__u,
 #rstatscontainer .rloggedinlist a.r48__u {
   display: inline;
@@ -5413,5 +5458,15 @@ html, body { overflow-x: clip; }   /* el ancho 100vw incluye la barra de scroll 
   transition: opacity var(--burnthesky-ease);
 }
 .r48__u:hover { opacity: .65; }
-.r48__sep { color: var(--burnthesky-gray); white-space: pre-wrap; }
+.r48__sep { color: var(--burnthesky-list-sep); white-space: pre-wrap; }
 .r48__u strong { font-weight: 400; }
+
+
+/* ============================================================================
+   36 · ESQUINAS (--burnthesky-radius)
+   ========================================================================== */
+.forabg, .forumbg, .rforumstats, .rdb, .rdb__apart, .rdb__g,
+#rstatscontainer .rnewestuser, #rstatscontainer .rlogged, #rstatscontainer .ronlineuserslist,
+#rstatscontainer .rcredits, #rneonfooter, #mural, .rmes3-card,
+.rperfil__top, .rperfil__cols, .rperfil__foot, .rinv, .rperfil__tab, .rtile, .rstat,
+.post, .panel, .bts-frame { border-radius: var(--burnthesky-radius); }
