@@ -1116,37 +1116,60 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
      última visita y se queda con quienes entraron en las últimas 48 horas (incluye
      a los que están conectados ahora). Si la plantilla ya trae esa lista, usa esa. */
   var MESES = { ene: 0, feb: 1, mar: 2, abr: 3, may: 4, jun: 5, jul: 6, ago: 7, sep: 8, set: 8, oct: 9, nov: 10, dic: 11 };
-  function fechaDe(txt) {
-    var m = (txt || "").match(/(\d{1,2})\s+([A-Za-zñÑ]{3})\.?\s+(\d{4})\s*[-–,]?\s*(\d{1,2}):(\d{2})/);
+  /* Formatos que usa el foro: "Hoy a las 23:04", "Ayer a las 10:00", "11/10/2026 22:00"
+     y "Dom 11 Oct 2026 - 21:21". `ref` = fecha y hora actuales del foro. */
+  function fechaDe(txt, ref) {
+    txt = (txt || "").replace(/\s+/g, " ").trim();
+    var h = txt.match(/(\d{1,2}):(\d{2})/), hh = h ? +h[1] : 0, mm = h ? +h[2] : 0, d;
+    if (/^hoy/i.test(norm(txt))) { d = new Date(ref || new Date()); d.setHours(hh, mm, 0, 0); return d; }
+    if (/^ayer/i.test(norm(txt))) { d = new Date(ref || new Date()); d.setDate(d.getDate() - 1); d.setHours(hh, mm, 0, 0); return d; }
+    var n = txt.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+    if (n) return new Date(+n[3], +n[2] - 1, +n[1], hh, mm);
+    var m = txt.match(/(\d{1,2})\s+([A-Za-zñÑ]{3})\.?\s+(\d{4})/);
     if (!m) return null;
     var mes = MESES[norm(m[2]).slice(0, 3)];
-    return mes === undefined ? null : new Date(+m[3], mes, +m[1], +m[4], +m[5]);
+    return mes === undefined ? null : new Date(+m[3], mes, +m[1], hh, mm);
   }
   function ahoraDelForo() {
     var el = document.querySelector(".rcurrtime");
-    return (el && fechaDe(el.textContent)) || new Date();
+    return (el && fechaDe(el.textContent, null)) || new Date();
   }
-  function leerMiembros(url) {
+  function leerPagina(url, ref) {
     return fetch(url, { credentials: "same-origin" }).then(function (r) { return r.text(); }).then(function (html) {
       var doc = new DOMParser().parseFromString(html, "text/html");
-      var out = [], idx = -1;
-      var filas = doc.querySelectorAll("tr");
+      var out = [], idx = -1, filas = doc.querySelectorAll("table#memberlist tr, tr");
       for (var i = 0; i < filas.length && idx < 0; i++) {
-        var hs = filas[i].querySelectorAll("th, td");
-        for (var c = 0; c < hs.length; c++) if (/visita|conect|activ/i.test(hs[c].textContent) && !hs[c].querySelector("a[href*='/u']")) { idx = c; break; }
+        var hs = filas[i].querySelectorAll("th");
+        for (var c = 0; c < hs.length; c++) if (/visita|activ/i.test(hs[c].textContent + " " + hs[c].className)) { idx = c; break; }
       }
       if (idx < 0) return null;
+      var vistos = [];
       filas.forEach(function (tr) {
-        var celdas = tr.children, a = tr.querySelector("a[href]");
-        var link = Array.prototype.filter.call(tr.querySelectorAll("a[href]"), function (x) { return /\/u\d+/.test(x.getAttribute("href")); })[0] || a;
+        if (tr.querySelector("th") || vistos.indexOf(tr) > -1) return;
+        vistos.push(tr);
+        var celdas = tr.children;
+        var link = Array.prototype.filter.call(tr.querySelectorAll("a[href]"), function (x) { return /\/u\d+/.test(x.getAttribute("href")); })[0];
         if (!link || celdas.length <= idx) return;
-        var f = fechaDe(celdas[idx].textContent);
+        var f = fechaDe(celdas[idx].textContent, ref);
         if (!f) return;
-        var col = link.style.color || ((link.querySelector("[style*='color']") || {}).style || {}).color || "";
-        out.push({ nombre: link.textContent.trim(), href: link.getAttribute("href"), fecha: f, color: col });
+        var sp = link.querySelector("[style*='color']");
+        out.push({ nombre: link.textContent.replace(/ /g, " ").trim(), href: link.getAttribute("href"), fecha: f, color: (sp && sp.style.color) || link.style.color || "" });
       });
       return out;
     });
+  }
+  /* Recorre hasta 6 páginas (30 miembros cada una) de una lista de miembros */
+  function leerMiembros(base, ref) {
+    var todos = [];
+    var paso = function (n) {
+      var url = base + (base.indexOf("?") > -1 ? "&" : "?") + "start=" + (n * 30);
+      return leerPagina(url, ref).then(function (m) {
+        if (m === null) return n === 0 ? null : todos;
+        todos = todos.concat(m);
+        return (m.length >= 30 && n < 5) ? paso(n + 1) : todos;
+      });
+    };
+    return paso(0);
   }
   function conectados48() {
     var cont = document.getElementById("rstatscontainer");
@@ -1175,7 +1198,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     var clave = "bts-48h", guardado = null;
     try { guardado = JSON.parse(sessionStorage.getItem(clave) || "null"); } catch (e) {}
     if (guardado && Date.now() - guardado.t < 300000) { pintar(guardado.u); return; }
-    var urls = ["/memberlist?mode=lastvisit&order=DESC", "/memberlist?mode=lastvisit", "/memberlist"];
+    var urls = ["/memberlist?mode=lastvisit&order=DESC", "/memberlist"];
     var intentar = function (i) {
       if (i >= urls.length) {
         if (nativo) lista.textContent = nativo;
@@ -1183,7 +1206,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
         if (window.console) console.info("[BTS] 48h: la lista de miembros no trae columna de última visita.");
         return;
       }
-      leerMiembros(urls[i]).then(function (m) {
+      leerMiembros(urls[i], ahora).then(function (m) {
         if (!m) { intentar(i + 1); return; }
         var activos = m.filter(function (u) { return u.fecha.getTime() >= limite; })
           .sort(function (a, b) { return b.fecha - a.fecha; });
