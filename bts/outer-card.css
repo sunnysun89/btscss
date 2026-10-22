@@ -5484,13 +5484,6 @@ html, body { overflow-x: clip; }   /* el ancho 100vw incluye la barra de scroll 
   display: none !important;
 }
 
-/* Mostrar "Héroes del mes" y "Más buscados" solo en el índice */
-body:has(.post) .rmensual,
-body:has(#viewtopic) .rmensual,
-body:not(:has(.topiclist.forums)) .rmensual {
-  display: none !important;
-}
-
 /* ============================================================================
    38 · BARRA LATERAL CON IMAGEN
    ========================================================================== */
