@@ -1272,29 +1272,45 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
   }
 
   /* Barra lateral: imagen de 130x130 con el campo de perfil "Icono" del usuario conectado.
-     Se lee de su propia página de perfil (misma web); invitados: no se pinta nada. */
+     Se lee de su propia página de perfil (misma web). Si ya existe un .bts-sidebar-avatar
+     (por ejemplo el que crea otro bloque del bts.js) lo reutiliza en vez de duplicarlo.
+     Sin campo Icono usa el avatar del foro; invitados: no se pinta nada. */
   function iconoSidebar() {
+    var log = function (m) { if (window.console) console.info("[BTS] icono: " + m); };
     var nav = document.querySelector("#page-header .navbar");
-    if (!nav) return true;
-    if (nav.querySelector(".bts-sidebar-avatar")) return true;
+    if (!nav) { log("no hay .navbar"); return true; }
     var ud = window._userdata, id = ud && +ud.user_id;
-    if (!id || id < 1) return true;
-    var caja = document.createElement("a");
-    caja.className = "bts-sidebar-avatar";
-    caja.href = "/u" + id;
-    caja.title = (ud.username || "");
-    caja.hidden = true;
-    nav.insertBefore(caja, nav.firstChild);
-    var poner = function (src) {
-      if (!src) return;
+    if (!id || id < 1) { log("invitado o sin _userdata"); return true; }
+    var host = nav.querySelector(".inner") || nav;
+    var caja = nav.querySelector(".bts-sidebar-avatar");
+    if (caja && caja.getAttribute("data-icono")) return true;
+    if (!caja) {
+      caja = document.createElement("a");
+      caja.className = "bts-sidebar-avatar";
+      host.insertBefore(caja, host.firstChild);
+    }
+    caja.setAttribute("data-icono", "1");
+    if (caja.tagName === "A") { caja.href = "/u" + id; caja.title = ud.username || ""; }
+    var vacia = !caja.querySelector("img");
+    var poner = function (src, origen) {
+      if (!src) return false;
+      caja.innerHTML = "";
       var im = new Image();
       im.alt = ""; im.src = src;
-      im.onload = function () { caja.hidden = false; };
+      im.onload = function () { caja.hidden = false; log("imagen cargada (" + origen + ")"); };
+      im.onerror = function () { log("la imagen no carga: " + src); };
       caja.appendChild(im);
+      caja.hidden = false;
+      return true;
+    };
+    var avatarForo = function () {
+      var av = ud.avatar || "", m = typeof av === "string" ? av.match(/src=["']([^"']+)["']/i) : null;
+      var src = m ? m[1] : (/^https?:/i.test(av) ? av : "");
+      if (!poner(src, "avatar del foro")) { if (vacia) caja.hidden = true; log("sin Icono ni avatar"); }
     };
     var clave = "bts-icono:" + id, guardado = null;
     try { guardado = JSON.parse(sessionStorage.getItem(clave) || "null"); } catch (e) {}
-    if (guardado && Date.now() - guardado.t < 600000) { poner(guardado.s); return true; }
+    if (guardado && Date.now() - guardado.t < 600000) { if (guardado.s) poner(guardado.s, "Icono (caché)"); else avatarForo(); return true; }
     fetch("/u" + id, { credentials: "same-origin" }).then(function (r) { return r.text(); }).then(function (html) {
       var doc = new DOMParser().parseFromString(html, "text/html"), cont = null;
       doc.querySelectorAll("#rperfil-campos .rpf").forEach(function (f) {
@@ -1308,9 +1324,11 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       var im = cont && cont.querySelector("img");
       var src = im ? (im.getAttribute("src") || im.getAttribute("data-src")) : "";
       if (!src && cont) { var m = cont.textContent.match(/https?:\/\/\S+/); if (m) src = m[0]; }
+      if (!cont) log("no se encontró el campo Icono en /u" + id);
+      else if (!src) log("el campo Icono está vacío");
       try { sessionStorage.setItem(clave, JSON.stringify({ t: Date.now(), s: src || "" })); } catch (e) {}
-      poner(src);
-    }).catch(function () {});
+      if (!poner(src, "Icono")) avatarForo();
+    }).catch(function (e) { log("error al leer el perfil: " + e); avatarForo(); });
     return true;
   }
 
