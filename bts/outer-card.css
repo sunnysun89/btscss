@@ -5478,9 +5478,10 @@ html, body { overflow-x: clip; }   /* el ancho 100vw incluye la barra de scroll 
 /* ============================================================================
    37 · PANEL MONTHLY HEROES Y MOST WANTED
    ========================================================================== */
-
-/* Quitar los recuadros rojos "Monthly heroes" y "Most wanted" */
-.rmes3-card__tag {
+/* Mostrar "Héroes del mes" y "Más buscados" solo en el índice */
+body:has(.post) .rmensual,
+body:has(#viewtopic) .rmensual,
+body:not(:has(.topiclist.forums)) .rmensual {
   display: none !important;
 }
 
