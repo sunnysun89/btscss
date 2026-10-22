@@ -100,6 +100,8 @@
   --burnthesky-frame-w:       200px;     /* marco de imagen (.bts-frame) */
   --burnthesky-frame-h:       280px;
   --burnthesky-sidebar-w:     150px;     /* ancho de la barra lateral */
+  --burnthesky-content-w:     min(var(--burnthesky-w-main), 100vw - var(--burnthesky-sidebar-w) - 32px);   /* ancho real del contenido */
+  --burnthesky-content-left:  calc(var(--burnthesky-sidebar-w) + (100vw - var(--burnthesky-sidebar-w) - var(--burnthesky-content-w)) / 2);   /* centrado en el espacio libre a la derecha de la barra */
   --burnthesky-sidebar-icon:  130px;     /* imagen de la barra lateral (campo Icono) */
   --burnthesky-switcher-size: 34px;      /* botón del MultiSwitcher */
   --burnthesky-toolbar-right: 72px;      /* posición de las notificaciones */
@@ -136,6 +138,7 @@
   /* ======================= PANEL DE CONTROL ======================= */
 
   /* ---- Banner ---- */
+  --burnthesky-banner-x:          calc(-1 * var(--burnthesky-content-left));   /* con 100vw: borde izquierdo de la pantalla; con un ancho fijo pon 0 */
   --burnthesky-banner-w:          100vw;                 /* ancho de la imagen: 100vw = pantalla completa; o ej. 1120px */
   --burnthesky-banner-h:          calc(min(var(--burnthesky-w-main), 100vw - 32px) * 9 / 16);
   --burnthesky-banner-title:      clamp(48px, 8vw, 110px);
@@ -4941,15 +4944,7 @@ body:has(#rperfil) h1.page-title { display: none !important; }
    ========================================================================== */
 #main { padding-left: 0; }
 
-@media (min-width: 641px) and (max-width: 1452px) {
-  #main,
-  #startindex,
-  #page-footer {
-    width: auto;
-    margin-left: calc(var(--burnthesky-sidebar-w) + 16px);
-    margin-right: 16px;
-  }
-}
+
 
 
 /* ============================================================================
@@ -5084,7 +5079,7 @@ html, body { overflow-x: clip; }   /* el ancho 100vw incluye la barra de scroll 
 #headercontainer #header {
   /* A sangre: de borde a borde de la pantalla */
   width: var(--burnthesky-banner-w);
-  margin-left: calc(50% - var(--burnthesky-banner-w) / 2);
+  margin-left: var(--burnthesky-banner-x);
   /* alto */
   height: var(--burnthesky-banner-h);
   min-height: 0;
@@ -5106,10 +5101,7 @@ html, body { overflow-x: clip; }   /* el ancho 100vw incluye la barra de scroll 
 #headercontainer .rtitle { font-size: var(--burnthesky-banner-title); letter-spacing: var(--burnthesky-banner-title-ls); text-shadow: none; }
 #headercontainer .rdesc  { max-width: var(--burnthesky-banner-desc-w); font-size: var(--burnthesky-banner-desc); margin: 14px auto 0; text-transform: none; letter-spacing: .5px; }
 
-@media (min-width: 641px) and (max-width: 1452px) {
-  /* #startindex lleva margen izquierdo para esquivar la barra lateral */
-  #headercontainer #header { margin-left: calc(-1 * (var(--burnthesky-sidebar-w) + 16px)); }
-}
+
 
 
 /* ============================================================================
@@ -5537,3 +5529,21 @@ body:not(:has(.topiclist.forums)) .rmensual {
 }
 
 .bts-sidebar-avatar[hidden] { display: none !important; }
+
+
+/* ============================================================================
+   39 · CONTENIDO CENTRADO EN EL ESPACIO LIBRE A LA DERECHA DE LA BARRA LATERAL
+   Más hueco a la izquierda (barra + margen) y menos a la derecha. Banner, tablón,
+   índice y footer usan el mismo ancho y el mismo margen. En móvil la barra pasa
+   arriba y el ancho de barra cuenta 0.
+   ========================================================================== */
+#main,
+#startindex,
+#page-footer {
+  width: var(--burnthesky-content-w);
+  margin-left: var(--burnthesky-content-left);
+  margin-right: 0;
+}
+@media (max-width: 640px) {
+  :root { --burnthesky-sidebar-w: 0px; }
+}
