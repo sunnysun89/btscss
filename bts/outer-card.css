@@ -45,6 +45,7 @@
    · Inter ........ texto, etiquetas y campos
    ========================================================================== */
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@600&family=Inter:wght@400;500;600&display=swap');
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css");
 
 
 /* ============================================================================
@@ -2432,6 +2433,7 @@ body {
 #page-header a.mainmenu[href="/"]::before { content: "\f015"; }
 #page-header a.mainmenu[href*="/calendar"]::before { content: "\f133"; }
 #page-header a.mainmenu[href*="/images"]::before { content: "\f03e"; }
+#page-header a.mainmenu[href*="/discover"]::before { content: "\f1e8"; }
 #page-header a.mainmenu[href*="active_topics"]::before,
 #page-header a.mainmenu[href*="/activity"]::before { content: "\f1e8"; }
 #page-header a.mainmenu[href*="/faq"]::before { content: "\f059"; }
@@ -2591,7 +2593,7 @@ form[action*="quickreply"],
 #fa_toolbar #fa_right {
   position: fixed !important;
   top: 13px !important;
-  right: 15px !important;
+  right: calc(var(--burnthesky-switcher-size, 34px) + 26px) !important;
   left: auto !important;
   z-index: var(--burnthesky-z-toolbar) !important;
 }
@@ -5470,3 +5472,70 @@ html, body { overflow-x: clip; }   /* el ancho 100vw incluye la barra de scroll 
 #rstatscontainer .rcredits, #rneonfooter, #mural, .rmes3-card,
 .rperfil__top, .rperfil__cols, .rperfil__foot, .rinv, .rperfil__tab, .rtile, .rstat,
 .post, .panel, .bts-frame { border-radius: var(--burnthesky-radius); }
+
+/* ============================================================================
+   37 · PANEL MONTHLY HEROES Y MOST WANTED
+   ========================================================================== */
+
+/* Quitar los recuadros rojos "Monthly heroes" y "Most wanted" */
+.rmes3-card__tag {
+  display: none !important;
+}
+
+/* Mostrar "Héroes del mes" y "Más buscados" solo en el índice */
+body:has(.post) .rmensual,
+body:has(#viewtopic) .rmensual,
+body:not(:has(.topiclist.forums)) .rmensual {
+  display: none !important;
+}
+
+/* ============================================================================
+   38 · BARRA LATERAL CON IMAGEN
+   ========================================================================== */
+#page-header .navbar {
+  width: 150px !important;
+  padding: 16px 10px !important;
+  height: auto !important;
+  bottom: 0 !important;
+}
+
+.bts-sidebar-avatar {
+  width: 130px;
+  height: 130px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--burnthesky-red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 14px rgba(255, 74, 53, 0.4);
+  background: var(--burnthesky-void-2);
+  flex-shrink: 0;
+}
+
+.bts-sidebar-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+#main {
+  padding-left: 170px !important;
+}
+
+@media (max-width: 640px) {
+  #page-header .navbar {
+    width: auto !important;
+    padding: 0 100px 0 10px !important;
+    height: var(--burnthesky-navbar-h) !important;
+  }
+  .bts-sidebar-avatar {
+    display: none !important;
+  }
+  #main {
+    padding-left: 0 !important;
+  }
+}
