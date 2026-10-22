@@ -100,6 +100,7 @@
   --burnthesky-frame-w:       200px;     /* marco de imagen (.bts-frame) */
   --burnthesky-frame-h:       280px;
   --burnthesky-sidebar-w:     150px;     /* ancho de la barra lateral */
+  --burnthesky-sidebar-icon:  130px;     /* imagen de la barra lateral (campo Icono) */
   --burnthesky-switcher-size: 34px;      /* botón del MultiSwitcher */
   --burnthesky-toolbar-right: 72px;      /* posición de las notificaciones */
 
@@ -5501,8 +5502,8 @@ body:not(:has(.topiclist.forums)) .rmensual {
 }
 
 .bts-sidebar-avatar {
-  width: 130px;
-  height: 130px;
+  width: var(--burnthesky-sidebar-icon);
+  height: var(--burnthesky-sidebar-icon);
   margin: 0 auto 16px;
   border-radius: 50%;
   overflow: hidden;
@@ -5540,3 +5541,5 @@ body:not(:has(.topiclist.forums)) .rmensual {
     padding-left: 0 !important;
   }
 }
+
+.bts-sidebar-avatar[hidden] { display: none !important; }

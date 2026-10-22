@@ -1271,6 +1271,49 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     caja.appendChild(lista);
   }
 
+  /* Barra lateral: imagen de 130x130 con el campo de perfil "Icono" del usuario conectado.
+     Se lee de su propia página de perfil (misma web); invitados: no se pinta nada. */
+  function iconoSidebar() {
+    var nav = document.querySelector("#page-header .navbar");
+    if (!nav) return true;
+    if (nav.querySelector(".bts-sidebar-avatar")) return true;
+    var ud = window._userdata, id = ud && +ud.user_id;
+    if (!id || id < 1) return true;
+    var caja = document.createElement("a");
+    caja.className = "bts-sidebar-avatar";
+    caja.href = "/u" + id;
+    caja.title = (ud.username || "");
+    caja.hidden = true;
+    nav.insertBefore(caja, nav.firstChild);
+    var poner = function (src) {
+      if (!src) return;
+      var im = new Image();
+      im.alt = ""; im.src = src;
+      im.onload = function () { caja.hidden = false; };
+      caja.appendChild(im);
+    };
+    var clave = "bts-icono:" + id, guardado = null;
+    try { guardado = JSON.parse(sessionStorage.getItem(clave) || "null"); } catch (e) {}
+    if (guardado && Date.now() - guardado.t < 600000) { poner(guardado.s); return true; }
+    fetch("/u" + id, { credentials: "same-origin" }).then(function (r) { return r.text(); }).then(function (html) {
+      var doc = new DOMParser().parseFromString(html, "text/html"), cont = null;
+      doc.querySelectorAll("#rperfil-campos .rpf").forEach(function (f) {
+        var l = f.querySelector(".rpf-l");
+        if (!cont && l && norm(l.textContent) === "icono") cont = f.querySelector(".rpf-c");
+      });
+      if (!cont) doc.querySelectorAll("dl").forEach(function (dl) {
+        var dt = dl.querySelector("dt"), dd = dl.querySelector("dd");
+        if (!cont && dt && dd && norm(dt.textContent) === "icono") cont = dd.querySelector(".field_uneditable") || dd;
+      });
+      var im = cont && cont.querySelector("img");
+      var src = im ? (im.getAttribute("src") || im.getAttribute("data-src")) : "";
+      if (!src && cont) { var m = cont.textContent.match(/https?:\/\/\S+/); if (m) src = m[0]; }
+      try { sessionStorage.setItem(clave, JSON.stringify({ t: Date.now(), s: src || "" })); } catch (e) {}
+      poner(src);
+    }).catch(function () {});
+    return true;
+  }
+
   function ordenarIndice() {
     var cont = document.getElementById("rstatscontainer");
     if (!cont) return true;                       /* no es el índice */
@@ -1341,7 +1384,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     return true;
   }
 
-  function arrancar() { esperar(ordenarIndice, 80); esperar(pestanasPerfil, 80); }
+  function arrancar() { esperar(iconoSidebar, 80); esperar(ordenarIndice, 80); esperar(pestanasPerfil, 80); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", arrancar);
   else arrancar();
 })();
