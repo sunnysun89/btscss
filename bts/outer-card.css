@@ -5544,6 +5544,9 @@ body:not(:has(.topiclist.forums)) .rmensual {
   margin-left: var(--burnthesky-content-left);
   margin-right: 0;
 }
+/* compensación medida por js-ajustes.js (0 si ya están alineados) */
+#main        { margin-left: calc(var(--burnthesky-content-left) + var(--burnthesky-main-shift, 0px)); }
+#page-footer { margin-left: calc(var(--burnthesky-content-left) + var(--burnthesky-footer-shift, 0px)); }
 @media (max-width: 640px) {
   :root { --burnthesky-sidebar-w: 0px; }
 }

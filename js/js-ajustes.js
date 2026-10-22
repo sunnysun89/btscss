@@ -288,6 +288,30 @@
     return true;
   }
 
+  /* Alineación: el contenido (#main-content) y el pie se alinean con #startindex.
+     Si algún contenedor de Foroactivo les añade un desplazamiento propio, se mide la
+     diferencia y se compensa con --burnthesky-main-shift / --burnthesky-footer-shift. */
+  function alinear() {
+    var st = document.getElementById("startindex");
+    if (!st || !st.getBoundingClientRect().width) return;
+    var raiz = document.documentElement, objetivo = st.getBoundingClientRect().left;
+    [["#main-content", "--burnthesky-main-shift"], ["#page-footer", "--burnthesky-footer-shift"]].forEach(function (par) {
+      var el = document.querySelector(par[0]);
+      if (!el || !el.getBoundingClientRect().width) return;
+      var dif = objetivo - el.getBoundingClientRect().left;
+      if (Math.abs(dif) < 1) return;
+      var actual = parseFloat(raiz.style.getPropertyValue(par[1])) || 0;
+      raiz.style.setProperty(par[1], (actual + dif) + "px");
+    });
+  }
+  function programarAlineacion() {
+    var n = 0;
+    var tick = function () { alinear(); if (++n < 6) setTimeout(tick, 400); };
+    tick();
+    window.addEventListener("load", alinear);
+    window.addEventListener("resize", function () { alinear(); });
+  }
+
   function ordenarIndice() {
     var cont = document.getElementById("rstatscontainer");
     if (!cont) return true;                       /* no es el índice */
@@ -358,7 +382,7 @@
     return true;
   }
 
-  function arrancar() { esperar(iconoSidebar, 80); esperar(ordenarIndice, 80); esperar(pestanasPerfil, 80); }
+  function arrancar() { programarAlineacion(); esperar(iconoSidebar, 80); esperar(ordenarIndice, 80); esperar(pestanasPerfil, 80); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", arrancar);
   else arrancar();
 })();
