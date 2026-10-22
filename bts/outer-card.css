@@ -99,6 +99,7 @@
   --burnthesky-profile-w:     230px;     /* columna de perfil en los mensajes */
   --burnthesky-frame-w:       200px;     /* marco de imagen (.bts-frame) */
   --burnthesky-frame-h:       280px;
+  --burnthesky-sidebar-w:     150px;     /* ancho de la barra lateral */
   --burnthesky-switcher-size: 34px;      /* botón del MultiSwitcher */
   --burnthesky-toolbar-right: 72px;      /* posición de las notificaciones */
 
@@ -4939,12 +4940,12 @@ body:has(#rperfil) h1.page-title { display: none !important; }
    ========================================================================== */
 #main { padding-left: 0; }
 
-@media (min-width: 641px) and (max-width: 1260px) {
+@media (min-width: 641px) and (max-width: 1452px) {
   #main,
   #startindex,
   #page-footer {
     width: auto;
-    margin-left: 78px;
+    margin-left: calc(var(--burnthesky-sidebar-w) + 16px);
     margin-right: 16px;
   }
 }
@@ -5104,9 +5105,9 @@ html, body { overflow-x: clip; }   /* el ancho 100vw incluye la barra de scroll 
 #headercontainer .rtitle { font-size: var(--burnthesky-banner-title); letter-spacing: var(--burnthesky-banner-title-ls); text-shadow: none; }
 #headercontainer .rdesc  { max-width: var(--burnthesky-banner-desc-w); font-size: var(--burnthesky-banner-desc); margin: 14px auto 0; text-transform: none; letter-spacing: .5px; }
 
-@media (min-width: 641px) and (max-width: 1260px) {
+@media (min-width: 641px) and (max-width: 1452px) {
   /* #startindex lleva margen izquierdo para esquivar la barra lateral */
-  #headercontainer #header { margin-left: -78px; }
+  #headercontainer #header { margin-left: calc(-1 * (var(--burnthesky-sidebar-w) + 16px)); }
 }
 
 
@@ -5493,7 +5494,7 @@ body:not(:has(.topiclist.forums)) .rmensual {
    38 · BARRA LATERAL CON IMAGEN
    ========================================================================== */
 #page-header .navbar {
-  width: 150px !important;
+  width: var(--burnthesky-sidebar-w) !important;
   padding: 16px 10px !important;
   height: auto !important;
   bottom: 0 !important;
@@ -5523,7 +5524,7 @@ body:not(:has(.topiclist.forums)) .rmensual {
 }
 
 #main {
-  padding-left: 170px !important;
+  padding-left: 0 !important;
 }
 
 @media (max-width: 640px) {
