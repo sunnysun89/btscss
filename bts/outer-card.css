@@ -124,7 +124,7 @@
   /* VELOCIDAD DE LOS HOVERS: se cambian aquí y afectan a todo el foro.
      --burnthesky-ease ..... enlaces, tarjetas, botones, bordes, sombras
      --burnthesky-ease-img . imágenes (de gris a color) */
-  --burnthesky-css:           "v1.9";   /* la consola la muestra al cargar: sirve para saber si el navegador tiene el CSS nuevo */
+  --burnthesky-css:           "v2.0";   /* la consola la muestra al cargar: sirve para saber si el navegador tiene el CSS nuevo */
   --burnthesky-ease:          2s cubic-bezier(.22, .61, .36, 1);
   --burnthesky-ease-img:      2s ease;
 
@@ -5550,3 +5550,88 @@ body:not(:has(.topiclist.forums)) .rmensual {
 @media (max-width: 640px) {
   :root { --burnthesky-sidebar-w: 0px; }
 }
+
+
+/* ============================================================================
+   40 · MEJORAS INSPIRADAS EN BLINDING LIGHTS  (capa aditiva, v2.0)
+   Ideas de técnica tomadas de la hoja de BL, reescritas con las variables y
+   las clases de BTS. No modifica ninguna regla anterior: para quitar todo
+   esto basta con borrar esta sección (o volver al backup
+   outer-card.backup-2026-10-24.css).
+
+   40.1  Portada de foro que se funde con la tarjeta   (BL: .imggradient)
+   40.2  Iconos de acción del post: discretos hasta pasar el ratón  (BL: .post_details)
+   40.3  Paginación en casillas iguales                (BL: .pagination)
+   40.4  Cifras tabulares y mejores saltos de línea
+   40.5  Anclas que no quedan tapadas por barras fijas
+   ========================================================================== */
+:root {
+  --burnthesky-ease-fast:   .3s ease;   /* microinteracciones nuevas; los hovers grandes siguen con --burnthesky-ease */
+  --burnthesky-forimg-fade: 58%;        /* dónde empieza a fundirse la portada (100% = sin fundido) */
+  --burnthesky-pg-size:     30px;       /* lado de las casillas de paginación */
+}
+
+/* -- 40.1 Portada fundida --------------------------------------------------
+   Antes la imagen terminaba en un borde duro. Con una máscara se desvanece
+   hacia el negro de la tarjeta: foro simple (imagen a la izquierda) hacia la
+   derecha, foro doble (imagen arriba) hacia abajo. En móvil el foro simple
+   apila la imagen arriba, así que el fundido gira con ella. */
+.rsingleforum .rforimg {
+  border-right: 0;
+  -webkit-mask-image: linear-gradient(to right, #000 var(--burnthesky-forimg-fade), transparent);
+          mask-image: linear-gradient(to right, #000 var(--burnthesky-forimg-fade), transparent);
+}
+.rdoubleforum .rforimg {
+  border-bottom: 0;
+  -webkit-mask-image: linear-gradient(to bottom, #000 var(--burnthesky-forimg-fade), transparent);
+          mask-image: linear-gradient(to bottom, #000 var(--burnthesky-forimg-fade), transparent);
+}
+@media (max-width: 640px) {
+  .rsingleforum .rforimg {
+    border-bottom: 0;
+    -webkit-mask-image: linear-gradient(to bottom, #000 var(--burnthesky-forimg-fade), transparent);
+            mask-image: linear-gradient(to bottom, #000 var(--burnthesky-forimg-fade), transparent);
+  }
+}
+
+/* -- 40.2 Iconos de acción discretos --------------------------------------
+   Solo con ratón (hover real): en táctil no existe el hover y los iconos
+   quedarían apagados para siempre, así que ahí no se tocan. */
+@media (hover: hover) and (pointer: fine) {
+  .postbody ul.profile-icons {
+    opacity: .55;
+    transition: opacity var(--burnthesky-ease-fast);
+  }
+  .post:hover .postbody ul.profile-icons,
+  .postbody ul.profile-icons:focus-within { opacity: 1; }
+}
+
+/* -- 40.3 Paginación en casillas iguales ---------------------------------- */
+.pagination a,
+.pagination strong {
+  display: inline-grid;
+  place-items: center;
+  min-width: var(--burnthesky-pg-size);
+  height: var(--burnthesky-pg-size);
+  padding: 0 8px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* -- 40.4 Cifras y saltos de línea ----------------------------------------
+   Las cifras de Temas/Mensajes ocupan siempre el mismo ancho (no "bailan"
+   al cambiar) y los títulos largos se reparten en líneas equilibradas.
+   Navegadores sin text-wrap lo ignoran sin romper nada. */
+.forabg ul.topiclist.forums li.row dd.topics,
+.forabg ul.topiclist.forums li.row dd.posts { font-variant-numeric: tabular-nums; }
+
+h1, h2, h3,
+a.forumtitle,
+ul.topiclist.topics a.topictitle { text-wrap: balance; }
+
+.rfordesc,
+.postbody .content { text-wrap: pretty; }
+
+/* -- 40.5 Anclas ------------------------------------------------------------
+   Al saltar a un mensaje (#p123, "ir al último") la barra fija ya no lo tapa. */
+html { scroll-padding-top: 64px; }
