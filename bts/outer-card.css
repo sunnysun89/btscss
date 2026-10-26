@@ -124,7 +124,7 @@
   /* VELOCIDAD DE LOS HOVERS: se cambian aquí y afectan a todo el foro.
      --burnthesky-ease ..... enlaces, tarjetas, botones, bordes, sombras
      --burnthesky-ease-img . imágenes (de gris a color) */
-  --burnthesky-css:           "v2.0";   /* la consola la muestra al cargar: sirve para saber si el navegador tiene el CSS nuevo */
+  --burnthesky-css:           "v2.1";   /* la consola la muestra al cargar: sirve para saber si el navegador tiene el CSS nuevo */
   --burnthesky-ease:          2s cubic-bezier(.22, .61, .36, 1);
   --burnthesky-ease-img:      2s ease;
 
@@ -5635,3 +5635,249 @@ ul.topiclist.topics a.topictitle { text-wrap: balance; }
 /* -- 40.5 Anclas ------------------------------------------------------------
    Al saltar a un mensaje (#p123, "ir al último") la barra fija ya no lo tapa. */
 html { scroll-padding-top: 64px; }
+
+
+/* ============================================================================
+   41 · TEMAS (VIEWTOPIC) REDISEÑADOS
+   Estructura nueva de la plantilla:
+     .post > .inner > .rtopicbanner (portada + nombre)
+                    > .rpostcontainer > .postbody (.rpost-head + .content) + .postprofile
+                    > .rpost-foot (me gusta + subir/bajar)
+   El botón "no me gusta" se quita en la plantilla y, por si queda alguno
+   en caché, también aquí.
+   ========================================================================== */
+:root {
+  --burnthesky-post-cover-h:    170px;   /* alto de la portada del mensaje */
+  --burnthesky-post-cover-gray: 1;       /* 1 = portada en gris, 0 = a color */
+  --burnthesky-post-avatar:     120px;   /* lado del avatar en la columna de perfil */
+  --burnthesky-post-pad:        26px;    /* margen interior del cuerpo del mensaje */
+  --burnthesky-post-text:       14px;    /* tamaño del texto del mensaje */
+  --burnthesky-post-lh:         1.85;    /* interlineado del mensaje */
+}
+
+/* -- Fuera "no me gusta" -- */
+.fa_like_div [class*="dislike"],
+.fa_like_div .rep-button[data-href*="dislike"],
+.rep-button[class*="dislike"] { display: none !important; }
+
+/* -- Estructura de la tarjeta -- */
+.post .inner { display: block; }
+.post .inner > .clear { display: none; }
+
+/* Portada con el nombre encima, fundida hacia la tarjeta */
+.post .rtopicbanner { position: relative; overflow: hidden; border-bottom: 1px solid var(--burnthesky-line); }
+.post .rtopicbgimg img {
+  height: var(--burnthesky-post-cover-h);
+  border-bottom: 0;
+  filter: grayscale(var(--burnthesky-post-cover-gray)) brightness(.62);
+}
+.post .rtopicbanner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent 30%, var(--burnthesky-void-2) 100%);
+}
+.post .rtopicuser {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  padding: 0 var(--burnthesky-post-pad) 14px;
+  border: 0;
+  font: 26px / 1 var(--burnthesky-ff-display);
+  letter-spacing: -.5px;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, .8);
+}
+.post .rtopicuser b { text-shadow: none; }
+
+/* Sin portada subida (queda la imagen de relleno): barra fina en vez de imagen */
+.post .rtopicbanner:has(img[src*="placehold"]) { border-bottom: 1px solid var(--burnthesky-line); }
+.post .rtopicbanner:has(img[src*="placehold"]) .rtopicbgimg { display: none; }
+.post .rtopicbanner:has(img[src*="placehold"])::after { display: none; }
+.post .rtopicbanner:has(img[src*="placehold"]) .rtopicuser {
+  position: static;
+  padding: 14px var(--burnthesky-post-pad);
+  background: linear-gradient(to right, var(--burnthesky-red-wash), transparent 60%);
+  text-shadow: none;
+}
+
+/* -- Columna de perfil -- */
+.postprofile {
+  padding: 24px 20px !important;
+  background: rgba(0, 0, 0, .28) !important;
+}
+.postprofile dt { margin: 0; text-transform: none; font-size: var(--burnthesky-fs-base); line-height: 1.3; }
+.postprofile dt > a:first-of-type,
+.postprofile dt > img {
+  display: block;
+  width: var(--burnthesky-post-avatar);
+  max-width: 100%;
+  margin: 0 auto 16px;
+}
+.postprofile dt img {
+  width: 100%;
+  margin: 0;
+  border: 1px solid var(--burnthesky-line-2);
+  border-radius: var(--burnthesky-radius);
+}
+.postprofile .rprofileicon img {
+  display: block;
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 14px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+.postprofile-fields .rprofilecontent { text-align: left; }
+
+.postprofile-field {
+  margin: 0;
+  padding: 8px 0;
+  border-top: 1px dashed var(--burnthesky-line);
+}
+.postprofile-field:first-child { border-top: 0; padding-top: 0; }
+.postprofile-field-label { margin-bottom: 3px; }
+.postprofile-field-separator { display: none; }
+
+.rcontactfields {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--burnthesky-line);
+}
+.rcontactfields img { opacity: .6; filter: grayscale(1) brightness(1.3); transition: opacity var(--burnthesky-ease-fast), filter var(--burnthesky-ease-fast); }
+.rcontactfields a:hover img { opacity: 1; filter: none; }
+
+/* -- Cuerpo -- */
+.postbody { padding: 0 !important; }
+
+.rpost-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px var(--burnthesky-post-pad) 12px;
+  border-bottom: 1px solid var(--burnthesky-line);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, .02), transparent);
+}
+.rpost-title { min-width: 0; flex: 1 1 auto; }
+.rpost-title h2.topic-title { margin: 0 0 6px; font-size: 20px; }
+.rpost-title p.author {
+  margin: 0;
+  padding: 0 !important;
+  border: 0;
+  letter-spacing: 1.5px;
+}
+
+/* Iconos de acción arriba a la derecha, en línea */
+.postbody ul.profile-icons {
+  flex: 0 0 auto;
+  justify-content: flex-end;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.postbody ul.profile-icons li:empty { display: none; }
+.postbody ul.profile-icons li a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 4px;
+  border: 1px solid var(--burnthesky-line);
+  border-radius: var(--burnthesky-radius);
+  background: var(--burnthesky-void);
+  opacity: .85;
+}
+.postbody ul.profile-icons li a:hover { border-color: var(--burnthesky-red); }
+
+.postbody .content {
+  padding: 22px var(--burnthesky-post-pad) !important;
+  font-size: var(--burnthesky-post-text);
+  line-height: var(--burnthesky-post-lh);
+}
+.postbody .signature_div,
+.postbody .signature {
+  margin: 0 var(--burnthesky-post-pad) 18px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--burnthesky-line-2);
+  font-size: var(--burnthesky-fs-sm);
+  color: var(--burnthesky-gray);
+}
+.postbody .vote { margin: 0 var(--burnthesky-post-pad); }
+
+/* -- Pie: me gusta + subir/bajar -- */
+.rpost-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 10px var(--burnthesky-post-pad);
+  border-top: 1px solid var(--burnthesky-line);
+  background: rgba(0, 0, 0, .3);
+  font: var(--burnthesky-fs-xs) / 1.4 var(--burnthesky-ff-mono);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.rpost-foot p.right { float: none; margin: 0 0 0 auto; }
+.rpost-foot p.right a { margin-left: 12px; color: var(--burnthesky-gray); }
+.rpost-foot p.right a:hover { color: var(--burnthesky-red-vivid); }
+
+.fa_like_div {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--burnthesky-gray-lt);
+  letter-spacing: .5px;
+  text-transform: none;
+}
+.fa_like_div a { color: var(--burnthesky-gray-lt); }
+.fa_like_div .rep-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: var(--burnthesky-void);
+  border: 1px solid var(--burnthesky-line-2) !important;
+  border-radius: var(--burnthesky-radius);
+  color: var(--burnthesky-gray-lt);
+  font: inherit;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color var(--burnthesky-ease-fast), color var(--burnthesky-ease-fast);
+}
+.fa_like_div .rep-button svg { color: var(--burnthesky-gray); transition: color var(--burnthesky-ease-fast); }
+.fa_like_div .rep-button:hover { border-color: var(--burnthesky-red) !important; color: #fff; }
+.fa_like_div .rep-button:hover svg,
+.fa_like_div .rep-button[class*="active"] svg,
+.fa_like_div .rep-button[class*="voted"] svg { color: var(--burnthesky-red-vivid); }
+.fa_like_div .rep-button[class*="active"],
+.fa_like_div .rep-button[class*="voted"] { border-color: var(--burnthesky-red) !important; color: #fff; }
+
+/* -- Móvil / tablet: perfil arriba en horizontal -- */
+@media (max-width: 900px) {
+  .post .rpostcontainer .postprofile {
+    border-right: 0 !important;
+    border-bottom: 1px solid var(--burnthesky-line) !important;
+  }
+  .postprofile dt > a:first-of-type,
+  .postprofile dt > img { margin-left: 0; --burnthesky-post-avatar: 84px; }
+  .postprofile .rprofileicon img { margin-left: 0; }
+  .rcontactfields { justify-content: flex-start; }
+  .rpost-head { flex-wrap: wrap; }
+  .postbody ul.profile-icons { justify-content: flex-start; }
+  .post .rtopicuser { font-size: 21px; }
+}
