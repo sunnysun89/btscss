@@ -124,7 +124,7 @@
   /* VELOCIDAD DE LOS HOVERS: se cambian aquí y afectan a todo el foro.
      --burnthesky-ease ..... enlaces, tarjetas, botones, bordes, sombras
      --burnthesky-ease-img . imágenes (de gris a color) */
-  --burnthesky-css:           "v2.1";   /* la consola la muestra al cargar: sirve para saber si el navegador tiene el CSS nuevo */
+  --burnthesky-css:           "v2.2";   /* la consola la muestra al cargar: sirve para saber si el navegador tiene el CSS nuevo */
   --burnthesky-ease:          2s cubic-bezier(.22, .61, .36, 1);
   --burnthesky-ease-img:      2s ease;
 
@@ -5639,20 +5639,27 @@ html { scroll-padding-top: 64px; }
 
 /* ============================================================================
    41 · TEMAS (VIEWTOPIC) REDISEÑADOS
-   Estructura nueva de la plantilla:
-     .post > .inner > .rtopicbanner (portada + nombre)
+   Estructura de la plantilla:
+     .post > .inner > .rtopicbanner  cuadro del nombre (+ .rtopicicon a la derecha)
                     > .rpostcontainer > .postbody (.rpost-head + .content) + .postprofile
-                    > .rpost-foot (me gusta + subir/bajar)
-   El botón "no me gusta" se quita en la plantilla y, por si queda alguno
-   en caché, también aquí.
+                         .postprofile: .ravatar (avatar + panel de datos al hover)
+                                       .rphrase  .rpower  .rcontactfields
+                    > .rpost-inv       medallas / inventario (solo si hay campo)
+                    > .rpost-foot      me gusta + subir/bajar
+   El reparto de campos lo hace js-post.js. "No me gusta" se quita en la
+   plantilla y, por si queda alguno en caché, también aquí.
    ========================================================================== */
 :root {
-  --burnthesky-post-cover-h:    170px;   /* alto de la portada del mensaje */
-  --burnthesky-post-cover-gray: 1;       /* 1 = portada en gris, 0 = a color */
-  --burnthesky-post-avatar:     120px;   /* lado del avatar en la columna de perfil */
+  --burnthesky-profile-w:       290px;   /* columna de perfil (avatar + 2 x 20px de margen) */
+  --burnthesky-post-avatar-w:   250px;   /* avatar: ancho */
+  --burnthesky-post-avatar-h:   400px;   /* avatar: alto */
+  --burnthesky-post-icon:       58px;    /* icono redondo del cuadro del nombre */
+  --burnthesky-post-icon-ring:  var(--burnthesky-red-dark);
+  --burnthesky-post-hover-bg:   rgba(9, 9, 9, .88);   /* panel de datos sobre el avatar */
   --burnthesky-post-pad:        26px;    /* margen interior del cuerpo del mensaje */
   --burnthesky-post-text:       14px;    /* tamaño del texto del mensaje */
   --burnthesky-post-lh:         1.85;    /* interlineado del mensaje */
+  --burnthesky-post-inv-item:   44px;    /* alto de cada medalla / objeto */
 }
 
 /* -- Fuera "no me gusta" -- */
@@ -5664,82 +5671,126 @@ html { scroll-padding-top: 64px; }
 .post .inner { display: block; }
 .post .inner > .clear { display: none; }
 
-/* Portada con el nombre encima, fundida hacia la tarjeta */
-.post .rtopicbanner { position: relative; overflow: hidden; border-bottom: 1px solid var(--burnthesky-line); }
-.post .rtopicbgimg img {
-  height: var(--burnthesky-post-cover-h);
-  border-bottom: 0;
-  filter: grayscale(var(--burnthesky-post-cover-gray)) brightness(.62);
+/* -- Cuadro del nombre (sin portada) -- */
+.post .rtopicbanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px var(--burnthesky-post-pad);
+  border-bottom: 1px solid var(--burnthesky-line);
+  background: linear-gradient(to right, var(--burnthesky-red-wash), transparent 65%);
 }
-.post .rtopicbanner::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(to bottom, transparent 30%, var(--burnthesky-void-2) 100%);
-}
+.post .rtopicbgimg { display: none; }
 .post .rtopicuser {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1;
-  padding: 0 var(--burnthesky-post-pad) 14px;
+  position: static;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 14px;
+  min-width: 0;
+  padding: 0;
   border: 0;
-  font: 26px / 1 var(--burnthesky-ff-display);
+  font: 26px / 1.05 var(--burnthesky-ff-display);
   letter-spacing: -.5px;
-  text-shadow: 0 2px 14px rgba(0, 0, 0, .8);
+  text-shadow: none;
 }
 .post .rtopicuser b { text-shadow: none; }
 
-/* Sin portada subida (queda la imagen de relleno): barra fina en vez de imagen */
-.post .rtopicbanner:has(img[src*="placehold"]) { border-bottom: 1px solid var(--burnthesky-line); }
-.post .rtopicbanner:has(img[src*="placehold"]) .rtopicbgimg { display: none; }
-.post .rtopicbanner:has(img[src*="placehold"])::after { display: none; }
-.post .rtopicbanner:has(img[src*="placehold"]) .rtopicuser {
-  position: static;
-  padding: 14px var(--burnthesky-post-pad);
-  background: linear-gradient(to right, var(--burnthesky-red-wash), transparent 60%);
-  text-shadow: none;
+.post .rtopicicon { flex: 0 0 auto; }
+.post .rtopicicon img {
+  display: block;
+  width: var(--burnthesky-post-icon);
+  height: var(--burnthesky-post-icon);
+  object-fit: cover;
+  border: 2px solid var(--burnthesky-post-icon-ring);
+  border-radius: 50%;
+  background: var(--burnthesky-void);
 }
+.post .rtopicicon img[src*="placehold"] { display: none; }
 
 /* -- Columna de perfil -- */
 .postprofile {
-  padding: 24px 20px !important;
+  padding: 20px !important;
   background: rgba(0, 0, 0, .28) !important;
 }
 .postprofile dt { margin: 0; text-transform: none; font-size: var(--burnthesky-fs-base); line-height: 1.3; }
-.postprofile dt > a:first-of-type,
-.postprofile dt > img {
-  display: block;
-  width: var(--burnthesky-post-avatar);
+.postprofile dt img { border-radius: var(--burnthesky-radius); }
+
+/* Avatar 250x400 (recorta al centro si la imagen tiene otra proporción) */
+.ravatar {
+  position: relative;
+  width: var(--burnthesky-post-avatar-w);
   max-width: 100%;
-  margin: 0 auto 16px;
-}
-.postprofile dt img {
-  width: 100%;
-  margin: 0;
+  height: var(--burnthesky-post-avatar-h);
+  margin: 0 auto;
+  overflow: hidden;
   border: 1px solid var(--burnthesky-line-2);
   border-radius: var(--burnthesky-radius);
+  background: var(--burnthesky-void);
 }
-.postprofile .rprofileicon img {
+.ravatar > a { display: block; width: 100%; height: 100%; }
+.postprofile .ravatar img {
   display: block;
-  width: 56px;
-  height: 56px;
-  margin: 0 auto 14px;
-  object-fit: cover;
-  border-radius: 50%;
-}
-.postprofile-fields .rprofilecontent { text-align: left; }
-
-.postprofile-field {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none;
   margin: 0;
-  padding: 8px 0;
-  border-top: 1px dashed var(--burnthesky-line);
+  border: 0;
+  object-fit: cover;
+  object-position: center;
 }
-.postprofile-field:first-child { border-top: 0; padding-top: 0; }
-.postprofile-field-label { margin-bottom: 3px; }
+
+/* Datos del usuario: panel que aparece al pasar el ratón por el avatar */
+.ravatar .rprofilecontent {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  padding: 16px 14px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  background: var(--burnthesky-post-hover-bg);
+  backdrop-filter: blur(3px);
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--burnthesky-ease-fast), visibility var(--burnthesky-ease-fast);
+}
+.ravatar:hover .rprofilecontent,
+.ravatar:focus-within .rprofilecontent { opacity: 1; visibility: visible; }
+
+.ravatar .postprofile-field { padding: 7px 0; border-top: 0; }
+.ravatar .postprofile-field-label { margin-bottom: 2px; }
 .postprofile-field-separator { display: none; }
+
+/* Sin ratón (móvil): los datos van en una caja bajo el avatar, sin hover */
+@media (hover: none) {
+  .ravatar { height: auto; overflow: visible; border: 0; background: none; }
+  .ravatar > a { height: var(--burnthesky-post-avatar-h); border: 1px solid var(--burnthesky-line-2); }
+  .ravatar .rprofilecontent {
+    position: static;
+    margin-top: 10px;
+    opacity: 1;
+    visibility: visible;
+    border: 1px solid var(--burnthesky-line);
+    backdrop-filter: none;
+  }
+}
+
+/* Frase y poder bajo el avatar */
+.rphrase,
+.rpower { margin: 14px 0 0; text-align: center; }
+.rphrase .postprofile-field,
+.rpower .postprofile-field { margin: 0; padding: 0; border: 0; }
+.rphrase .postprofile-field-label { display: none; }
+.rphrase .postprofile-field-content {
+  display: block;
+  font: italic var(--burnthesky-fs-base) / 1.6 var(--burnthesky-ff-sans);
+  color: var(--burnthesky-gray-lt);
+}
+.rpower { padding-top: 12px; border-top: 1px dashed var(--burnthesky-line); }
+.rpower .postprofile-field-label { display: inline; margin-right: 6px; }
+.rpower .postprofile-field-content { color: var(--burnthesky-white); }
 
 .rcontactfields {
   display: flex;
@@ -5812,6 +5863,29 @@ html { scroll-padding-top: 64px; }
 }
 .postbody .vote { margin: 0 var(--burnthesky-post-pad); }
 
+/* -- Medallas / inventario bajo el mensaje -- */
+.rpost-inv {
+  padding: 14px var(--burnthesky-post-pad);
+  border-top: 1px solid var(--burnthesky-line);
+  background: rgba(0, 0, 0, .22);
+}
+.rpost-inv .postprofile-field { margin: 0; padding: 0; border: 0; }
+.rpost-inv .postprofile-field-label { display: block; margin-bottom: 8px; }
+.rpost-inv .postprofile-field-content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.rpost-inv img {
+  height: var(--burnthesky-post-inv-item);
+  width: auto;
+  max-width: 120px;
+  object-fit: contain;
+  transition: transform var(--burnthesky-ease-fast);
+}
+.rpost-inv img:hover { transform: translateY(-2px) scale(1.06); }
+
 /* -- Pie: me gusta + subir/bajar -- */
 .rpost-foot {
   display: flex;
@@ -5867,15 +5941,14 @@ html { scroll-padding-top: 64px; }
 .fa_like_div .rep-button[class*="active"],
 .fa_like_div .rep-button[class*="voted"] { border-color: var(--burnthesky-red) !important; color: #fff; }
 
-/* -- Móvil / tablet: perfil arriba en horizontal -- */
+/* -- Tablet / móvil: el perfil pasa arriba -- */
 @media (max-width: 900px) {
   .post .rpostcontainer .postprofile {
+    flex-basis: auto;
+    width: auto !important;
     border-right: 0 !important;
     border-bottom: 1px solid var(--burnthesky-line) !important;
   }
-  .postprofile dt > a:first-of-type,
-  .postprofile dt > img { margin-left: 0; --burnthesky-post-avatar: 84px; }
-  .postprofile .rprofileicon img { margin-left: 0; }
   .rcontactfields { justify-content: flex-start; }
   .rpost-head { flex-wrap: wrap; }
   .postbody ul.profile-icons { justify-content: flex-start; }

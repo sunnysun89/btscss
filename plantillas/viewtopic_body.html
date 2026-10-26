@@ -136,11 +136,11 @@ showHiddenMessage = function(id)
 			<div class="inner"><span class="corners-top"><span></span></span>
 
                           <div class="rtopicbanner" id="{postrow.displayed.U_POST_ID}">
-                            <div class="rtopicbgimg"><img src="https://placehold.co/700x300" /></div>
                             <div class="rtopicuser">
                               <span>{postrow.displayed.POSTER_NAME}</span>
                               <b>{postrow.displayed.POSTER_RANK_NEW}</b>
                             </div>
+                            <div class="rtopicicon"><img src="https://placehold.co/70" alt="" /></div>
                           </div>
 
                           <div class="rpostcontainer">
@@ -235,33 +235,33 @@ showHiddenMessage = function(id)
 			</div>
 
 			<div class="postprofile" id="profile{postrow.displayed.U_POST_ID}">
-				<!-- div class="online2"></div-->
 				<dl>
 					<dt>
-                                            <div class="rbgimg"></div>
-                                            {postrow.displayed.POSTER_AVATAR}
-                                            <div class="rpostprofileinfo">
-						<div class="postprofile-fields">
-                                                    <div class="rprofileicon"><img src="https://placehold.co/70" /></div>
-                                                  <div class="rprofilecontent">
-                                                    <!-- BEGIN profile_field -->
-                                                    <div class="postprofile-field">
-                                                            <span class="postprofile-field-label">{postrow.displayed.profile_field.LABEL}</span>
-                                                            <span class="postprofile-field-content">{postrow.displayed.profile_field.CONTENT}</span>
-                                                            <span class="postprofile-field-separator">{postrow.displayed.profile_field.SEPARATOR}</span>
-                                                    </div>
-                                                    <!-- END profile_field -->
-                                                    {postrow.displayed.POSTER_RPG}
-                                                  </div>
-                                                </div>
-                                                <div class="rcontactfields">
-                                                      {postrow.displayed.PROFILE_IMG} {postrow.displayed.PM_IMG}
-                                                </div>
-                                          </div>
+						<div class="ravatar">
+							{postrow.displayed.POSTER_AVATAR}
+							<div class="rprofilecontent">
+								<!-- BEGIN profile_field -->
+								<div class="postprofile-field">
+									<span class="postprofile-field-label">{postrow.displayed.profile_field.LABEL}</span>
+									<span class="postprofile-field-content">{postrow.displayed.profile_field.CONTENT}</span>
+									<span class="postprofile-field-separator">{postrow.displayed.profile_field.SEPARATOR}</span>
+								</div>
+								<!-- END profile_field -->
+								{postrow.displayed.POSTER_RPG}
+							</div>
+						</div>
+						<div class="rphrase"></div>
+						<div class="rpower"></div>
+						<div class="rcontactfields">
+							{postrow.displayed.PROFILE_IMG} {postrow.displayed.PM_IMG}
+						</div>
 					</dt>
 				</dl>
 			</div>
-                  </div>
+				  </div>
+
+			<!-- Medallas / inventario: lo rellena js-post.js con el campo de perfil que se llame así -->
+			<div class="rpost-inv" style="display:none"></div>
 
 			<div class="clear"></div>
 
