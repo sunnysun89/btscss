@@ -526,72 +526,106 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
    - Frase y Poder -> debajo del avatar.
    - Medallas / Inventario -> fila debajo del mensaje.
    - Lo demás queda en el panel que aparece al pasar el ratón por el avatar.
-   Los nombres de los campos se cambian en CAMPOS (en minúsculas, sin tildes ni
-   espacios: "Frase del personaje" -> "frase-del-personaje"). */
+   No depende de js-temas.js: calcula sus propias clases a partir del nombre
+   del campo. Un campo se reconoce si su nombre (sin tildes ni mayúsculas)
+   CONTIENE alguna de estas palabras; cámbialas aquí si usas otras.
+   Si un campo no existe o está vacío, se muestra un hueco apagado (se puede
+   ocultar con --burnthesky-post-empty: none en el CSS).
+   En la consola (F12) aparece "[BTS] post: campos ..." con los nombres que
+   encuentra, para comprobar que coinciden. */
 !function () {
-  var CAMPOS = {
-    icono:  ['icon', 'icono'],
-    frase:  ['frase', 'cita', 'quote'],
-    poder:  ['poder', 'poderes', 'habilidad'],
-    inv:    ['medallas', 'inventario', 'insignias', 'objetos'],
-    oculto: ['post-cover']              // campos que no se muestran en ningún sitio
+  var CLAVES = {
+    icono:  ['icon'],
+    frase:  ['frase', 'cita', 'quote', 'lema'],
+    poder:  ['poder', 'habilidad'],
+    inv:    ['medall', 'inventario', 'insignia', 'objeto', 'item'],
+    oculto: ['cover', 'portada']
   };
 
-  function campo(post, nombres) {
-    for (var i = 0; i < nombres.length; i++) {
-      var f = post.querySelector('.postprofile .postprofile-field-' + nombres[i]);
-      if (f) return f;
-    }
-    return null;
+  function slug(t) {
+    return (t || '').toLowerCase()
+      .normalize('NFD').replace(/[̀-ͯ]/g, '')
+      .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  }
+  function nombre(f) {
+    var l = f.querySelector('.postprofile-field-label');
+    return l ? l.textContent.replace(/\s*:\s*$/, '').trim() : '';
+  }
+  function es(f, claves) {
+    var s = slug(nombre(f));
+    return claves.some(function (c) { return s.indexOf(c) !== -1; });
   }
   function vacio(f) {
     var c = f && f.querySelector('.postprofile-field-content');
     return !c || (!c.querySelector('img') && !c.textContent.replace(/\s+/g, '').length);
   }
+  function hueco(box, texto) {
+    box.classList.add('vacio');
+    box.textContent = texto;
+    box.style.display = '';
+  }
+
+  var avisado = false;
 
   function arrancar() {
-    document.querySelectorAll('.post').forEach(function (post) {
-      if (post.dataset.btsPost) return;
-      post.dataset.btsPost = '1';
+    var posts = document.querySelectorAll('.post');
+    for (var n = 0; n < posts.length; n++) {
+      var post = posts[n];
+      if (post.getAttribute('data-bts-post')) continue;
+      var campos = post.querySelectorAll('.postprofile .postprofile-field');
+      var iconBox = post.querySelector('.rtopicicon'), frBox = post.querySelector('.rphrase'),
+          poBox = post.querySelector('.rpower'), invBox = post.querySelector('.rpost-inv');
+      if (!iconBox && !frBox && !poBox && !invBox) continue;   // mensaje oculto u otra plantilla
+      post.setAttribute('data-bts-post', '1');
+
+      var nombres = [], f = {};
+      for (var i = 0; i < campos.length; i++) {
+        var c = campos[i], nm = nombre(c);
+        nombres.push(nm || '(sin nombre)');
+        if (es(c, CLAVES.oculto)) { c.parentNode.removeChild(c); continue; }
+        if (!f.icono && es(c, CLAVES.icono) && c.querySelector('img')) f.icono = c;
+        else if (!f.frase && es(c, CLAVES.frase)) f.frase = c;
+        else if (!f.poder && es(c, CLAVES.poder)) f.poder = c;
+        else if (!f.inv && es(c, CLAVES.inv)) f.inv = c;
+      }
+      if (!avisado) {
+        avisado = true;
+        try { console.log('[BTS] post: campos de perfil encontrados →', nombres.length ? nombres.join(' | ') : '(ninguno: el usuario no tiene campos rellenos)'); } catch (e) {}
+      }
 
       /* icono -> cuadro del nombre */
-      var ic = campo(post, CAMPOS.icono), dest = post.querySelector('.rtopicicon');
-      var img = ic && ic.querySelector('img');
-      if (dest) {
-        if (img) { dest.innerHTML = ''; dest.appendChild(img); dest.classList.add('tiene'); }
-        else dest.style.display = 'none';
+      if (iconBox) {
+        var img = f.icono && f.icono.querySelector('img');
+        if (img) { iconBox.innerHTML = ''; iconBox.appendChild(img); iconBox.classList.add('tiene'); f.icono.parentNode.removeChild(f.icono); }
+        else hueco(iconBox, '');
       }
-      if (ic) ic.remove();
-
-      /* campos que no se usan */
-      CAMPOS.oculto.forEach(function (n) {
-        var f = post.querySelector('.postprofile .postprofile-field-' + n);
-        if (f) f.remove();
-      });
 
       /* frase y poder debajo del avatar */
-      [['frase', '.rphrase'], ['poder', '.rpower']].forEach(function (par) {
-        var f = campo(post, CAMPOS[par[0]]), box = post.querySelector(par[1]);
-        if (!box) return;
-        if (f && !vacio(f)) { box.appendChild(f); box.classList.add('tiene'); }
-        else { if (f) f.remove(); box.style.display = 'none'; }
-      });
+      if (frBox) {
+        if (f.frase && !vacio(f.frase)) { frBox.appendChild(f.frase); frBox.classList.add('tiene'); }
+        else { if (f.frase) f.frase.parentNode.removeChild(f.frase); hueco(frBox, 'sin frase'); }
+      }
+      if (poBox) {
+        if (f.poder && !vacio(f.poder)) { poBox.appendChild(f.poder); poBox.classList.add('tiene'); }
+        else { if (f.poder) f.poder.parentNode.removeChild(f.poder); hueco(poBox, 'sin poder'); }
+      }
 
       /* medallas / inventario debajo del mensaje */
-      var inv = campo(post, CAMPOS.inv), cont = post.querySelector('.rpost-inv');
-      if (cont) {
-        if (inv && !vacio(inv)) { cont.appendChild(inv); cont.style.display = ''; }
-        else if (inv) inv.remove();
+      if (invBox) {
+        if (f.inv && !vacio(f.inv)) { invBox.appendChild(f.inv); invBox.classList.add('tiene'); }
+        else {
+          if (f.inv) f.inv.parentNode.removeChild(f.inv);
+          hueco(invBox, 'Medallas e inventario: nada por ahora');
+        }
+        invBox.style.display = '';
       }
 
       /* si no queda ningún dato, no hay panel al pasar el ratón */
       var pc = post.querySelector('.ravatar .rprofilecontent');
-      if (pc && !pc.querySelector('.postprofile-field') && !pc.textContent.trim()) pc.style.display = 'none';
-    });
+      if (pc && !pc.querySelector('.postprofile-field') && !pc.textContent.replace(/\s+/g, '')) pc.style.display = 'none';
+    }
   }
 
-  /* se espera un instante: js-temas.js tiene que haber puesto antes las clases
-     postprofile-field-<nombre> a cada campo */
   function tarde() { setTimeout(arrancar, 0); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tarde);
   else tarde();

@@ -5660,6 +5660,7 @@ html { scroll-padding-top: 64px; }
   --burnthesky-post-text:       14px;    /* tamaño del texto del mensaje */
   --burnthesky-post-lh:         1.85;    /* interlineado del mensaje */
   --burnthesky-post-inv-item:   44px;    /* alto de cada medalla / objeto */
+  --burnthesky-post-empty:      block;   /* huecos vacíos (sin frase, sin poder, sin medallas): block = visibles, none = ocultos */
 }
 
 /* -- Fuera "no me gusta" -- */
@@ -5803,6 +5804,26 @@ html { scroll-padding-top: 64px; }
 .rcontactfields img { opacity: .6; filter: grayscale(1) brightness(1.3); transition: opacity var(--burnthesky-ease-fast), filter var(--burnthesky-ease-fast); }
 .rcontactfields a:hover img { opacity: 1; filter: none; }
 
+/* Huecos apagados cuando el usuario no tiene ese campo */
+.rphrase.vacio,
+.rpower.vacio,
+.rpost-inv.vacio {
+  display: var(--burnthesky-post-empty);
+  font: italic var(--burnthesky-fs-sm) / 1.4 var(--burnthesky-ff-sans);
+  letter-spacing: .5px;
+  color: var(--burnthesky-gray);
+  opacity: .55;
+}
+.rpost-inv.vacio { text-align: left; }
+.rtopicicon.vacio {
+  display: var(--burnthesky-post-empty);
+  width: var(--burnthesky-post-icon);
+  height: var(--burnthesky-post-icon);
+  border: 2px dashed var(--burnthesky-line-2);
+  border-radius: 50%;
+  opacity: .5;
+}
+
 /* -- Cuerpo -- */
 .postbody { padding: 0 !important; }
 
@@ -5835,17 +5856,18 @@ html { scroll-padding-top: 64px; }
 }
 .postbody ul.profile-icons li:empty { display: none; }
 .postbody ul.profile-icons li a {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: inline-block;
   min-width: 28px;
-  height: 28px;
-  padding: 0 4px;
+  padding: 4px;
   border: 1px solid var(--burnthesky-line);
   border-radius: var(--burnthesky-radius);
-  background: var(--burnthesky-void);
-  opacity: .85;
+  background-color: var(--burnthesky-void);
+  line-height: 1;
+  text-align: center;
+  opacity: .9;
+  filter: none;
 }
+.postbody ul.profile-icons li a img { vertical-align: middle; }
 .postbody ul.profile-icons li a:hover { border-color: var(--burnthesky-red); }
 
 .postbody .content {
