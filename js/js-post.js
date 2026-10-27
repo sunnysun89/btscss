@@ -1,8 +1,9 @@
 /* Mensajes de los temas: reparte los campos de perfil en la tarjeta.
    - Icono (campo "Icono") -> a la derecha del cuadro del nombre.
    - Frase y Poder -> debajo del avatar.
-   - Implantes, Inventario y Medallero -> ventana "Inventario y medallero"
-     debajo del mensaje, con el mismo estilo que en el perfil.
+   - Implantes (con botones Inventario / Medallero) -> ventana compacta
+     debajo del mensaje, con el estilo del perfil.
+   - Popularidad y Autocontrol (0-100) -> barras bajo el poder.
    - Lo demás queda en el panel que aparece al pasar el ratón por el avatar.
    No depende de js-temas.js: calcula sus propias clases a partir del nombre
    del campo. Un campo se reconoce si su nombre (sin tildes ni mayúsculas)
@@ -18,6 +19,8 @@
     poder:  ['poder', 'habilidad'],
     inv:    ['inventario', 'objeto', 'item'],
     med:    ['medall', 'insignia'],
+    pop:    ['popularidad'],
+    auto:   ['autocontrol'],
     oculto: ['cover', 'portada']
   };
 
@@ -45,7 +48,7 @@
   }
 
 
-  var MIN_CASILLAS = 6;   // casillas por columna (las que faltan salen como hexágonos vacíos)
+  var MIN_CASILLAS = 8;   // casillas mínimas por vista (las que faltan salen como hexágonos vacíos)
 
   function esImplante(f, n) {
     var s = slug(nombre(f));
@@ -85,24 +88,72 @@
       cas.appendChild((a && cont.contains(a) ? a : img).cloneNode(true));
       g.appendChild(cas); n++;
     });
-    for (var i = n; i < Math.max(MIN_CASILLAS, Math.ceil(n / 6) * 6); i++) {
+    for (var i = n; i < Math.max(MIN_CASILLAS, Math.ceil(n / 4) * 4); i++) {
       var e = el('div', 'rslot'); e.setAttribute('aria-hidden', 'true'); g.appendChild(e);
     }
     return g;
   }
+  /* Ventana compacta: se ven los 2 implantes y, arriba a la derecha, dos botones
+     (Inventario / Medallero) que cambian la vista. Pulsar el botón activo vuelve
+     a los implantes. */
+  var TITULOS = { implantes: 'Implantes', inventario: 'Inventario', medallero: 'Medallero' };
   function ventana(f) {
-    var w = el('div', 'rinv'), cols = el('div', 'rinv__cols');
-    w.appendChild(el('div', 'rinv__head', 'Inventario y medallero'));
-    var b1 = el('section', 'rinv__box rinv__box--imp'), b2 = el('section', 'rinv__box'), b3 = el('section', 'rinv__box');
-    b1.appendChild(el('h3', '', 'Implantes'));
+    var w = el('div', 'rinv rinv--mini'), head = el('div', 'rinv__head');
+    w.setAttribute('data-vista', 'implantes');
+    var tabs = el('div', 'rinv__tabs');
+    ['inventario', 'medallero'].forEach(function (v) {
+      var bt = el('button', 'rinv__tab', TITULOS[v]);
+      bt.type = 'button'; bt.setAttribute('data-ver', v); bt.setAttribute('aria-pressed', 'false');
+      tabs.appendChild(bt);
+    });
+    head.appendChild(tabs);
+    w.appendChild(head);
+
+    var cuerpo = el('div', 'rinv__vistas');
+    var v1 = el('section', 'rinv__box rinv__box--imp rinv__vista'), v2 = el('section', 'rinv__box rinv__vista'), v3 = el('section', 'rinv__box rinv__vista');
+    v1.setAttribute('data-v', 'implantes'); v2.setAttribute('data-v', 'inventario'); v3.setAttribute('data-v', 'medallero');
     var im = el('div', 'rinv__implants');
     im.appendChild(implante(f.imp1, 'Implante 01')); im.appendChild(implante(f.imp2, 'Implante 02'));
-    b1.appendChild(im);
-    b2.appendChild(el('h3', '', 'Inventario')); b2.appendChild(rejilla(f.inv));
-    b3.appendChild(el('h3', '', 'Medallero'));  b3.appendChild(rejilla(f.med));
-    cols.appendChild(b1); cols.appendChild(b2); cols.appendChild(b3);
-    w.appendChild(cols);
+    v1.appendChild(el('h3', '', TITULOS.implantes)); v1.appendChild(im);
+    v2.appendChild(el('h3', '', TITULOS.inventario)); v2.appendChild(rejilla(f.inv));
+    v3.appendChild(el('h3', '', TITULOS.medallero)); v3.appendChild(rejilla(f.med));
+    cuerpo.appendChild(v1); cuerpo.appendChild(v2); cuerpo.appendChild(v3);
+    w.appendChild(cuerpo);
     return w;
+  }
+  document.addEventListener('click', function (e) {
+    var bt = e.target.closest ? e.target.closest('.rinv__tab') : null;
+    if (!bt) return;
+    var w = bt.closest('.rinv'), ver = bt.getAttribute('data-ver');
+    var nueva = w.getAttribute('data-vista') === ver ? 'implantes' : ver;
+    w.setAttribute('data-vista', nueva);
+    Array.prototype.forEach.call(w.querySelectorAll('.rinv__tab'), function (t) {
+      t.setAttribute('aria-pressed', t.getAttribute('data-ver') === nueva ? 'true' : 'false');
+    });
+  });
+
+  /* Barras de porcentaje bajo el avatar (campos "Popularidad" y "Autocontrol":
+     el usuario escribe un número del 0 al 100, con o sin %). */
+  var BARRAS = [['pop', 'Popularidad', ['popularidad']], ['auto', 'Autocontrol', ['autocontrol']]];
+  function porcentaje(c) {
+    var t = c ? (c.querySelector('.postprofile-field-content') || c).textContent : '';
+    var m = t.replace(',', '.').match(/\d+(\.\d+)?/);
+    var n = m ? parseFloat(m[0]) : 0;
+    return Math.max(0, Math.min(100, n));
+  }
+  function barras(f) {
+    var box = el('div', 'rbars');
+    BARRAS.forEach(function (b) {
+      var p = porcentaje(f[b[0]]), fila = el('div', 'rbar');
+      fila.appendChild(el('span', 'rbar__l', b[1]));
+      var tr = el('div', 'rbar__track'), fl = el('div', 'rbar__fill');
+      fl.style.width = '0';
+      tr.appendChild(fl); fila.appendChild(tr);
+      fila.title = b[1] + ': ' + p + '%';
+      box.appendChild(fila);
+      setTimeout(function () { fl.style.width = p + '%'; }, 60);
+    });
+    return box;
   }
 
   var avisado = false;
@@ -126,6 +177,8 @@
         if (!f.icono && es(c, CLAVES.icono) && c.querySelector('img')) f.icono = c;
         else if (!f.frase && es(c, CLAVES.frase)) f.frase = c;
         else if (!f.poder && es(c, CLAVES.poder)) f.poder = c;
+        else if (!f.pop && es(c, CLAVES.pop)) f.pop = c;
+        else if (!f.auto && es(c, CLAVES.auto)) f.auto = c;
         else if (!f.imp1 && esImplante(c, 1)) f.imp1 = c;
         else if (!f.imp2 && esImplante(c, 2)) f.imp2 = c;
         else if (!f.inv && es(c, CLAVES.inv)) f.inv = c;
@@ -152,6 +205,13 @@
         if (f.poder && !vacio(f.poder)) { poBox.appendChild(f.poder); poBox.classList.add('tiene'); }
         else { if (f.poder) f.poder.parentNode.removeChild(f.poder); hueco(poBox, 'sin poder'); }
       }
+
+      /* barras Popularidad / Autocontrol, debajo del poder */
+      var yaBarras = post.querySelector('.rbars');
+      if (yaBarras) yaBarras.parentNode.removeChild(yaBarras);
+      var ancla = poBox || frBox || post.querySelector('.ravatar');
+      if (ancla && ancla.parentNode) ancla.parentNode.insertBefore(barras(f), ancla.nextSibling);
+      ['pop', 'auto'].forEach(function (k) { if (f[k] && f[k].parentNode) f[k].parentNode.removeChild(f[k]); });
 
       /* implantes, inventario y medallero: ventana debajo del mensaje */
       if (invBox) {

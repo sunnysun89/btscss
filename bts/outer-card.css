@@ -5644,7 +5644,7 @@ html { scroll-padding-top: 64px; }
                     > .rpostcontainer > .postbody (.rpost-head + .content) + .postprofile
                          .postprofile: .ravatar (avatar + panel de datos al hover)
                                        .rphrase  .rpower  .rcontactfields
-                    > .rpost-inv       ventana Inventario y medallero (la crea js-post.js)
+                    > .rpost-inv       ventana compacta de implantes + botones inventario/medallero (la crea js-post.js)
                     > .rpost-foot      me gusta + subir/bajar
    El reparto de campos lo hace js-post.js. "No me gusta" se quita en la
    plantilla y, por si queda alguno en caché, también aquí.
@@ -5883,15 +5883,82 @@ html { scroll-padding-top: 64px; }
 }
 .postbody .vote { margin: 0 var(--burnthesky-post-pad); }
 
-/* -- Inventario y medallero bajo el mensaje: usa las clases .rinv del perfil -- */
+/* -- Inventario y medallero bajo el mensaje: ventana compacta ---------------
+   Se ven los implantes; los botones de la cabecera cambian a Inventario o
+   Medallero (js-post.js). Usa las clases .rinv del perfil. */
+:root {
+  --burnthesky-post-inv-w:      300px;   /* ancho de la ventana compacta */
+  --burnthesky-post-inv-h:      188px;   /* alto mínimo del cuerpo (que no salte al cambiar de vista) */
+  --burnthesky-post-slot:       52px;    /* casillas de inventario y medallero en la ventana compacta */
+}
 .rpost-inv {
-  padding: 18px var(--burnthesky-post-pad) 20px;
+  padding: 14px var(--burnthesky-post-pad) 16px;
   border-top: 1px solid var(--burnthesky-line);
   background: rgba(0, 0, 0, .22);
 }
-.rpost-inv .rinv { margin: 0; }
+.rpost-inv .rinv { width: var(--burnthesky-post-inv-w); max-width: 100%; margin: 0; }
 /* usuario sin nada de esto: se puede ocultar el bloque con --burnthesky-post-empty: none */
 .rpost-inv.sin-datos { display: var(--burnthesky-post-empty); opacity: .75; }
+
+.rinv--mini .rinv__head { gap: 8px; padding: 8px 10px; }
+.rinv--mini .rinv__head::before { margin-right: 38px; }
+.rinv__tabs { display: flex; gap: 6px; margin-left: auto; }
+.rinv__tab {
+  padding: 4px 8px;
+  background: var(--burnthesky-void);
+  border: 1px solid var(--burnthesky-line-2);
+  border-radius: var(--burnthesky-radius);
+  color: var(--burnthesky-gray-lt);
+  font: var(--burnthesky-fs-2xs) / 1.2 var(--burnthesky-ff-mono);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color var(--burnthesky-ease-fast), color var(--burnthesky-ease-fast), background var(--burnthesky-ease-fast);
+}
+.rinv__tab:hover { border-color: var(--burnthesky-red); color: #fff; }
+.rinv__tab[aria-pressed="true"] { border-color: var(--burnthesky-red); background: var(--burnthesky-red-wash); color: #fff; }
+
+.rinv--mini .rinv__vistas { min-height: var(--burnthesky-post-inv-h); }
+.rinv--mini .rinv__vista { display: none; padding: 12px; border: 0; }
+.rinv--mini .rinv__vista h3 { margin: 0 0 10px !important; }
+.rinv--mini[data-vista="implantes"]  .rinv__vista[data-v="implantes"],
+.rinv--mini[data-vista="inventario"] .rinv__vista[data-v="inventario"],
+.rinv--mini[data-vista="medallero"]  .rinv__vista[data-v="medallero"] { display: block; }
+.rinv--mini .rinv__grid { grid-template-columns: repeat(auto-fill, minmax(var(--burnthesky-post-slot), 1fr)); gap: 6px; }
+.rinv--mini .rimp { padding: 8px; gap: 10px; }
+.rinv--mini .rimp__ico { flex-basis: 46px; height: 46px; }
+
+/* -- Barras de porcentaje (Popularidad / Autocontrol) -- */
+:root {
+  --burnthesky-post-bar-h:      10px;
+  --burnthesky-post-bar-fill:   linear-gradient(to right, var(--burnthesky-red-dark), var(--burnthesky-red-vivid));
+  --burnthesky-post-bar-track:  var(--burnthesky-void-3);
+}
+.rbars { margin: 14px 0 0; padding-top: 12px; border-top: 1px dashed var(--burnthesky-line); }
+.rbar { margin: 0 0 12px; }
+.rbar:last-child { margin-bottom: 0; }
+.rbar__l {
+  display: block;
+  margin: 0 0 6px;
+  font: var(--burnthesky-fs-xs) / 1 var(--burnthesky-ff-mono);
+  letter-spacing: 3px;
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--burnthesky-red-vivid);
+}
+.rbar__track {
+  height: var(--burnthesky-post-bar-h);
+  overflow: hidden;
+  background: var(--burnthesky-post-bar-track);
+  border: 1px solid var(--burnthesky-line);
+  border-radius: calc(var(--burnthesky-post-bar-h) / 2);
+}
+.rbar__fill {
+  height: 100%;
+  background: var(--burnthesky-post-bar-fill);
+  border-radius: inherit;
+  transition: width 1.2s cubic-bezier(.22, .61, .36, 1);
+}
 
 /* -- Pie: me gusta + subir/bajar -- */
 .rpost-foot {
