@@ -1,8 +1,8 @@
 /* Mensajes de los temas: reparte los campos de perfil en la tarjeta.
    - Icono (campo "Icono") -> a la derecha del cuadro del nombre.
    - Frase y Poder -> debajo del avatar.
-   - Implantes (con botones Inventario / Medallero) -> ventana compacta
-     debajo del mensaje, con el estilo del perfil.
+   - Implantes, Inventario y Medallero -> ventana de tres columnas debajo
+     del mensaje, con el estilo del perfil.
    - Popularidad y Autocontrol (0-100) -> barras bajo el poder.
    - Lo demás queda en el panel que aparece al pasar el ratón por el avatar.
    No depende de js-temas.js: calcula sus propias clases a partir del nombre
@@ -48,7 +48,7 @@
   }
 
 
-  var MIN_CASILLAS = 8;   // casillas mínimas por vista (las que faltan salen como hexágonos vacíos)
+  var MIN_CASILLAS = 6;   // casillas mínimas por columna (las que faltan salen como hexágonos vacíos)
 
   function esImplante(f, n) {
     var s = slug(nombre(f));
@@ -88,49 +88,27 @@
       cas.appendChild((a && cont.contains(a) ? a : img).cloneNode(true));
       g.appendChild(cas); n++;
     });
-    for (var i = n; i < Math.max(MIN_CASILLAS, Math.ceil(n / 4) * 4); i++) {
+    for (var i = n; i < Math.max(MIN_CASILLAS, Math.ceil(n / 6) * 6); i++) {
       var e = el('div', 'rslot'); e.setAttribute('aria-hidden', 'true'); g.appendChild(e);
     }
     return g;
   }
-  /* Ventana compacta: se ven los 2 implantes y, arriba a la derecha, dos botones
-     (Inventario / Medallero) que cambian la vista. Pulsar el botón activo vuelve
-     a los implantes. */
-  var TITULOS = { implantes: 'Implantes', inventario: 'Inventario', medallero: 'Medallero' };
+  /* Ventana "Inventario y medallero": tres columnas (implantes, inventario,
+     medallero), como en el perfil. Sin título en la cabecera. */
   function ventana(f) {
-    var w = el('div', 'rinv rinv--mini'), head = el('div', 'rinv__head');
-    w.setAttribute('data-vista', 'implantes');
-    var tabs = el('div', 'rinv__tabs');
-    ['inventario', 'medallero'].forEach(function (v) {
-      var bt = el('button', 'rinv__tab', TITULOS[v]);
-      bt.type = 'button'; bt.setAttribute('data-ver', v); bt.setAttribute('aria-pressed', 'false');
-      tabs.appendChild(bt);
-    });
-    head.appendChild(tabs);
-    w.appendChild(head);
-
-    var cuerpo = el('div', 'rinv__vistas');
-    var v1 = el('section', 'rinv__box rinv__box--imp rinv__vista'), v2 = el('section', 'rinv__box rinv__vista'), v3 = el('section', 'rinv__box rinv__vista');
-    v1.setAttribute('data-v', 'implantes'); v2.setAttribute('data-v', 'inventario'); v3.setAttribute('data-v', 'medallero');
+    var w = el('div', 'rinv'), cols = el('div', 'rinv__cols');
+    w.appendChild(el('div', 'rinv__head'));
+    var b1 = el('section', 'rinv__box rinv__box--imp'), b2 = el('section', 'rinv__box'), b3 = el('section', 'rinv__box');
+    b1.appendChild(el('h3', '', 'Implantes'));
     var im = el('div', 'rinv__implants');
     im.appendChild(implante(f.imp1, 'Implante 01')); im.appendChild(implante(f.imp2, 'Implante 02'));
-    v1.appendChild(el('h3', '', TITULOS.implantes)); v1.appendChild(im);
-    v2.appendChild(el('h3', '', TITULOS.inventario)); v2.appendChild(rejilla(f.inv));
-    v3.appendChild(el('h3', '', TITULOS.medallero)); v3.appendChild(rejilla(f.med));
-    cuerpo.appendChild(v1); cuerpo.appendChild(v2); cuerpo.appendChild(v3);
-    w.appendChild(cuerpo);
+    b1.appendChild(im);
+    b2.appendChild(el('h3', '', 'Inventario')); b2.appendChild(rejilla(f.inv));
+    b3.appendChild(el('h3', '', 'Medallero'));  b3.appendChild(rejilla(f.med));
+    cols.appendChild(b1); cols.appendChild(b2); cols.appendChild(b3);
+    w.appendChild(cols);
     return w;
   }
-  document.addEventListener('click', function (e) {
-    var bt = e.target.closest ? e.target.closest('.rinv__tab') : null;
-    if (!bt) return;
-    var w = bt.closest('.rinv'), ver = bt.getAttribute('data-ver');
-    var nueva = w.getAttribute('data-vista') === ver ? 'implantes' : ver;
-    w.setAttribute('data-vista', nueva);
-    Array.prototype.forEach.call(w.querySelectorAll('.rinv__tab'), function (t) {
-      t.setAttribute('aria-pressed', t.getAttribute('data-ver') === nueva ? 'true' : 'false');
-    });
-  });
 
   /* Barras de porcentaje bajo el avatar (campos "Popularidad" y "Autocontrol":
      el usuario escribe un número del 0 al 100, con o sin %). */
