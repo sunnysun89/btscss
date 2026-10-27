@@ -5893,35 +5893,54 @@ html { scroll-padding-top: 64px; }
 /* usuario sin nada de esto: se puede ocultar el bloque con --burnthesky-post-empty: none */
 .rpost-inv.sin-datos { display: var(--burnthesky-post-empty); opacity: .75; }
 
-/* -- Barras de porcentaje (Popularidad / Autocontrol) -- */
+/* -- Barras de porcentaje (Popularidad / Autocontrol) --------------------
+   .rbar = caja, .rbar__l = título, .rbar__track = contenedor, .rbar__fill = barra
+   (con el % escrito dentro). Colores y medidas en las variables de abajo. */
 :root {
-  --burnthesky-post-bar-h:      10px;
-  --burnthesky-post-bar-fill:   linear-gradient(to right, var(--burnthesky-red-dark), var(--burnthesky-red-vivid));
-  --burnthesky-post-bar-track:  var(--burnthesky-void-3);
+  --burnthesky-post-bar-box:    #18181a;   /* fondo de cada caja */
+  --burnthesky-post-bar-line:   #222;      /* borde de cada caja */
+  --burnthesky-post-bar-pad:    15px;      /* margen interior de la caja */
+  --burnthesky-post-bar-title:  #ff2a5f;   /* color del título */
+  --burnthesky-post-bar-track:  #2a2a2a;   /* fondo de la barra vacía */
+  --burnthesky-post-bar-fill:   #ff2a5f;   /* color de la barra */
+  --burnthesky-post-bar-h:      20px;      /* alto de la barra */
+  --burnthesky-post-bar-r:      3px;       /* redondeo de la barra */
 }
-.rbars { margin: 14px 0 0; padding-top: 12px; border-top: 1px dashed var(--burnthesky-line); }
-.rbar { margin: 0 0 12px; }
+.rbars { margin: 14px 0 0; padding: 0; border: 0; }
+.rbar {
+  margin: 0 0 -1px;
+  padding: var(--burnthesky-post-bar-pad);
+  background-color: var(--burnthesky-post-bar-box);
+  border: 1px solid var(--burnthesky-post-bar-line);
+}
 .rbar:last-child { margin-bottom: 0; }
 .rbar__l {
   display: block;
-  margin: 0 0 6px;
-  font: var(--burnthesky-fs-xs) / 1 var(--burnthesky-ff-mono);
-  letter-spacing: 3px;
+  margin: 0 0 10px;
+  font: bold 10px / 1.2 var(--burnthesky-ff-sans);
+  letter-spacing: 1px;
   text-align: center;
   text-transform: uppercase;
-  color: var(--burnthesky-red-vivid);
+  color: var(--burnthesky-post-bar-title);
 }
 .rbar__track {
   height: var(--burnthesky-post-bar-h);
   overflow: hidden;
-  background: var(--burnthesky-post-bar-track);
-  border: 1px solid var(--burnthesky-line);
-  border-radius: calc(var(--burnthesky-post-bar-h) / 2);
+  background-color: var(--burnthesky-post-bar-track);
+  border: 0;
+  border-radius: var(--burnthesky-post-bar-r);
 }
 .rbar__fill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: 100%;
+  overflow: hidden;
+  white-space: nowrap;
   background: var(--burnthesky-post-bar-fill);
-  border-radius: inherit;
+  color: #fff;
+  font: bold 9px / 1 var(--burnthesky-ff-sans);
+  border-radius: 0;
   transition: width 1.2s cubic-bezier(.22, .61, .36, 1);
 }
 

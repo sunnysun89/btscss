@@ -125,7 +125,7 @@
       var p = porcentaje(f[b[0]]), fila = el('div', 'rbar');
       fila.appendChild(el('span', 'rbar__l', b[1]));
       var tr = el('div', 'rbar__track'), fl = el('div', 'rbar__fill');
-      fl.style.width = '0';
+      fl.style.width = '0'; fl.textContent = p + '%';
       tr.appendChild(fl); fila.appendChild(tr);
       fila.title = b[1] + ': ' + p + '%';
       box.appendChild(fila);
