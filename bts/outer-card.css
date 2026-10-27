@@ -5653,7 +5653,7 @@ html { scroll-padding-top: 64px; }
   --burnthesky-profile-w:       290px;   /* columna de perfil (avatar + 2 x 20px de margen) */
   --burnthesky-post-avatar-w:   250px;   /* avatar: ancho */
   --burnthesky-post-avatar-h:   400px;   /* avatar: alto */
-  --burnthesky-post-icon:       58px;    /* icono redondo del cuadro del nombre */
+  --burnthesky-post-icon:       120px;    /* icono redondo del cuadro del nombre */
   --burnthesky-post-icon-ring:  var(--burnthesky-red-dark);
   --burnthesky-post-hover-bg:   rgba(9, 9, 9, .88);   /* panel de datos sobre el avatar */
   --burnthesky-post-pad:        26px;    /* margen interior del cuerpo del mensaje */
