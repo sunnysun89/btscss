@@ -524,7 +524,8 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
 /* Mensajes de los temas: reparte los campos de perfil en la tarjeta.
    - Icono (campo "Icono") -> a la derecha del cuadro del nombre.
    - Frase y Poder -> debajo del avatar.
-   - Medallas / Inventario -> fila debajo del mensaje.
+   - Implantes, Inventario y Medallero -> ventana "Inventario y medallero"
+     debajo del mensaje, con el mismo estilo que en el perfil.
    - Lo demás queda en el panel que aparece al pasar el ratón por el avatar.
    No depende de js-temas.js: calcula sus propias clases a partir del nombre
    del campo. Un campo se reconoce si su nombre (sin tildes ni mayúsculas)
@@ -538,7 +539,8 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     icono:  ['icon'],
     frase:  ['frase', 'cita', 'quote', 'lema'],
     poder:  ['poder', 'habilidad'],
-    inv:    ['medall', 'inventario', 'insignia', 'objeto', 'item'],
+    inv:    ['inventario', 'objeto', 'item'],
+    med:    ['medall', 'insignia'],
     oculto: ['cover', 'portada']
   };
 
@@ -565,6 +567,67 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     box.style.display = '';
   }
 
+
+  var MIN_CASILLAS = 6;   // casillas por columna (las que faltan salen como hexágonos vacíos)
+
+  function esImplante(f, n) {
+    var s = slug(nombre(f));
+    if (s.indexOf('implante') === -1) return false;
+    var re = n === 1 ? /(^|-)(0?1|i|uno)$/ : /(^|-)(0?2|ii|dos)$/;
+    return re.test(s);
+  }
+  function el(tag, cls, txt) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (txt) e.textContent = txt;
+    return e;
+  }
+  function implante(c, etiqueta) {
+    var h = el('div', 'rimp'), ico = el('div', 'rimp__ico'), txt = el('div', 'rimp__txt');
+    txt.appendChild(el('span', 'rimp__n', etiqueta));
+    var cont = c && c.querySelector('.postprofile-field-content');
+    if (c && !vacio(c)) {
+      var im = cont.querySelector('img');
+      if (im) ico.appendChild(im.cloneNode(true)); else ico.className += ' is-blank';
+      var resto = cont.cloneNode(true);
+      Array.prototype.forEach.call(resto.querySelectorAll('img'), function (x) { x.parentNode.removeChild(x); });
+      var d = el('span', 'rimp__d'); d.innerHTML = resto.innerHTML.trim() || 'Instalado';
+      txt.appendChild(d); h.className += ' is-on';
+    } else {
+      ico.className += ' is-blank';
+      txt.appendChild(el('span', 'rimp__d', 'Sin implante'));
+    }
+    h.appendChild(ico); h.appendChild(txt);
+    return h;
+  }
+  function rejilla(c) {
+    var g = el('div', 'rinv__grid'), n = 0;
+    var cont = c && c.querySelector('.postprofile-field-content');
+    if (cont) Array.prototype.forEach.call(cont.querySelectorAll('img'), function (img) {
+      var cas = el('div', 'rslot is-on'), a = img.closest ? img.closest('a') : null;
+      cas.appendChild((a && cont.contains(a) ? a : img).cloneNode(true));
+      g.appendChild(cas); n++;
+    });
+    for (var i = n; i < Math.max(MIN_CASILLAS, Math.ceil(n / 6) * 6); i++) {
+      var e = el('div', 'rslot'); e.setAttribute('aria-hidden', 'true'); g.appendChild(e);
+    }
+    return g;
+  }
+  function ventana(f) {
+    var w = el('div', 'rinv'), cols = el('div', 'rinv__cols');
+    w.appendChild(el('div', 'rinv__head', 'Inventario y medallero'));
+    var b1 = el('section', 'rinv__box rinv__box--imp'), b2 = el('section', 'rinv__box'), b3 = el('section', 'rinv__box');
+    b1.appendChild(el('h3', '', 'Implantes'));
+    var im = el('div', 'rinv__implants');
+    im.appendChild(implante(f.imp1, 'Implante 01')); im.appendChild(implante(f.imp2, 'Implante 02'));
+    b1.appendChild(im);
+    b2.appendChild(el('h3', '', 'Inventario')); b2.appendChild(rejilla(f.inv));
+    b3.appendChild(el('h3', '', 'Medallero'));  b3.appendChild(rejilla(f.med));
+    cols.appendChild(b1); cols.appendChild(b2); cols.appendChild(b3);
+    w.appendChild(cols);
+    return w;
+  }
+
   var avisado = false;
 
   function arrancar() {
@@ -586,7 +649,10 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
         if (!f.icono && es(c, CLAVES.icono) && c.querySelector('img')) f.icono = c;
         else if (!f.frase && es(c, CLAVES.frase)) f.frase = c;
         else if (!f.poder && es(c, CLAVES.poder)) f.poder = c;
+        else if (!f.imp1 && esImplante(c, 1)) f.imp1 = c;
+        else if (!f.imp2 && esImplante(c, 2)) f.imp2 = c;
         else if (!f.inv && es(c, CLAVES.inv)) f.inv = c;
+        else if (!f.med && es(c, CLAVES.med)) f.med = c;
       }
       if (!avisado) {
         avisado = true;
@@ -610,14 +676,17 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
         else { if (f.poder) f.poder.parentNode.removeChild(f.poder); hueco(poBox, 'sin poder'); }
       }
 
-      /* medallas / inventario debajo del mensaje */
+      /* implantes, inventario y medallero: ventana debajo del mensaje */
       if (invBox) {
-        if (f.inv && !vacio(f.inv)) { invBox.appendChild(f.inv); invBox.classList.add('tiene'); }
-        else {
-          if (f.inv) f.inv.parentNode.removeChild(f.inv);
-          hueco(invBox, 'Medallas e inventario: nada por ahora');
-        }
+        invBox.innerHTML = '';
+        invBox.appendChild(ventana(f));
         invBox.style.display = '';
+        invBox.classList.add('tiene');
+        if (!(f.imp1 && !vacio(f.imp1)) && !(f.imp2 && !vacio(f.imp2)) && !(f.inv && !vacio(f.inv)) && !(f.med && !vacio(f.med)))
+          invBox.classList.add('sin-datos');
+        ['imp1', 'imp2', 'inv', 'med'].forEach(function (k) {
+          if (f[k] && f[k].parentNode) f[k].parentNode.removeChild(f[k]);
+        });
       }
 
       /* si no queda ningún dato, no hay panel al pasar el ratón */

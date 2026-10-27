@@ -5644,7 +5644,7 @@ html { scroll-padding-top: 64px; }
                     > .rpostcontainer > .postbody (.rpost-head + .content) + .postprofile
                          .postprofile: .ravatar (avatar + panel de datos al hover)
                                        .rphrase  .rpower  .rcontactfields
-                    > .rpost-inv       medallas / inventario (solo si hay campo)
+                    > .rpost-inv       ventana Inventario y medallero (la crea js-post.js)
                     > .rpost-foot      me gusta + subir/bajar
    El reparto de campos lo hace js-post.js. "No me gusta" se quita en la
    plantilla y, por si queda alguno en caché, también aquí.
@@ -5806,15 +5806,13 @@ html { scroll-padding-top: 64px; }
 
 /* Huecos apagados cuando el usuario no tiene ese campo */
 .rphrase.vacio,
-.rpower.vacio,
-.rpost-inv.vacio {
+.rpower.vacio {
   display: var(--burnthesky-post-empty);
   font: italic var(--burnthesky-fs-sm) / 1.4 var(--burnthesky-ff-sans);
   letter-spacing: .5px;
   color: var(--burnthesky-gray);
   opacity: .55;
 }
-.rpost-inv.vacio { text-align: left; }
 .rtopicicon.vacio {
   display: var(--burnthesky-post-empty);
   width: var(--burnthesky-post-icon);
@@ -5885,28 +5883,15 @@ html { scroll-padding-top: 64px; }
 }
 .postbody .vote { margin: 0 var(--burnthesky-post-pad); }
 
-/* -- Medallas / inventario bajo el mensaje -- */
+/* -- Inventario y medallero bajo el mensaje: usa las clases .rinv del perfil -- */
 .rpost-inv {
-  padding: 14px var(--burnthesky-post-pad);
+  padding: 18px var(--burnthesky-post-pad) 20px;
   border-top: 1px solid var(--burnthesky-line);
   background: rgba(0, 0, 0, .22);
 }
-.rpost-inv .postprofile-field { margin: 0; padding: 0; border: 0; }
-.rpost-inv .postprofile-field-label { display: block; margin-bottom: 8px; }
-.rpost-inv .postprofile-field-content {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-}
-.rpost-inv img {
-  height: var(--burnthesky-post-inv-item);
-  width: auto;
-  max-width: 120px;
-  object-fit: contain;
-  transition: transform var(--burnthesky-ease-fast);
-}
-.rpost-inv img:hover { transform: translateY(-2px) scale(1.06); }
+.rpost-inv .rinv { margin: 0; }
+/* usuario sin nada de esto: se puede ocultar el bloque con --burnthesky-post-empty: none */
+.rpost-inv.sin-datos { display: var(--burnthesky-post-empty); opacity: .75; }
 
 /* -- Pie: me gusta + subir/bajar -- */
 .rpost-foot {
