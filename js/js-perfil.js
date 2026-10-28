@@ -411,20 +411,7 @@
       }
     }
 
-    /* 7. Lo que no tiene hueco va al final, como "Otros datos" */
-    var extra = document.getElementById("rperfil-extra");
-    var otros = campos.filter(function (c) { return !c.used && !vacio(c.el); });
-    if (extra && otros.length) {
-      var t = document.createElement("div"); t.className = "rinv__head"; t.textContent = "Otros datos";
-      extra.appendChild(t);
-      var dl = document.createElement("dl"); dl.className = "rperfil__otros";
-      otros.forEach(function (c) {
-        var dt = document.createElement("dt"); dt.textContent = c.raw;
-        var dd = document.createElement("dd"); dd.innerHTML = c.el.innerHTML;
-        dl.appendChild(dt); dl.appendChild(dd);
-      });
-      extra.appendChild(dl);
-    }
+    /* 7. Los campos sin hueco (enlaces, barras, poderes) se colocan bajo el avatar: lo hace js-post.js */
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", run); else run();
 })();

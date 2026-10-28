@@ -201,7 +201,7 @@
   --burnthesky-col-last:          260px;                 /* bloque Último mensaje */
 
   /* ---- Perfil ---- */
-  --burnthesky-pf-avatar-w:       250px;
+  --burnthesky-pf-avatar-w:       286px;                 /* 250px de avatar + 2 x 18px de margen */
   --burnthesky-pf-side-w:         330px;
   --burnthesky-pf-banner-h:       230px;
   --burnthesky-pf-slot:           64px;                  /* casillas de inventario y medallero */
@@ -4370,7 +4370,10 @@ li.row:hover .rforimg { filter: none; }
 /* avatar */
 .rperfil__avatarimg {
   position: relative;
-  aspect-ratio: 3 / 4;
+  width: var(--burnthesky-post-avatar-w, 250px);
+  height: var(--burnthesky-post-avatar-h, 400px);
+  max-width: 100%;
+  margin: 0 auto;
   overflow: hidden;
   background: #050505;
   border: 1px solid var(--burnthesky-line-2);
@@ -4381,10 +4384,8 @@ li.row:hover .rforimg { filter: none; }
   width: 100% !important; height: 100% !important;
   max-width: none !important;
   object-fit: cover;
-  filter: grayscale(.85) contrast(1.05);
-  transition: filter var(--burnthesky-ease-img);
+  filter: none;
 }
-.rperfil__avatarimg:hover img { filter: none; }
 .rperfil__rank {
   display: flex; flex-direction: column; align-items: center; gap: 6px;
   margin-top: 14px; padding: 10px 6px;
@@ -4761,11 +4762,11 @@ li.row:hover .rforimg { filter: none; }
 /* botones de fecha: la fecha solo aparece al pasar el ratón / enfocar */
 .rdate {
   position: relative;
-  width: 38px; height: 34px; padding: 0; cursor: help;
-  background: var(--burnthesky-void); border: 1px solid var(--burnthesky-line-2);
-  transition: border-color var(--burnthesky-ease), background var(--burnthesky-ease);
+  width: var(--burnthesky-contact-size, 40px); height: var(--burnthesky-contact-size, 40px); padding: 0; cursor: help;
+  background: var(--burnthesky-contact-bg, var(--burnthesky-void-3)); border: 0;
+  transition: background var(--burnthesky-ease);
 }
-.rdate:hover, .rdate:focus-visible { border-color: var(--burnthesky-red); background: var(--burnthesky-red-wash); outline: 0; }
+.rdate:hover, .rdate:focus-visible { background: var(--burnthesky-red-ghost-2); outline: 0; }
 .rdate__ico { position: absolute; inset: 0; margin: auto; width: 16px; height: 16px; border: 1px solid var(--burnthesky-gray-lt); }
 .rdate--cal .rdate__ico { border-top-width: 4px; }
 .rdate--cake .rdate__ico { border-radius: 8px 8px 2px 2px; border-bottom-width: 4px; }
@@ -6207,12 +6208,10 @@ a.rbtn-main img { display: none; }
 
 /* ============================================================================
    45 · PANEL DE DATOS DEL AVATAR (al pasar el ratón)
-   Filas con adorno, texto en negrita y línea de separación. Solo aparecen los
+   Filas con texto en negrita y línea de separación. Solo aparecen los
    datos que el usuario rellena (lo decide js-post.js).
    ========================================================================== */
 :root {
-  --burnthesky-post-dato-orn:    "☾·✧·";                  /* adorno de cada fila */
-  --burnthesky-post-dato-orn-c:  var(--burnthesky-red-vivid);
   --burnthesky-post-dato-line:   var(--burnthesky-red-ghost-2);
   --burnthesky-post-dato-size:   12px;
   --burnthesky-post-dato-pad:    12px;                    /* alto interior de cada fila */
@@ -6234,7 +6233,56 @@ a.rbtn-main img { display: none; }
   color: var(--burnthesky-white);
   overflow-wrap: anywhere;
 }
-.rdato__o { flex: 0 0 auto; font-size: 10px; letter-spacing: 1px; color: var(--burnthesky-post-dato-orn-c); }
-.rdato__o::before { content: var(--burnthesky-post-dato-orn); }
 .rdato__v { min-width: 0; }
 .rdato__v a { color: inherit; text-decoration: underline; text-decoration-color: var(--burnthesky-red); text-underline-offset: 3px; }
+
+
+/* ============================================================================
+   46 · AJUSTES: avatar sin filtro, "me gusta", perfil con botones
+   ========================================================================== */
+/* -- Avatar de los temas: sin el filtro gris -- */
+.postprofile .ravatar img,
+.postprofile:hover .ravatar img { filter: none !important; }
+
+/* -- Botón "Me gusta": el corazón vuelve a su sitio dentro del botón -- */
+.fa_like_div .rep-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px !important;
+  line-height: 1;
+}
+.fa_like_div .rep-button svg {
+  position: static !important;
+  flex: 0 0 13px;
+  width: 13px !important;
+  height: 13px !important;
+  margin: 0 !important;
+  transform: none !important;
+  float: none !important;
+}
+.fa_like_div .rep-button svg path { fill: currentColor !important; }
+.fa_like_div .rep-button span { display: inline; position: static; }
+
+/* -- Perfil de usuario: botones de acción como los de los temas -- */
+.rperfil__actions a.rcbtn,
+.rperfil__contact a.rcbtn {
+  min-width: var(--burnthesky-contact-size);
+  min-height: var(--burnthesky-contact-size);
+  height: var(--burnthesky-contact-size);
+  padding: 0 10px;
+  border: 0;
+  background: var(--burnthesky-contact-bg);
+  color: var(--burnthesky-gray-lt);
+}
+.rperfil__actions a.rcbtn:hover,
+.rperfil__contact a.rcbtn:hover { background: var(--burnthesky-red-ghost-2); color: #fff; }
+.rperfil__actions { gap: var(--burnthesky-contact-gap); }
+.rperfil__contact { margin-left: 0; gap: var(--burnthesky-contact-gap); }
+
+/* -- Perfil: los datos de "Otros datos" pasan debajo del avatar -- */
+.rperfil__extra { display: none !important; }
+.rperfil__avatar .rpower { margin-top: 14px; }
+.rperfil__avatar .rbars { margin-top: 14px; }
+.rperfil__avatar .rcontactfields.rpf-bajo { justify-content: flex-start; }

@@ -534,6 +534,8 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
    - Panel al pasar el ratón por el avatar: solo Edad, Orientación sexual,
      Estado sentimental, Alias, Apodos, Ocupación, Facción, Alianza y
      Ubicación, y solo los que el usuario rellena.
+   - En el perfil: botones con iconos y los datos de "Otros datos" (barras,
+     poderes y enlaces) debajo del avatar.
    - Botones del mensaje (citar, editar, borrar...) -> iconos Capucciicons
      (hoja tempcf.css en la cabecera) y botones Responder / Nuevo tema.
    - Lo demás queda en el panel que aparece al pasar el ratón por el avatar.
@@ -736,7 +738,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     return /(^|-)(playlist|ost)(-|$)/.test(sl);
   }
   function urlDe(f) {
-    var cont = f && f.querySelector('.postprofile-field-content');
+    var cont = f && (f.querySelector('.postprofile-field-content') || f);
     if (!cont) return '';
     var a = cont.querySelector('a[href]');
     var u = a ? a.getAttribute('href') : (cont.textContent.match(/https?:\/\/[^\s<>"']+/) || [''])[0];
@@ -772,7 +774,6 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
         if (!d[0].test(slug(nombre(c))) || vacio(c)) continue;
         var cont = c.querySelector('.postprofile-field-content');
         var fila = el('div', 'rdato'); fila.title = d[1];
-        fila.appendChild(el('span', 'rdato__o')).setAttribute('aria-hidden', 'true');
         var v = el('span', 'rdato__v'); v.innerHTML = cont.innerHTML;
         fila.appendChild(v); filas.push(fila);
         return;
@@ -814,10 +815,81 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     if (!box.firstChild) box.style.display = 'none';
   }
 
+
+  /* ---- Perfil de usuario: botones con iconos y datos bajo el avatar ----
+     Lee los campos volcados por la plantilla (#rperfil-campos) y reparte:
+     enlaces -> botones, Popularidad/Autocontrol -> barras, Poderes -> línea.
+     Sustituye al cuadro "Otros datos" (que se oculta por CSS). */
+  var PF_ACC = [
+    [/mode=email|mailto|email/, 'cp-envelope-alt-o', 'Enviar correo'],
+    [/privmsg|mode=post/,       'cp-envelope-o',     'Enviar mensaje privado'],
+    [/mode=editprofile|editar/, 'cp-edit-o',         'Editar perfil'],
+    [/search/,                  'cp-search',         'Buscar sus mensajes']
+  ];
+  function perfil() {
+    var raiz = document.getElementById('rperfil');
+    if (!raiz || raiz.getAttribute('data-bts-pf')) return;
+    raiz.setAttribute('data-bts-pf', '1');
+
+    /* botones de acción (buscar, editar, mensaje privado, correo) con icono */
+    var as = raiz.querySelectorAll('.rperfil__actions a, .rperfil__contact a');
+    for (var i = 0; i < as.length; i++) {
+      var a = as[i];
+      var t = ((a.getAttribute('href') || '') + ' ' + (a.title || '') + ' ' + a.innerHTML).toLowerCase();
+      for (var k = 0; k < PF_ACC.length; k++) {
+        if (!PF_ACC[k][0].test(t)) continue;
+        a.className += ' rcbtn';
+        a.title = PF_ACC[k][2]; a.setAttribute('aria-label', PF_ACC[k][2]);
+        a.innerHTML = '<i class="cp ' + PF_ACC[k][1] + '" aria-hidden="true"></i><span class="rcbtn__t">' + PF_ACC[k][2] + '</span>';
+        break;
+      }
+    }
+
+    /* datos bajo el avatar */
+    var col = raiz.querySelector('.rperfil__avatar');
+    var rpf = raiz.querySelectorAll('#rperfil-campos .rpf');
+    if (!col || !rpf.length) return;
+    var f = {}, extras = [], playlist = null, poderes = null;
+    for (var j = 0; j < rpf.length; j++) {
+      var l = rpf[j].querySelector('.rpf-l'), c = rpf[j].querySelector('.rpf-c');
+      if (!l || !c) continue;
+      var sl = slug(l.textContent.replace(/\s*:\s*$/, '').replace(/\*/g, ''));
+      var par = { c: c };
+      var ex = null;
+      for (var e = 0; e < EXTRAS.length; e++) if (EXTRAS[e][1].test(sl)) ex = EXTRAS[e][0];
+      if (ex) extras.push({ t: ex, f: c });
+      else if (/(^|-)(playlist|ost)(-|$)/.test(sl)) playlist = c;
+      else if (/popularidad/.test(sl)) f.pop = c;
+      else if (/autocontrol/.test(sl)) f.auto = c;
+      else if (/(^|-)(poder|poderes|habilidades?)(-|$)/.test(sl)) poderes = c;
+    }
+    if (col.querySelector('.rbars, .rcontactfields.rpf-bajo')) return;
+
+    if (poderes && poderes.textContent.replace(/\s+/g, '').length) {
+      var po = el('div', 'rpower tiene');
+      po.innerHTML = '<span class="postprofile-field-label">Poderes</span> <span class="postprofile-field-content"></span>';
+      po.querySelector('.postprofile-field-content').innerHTML = poderes.innerHTML;
+      col.appendChild(po);
+    }
+    col.appendChild(barras(f));
+    var box = el('div', 'rcontactfields rpf-bajo');
+    var u = urlDe(playlist);
+    if (u) box.appendChild(botonContacto('playlist', u, 'Playlist / OST', 'cp-music-note', true));
+    EXTRAS.forEach(function (d) {
+      for (var q = 0; q < extras.length; q++) {
+        if (extras[q].t !== d[0]) continue;
+        var url = urlDe(extras[q].f);
+        if (url) box.appendChild(botonContacto(d[0], url, d[3], d[2], true));
+        break;
+      }
+    });
+    if (box.firstChild) col.appendChild(box);
+  }
+
   var avisado = false;
 
   function arrancar() {
-    try { iconosPost(); botonesTema(); } catch (e) {}
+    try { iconosPost(); botonesTema(); perfil(); } catch (e) {}
     var posts = document.querySelectorAll('.post');
     for (var n = 0; n < posts.length; n++) {
       var post = posts[n];
@@ -903,7 +975,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     }
   }
 
-  function tarde() { setTimeout(arrancar, 0); setTimeout(function () { try { iconosPost(); botonesTema(); } catch (e) {} }, 800); }
+  function tarde() { setTimeout(arrancar, 0); setTimeout(function () { try { iconosPost(); botonesTema(); perfil(); } catch (e) {} }, 800); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tarde);
   else tarde();
 }();
@@ -1374,20 +1446,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       }
     }
 
-    /* 7. Lo que no tiene hueco va al final, como "Otros datos" */
-    var extra = document.getElementById("rperfil-extra");
-    var otros = campos.filter(function (c) { return !c.used && !vacio(c.el); });
-    if (extra && otros.length) {
-      var t = document.createElement("div"); t.className = "rinv__head"; t.textContent = "Otros datos";
-      extra.appendChild(t);
-      var dl = document.createElement("dl"); dl.className = "rperfil__otros";
-      otros.forEach(function (c) {
-        var dt = document.createElement("dt"); dt.textContent = c.raw;
-        var dd = document.createElement("dd"); dd.innerHTML = c.el.innerHTML;
-        dl.appendChild(dt); dl.appendChild(dd);
-      });
-      extra.appendChild(dl);
-    }
+    /* 7. Los campos sin hueco (enlaces, barras, poderes) se colocan bajo el avatar: lo hace js-post.js */
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", run); else run();
 })();
