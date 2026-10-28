@@ -6164,3 +6164,43 @@ a.rbtn-main img { display: none; }
 .sceditor-dropdown * { box-sizing: content-box; }
 .sceditor-toolbar .sceditor-group { padding: 1px 2px !important; margin: 0 4px 2px 0 !important; }
 .sceditor-toolbar .sceditor-button { margin: 1px !important; }
+
+
+/* ============================================================================
+   44 · BOTONES DE CONTACTO BAJO EL AVATAR (perfil, mensaje privado, playlist)
+   Los crea js-post.js. Iconos: Capucciicons (cp-user, cp-envelope-o, cp-music-note).
+   ========================================================================== */
+:root {
+  --burnthesky-contact-size:   40px;      /* alto (y ancho mínimo) de cada botón */
+  --burnthesky-contact-icon:   16px;      /* tamaño del icono */
+  --burnthesky-contact-label:  none;      /* none = solo icono (el nombre sale al pasar el ratón); inline = icono + texto */
+  --burnthesky-contact-gap:    8px;
+}
+.rcontactfields { flex-wrap: wrap; gap: var(--burnthesky-contact-gap); }
+.rcontactfields a.rcbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: var(--burnthesky-contact-size);
+  height: var(--burnthesky-contact-size);
+  padding: 0 10px;
+  background: var(--burnthesky-void);
+  border: 1px solid var(--burnthesky-line-2);
+  border-radius: var(--burnthesky-radius);
+  color: var(--burnthesky-gray-lt);
+  font: var(--burnthesky-fs-xs) / 1.2 var(--burnthesky-ff-mono);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: border-color var(--burnthesky-ease-fast), color var(--burnthesky-ease-fast), background-color var(--burnthesky-ease-fast), box-shadow var(--burnthesky-ease-fast);
+}
+.rcbtn i.cp { font-size: var(--burnthesky-contact-icon); line-height: 1; }
+.rcbtn__t { display: var(--burnthesky-contact-label); }
+.rcontactfields a.rcbtn:hover {
+  border-color: var(--burnthesky-red);
+  background-color: var(--burnthesky-red-wash);
+  color: #fff;
+  box-shadow: 3px 3px 0 var(--burnthesky-red-ghost-2);
+}
+.rcontactfields a.rcbtn:hover i.cp { color: var(--burnthesky-red-vivid); }

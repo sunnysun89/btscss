@@ -4,6 +4,8 @@
    - Implantes, Inventario y Medallero -> ventana de tres columnas debajo
      del mensaje, con el estilo del perfil.
    - Popularidad y Autocontrol (0-100) -> barras bajo el poder.
+   - Perfil, Mensaje privado y Playlist/OST -> botones bajo el avatar (el
+     de playlist usa el enlace del campo "Playlist/OST").
    - Botones del mensaje (citar, editar, borrar...) -> iconos Capucciicons
      (hoja tempcf.css en la cabecera) y botones Responder / Nuevo tema.
    - Lo demás queda en el panel que aparece al pasar el ratón por el avatar.
@@ -199,6 +201,44 @@
     }
   }
 
+
+  /* ---- Botones de contacto bajo el avatar: perfil, mensaje privado y playlist ---- */
+  function esPlaylist(f) {
+    var sl = slug(nombre(f));
+    return /(^|-)(playlist|ost)(-|$)/.test(sl);
+  }
+  function urlDe(f) {
+    var cont = f && f.querySelector('.postprofile-field-content');
+    if (!cont) return '';
+    var a = cont.querySelector('a[href]');
+    var u = a ? a.getAttribute('href') : (cont.textContent.match(/https?:\/\/[^\s<>"']+/) || [''])[0];
+    return /^https?:\/\//i.test(u || '') ? u : '';
+  }
+  function botonContacto(tipo, href, texto, icono, ext) {
+    var a = el('a', 'rcbtn rcbtn--' + tipo);
+    a.href = href; a.title = texto; a.setAttribute('aria-label', texto);
+    if (ext) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
+    a.innerHTML = '<i class="cp ' + icono + '" aria-hidden="true"></i><span class="rcbtn__t">' + texto + '</span>';
+    return a;
+  }
+  function contactos(post, playlist) {
+    var box = post.querySelector('.rcontactfields');
+    if (!box || box.getAttribute('data-bts-ct')) return;
+    box.setAttribute('data-bts-ct', '1');
+    var perfil = '', mp = '', as = box.querySelectorAll('a[href]');
+    for (var i = 0; i < as.length; i++) {
+      var t = (as[i].getAttribute('href') + ' ' + as[i].innerHTML + ' ' + (as[i].title || '')).toLowerCase();
+      if (!mp && /privmsg|fa-envelope|icon_pm|mensaje priv|enviar mensaje/.test(t)) mp = as[i].getAttribute('href');
+      else if (!perfil && /\/u\d+|viewprofile|fa-user|icon_profile|perfil/.test(t)) perfil = as[i].getAttribute('href');
+    }
+    box.innerHTML = '';
+    if (perfil) box.appendChild(botonContacto('perfil', perfil, 'Ver perfil', 'cp-user', false));
+    if (mp) box.appendChild(botonContacto('mp', mp, 'Enviar mensaje privado', 'cp-envelope-o', false));
+    var u = urlDe(playlist);
+    if (u) box.appendChild(botonContacto('playlist', u, 'Playlist / OST', 'cp-music-note', true));
+    if (!box.firstChild) box.style.display = 'none';
+  }
+
   var avisado = false;
 
   function arrancar() {
@@ -218,7 +258,8 @@
         var c = campos[i], nm = nombre(c);
         nombres.push(nm || '(sin nombre)');
         if (es(c, CLAVES.oculto)) { c.parentNode.removeChild(c); continue; }
-        if (!f.icono && es(c, CLAVES.icono) && c.querySelector('img')) f.icono = c;
+        if (!f.playlist && esPlaylist(c)) f.playlist = c;
+        else if (!f.icono && es(c, CLAVES.icono) && c.querySelector('img')) f.icono = c;
         else if (!f.frase && es(c, CLAVES.frase)) f.frase = c;
         else if (!f.poder && es(c, CLAVES.poder)) f.poder = c;
         else if (!f.pop && es(c, CLAVES.pop)) f.pop = c;
@@ -249,6 +290,10 @@
         if (f.poder && !vacio(f.poder)) { poBox.appendChild(f.poder); poBox.classList.add('tiene'); }
         else { if (f.poder) f.poder.parentNode.removeChild(f.poder); hueco(poBox, 'sin poder'); }
       }
+
+      /* botones de contacto (perfil, MP, playlist) */
+      contactos(post, f.playlist);
+      if (f.playlist && f.playlist.parentNode) f.playlist.parentNode.removeChild(f.playlist);
 
       /* barras Popularidad / Autocontrol, debajo del poder */
       var yaBarras = post.querySelector('.rbars');
