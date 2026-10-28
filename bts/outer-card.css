@@ -6012,3 +6012,110 @@ html { scroll-padding-top: 64px; }
   .postbody ul.profile-icons { justify-content: flex-start; }
   .post .rtopicuser { font-size: 21px; }
 }
+
+
+/* ============================================================================
+   42 · BOTONES CON ICONOS (Capucciicons), RESPONDER / NUEVO TEMA Y EDITOR
+   Los iconos salen de la hoja tempcf.css (clases cp-*), que va en la cabecera.
+   js-post.js pone el icono a cada botón del mensaje (.rbtn) y convierte en
+   botones de texto los de Responder / Nuevo tema (.rbtn-main).
+   ========================================================================== */
+:root {
+  --burnthesky-btn-icon:        14px;    /* tamaño de los iconos de los botones del mensaje */
+  --burnthesky-btn-icon-color:  var(--burnthesky-gray-lt);
+  --burnthesky-btn-icon-hover:  var(--burnthesky-red-vivid);
+  --burnthesky-btn-main-pad:    9px 18px; /* margen interior de Responder / Nuevo tema */
+}
+
+/* -- Botones del mensaje: solo icono, el texto queda para lectores y tooltip -- */
+.postbody ul.profile-icons li a.rbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  color: var(--burnthesky-btn-icon-color);
+  text-decoration: none;
+  filter: none;
+  transition: color var(--burnthesky-ease-fast), border-color var(--burnthesky-ease-fast), background-color var(--burnthesky-ease-fast);
+}
+.postbody ul.profile-icons li a.rbtn:hover {
+  color: var(--burnthesky-btn-icon-hover);
+  border-color: var(--burnthesky-red);
+  background-color: var(--burnthesky-red-wash);
+}
+.rbtn i.cp { font-size: var(--burnthesky-btn-icon); line-height: 1; }
+.rbtn__t {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+/* por si algún botón conserva el texto de js-botones */
+.rtopicbutton {
+  font: var(--burnthesky-fs-xs) / 1.4 var(--burnthesky-ff-mono);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: inherit;
+}
+
+/* -- Responder / Nuevo tema / Tema bloqueado -- */
+.topic-actions .buttons { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+a.rbtn-main {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: var(--burnthesky-btn-main-pad);
+  background: var(--burnthesky-void);
+  border: 1px solid var(--burnthesky-line-2);
+  border-radius: var(--burnthesky-radius);
+  color: var(--burnthesky-white);
+  font: var(--burnthesky-fs-xs) / 1.2 var(--burnthesky-ff-mono);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: border-color var(--burnthesky-ease-fast), color var(--burnthesky-ease-fast), background-color var(--burnthesky-ease-fast), box-shadow var(--burnthesky-ease-fast);
+}
+a.rbtn-main i.cp { font-size: 15px; line-height: 1; color: var(--burnthesky-red-vivid); }
+a.rbtn-main:hover {
+  border-color: var(--burnthesky-red);
+  background-color: var(--burnthesky-red-wash);
+  color: #fff;
+  box-shadow: 3px 3px 0 var(--burnthesky-red-ghost-2);
+}
+a.rbtn-main--reply { border-color: var(--burnthesky-red-dark); }
+a.rbtn-main--locked { opacity: .7; pointer-events: none; }
+a.rbtn-main img { display: none; }
+
+/* -- Editor (respuesta rápida): barra de herramientas legible en oscuro -----
+   Antes un filtro de brillo dejaba los iconos en blanco sobre fichas claras.
+   Ahora las fichas son oscuras y los iconos (negros en el sprite) se invierten. */
+.sceditor-toolbar { padding: 6px 8px !important; }
+.sceditor-toolbar .sceditor-group {
+  background: var(--burnthesky-void-3) !important;
+  border: 1px solid var(--burnthesky-line) !important;
+  border-radius: 3px !important;
+  box-shadow: none !important;
+}
+.sceditor-toolbar .sceditor-button {
+  filter: none !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+.sceditor-toolbar .sceditor-button div {
+  filter: invert(1) grayscale(1) brightness(.85);
+  opacity: .9;
+}
+.sceditor-toolbar .sceditor-button:hover,
+.sceditor-toolbar .sceditor-button.active {
+  background: var(--burnthesky-red-wash) !important;
+}
+.sceditor-toolbar .sceditor-button:hover div,
+.sceditor-toolbar .sceditor-button.active div { filter: invert(1) grayscale(1) brightness(1.4); opacity: 1; }
+/* los emoticonos son a color: sin invertir */
+.sceditor-toolbar .sceditor-button-emoticon div { filter: none; opacity: .95; }
+.sceditor-toolbar .sceditor-button-emoticon:hover div { filter: none; opacity: 1; }
+.sceditor-toolbar .sceditor-button { color: var(--burnthesky-gray-lt) !important; }

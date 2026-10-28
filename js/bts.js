@@ -527,6 +527,8 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
    - Implantes, Inventario y Medallero -> ventana de tres columnas debajo
      del mensaje, con el estilo del perfil.
    - Popularidad y Autocontrol (0-100) -> barras bajo el poder.
+   - Botones del mensaje (citar, editar, borrar...) -> iconos Capucciicons
+     (hoja tempcf.css en la cabecera) y botones Responder / Nuevo tema.
    - Lo demás queda en el panel que aparece al pasar el ratón por el avatar.
    No depende de js-temas.js: calcula sus propias clases a partir del nombre
    del campo. Un campo se reconoce si su nombre (sin tildes ni mayúsculas)
@@ -657,9 +659,73 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     return box;
   }
 
+
+  /* ---- Botones del mensaje con iconos Capucciicons ------------------------
+     Reconoce cada botón por su enlace, su texto o su imagen (aunque js-botones
+     ya lo haya cambiado por un texto) y le pone un icono "cp-". */
+  var ICONO_BTN = {
+    thanks: ['cp-heart-o', 'Agradecer'], quote: ['cp-quote', 'Citar'],
+    multi:  ['cp-add-o', 'Multicita'],  edit:  ['cp-edit-o', 'Editar'],
+    del:    ['cp-trash-o', 'Borrar'],   ip:    ['cp-globe-o', 'Ver IP'],
+    report: ['cp-flag-o', 'Reportar']
+  };
+  function tipoBoton(a, li) {
+    var im = a.querySelector('img');
+    var t = ((a.getAttribute('href') || '') + ' ' + (im ? (im.className + ' ' + (im.alt || '') + ' ' + (im.title || '')) : '') +
+             ' ' + a.textContent + ' ' + (li ? li.className : '') + ' ' + (a.id || '') + ' ' + (a.className || '')).toLowerCase();
+    if (/multiquote|multicit/.test(t)) return 'multi';
+    if (/mode=quote|icon_quote|citar|\bcita\b/.test(t)) return 'quote';
+    if (/editpost|icon_edit|editar/.test(t)) return 'edit';
+    if (/mode=delete|icon_delete|apagar|borrar|eliminar/.test(t)) return 'del';
+    if (/mode=ip|icon_ip|ver ip|\bip\b/.test(t)) return 'ip';
+    if (/report|denunc|icon_report/.test(t)) return 'report';
+    if (/thank|agradec|gracias/.test(t)) return 'thanks';
+    return null;
+  }
+  function iconosPost() {
+    var lis = document.querySelectorAll('.postbody ul.profile-icons li');
+    for (var i = 0; i < lis.length; i++) {
+      var li = lis[i], a = li.querySelector('a');
+      if (!a || a.getAttribute('data-bts-ico')) continue;
+      var tipo = tipoBoton(a, li);
+      if (!tipo) continue;
+      var d = ICONO_BTN[tipo];
+      a.setAttribute('data-bts-ico', tipo);
+      a.className += ' rbtn rbtn--' + tipo;
+      a.setAttribute('title', a.getAttribute('title') || d[1]);
+      a.setAttribute('aria-label', d[1]);
+      a.innerHTML = '<i class="cp ' + d[0] + '" aria-hidden="true"></i><span class="rbtn__t">' + d[1] + '</span>';
+    }
+  }
+
+  /* Responder / Nuevo tema / Bloqueado: botones de texto con icono. Las
+     imágenes nativas (sprites) no se veían con el tema oscuro. */
+  function botonesTema() {
+    var as = document.querySelectorAll('.buttons a, .topic-actions a.rbtn-src');
+    for (var i = 0; i < as.length; i++) {
+      var a = as[i];
+      if (a.getAttribute('data-bts-main') || a.closest('.profile-icons')) continue;
+      var im = a.querySelector('img'), rt = a.querySelector('.rtopicbutton');
+      if (!im && !rt) continue;
+      var cls = ((im ? im.className : '') + ' ' + (a.getAttribute('href') || '')).toLowerCase();
+      var txt = (im ? (im.alt || im.title || '') : rt.textContent).trim();
+      var l = (txt + ' ' + cls).toLowerCase(), icono, tipo;
+      if (/reply|respond|mode=reply/.test(l)) { icono = 'cp-chat-bubble-o'; tipo = 'reply'; txt = txt || 'Responder'; }
+      else if (/lock|bloquead|cerrad/.test(l)) { icono = 'cp-lock-o'; tipo = 'locked'; txt = txt || 'Tema bloqueado'; }
+      else if (/newtopic|nuevo|new|i_post|mode=post/.test(l)) { icono = 'cp-edit-o'; tipo = 'new'; txt = txt || 'Nuevo tema'; }
+      else if (/msg_newpost|privmsg|mensaje/.test(l)) { icono = 'cp-envelope-o'; tipo = 'pm'; txt = txt || 'Nuevo mensaje'; }
+      else continue;
+      a.setAttribute('data-bts-main', tipo);
+      a.className += ' rbtn-main rbtn-main--' + tipo;
+      a.setAttribute('aria-label', txt);
+      a.innerHTML = '<i class="cp ' + icono + '" aria-hidden="true"></i><span>' + txt + '</span>';
+    }
+  }
+
   var avisado = false;
 
   function arrancar() {
+    try { iconosPost(); botonesTema(); } catch (e) {}
     var posts = document.querySelectorAll('.post');
     for (var n = 0; n < posts.length; n++) {
       var post = posts[n];
@@ -733,7 +799,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     }
   }
 
-  function tarde() { setTimeout(arrancar, 0); }
+  function tarde() { setTimeout(arrancar, 0); setTimeout(function () { try { iconosPost(); botonesTema(); } catch (e) {} }, 800); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tarde);
   else tarde();
 }();
