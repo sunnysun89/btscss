@@ -527,8 +527,13 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
    - Implantes, Inventario y Medallero -> ventana de tres columnas debajo
      del mensaje, con el estilo del perfil.
    - Popularidad y Autocontrol (0-100) -> barras bajo el poder.
-   - Perfil, Mensaje privado y Playlist/OST -> botones bajo el avatar (el
-     de playlist usa el enlace del campo "Playlist/OST").
+   - Perfil, Mensaje privado, Playlist/OST, Expediente, Baúl, Red social,
+     Búsqueda, Móvil/localizador y Más -> botones bajo el avatar (los de los
+     campos usan el enlace que escribe el usuario; si el campo está vacío,
+     no hay botón).
+   - Panel al pasar el ratón por el avatar: solo Edad, Orientación sexual,
+     Estado sentimental, Alias, Apodos, Ocupación, Facción, Alianza y
+     Ubicación, y solo los que el usuario rellena.
    - Botones del mensaje (citar, editar, borrar...) -> iconos Capucciicons
      (hoja tempcf.css en la cabecera) y botones Responder / Nuevo tema.
    - Lo demás queda en el panel que aparece al pasar el ratón por el avatar.
@@ -737,6 +742,45 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     var u = a ? a.getAttribute('href') : (cont.textContent.match(/https?:\/\/[^\s<>"']+/) || [''])[0];
     return /^https?:\/\//i.test(u || '') ? u : '';
   }
+
+  /* Campos que se convierten en botón (enlace). Orden = orden de los botones. */
+  var EXTRAS = [
+    ['expediente', /(^|-)expediente(-|$)/,                    'cp-folder-o',    'Expediente'],
+    ['baul',       /(^|-)baul(-|$)/,                          'cp-briefcase-o', 'Baúl'],
+    ['red',        /(^|-)(red-social|redes-sociales|redes)(-|$)/, 'cp-share',   'Red social'],
+    ['busqueda',   /(^|-)busqueda(-|$)/,                      'cp-search',      'Búsqueda'],
+    ['movil',      /(^|-)(movil|localizador)(-|$)/,           'cp-smartphone',  'Móvil / localizador'],
+    ['mas',        /^mas$/,                                   'cp-more',        'Más']
+  ];
+  function tipoExtra(f) {
+    var sl = slug(nombre(f));
+    for (var i = 0; i < EXTRAS.length; i++) if (EXTRAS[i][1].test(sl)) return EXTRAS[i][0];
+    return null;
+  }
+
+  /* Datos del panel del avatar (solo los que el usuario rellena, en este orden) */
+  var DATOS = [
+    [/^edad$/, 'Edad'], [/orientacion/, 'Orientación sexual'], [/sentimental|estado-civil/, 'Estado sentimental'],
+    [/^alias/, 'Alias'], [/apodo/, 'Apodos'], [/ocupacion|profesion/, 'Ocupación'],
+    [/faccion/, 'Facción'], [/alianza/, 'Alianza'], [/ubicacion|residencia/, 'Ubicación']
+  ];
+  function panelDatos(campos) {
+    var filas = [];
+    DATOS.forEach(function (d) {
+      for (var i = 0; i < campos.length; i++) {
+        var c = campos[i];
+        if (!d[0].test(slug(nombre(c))) || vacio(c)) continue;
+        var cont = c.querySelector('.postprofile-field-content');
+        var fila = el('div', 'rdato'); fila.title = d[1];
+        fila.appendChild(el('span', 'rdato__o')).setAttribute('aria-hidden', 'true');
+        var v = el('span', 'rdato__v'); v.innerHTML = cont.innerHTML;
+        fila.appendChild(v); filas.push(fila);
+        return;
+      }
+    });
+    return filas;
+  }
+
   function botonContacto(tipo, href, texto, icono, ext) {
     var a = el('a', 'rcbtn rcbtn--' + tipo);
     a.href = href; a.title = texto; a.setAttribute('aria-label', texto);
@@ -744,7 +788,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     a.innerHTML = '<i class="cp ' + icono + '" aria-hidden="true"></i><span class="rcbtn__t">' + texto + '</span>';
     return a;
   }
-  function contactos(post, playlist) {
+  function contactos(post, playlist, extras) {
     var box = post.querySelector('.rcontactfields');
     if (!box || box.getAttribute('data-bts-ct')) return;
     box.setAttribute('data-bts-ct', '1');
@@ -759,6 +803,14 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     if (mp) box.appendChild(botonContacto('mp', mp, 'Enviar mensaje privado', 'cp-envelope-o', false));
     var u = urlDe(playlist);
     if (u) box.appendChild(botonContacto('playlist', u, 'Playlist / OST', 'cp-music-note', true));
+    EXTRAS.forEach(function (d) {
+      for (var k = 0; k < (extras || []).length; k++) {
+        if (extras[k].t !== d[0]) continue;
+        var url = urlDe(extras[k].f);
+        if (url) box.appendChild(botonContacto(d[0], url, d[3], d[2], true));
+        break;
+      }
+    });
     if (!box.firstChild) box.style.display = 'none';
   }
 
@@ -781,6 +833,8 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
         var c = campos[i], nm = nombre(c);
         nombres.push(nm || '(sin nombre)');
         if (es(c, CLAVES.oculto)) { c.parentNode.removeChild(c); continue; }
+        var ex = tipoExtra(c);
+        if (ex) { (f.extras = f.extras || []).push({ t: ex, f: c }); continue; }
         if (!f.playlist && esPlaylist(c)) f.playlist = c;
         else if (!f.icono && es(c, CLAVES.icono) && c.querySelector('img')) f.icono = c;
         else if (!f.frase && es(c, CLAVES.frase)) f.frase = c;
@@ -815,7 +869,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       }
 
       /* botones de contacto (perfil, MP, playlist) */
-      contactos(post, f.playlist);
+      contactos(post, f.playlist, f.extras);
       if (f.playlist && f.playlist.parentNode) f.playlist.parentNode.removeChild(f.playlist);
 
       /* barras Popularidad / Autocontrol, debajo del poder */
@@ -838,9 +892,14 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
         });
       }
 
-      /* si no queda ningún dato, no hay panel al pasar el ratón */
+      /* panel al pasar el ratón por el avatar: solo los datos de DATOS que el usuario rellena */
       var pc = post.querySelector('.ravatar .rprofilecontent');
-      if (pc && !pc.querySelector('.postprofile-field') && !pc.textContent.replace(/\s+/g, '')) pc.style.display = 'none';
+      if (pc) {
+        var filas = panelDatos(campos);
+        pc.innerHTML = '';
+        filas.forEach(function (x) { pc.appendChild(x); });
+        if (!filas.length) pc.style.display = 'none';
+      }
     }
   }
 

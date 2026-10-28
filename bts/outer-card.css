@@ -6175,6 +6175,7 @@ a.rbtn-main img { display: none; }
   --burnthesky-contact-icon:   16px;      /* tamaño del icono */
   --burnthesky-contact-label:  none;      /* none = solo icono (el nombre sale al pasar el ratón); inline = icono + texto */
   --burnthesky-contact-gap:    8px;
+  --burnthesky-contact-bg:     var(--burnthesky-void-3);   /* fondo de los botones (sin borde) */
 }
 .rcontactfields { flex-wrap: wrap; gap: var(--burnthesky-contact-gap); }
 .rcontactfields a.rcbtn {
@@ -6185,22 +6186,55 @@ a.rbtn-main img { display: none; }
   min-width: var(--burnthesky-contact-size);
   height: var(--burnthesky-contact-size);
   padding: 0 10px;
-  background: var(--burnthesky-void);
-  border: 1px solid var(--burnthesky-line-2);
+  background: var(--burnthesky-contact-bg);
+  border: 0;
   border-radius: var(--burnthesky-radius);
   color: var(--burnthesky-gray-lt);
   font: var(--burnthesky-fs-xs) / 1.2 var(--burnthesky-ff-mono);
   letter-spacing: 1.5px;
   text-transform: uppercase;
   text-decoration: none;
-  transition: border-color var(--burnthesky-ease-fast), color var(--burnthesky-ease-fast), background-color var(--burnthesky-ease-fast), box-shadow var(--burnthesky-ease-fast);
+  transition: color var(--burnthesky-ease-fast), background-color var(--burnthesky-ease-fast);
 }
 .rcbtn i.cp { font-size: var(--burnthesky-contact-icon); line-height: 1; }
 .rcbtn__t { display: var(--burnthesky-contact-label); }
 .rcontactfields a.rcbtn:hover {
-  border-color: var(--burnthesky-red);
-  background-color: var(--burnthesky-red-wash);
+  background-color: var(--burnthesky-red-ghost-2);
   color: #fff;
-  box-shadow: 3px 3px 0 var(--burnthesky-red-ghost-2);
 }
 .rcontactfields a.rcbtn:hover i.cp { color: var(--burnthesky-red-vivid); }
+
+
+/* ============================================================================
+   45 · PANEL DE DATOS DEL AVATAR (al pasar el ratón)
+   Filas con adorno, texto en negrita y línea de separación. Solo aparecen los
+   datos que el usuario rellena (lo decide js-post.js).
+   ========================================================================== */
+:root {
+  --burnthesky-post-dato-orn:    "☾·✧·";                  /* adorno de cada fila */
+  --burnthesky-post-dato-orn-c:  var(--burnthesky-red-vivid);
+  --burnthesky-post-dato-line:   var(--burnthesky-red-ghost-2);
+  --burnthesky-post-dato-size:   12px;
+  --burnthesky-post-dato-pad:    12px;                    /* alto interior de cada fila */
+}
+.ravatar .rprofilecontent {
+  padding: 0;
+  text-align: left;
+  scrollbar-width: none;
+}
+.rdato {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: var(--burnthesky-post-dato-pad) 14px;
+  border-bottom: 1px solid var(--burnthesky-post-dato-line);
+  font: 600 var(--burnthesky-post-dato-size) / 1.4 var(--burnthesky-ff-sans);
+  letter-spacing: .4px;
+  text-transform: uppercase;
+  color: var(--burnthesky-white);
+  overflow-wrap: anywhere;
+}
+.rdato__o { flex: 0 0 auto; font-size: 10px; letter-spacing: 1px; color: var(--burnthesky-post-dato-orn-c); }
+.rdato__o::before { content: var(--burnthesky-post-dato-orn); }
+.rdato__v { min-width: 0; }
+.rdato__v a { color: inherit; text-decoration: underline; text-decoration-color: var(--burnthesky-red); text-underline-offset: 3px; }
