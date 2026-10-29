@@ -681,8 +681,23 @@
         var vt = el('div', 'rmulti__it vacio'), vim = document.createElement('img');
         vim.src = 'https://placehold.co/250x150'; vim.alt = ''; vt.appendChild(vim); mg.appendChild(vt);
       }
-      w3.appendChild(mg);
-      paneles[2].appendChild(w3);
+      /* carrusel lateral: flechas que desplazan una multicuenta */
+      var carr = el('div', 'rmulti-wrap');
+      var bPrev = el('button', 'rmulti__arrow rmulti__arrow--prev', '‹'), bNext = el('button', 'rmulti__arrow rmulti__arrow--next', '›');
+      bPrev.type = bNext.type = 'button'; bPrev.setAttribute('aria-label', 'Anterior'); bNext.setAttribute('aria-label', 'Siguiente');
+      function paso(dir) { var it = mg.querySelector('.rmulti__it'); mg.scrollBy({ left: dir * ((it ? it.offsetWidth : 250) + 14), behavior: 'smooth' }); }
+      bPrev.addEventListener('click', function () { paso(-1); });
+      bNext.addEventListener('click', function () { paso(1); });
+      function flechas() {
+        bPrev.hidden = mg.scrollLeft < 4;
+        bNext.hidden = mg.scrollLeft + mg.clientWidth >= mg.scrollWidth - 4;
+      }
+      mg.addEventListener('scroll', flechas);
+      window.addEventListener('resize', flechas);
+      carr.appendChild(bPrev); carr.appendChild(mg); carr.appendChild(bNext);
+      w3.appendChild(carr);
+      paneles[2].appendChild(w3);   /* (se añade ya para poder medir) */
+      flechas(); setTimeout(flechas, 300);
 
       var w4 = ventanaPf('Logbook OOC'), lg = el('div', 'rlog');
       var tip = function (s) { var b = q1(s + ' .rdate__tip'); return b ? b.textContent.replace(/^[^·]*·\s*/, '').trim() : ''; };
@@ -705,6 +720,18 @@
       });
       w4.appendChild(lg);
       paneles[2].appendChild(w4);
+    }
+    /* hover por coordenadas: funciona aunque algo transparente tape las imágenes */
+    if (!raiz.getAttribute('data-bts-hv')) {
+      raiz.setAttribute('data-bts-hv', '1');
+      var marca = function (x, y) {
+        Array.prototype.forEach.call(raiz.querySelectorAll('.rrel__it:not(.vacio), .rmulti__it:not(.vacio)'), function (t) {
+          var r = t.getBoundingClientRect();
+          t.classList.toggle('is-hover', x != null && x >= r.left && x <= r.right && y >= r.top && y <= r.bottom);
+        });
+      };
+      document.addEventListener('mousemove', function (e) { if (raiz.querySelector('.rperfil__panel:not([hidden]) .rrel, .rperfil__panel:not([hidden]) .rmulti')) marca(e.clientX, e.clientY); }, { passive: true });
+      document.addEventListener('mouseleave', function () { marca(null, null); });
     }
     /* los botones de nacimiento e inscripción ya no se muestran: sus datos están en el Logbook */
     Array.prototype.forEach.call(raiz.querySelectorAll('.rdate'), quita);

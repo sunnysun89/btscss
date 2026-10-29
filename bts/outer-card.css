@@ -124,7 +124,7 @@
   /* VELOCIDAD DE LOS HOVERS: se cambian aquí y afectan a todo el foro.
      --burnthesky-ease ..... enlaces, tarjetas, botones, bordes, sombras
      --burnthesky-ease-img . imágenes (de gris a color) */
-  --burnthesky-css:           "v2.6";   /* la consola la muestra al cargar: sirve para saber si el navegador tiene el CSS nuevo */
+  --burnthesky-css:           "v2.7";   /* la consola la muestra al cargar: sirve para saber si el navegador tiene el CSS nuevo */
   --burnthesky-ease:          2s cubic-bezier(.22, .61, .36, 1);
   --burnthesky-ease-img:      2s ease;
 
@@ -6445,7 +6445,7 @@ a.rbtn-main img { display: none; }
   filter: grayscale(.8);
   transition: filter var(--burnthesky-ease-img);
 }
-.rmulti__it:hover { filter: none; }
+.rmulti__it:is(:hover, .is-hover) { filter: none; }
 .rmulti__it img { display: block; width: 100% !important; height: 100% !important; max-width: none !important; object-fit: cover; }
 .rmulti__it.vacio { opacity: .45; }
 .rmulti__n {
@@ -6478,24 +6478,24 @@ a.rbtn-main img { display: none; }
    ========================================================================== */
 /* hover de relaciones: sube, borde rojo vivo, sombra fantasma y la imagen recupera el color */
 .rrel__it { transition: transform var(--burnthesky-ease); }
-.rrel__it:not(.vacio):hover { transform: translateY(calc(-1 * var(--burnthesky-lift))); }
+.rrel__it:not(.vacio):is(:hover, .is-hover) { transform: translateY(calc(-1 * var(--burnthesky-lift))); }
 .rrel__ph { transition: border-color var(--burnthesky-ease), box-shadow var(--burnthesky-ease); }
-.rrel__it:not(.vacio):hover .rrel__ph {
+.rrel__it:not(.vacio):is(:hover, .is-hover) .rrel__ph {
   border-color: var(--burnthesky-red-vivid);
   box-shadow: 0 0 0 3px var(--burnthesky-red-ghost-2), var(--burnthesky-ghost-sm);
 }
-.rrel__it:not(.vacio):hover .rrel__n { color: var(--burnthesky-red-vivid); }
+.rrel__it:not(.vacio):is(:hover, .is-hover) .rrel__n { color: var(--burnthesky-red-vivid); }
 .rrel__n { transition: color var(--burnthesky-ease); }
 
 /* hover de multicuentas */
 .rmulti__it { transition: filter var(--burnthesky-ease-img), transform var(--burnthesky-ease), border-color var(--burnthesky-ease), box-shadow var(--burnthesky-ease); }
-.rmulti__it:not(.vacio):hover {
+.rmulti__it:not(.vacio):is(:hover, .is-hover) {
   transform: translateY(calc(-1 * var(--burnthesky-lift)));
   border-color: var(--burnthesky-red-vivid);
   box-shadow: 4px 4px 0 var(--burnthesky-red-ghost-2);
 }
 .rmulti__n { transition: color var(--burnthesky-ease), background var(--burnthesky-ease); }
-.rmulti__it:hover .rmulti__n { color: var(--burnthesky-red-vivid); }
+.rmulti__it:is(:hover, .is-hover) .rmulti__n { color: var(--burnthesky-red-vivid); }
 
 /* alianza (izquierda) + cronología (derecha): mitad y mitad */
 .ralian { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; align-items: start; }
@@ -6561,17 +6561,41 @@ a.rbtn-main img { display: none; }
    ========================================================================== */
 :root { --burnthesky-pf-hover-zoom: 1.1; --burnthesky-pf-hover-t: .35s ease; }
 .rrel__ph img, .rmulti__it img { transition: transform var(--burnthesky-pf-hover-t), filter var(--burnthesky-pf-hover-t); }
-.rrel__it:not(.vacio):hover .rrel__ph img,
-.rmulti__it:not(.vacio):hover img { transform: scale(var(--burnthesky-pf-hover-zoom)); filter: none !important; }
+.rrel__it:not(.vacio):is(:hover, .is-hover) .rrel__ph img,
+.rmulti__it:not(.vacio):is(:hover, .is-hover) img { transform: scale(var(--burnthesky-pf-hover-zoom)); filter: none !important; }
 .rrel__ph, .rrel__n { transition-duration: .35s; }
-.rrel__it:not(.vacio):hover .rrel__ph {
+.rrel__it:not(.vacio):is(:hover, .is-hover) .rrel__ph {
   border-color: var(--burnthesky-red-vivid);
   box-shadow: 0 0 0 4px var(--burnthesky-red-ghost-2), 0 0 18px var(--burnthesky-red-ghost-2);
 }
 .rmulti__it { transition: filter var(--burnthesky-pf-hover-t), transform var(--burnthesky-pf-hover-t), border-color var(--burnthesky-pf-hover-t), box-shadow var(--burnthesky-pf-hover-t); }
-.rmulti__it:not(.vacio):hover { filter: none !important; }
+.rmulti__it:not(.vacio):is(:hover, .is-hover) { filter: none !important; }
 .rrel__it:not(.vacio), .rmulti__it:not(.vacio) { cursor: pointer; }
 
 /* barras en la columna derecha */
 .rperfil__info .rbars { margin: 0; }
 .rperfil__powerbox .rperfil__powerdesc { margin: 0; }
+
+
+/* ============================================================================
+   52 · MULTICUENTAS EN CARRUSEL LATERAL
+   Una sola fila con scroll horizontal; las flechas ‹ › desplazan una imagen.
+   ========================================================================== */
+.rmulti-wrap { position: relative; }
+.rmulti { flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; padding: 6px 2px 10px; }
+.rmulti::-webkit-scrollbar { display: none; }
+.rmulti__it { flex: none; scroll-snap-align: start; }
+.rmulti__arrow {
+  position: absolute; top: 50%; z-index: 3;
+  width: 30px; height: 30px; margin-top: -15px; padding: 0;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; border: 1px solid var(--burnthesky-red-vivid);
+  background: var(--burnthesky-void); color: var(--burnthesky-white);
+  font: 700 20px / 1 var(--burnthesky-ff-mono); cursor: pointer;
+  box-shadow: 0 0 12px var(--burnthesky-red-ghost-2);
+  transition: background var(--burnthesky-ease), transform var(--burnthesky-ease), color var(--burnthesky-ease);
+}
+.rmulti__arrow:hover, .rmulti__arrow:focus-visible { background: var(--burnthesky-red); color: #fff; transform: scale(1.1); outline: 0; }
+.rmulti__arrow[hidden] { display: none; }
+.rmulti__arrow--prev { left: 6px; }
+.rmulti__arrow--next { right: 6px; }
