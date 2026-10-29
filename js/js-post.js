@@ -501,6 +501,7 @@
     /* campos del perfil */
     var f = {}, extras = [], playlist = null, poderes = null, detalle = null, aliado = null, aliadoDesc = null, apodos = null, curiosidades = null, cronologia = null, relaciones = [], multis = [], ooc = [];
     var rpf = raiz.querySelectorAll('#rperfil-campos .rpf');
+    try { console.log('[BTS] perfil: campos →', Array.prototype.map.call(rpf, function (r) { var l0 = r.querySelector('.rpf-l'); return l0 ? slug(l0.textContent) : '?'; }).join(', ')); } catch (e0) {}
     for (var j = 0; j < rpf.length; j++) {
       var l = rpf[j].querySelector('.rpf-l'), c = rpf[j].querySelector('.rpf-c');
       if (!l || !c) continue;
@@ -516,7 +517,7 @@
       else if (/aliad[oa].*(imagen|img)|(imagen|img).*aliad[oa]/.test(sl)) aliado = c;
       else if (/^poder-perfil|^poder(es)?$|^habilidades?$/.test(sl)) poderes = c;
       else if (/^apodos?$/.test(sl)) apodos = c;
-      else if (/^curiosidad/.test(sl)) curiosidades = c;
+      else if (/curiosid|curioso|trivia|secretos?$|notas-ocultas/.test(sl)) curiosidades = c;
       else if (/^cronologia/.test(sl)) cronologia = c;
       else if (/^(relacion|vinculo)/.test(sl)) { if (/^(relaciones|vinculos)$/.test(sl)) c.setAttribute('data-plural', '1'); relaciones.push(c); }
       else if (/^(multicuenta|alter|cuenta)/.test(sl)) { if (/^(multicuentas|alters|cuentas)$/.test(sl)) c.setAttribute('data-plural', '1'); multis.push(c); }
@@ -751,10 +752,92 @@
     Array.prototype.forEach.call(raiz.querySelectorAll('.rdate'), quita);
   }
 
+  /* ---- Índice v3: tarjeta de foro (título + cifras, descripción, enlaces, imagen,
+     último tema, último autor con avatar circular) -------------------------------
+     Reconstruye cada fila de .forabg ul.topiclist.forums (índice y caja de
+     subforos) con las piezas que ya trae: título, FORUM_DESC (.rfordesc,
+     .rforlinks, .rforimg o texto plano), cifras y último mensaje. Lo original se
+     conserva oculto. Para volver a la estructura anterior: INDICE_V3 = false. */
+  var INDICE_V3 = true;
+
+  function indiceV3() {
+    if (!INDICE_V3) return;
+    var filas = document.querySelectorAll('.forabg ul.topiclist.forums > li.row');
+    for (var i = 0; i < filas.length; i++) {
+      var li = filas[i];
+      if (li.getAttribute('data-bts-c3')) continue;
+      li.setAttribute('data-bts-c3', '1');
+      var h = li.querySelector('.hierarchy'), dl = li.querySelector('dl.icon');
+      if (!h || !dl) continue;
+      var tit = h.querySelector('a.forumtitle') || h.querySelector('a');
+      var dt = dl.querySelector('dd.topics'), dp = dl.querySelector('dd.posts'), dlp = dl.querySelector('dd.lastpost');
+      var num = function (n) { var m = n ? n.textContent.match(/\d[\d.,]*/) : null; return m ? m[0] : '0'; };
+
+      /* descripción: .rsingleforum / .rdoubleforum o cualquier contenido entre el título y las cifras */
+      var cont = li.querySelector('.rsingleforum, .rdoubleforum');
+      var desc = null, links = null, img = null;
+      if (cont) {
+        desc = cont.querySelector('.rfordesc'); links = cont.querySelector('.rforlinks'); img = cont.querySelector('.rforimg');
+      } else {
+        desc = document.createElement('div');
+        for (var n = h.nextSibling; n && n !== dl; n = n.nextSibling) desc.appendChild(n.cloneNode(true));
+      }
+
+      var card = el('div', 'rc3');
+      /* cabecera */
+      var head = el('div', 'rc3__head');
+      var t = el('a', 'rc3__title'); t.href = tit ? tit.getAttribute('href') : '#'; t.innerHTML = tit ? tit.innerHTML : h.textContent;
+      head.appendChild(t); head.appendChild(el('span', 'rc3__line'));
+      head.appendChild(el('span', 'rc3__badge', num(dt) + ' temas'));
+      head.appendChild(el('span', 'rc3__badge', num(dp) + ' msgs'));
+      card.appendChild(head);
+      /* texto */
+      var cd = el('div', 'rc3__desc');
+      if (desc && desc.textContent.replace(/\s+/g, '').length) cd.innerHTML = desc.innerHTML; else cd.classList.add('vacio');
+      card.appendChild(cd);
+      /* enlaces (chips) */
+      if (links && links.querySelector('a')) {
+        var ch = el('div', 'rc3__chips'); ch.innerHTML = links.innerHTML; card.appendChild(ch);
+      }
+      /* columna derecha: imagen, avatar, último tema y último autor */
+      var side = el('div', 'rc3__side');
+      var bg = img ? (img.style.backgroundImage || '') : '';
+      if (bg) {
+        var im = el('div', 'rc3__img'); im.style.backgroundImage = bg; side.appendChild(im);
+        li.style.setProperty('--rc3-img', bg);
+      }
+      var av = dlp ? dlp.querySelector('.lastpost-avatar img') : null;
+      var topic = dlp ? dlp.querySelector('a[href*="/t"], a[title]') : null;
+      var user = null;
+      if (dlp) { var as = dlp.querySelectorAll('a'); for (var k = 0; k < as.length; k++) if (/\/u\d+/.test(as[k].getAttribute('href') || '') && as[k].textContent.trim()) { user = as[k]; break; } }
+      var ultimo = null;
+      if (dlp) { var as2 = dlp.querySelectorAll('a'); for (var q = 0; q < as2.length; q++) if (/#\d+|[?&]p=|\/p\d+/.test(as2[q].getAttribute('href') || '') && as2[q] !== user && !as2[q].textContent.trim()) { ultimo = as2[q]; break; } }
+      if (topic || user) {
+        if (av) { var aw = el('a', 'rc3__av'); aw.href = user ? user.getAttribute('href') : '#'; var ai = document.createElement('img'); ai.src = av.getAttribute('src'); ai.alt = user ? user.textContent : ''; ai.loading = 'lazy'; aw.appendChild(ai); side.appendChild(aw); }
+        else side.classList.add('sin-av');
+        if (topic) {
+          var b1 = el('a', 'rc3__btn'); b1.href = topic.getAttribute('href'); b1.title = topic.getAttribute('title') || topic.textContent; b1.textContent = topic.textContent.trim(); side.appendChild(b1);
+        }
+        if (user) {
+          var b2 = el('a', 'rc3__btn rc3__btn--user'); b2.href = (ultimo || user).getAttribute('href');
+          b2.title = user.textContent.trim() + ' · ' + (dlp.textContent.match(/\d{1,2}[:h]\d{2}[^\n]*$/) || [''])[0];
+          b2.appendChild(el('span', 'rc3__uname', user.textContent.trim())); b2.appendChild(el('span', 'rc3__arrow', '→'));
+          var col = window.getComputedStyle(user).color; if (col) b2.style.setProperty('--user-color', col);
+          side.appendChild(b2);
+        }
+      } else {
+        side.appendChild(el('span', 'rc3__btn rc3__btn--none', 'Sin mensajes'));
+      }
+      card.appendChild(side);
+      li.classList.add('rc3-row');
+      li.appendChild(card);
+    }
+  }
+
   var avisado = false;
 
   function arrancar() {
-    try { iconosPost(); botonesTema(); perfil(); } catch (e) {}
+    try { iconosPost(); botonesTema(); perfil(); indiceV3(); } catch (e) {}
     var posts = document.querySelectorAll('.post');
     for (var n = 0; n < posts.length; n++) {
       var post = posts[n];
@@ -843,7 +926,7 @@
     }
   }
 
-  function tarde() { setTimeout(arrancar, 0); setTimeout(function () { try { iconosPost(); botonesTema(); perfil(); } catch (e) {} }, 800); }
+  function tarde() { setTimeout(arrancar, 0); setTimeout(function () { try { iconosPost(); botonesTema(); perfil(); indiceV3(); } catch (e) {} }, 800); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tarde);
   else tarde();
 }();

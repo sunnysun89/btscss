@@ -124,7 +124,7 @@
   /* VELOCIDAD DE LOS HOVERS: se cambian aquí y afectan a todo el foro.
      --burnthesky-ease ..... enlaces, tarjetas, botones, bordes, sombras
      --burnthesky-ease-img . imágenes (de gris a color) */
-  --burnthesky-css:           "v2.8";   /* la consola la muestra al cargar: sirve para saber si el navegador tiene el CSS nuevo */
+  --burnthesky-css:           "v2.9";   /* la consola la muestra al cargar: sirve para saber si el navegador tiene el CSS nuevo */
   --burnthesky-ease:          2s cubic-bezier(.22, .61, .36, 1);
   --burnthesky-ease-img:      2s ease;
 
@@ -6604,3 +6604,150 @@ a.rbtn-main img { display: none; }
 /* las casillas vacías (placeholder) también reaccionan: se aclaran al pasar el ratón */
 .rrel__it.vacio:is(:hover, .is-hover), .rmulti__it.vacio:is(:hover, .is-hover) { opacity: .9; }
 .rrel__it.vacio, .rmulti__it.vacio { transition: opacity var(--burnthesky-pf-hover-t); }
+
+
+/* ============================================================================
+   53 · ÍNDICE v3 · TARJETA DE FORO (js-post.js → indiceV3)
+   Vale para el índice y para la caja de subforos. Estructura de cada tarjeta:
+     .rc3__head   título · línea · cifras (temas / msgs)
+     .rc3__desc   descripción (admite la pastilla <span class="rtag">…</span>)
+     .rc3__chips  enlaces de la descripción (.rforlinks) como fichas
+     .rc3__side   imagen · avatar circular del último autor · último tema · autor
+   Para volver a la estructura anterior pon INDICE_V3 = false en js-post.js.
+   Ajustes: --burnthesky-idx-side-w (columna derecha), --burnthesky-idx-img-h
+   (imagen), --burnthesky-idx-av (avatar), --burnthesky-idx-bg (opacidad del fondo).
+   ========================================================================== */
+:root {
+  --burnthesky-idx-side-w: 310px;
+  --burnthesky-idx-img-h:  84px;
+  --burnthesky-idx-av:     56px;
+  --burnthesky-idx-bg:     .22;
+}
+.forabg ul.topiclist.forums > li.row.rc3-row {
+  display: block !important;
+  position: relative;
+  padding: 0 !important;
+  overflow: hidden;
+  background: var(--burnthesky-void) !important;
+  font-size: 0 !important; line-height: 0 !important;   /* oculta el texto suelto original */
+}
+.forabg ul.topiclist.forums > li.row.rc3-row > :not(.rc3) { display: none !important; }
+.forabg ul.topiclist.forums > li.row.rc3-row::before {
+  content: ''; position: absolute; inset: 0; z-index: 0;
+  background: var(--rc3-img, none) left center / cover no-repeat;
+  opacity: var(--burnthesky-idx-bg);
+  filter: grayscale(1);
+  -webkit-mask-image: linear-gradient(90deg, #000, transparent 70%);
+          mask-image: linear-gradient(90deg, #000, transparent 70%);
+  transition: opacity var(--burnthesky-ease), filter var(--burnthesky-ease-img);
+}
+.forabg ul.topiclist.forums > li.row.rc3-row:hover::before { opacity: calc(var(--burnthesky-idx-bg) + .12); filter: none; }
+
+.rc3 {
+  position: relative; z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--burnthesky-idx-side-w);
+  grid-template-rows: auto auto auto;
+  gap: 10px 18px;
+  padding: 18px 22px;
+  font-size: 13px; line-height: 1.7;
+}
+.rc3__head { grid-column: 1; grid-row: 1; display: flex; align-items: center; gap: 12px; min-width: 0; }
+.rc3__title {
+  flex: none; max-width: 100%;
+  font: var(--burnthesky-fortitle) / 1.05 var(--burnthesky-ff-display);
+  letter-spacing: -.4px; text-transform: uppercase; color: var(--burnthesky-white);
+  overflow-wrap: anywhere;
+}
+.rc3__title::before {
+  content: ''; display: inline-block; width: 8px; height: 8px; margin-right: 10px;
+  background: var(--burnthesky-red); vertical-align: middle;
+  transform: translateY(calc(-1 * var(--burnthesky-lift)));
+}
+.rc3__title:hover { color: var(--burnthesky-red-vivid); }
+.rc3__line { flex: 1 1 24px; height: 1px; background: var(--burnthesky-line-2); }
+.rc3__badge {
+  flex: none; padding: 4px 9px;
+  background: var(--burnthesky-void-3); border: 1px solid var(--burnthesky-line);
+  font: 700 var(--burnthesky-fs-2xs) / 1 var(--burnthesky-ff-mono); letter-spacing: 1px; text-transform: uppercase; color: var(--burnthesky-gray-lt);
+}
+.rc3__desc {
+  grid-column: 1; grid-row: 2; min-width: 0;
+  padding: 12px 14px;
+  background: rgba(255,255,255,.04); border: 1px solid var(--burnthesky-line);
+  font: 13px / 1.7 var(--burnthesky-ff-sans); color: #c4c4c4; overflow-wrap: anywhere;
+}
+.rc3__desc.vacio { display: none; }
+.rc3__desc .rfordesc { max-width: none; margin: 0; padding: 0; }
+.rc3__desc b, .rc3__desc strong { color: var(--burnthesky-white); }
+.rc3__desc a { color: var(--burnthesky-red-vivid); }
+/* pastilla de etiqueta dentro de la descripción */
+.rc3__desc .rtag, .rfordesc .rtag {
+  display: inline-block; margin-right: 6px; padding: 2px 9px;
+  background: var(--burnthesky-red); color: #fff;
+  font: 700 var(--burnthesky-fs-2xs) / 1.5 var(--burnthesky-ff-mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.rc3__chips {
+  grid-column: 1; grid-row: 3;
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 16px;
+  padding: 8px 12px;
+  background: rgba(255,255,255,.04); border: 1px solid var(--burnthesky-line);
+}
+.rc3__chips a {
+  padding: 0; border: 0; background: none;
+  font: var(--burnthesky-fs-xs) / 1.6 var(--burnthesky-ff-mono); letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--burnthesky-gray-lt);
+  transition: color var(--burnthesky-ease);
+}
+.rc3__chips a:hover { color: var(--burnthesky-red-vivid); background: none; }
+
+/* columna derecha */
+.rc3__side {
+  grid-column: 2; grid-row: 1 / span 3;
+  display: grid; grid-template-columns: var(--burnthesky-idx-av) minmax(0, 1fr); grid-auto-rows: min-content;
+  align-content: start; gap: 8px 10px;
+}
+.rc3__side.sin-av { grid-template-columns: minmax(0, 1fr); }
+.rc3__img {
+  grid-column: 1 / -1; height: var(--burnthesky-idx-img-h);
+  background: #050505 center / cover no-repeat;
+  border: 1px solid var(--burnthesky-line-2);
+  filter: grayscale(1) brightness(.8);
+  transition: filter var(--burnthesky-ease-img);
+}
+li.row:hover .rc3__img { filter: none; }
+/* avatar: el de bts-sidebar-avatar en pequeño */
+.rc3__av {
+  grid-column: 1; grid-row: 2 / span 2; align-self: center;
+  width: var(--burnthesky-idx-av); height: var(--burnthesky-idx-av);
+  border-radius: 50%; overflow: hidden;
+  border: 2px solid var(--burnthesky-red);
+  box-shadow: 0 0 14px rgba(255, 74, 53, 0.4);
+  background: var(--burnthesky-void-2);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform var(--burnthesky-ease), box-shadow var(--burnthesky-ease);
+}
+.rc3__av img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; float: none; margin: 0; }
+li.row:hover .rc3__av { transform: scale(1.06); box-shadow: 0 0 20px rgba(255, 74, 53, .65); }
+.rc3__side:not(:has(.rc3__img)) .rc3__av { grid-row: 1 / span 2; }
+.rc3__side > .rc3__btn { grid-column: 2; }
+.rc3__side.sin-av > .rc3__btn { grid-column: 1; }
+.rc3__btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px; min-width: 0;
+  padding: 10px 12px;
+  background: var(--burnthesky-void-3); border: 1px solid var(--burnthesky-line);
+  font: 700 12px / 1.2 var(--burnthesky-ff-display); letter-spacing: .5px; text-transform: uppercase; text-align: center;
+  color: var(--burnthesky-white);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  transition: border-color var(--burnthesky-ease), background var(--burnthesky-ease), color var(--burnthesky-ease), transform var(--burnthesky-ease);
+}
+a.rc3__btn:hover { border-color: var(--burnthesky-red); background: var(--burnthesky-red-wash); color: #fff; transform: translateY(calc(-1 * var(--burnthesky-lift))); }
+.rc3__btn--user .rc3__uname { overflow: hidden; text-overflow: ellipsis; color: var(--user-color, var(--burnthesky-white)); }
+.rc3__arrow { flex: none; color: var(--burnthesky-red-vivid); transition: transform var(--burnthesky-ease); }
+a.rc3__btn:hover .rc3__arrow { transform: translateX(4px); }
+.rc3__btn--none { color: var(--burnthesky-gray); font-weight: 400; grid-column: 1 / -1 !important; }
+
+@media (max-width: 860px) {
+  .rc3 { grid-template-columns: minmax(0, 1fr); }
+  .rc3__side { grid-column: 1; grid-row: 4; }
+}
