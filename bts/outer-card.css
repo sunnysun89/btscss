@@ -124,7 +124,7 @@
   /* VELOCIDAD DE LOS HOVERS: se cambian aquí y afectan a todo el foro.
      --burnthesky-ease ..... enlaces, tarjetas, botones, bordes, sombras
      --burnthesky-ease-img . imágenes (de gris a color) */
-  --burnthesky-css:           "v2.5";   /* la consola la muestra al cargar: sirve para saber si el navegador tiene el CSS nuevo */
+  --burnthesky-css:           "v2.6";   /* la consola la muestra al cargar: sirve para saber si el navegador tiene el CSS nuevo */
   --burnthesky-ease:          2s cubic-bezier(.22, .61, .36, 1);
   --burnthesky-ease-img:      2s ease;
 
@@ -6552,3 +6552,26 @@ a.rbtn-main img { display: none; }
   scrollbar-width: thin; scrollbar-color: var(--burnthesky-red) transparent;
 }
 .ralian__txt.vacio { font-style: italic; color: var(--burnthesky-gray); opacity: .6; }
+
+
+/* ============================================================================
+   51 · PERFIL: hovers de imágenes más visibles (relaciones y multicuentas)
+   Transición corta (.35s) en lugar de la lenta de los banners, zoom suave de la
+   imagen y color completo. Ajusta --burnthesky-pf-hover-zoom.
+   ========================================================================== */
+:root { --burnthesky-pf-hover-zoom: 1.1; --burnthesky-pf-hover-t: .35s ease; }
+.rrel__ph img, .rmulti__it img { transition: transform var(--burnthesky-pf-hover-t), filter var(--burnthesky-pf-hover-t); }
+.rrel__it:not(.vacio):hover .rrel__ph img,
+.rmulti__it:not(.vacio):hover img { transform: scale(var(--burnthesky-pf-hover-zoom)); filter: none !important; }
+.rrel__ph, .rrel__n { transition-duration: .35s; }
+.rrel__it:not(.vacio):hover .rrel__ph {
+  border-color: var(--burnthesky-red-vivid);
+  box-shadow: 0 0 0 4px var(--burnthesky-red-ghost-2), 0 0 18px var(--burnthesky-red-ghost-2);
+}
+.rmulti__it { transition: filter var(--burnthesky-pf-hover-t), transform var(--burnthesky-pf-hover-t), border-color var(--burnthesky-pf-hover-t), box-shadow var(--burnthesky-pf-hover-t); }
+.rmulti__it:not(.vacio):hover { filter: none !important; }
+.rrel__it:not(.vacio), .rmulti__it:not(.vacio) { cursor: pointer; }
+
+/* barras en la columna derecha */
+.rperfil__info .rbars { margin: 0; }
+.rperfil__powerbox .rperfil__powerdesc { margin: 0; }

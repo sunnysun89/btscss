@@ -586,9 +586,9 @@
     var desc = el('div', 'rperfil__powerdesc');
     if (detalle && detalle.textContent.replace(/\s+/g, '').length) { desc.innerHTML = htmlUsuario(detalle); desc.classList.add('tiene'); }
     else { desc.textContent = 'Sin detalles del poder.'; desc.classList.add('vacio'); }
-    info.appendChild(desc);
     if (rango) info.appendChild(rango);
     if (rk) info.appendChild(rk);
+    info.appendChild(barras(f));
     quita(creditos); quita(q1('.rperfil__stats'));
     var banner = q1('.rperfil__banner');
     if (side) {
@@ -599,7 +599,7 @@
       var pb = el('div', 'rperfil__powerbox');
       if (nivel) pb.appendChild(nivel);
       pb.appendChild(pTile);
-      pb.appendChild(barras(f));
+      pb.appendChild(desc);
       var avi = col.querySelector('.rperfil__avatarimg');
       col.insertBefore(pb, avi ? avi.nextSibling : col.firstChild);
     }
