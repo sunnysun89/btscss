@@ -827,6 +827,71 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     [/mode=editprofile|editar/, 'cp-edit-o',         'Editar perfil'],
     [/search/,                  'cp-search',         'Buscar sus mensajes']
   ];
+  var PESTANAS = ['Perfil', 'Red y lore', 'Multicuentas y logbook'];   // nombres de las pestañas del perfil
+  var MIN_REL = 6, MIN_MULTI = 3;     // casillas mínimas (las que faltan salen con imagen placeholder)
+  var IMG_RE = /\.(png|jpe?g|gif|webp|svg|avif)(\?|#|$)|placehold\.co|imgur|postimg|i\.ibb/i;
+
+  /* Pestañas: si js-ajustes.js ya las creó se reutilizan; si no, se crean aquí igual. */
+  function pestanas(raiz) {
+    var top = raiz.querySelector('.rperfil__top'), cols = raiz.querySelector('.rperfil__cols');
+    var bar = raiz.querySelector('.rperfil__tabs');
+    if (!bar && top && cols) {
+      bar = el('div', 'rperfil__tabs'); bar.setAttribute('role', 'tablist');
+      var foot = raiz.querySelector('.rperfil__foot'), extra = document.getElementById('rperfil-extra');
+      var ps = PESTANAS.map(function (n, i) {
+        var p = el('div', 'rperfil__panel'); p.setAttribute('role', 'tabpanel'); p.hidden = !!i; return p;
+      });
+      cols.parentNode.insertBefore(ps[0], cols); ps[0].appendChild(cols);
+      if (foot) ps[0].appendChild(foot);
+      if (extra) ps[0].appendChild(extra);
+      var ref = ps[0]; for (var k = 1; k < ps.length; k++) { ref.parentNode.insertBefore(ps[k], ref.nextSibling); ref = ps[k]; }
+      var bs = PESTANAS.map(function (n, i) {
+        var b = el('button', 'rperfil__tab' + (i ? '' : ' is-on'), n); b.type = 'button'; b.setAttribute('role', 'tab');
+        b.setAttribute('aria-selected', i ? 'false' : 'true');
+        b.addEventListener('click', function () {
+          bs.forEach(function (x, j) { x.classList.toggle('is-on', j === i); x.setAttribute('aria-selected', j === i ? 'true' : 'false'); ps[j].hidden = j !== i; });
+        });
+        bar.appendChild(b); return b;
+      });
+      top.parentNode.insertBefore(bar, top.nextSibling);
+    }
+    var paneles = raiz.querySelectorAll('.rperfil__panel');
+    var botones = bar ? bar.querySelectorAll('.rperfil__tab') : [];
+    for (var i = 0; i < botones.length; i++) if (PESTANAS[i]) botones[i].textContent = PESTANAS[i];
+    for (var j = 0; j < paneles.length; j++) paneles[j].classList.remove('rperfil__panel--vacio');
+    return paneles;
+  }
+
+  /* Ventana con la cabecera de tres puntos (igual que Inventario y medallero) */
+  function ventanaPf(titulo) {
+    var w = el('section', 'rperfil__win');
+    w.appendChild(el('div', 'rinv__head', titulo));
+    return w;
+  }
+
+  /* Lee un campo de ficha: imagen + nombre + descripcion (+ enlace). Formato libre:
+     [img]url[/img] Nombre | Descripción breve | https://enlace */
+  function leerFicha(c) {
+    var d = { img: '', nombre: '', desc: '', link: '' };
+    var t = c.cloneNode(true);
+    var im = t.querySelector('img'); if (im) d.img = im.getAttribute('src') || '';
+    Array.prototype.forEach.call(t.querySelectorAll('a[href]'), function (a) {
+      var h = a.getAttribute('href') || '';
+      if (/^https?:\/\//i.test(h)) { if (!d.img && IMG_RE.test(h) && !a.textContent.trim()) d.img = h; else if (!d.link) d.link = h; }
+      if (a.querySelector('img') || /^https?:\/\//i.test(a.textContent.trim())) a.parentNode.removeChild(a);
+    });
+    Array.prototype.forEach.call(t.querySelectorAll('img'), function (i) { i.parentNode.removeChild(i); });
+    Array.prototype.forEach.call(t.querySelectorAll('br,p,div'), function (b) { b.parentNode.insertBefore(document.createTextNode('\n'), b); });
+    var partes = t.textContent.split(/\s*\|\s*|\n+/).map(function (x) { return x.trim(); }).filter(Boolean);
+    var resto = [];
+    partes.forEach(function (x) {
+      if (/^https?:\/\/\S+$/i.test(x)) { if (!d.img && IMG_RE.test(x)) d.img = x; else if (!d.link) d.link = x; }
+      else resto.push(x);
+    });
+    d.nombre = resto[0] || ''; d.desc = resto.slice(1).join(' · ');
+    return d;
+  }
+
   function perfil() {
     var raiz = document.getElementById('rperfil');
     if (!raiz || raiz.getAttribute('data-bts-pf')) return;
@@ -847,7 +912,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     }
 
     /* campos del perfil */
-    var f = {}, extras = [], playlist = null, poderes = null, detalle = null, aliado = null, apodos = null;
+    var f = {}, extras = [], playlist = null, poderes = null, detalle = null, aliado = null, apodos = null, curiosidades = null, relaciones = [], multis = [], ooc = [];
     var rpf = raiz.querySelectorAll('#rperfil-campos .rpf');
     for (var j = 0; j < rpf.length; j++) {
       var l = rpf[j].querySelector('.rpf-l'), c = rpf[j].querySelector('.rpf-c');
@@ -863,15 +928,23 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       else if (/aliad[oa].*(imagen|img)|(imagen|img).*aliad[oa]/.test(sl)) aliado = c;
       else if (/^poder-perfil|^poder(es)?$|^habilidades?$/.test(sl)) poderes = c;
       else if (/^apodos?$/.test(sl)) apodos = c;
+      else if (/^curiosidad/.test(sl)) curiosidades = c;
+      else if (/^(relacion|vinculo)/.test(sl)) relaciones.push(c);
+      else if (/^(multicuenta|alter|cuenta)/.test(sl)) multis.push(c);
+      else if (/^ooc(-|$)/.test(sl)) ooc.push({ l: l.textContent.replace(/\s*:\s*$/, '').replace(/^\s*ooc\s*[-:·]?\s*/i, '').trim() || 'OOC', c: c });
     }
 
-    /* 1. la frase pasa debajo de la identidad, encima de los apodos */
-    var q = raiz.querySelector('.rperfil__quote'), idb = raiz.querySelector('.rperfil__id');
-    if (q && idb && idb.nextSibling !== q) idb.parentNode.insertBefore(q, idb.nextSibling);
+    /* ---------- estructura en pestañas ---------- */
+    var paneles = pestanas(raiz);
+    var cols = raiz.querySelector('.rperfil__cols');
+    var col = raiz.querySelector('.rperfil__avatar'), main = raiz.querySelector('.rperfil__main'),
+        side = raiz.querySelector('.rperfil__side');
+    function q1(s) { return raiz.querySelector(s); }
+    function quita(n) { if (n && n.parentNode) n.parentNode.removeChild(n); return n; }
 
-    /* 2. debajo del avatar: solo los botones de enlace */
-    var col = raiz.querySelector('.rperfil__avatar');
-    if (col && !col.querySelector('.rpf-bajo')) {
+    /* ===== PESTAÑA 1 · columna izquierda ===== */
+    if (col) {
+      var rk = quita(q1('.rperfil__rank'));           /* el rango del foro pasa a la columna derecha */
       var box = el('div', 'rcontactfields rpf-bajo');
       var u = urlDe(playlist);
       if (u) box.appendChild(botonContacto('playlist', u, 'Playlist / OST', 'cp-music-note', true));
@@ -884,53 +957,158 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
         }
       });
       if (box.firstChild) col.appendChild(box);
-    }
 
-    /* 2b. apodos: todos en un mismo recuadro, tal como se escriben */
-    var nk = raiz.querySelector('.rperfil__nicks');
-    if (nk && !nk.getAttribute('data-bts-one')) {
-      var txt = apodos && apodos.textContent.replace(/\s+/g, '').length ? apodos.innerHTML
-        : Array.prototype.map.call(nk.querySelectorAll('span'), function (x) { return x.textContent; }).join(', ');
-      if (txt) { nk.innerHTML = ''; var one = document.createElement('span'); one.innerHTML = txt; nk.appendChild(one); nk.classList.remove('is-empty'); }
-      nk.setAttribute('data-bts-one', '1');
-    }
+      /* navegación rápida: MP, mis mensajes, temas en los que participó, temas abiertos... */
+      var acts = q1('.rperfil__actions');
+      if (acts) {
+        var todos = Array.prototype.slice.call(acts.querySelectorAll('a'));
+        function por(re) { for (var z = 0; z < todos.length; z++) if (re.test(todos[z].title || '')) return todos[z]; return null; }
+        var mp = por(/privado/i), bus = por(/buscar/i), mail = por(/correo/i), edit = por(/editar/i);
+        var seq = [mp, bus];
+        if (bus && bus.getAttribute('href')) {
+          var h = bus.getAttribute('href');
+          var conRes = function (v) { return /show_results=/.test(h) ? h.replace(/show_results=\w+/, 'show_results=' + v) : h + (/\?/.test(h) ? '&' : '?') + 'show_results=' + v; };
+          var part = document.createElement('a'); part.href = conRes('topics');
+          var abi = document.createElement('a'); abi.href = conRes('topics') + '&search_fields=firstpost';
+          [[part, 'cp-chat-bubble-o', 'Temas en los que participó'], [abi, 'cp-add-o', 'Temas abiertos']].forEach(function (d) {
+            d[0].className = 'rcbtn'; d[0].title = d[2]; d[0].setAttribute('aria-label', d[2]);
+            d[0].innerHTML = '<i class="cp ' + d[1] + '" aria-hidden="true"></i><span class="rcbtn__t">' + d[2] + '</span>';
+            seq.push(d[0]);
+          });
+        }
+        seq.push(mail, edit);
+        seq.forEach(function (a2) { if (a2) acts.appendChild(a2); });
+        quita(acts.querySelector('.rperfil__contact'));
+        acts.classList.add('rperfil__nav');
+        if (box.firstChild) col.insertBefore(el('hr', 'rperfil__sep'), box.nextSibling);
+        col.appendChild(acts);
+      }
 
-    /* 3. campo unico "Poder": mismo estilo que "Nivel de poder" */
-    var pwrap = raiz.querySelector('.rperfil__powers-wrap');
-    if (pwrap && pwrap.parentNode) pwrap.parentNode.removeChild(pwrap);
-    var poderTile = null;
-    if (poderes && poderes.textContent.replace(/\s+/g, '').length) {
-      poderTile = el('div', 'rstat rstat--power rstat--poder');
-      var pv = el('span', 'rtile__v'); pv.innerHTML = poderes.innerHTML;
-      var pl = el('span', 'rtile__l', 'Poder');
-      poderTile.appendChild(pv); poderTile.appendChild(pl);
-    }
-
-    /* 4. cuadro de texto con el detalle del poder */
-    var desc = el('div', 'rperfil__powerdesc');
-    if (detalle && detalle.textContent.replace(/\s+/g, '').length) { desc.innerHTML = detalle.innerHTML; desc.classList.add('tiene'); }
-    else { desc.textContent = 'Sin detalles del poder.'; desc.classList.add('vacio'); }
-
-    /* 5. bloque bajo el banner: rango, estadísticas, poder, detalle y barras */
-    var banner = raiz.querySelector('.rperfil__banner');
-    if (banner && !raiz.querySelector('.rperfil__info')) {
-      var info = el('div', 'rperfil__info');
-      var rk = raiz.querySelector('.rperfil__rank'), st = raiz.querySelector('.rperfil__stats');
-      if (rk) info.appendChild(rk);
-      if (st) { if (poderTile) st.insertBefore(poderTile, st.children[1] || null); info.appendChild(st); }
-      info.appendChild(desc);
-      info.appendChild(barras(f));
-      banner.parentNode.insertBefore(info, banner.nextSibling);
-    }
-
-    /* 6. imagen del aliado (250x150) debajo del avatar */
-    if (col && !col.querySelector('.rperfil__ally')) {
+      /* imagen del aliado (250x150) y cuadro de Alianza */
       var al = el('div', 'rperfil__ally'), im = aliado && aliado.querySelector('img');
       if (!im && aliado) { var uu = urlDe(aliado); if (uu) { im = document.createElement('img'); im.src = uu; im.alt = 'Aliado'; } }
       if (!im) { im = document.createElement('img'); im.src = 'https://placehold.co/250x150'; im.alt = 'Aliado'; al.classList.add('vacio'); }
       al.appendChild(im.cloneNode(true));
-      var av = col.querySelector('.rperfil__avatarimg');
-      col.insertBefore(al, av ? av.nextSibling : col.firstChild);
+      col.appendChild(al);
+      col.appendChild(quita(q1('[data-slot="alianza"]')) || document.createComment(''));
+    }
+
+    /* ===== PESTAÑA 1 · columna central ===== */
+    if (main) {
+      var idb = q1('.rperfil__id'), qq = q1('.rperfil__quote');
+      if (qq && idb && idb.nextSibling !== qq) idb.parentNode.insertBefore(qq, idb.nextSibling);
+      var nk = q1('.rperfil__nicks');
+      if (nk && !nk.getAttribute('data-bts-one')) {
+        var txt = apodos && apodos.textContent.replace(/\s+/g, '').length ? apodos.innerHTML
+          : Array.prototype.map.call(nk.querySelectorAll('span'), function (x) { return x.textContent; }).join(', ');
+        if (txt) { nk.innerHTML = ''; var one = document.createElement('span'); one.innerHTML = txt; nk.appendChild(one); nk.classList.remove('is-empty'); }
+        nk.setAttribute('data-bts-one', '1');
+      }
+      var ub = q1('[data-slot="ubicacion"]'); if (ub) ub.classList.remove('rtile--wide');
+      quita(q1('.rperfil__powers-wrap'));
+    }
+
+    /* ===== PESTAÑA 1 · columna derecha ===== */
+    var nivel = q1('[data-slot="nivel"]'), rango = q1('[data-slot="rango"]'), creditos = q1('[data-slot="creditos"]');
+    var credTxt = creditos ? (creditos.querySelector('.rtile__v') || creditos).textContent.trim() : '';
+    var info = el('div', 'rperfil__info');
+    if (nivel) info.appendChild(nivel);
+    var pTile = el('div', 'rstat rstat--power rstat--poder');
+    var pv = el('span', 'rtile__v'), pl = el('span', 'rtile__l', 'Poder');
+    if (poderes && poderes.textContent.replace(/\s+/g, '').length) pv.innerHTML = poderes.innerHTML;
+    else { pv.textContent = '—'; pTile.classList.add('is-empty'); }
+    pTile.appendChild(pv); pTile.appendChild(pl);
+    info.appendChild(pTile);
+    var desc = el('div', 'rperfil__powerdesc');
+    if (detalle && detalle.textContent.replace(/\s+/g, '').length) { desc.innerHTML = detalle.innerHTML; desc.classList.add('tiene'); }
+    else { desc.textContent = 'Sin detalles del poder.'; desc.classList.add('vacio'); }
+    info.appendChild(desc);
+    if (rango) info.appendChild(rango);
+    if (rk) info.appendChild(rk);
+    quita(creditos); quita(q1('.rperfil__stats'));
+    var banner = q1('.rperfil__banner');
+    if (side) {
+      if (banner) side.insertBefore(info, banner.nextSibling); else side.appendChild(info);
+    }
+    if (main) main.appendChild(barras(f));
+
+    /* ===== PESTAÑA 2 · red de contactos y lore ===== */
+    if (paneles[1]) {
+      var w1 = ventanaPf('Relaciones'), rg = el('div', 'rrel');
+      var n = 0;
+      relaciones.forEach(function (c2) {
+        var d = leerFicha(c2);
+        var it = el('div', 'rrel__it'), ph = el('div', 'rrel__ph'), imx = document.createElement('img');
+        imx.src = d.img || 'https://placehold.co/100'; imx.alt = d.nombre || 'Vínculo';
+        ph.appendChild(imx); it.appendChild(ph);
+        it.appendChild(el('b', 'rrel__n', d.nombre || 'Sin nombre'));
+        if (d.desc) it.appendChild(el('span', 'rrel__d', d.desc));
+        if (d.link) { var aa = document.createElement('a'); aa.href = d.link; aa.className = 'rrel__a'; aa.appendChild(it); rg.appendChild(aa); }
+        else rg.appendChild(it);
+        n++;
+      });
+      for (; n < MIN_REL; n++) {
+        var vi = el('div', 'rrel__it vacio'), vp = el('div', 'rrel__ph'), vimg = document.createElement('img');
+        vimg.src = 'https://placehold.co/100'; vimg.alt = ''; vp.appendChild(vimg); vi.appendChild(vp);
+        vi.appendChild(el('b', 'rrel__n', 'Sin vínculo')); rg.appendChild(vi);
+      }
+      w1.appendChild(rg);
+      paneles[1].appendChild(w1);
+
+      var w2 = ventanaPf('Archivo oculto'), term = el('div', 'rterm');
+      var alias = (q1('.rperfil__alias') || {}).textContent || '';
+      term.appendChild(el('div', 'rterm__l', '> ACCESO CONCEDIDO · EXPEDIENTE: ' + alias.trim().toUpperCase()));
+      term.appendChild(el('div', 'rterm__l', '> BIOGRAFÍA Y NOTAS OCULTAS'));
+      var cu = el('div', 'rterm__body');
+      if (curiosidades && curiosidades.textContent.replace(/\s+/g, '').length) cu.innerHTML = curiosidades.innerHTML;
+      else { cu.textContent = 'SIN REGISTROS. ARCHIVO VACÍO.'; cu.classList.add('vacio'); }
+      term.appendChild(cu);
+      term.appendChild(el('div', 'rterm__l rterm__cur', '> '));
+      w2.appendChild(term);
+      paneles[1].appendChild(w2);
+    }
+
+    /* ===== PESTAÑA 3 · multicuentas y logbook ===== */
+    if (paneles[2]) {
+      var w3 = ventanaPf('Multicuentas'), mg = el('div', 'rmulti'), m = 0;
+      multis.forEach(function (c3) {
+        var d = leerFicha(c3);
+        var tile = d.link ? document.createElement('a') : document.createElement('div');
+        tile.className = 'rmulti__it';
+        if (d.link) tile.href = d.link;
+        var imm = document.createElement('img'); imm.src = d.img || 'https://placehold.co/250x150'; imm.alt = d.nombre || 'Multicuenta';
+        tile.appendChild(imm);
+        if (d.nombre) tile.appendChild(el('span', 'rmulti__n', d.nombre));
+        mg.appendChild(tile); m++;
+      });
+      for (; m < MIN_MULTI; m++) {
+        var vt = el('div', 'rmulti__it vacio'), vim = document.createElement('img');
+        vim.src = 'https://placehold.co/250x150'; vim.alt = ''; vt.appendChild(vim); mg.appendChild(vt);
+      }
+      w3.appendChild(mg);
+      paneles[2].appendChild(w3);
+
+      var w4 = ventanaPf('Logbook OOC'), lg = el('div', 'rlog');
+      var tip = function (s) { var b = q1(s + ' .rdate__tip'); return b ? b.textContent.replace(/^[^·]*·\s*/, '').trim() : ''; };
+      var cal = q1('.rdate--cal'), reg = tip('.rdate--cal') || (cal && (cal.getAttribute('data-fallback') || '').trim()) || '';
+      var nac = tip('.rdate--cake');
+      var lastB = q1('.rperfil__last b'), msgB = q1('.rperfil__stat b'), onl = q1('.rperfil__online');
+      var filas = [
+        ['Última visita', lastB ? lastB.textContent.trim() : ''],
+        ['Estado', onl ? onl.innerHTML.trim() : '', true],
+        ['Registro', reg],
+        ['Cumpleaños', /sin fecha/i.test(nac) ? '' : nac],
+        ['Mensajes', msgB ? msgB.textContent.trim() : ''],
+        ['Créditos', credTxt]
+      ];
+      ooc.forEach(function (o) { filas.push([o.l, o.c.innerHTML.trim(), true]); });
+      filas.forEach(function (r) {
+        var row = el('div', 'rlog__row'), lb = el('span', 'rlog__l', r[0]), vv = el('span', 'rlog__v');
+        if (r[1] && r[1] !== '—') { if (r[2]) vv.innerHTML = r[1]; else vv.textContent = r[1]; } else { vv.textContent = '—'; row.classList.add('is-empty'); }
+        row.appendChild(lb); row.appendChild(vv); lg.appendChild(row);
+      });
+      w4.appendChild(lg);
+      paneles[2].appendChild(w4);
     }
   }
 
@@ -1873,7 +2051,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
   }
 
   /* 2. Pestañas del perfil. Cambia aquí los nombres. */
-  var PESTANAS = ["Perfil", "Pestaña 2", "Pestaña 3"];
+  var PESTANAS = ["Perfil", "Red y lore", "Multicuentas y logbook"];
   function pestanasPerfil() {
     var root = document.getElementById("rperfil");
     if (!root) return true;                     /* no es un perfil */

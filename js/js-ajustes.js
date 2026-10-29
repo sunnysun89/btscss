@@ -331,7 +331,7 @@
   }
 
   /* 2. Pestañas del perfil. Cambia aquí los nombres. */
-  var PESTANAS = ["Perfil", "Pestaña 2", "Pestaña 3"];
+  var PESTANAS = ["Perfil", "Red y lore", "Multicuentas y logbook"];
   function pestanasPerfil() {
     var root = document.getElementById("rperfil");
     if (!root) return true;                     /* no es un perfil */
