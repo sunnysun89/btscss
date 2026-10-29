@@ -847,7 +847,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     }
 
     /* campos del perfil */
-    var f = {}, extras = [], playlist = null, poderes = null, detalle = null, aliado = null;
+    var f = {}, extras = [], playlist = null, poderes = null, detalle = null, aliado = null, apodos = null;
     var rpf = raiz.querySelectorAll('#rperfil-campos .rpf');
     for (var j = 0; j < rpf.length; j++) {
       var l = rpf[j].querySelector('.rpf-l'), c = rpf[j].querySelector('.rpf-c');
@@ -861,7 +861,8 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       else if (/autocontrol/.test(sl)) f.auto = c;
       else if (/(detalle|descripcion|explicacion).*poder|poder.*(detalle|descripcion|explicacion)/.test(sl)) detalle = c;
       else if (/aliad[oa].*(imagen|img)|(imagen|img).*aliad[oa]/.test(sl)) aliado = c;
-      else if (/^poder-perfil|^poderes?$|^habilidades?$/.test(sl)) poderes = c;
+      else if (/^poder-perfil|^poder(es)?$|^habilidades?$/.test(sl)) poderes = c;
+      else if (/^apodos?$/.test(sl)) apodos = c;
     }
 
     /* 1. la frase pasa debajo de la identidad, encima de los apodos */
@@ -885,17 +886,25 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       if (box.firstChild) col.appendChild(box);
     }
 
-    /* 3. "Poder perfil": una etiqueta por poder (si js-perfil no lo rellenó ya) */
-    var pw = raiz.querySelector('.rperfil__powers'), pwrap = raiz.querySelector('.rperfil__powers-wrap');
-    if (pw && poderes && !pw.querySelector('span') && poderes.textContent.replace(/\s+/g, '').length) {
-      var tmp = poderes.cloneNode(true);
-      Array.prototype.forEach.call(tmp.querySelectorAll('br'), function (br) { br.parentNode.replaceChild(document.createTextNode('\n'), br); });
-      tmp.textContent.split(/[,;\/|·•\n]+/).map(function (x) { return x.trim(); }).filter(Boolean).forEach(function (x) {
-        var sp = document.createElement('span'); sp.textContent = x; pw.appendChild(sp);
-      });
-      pw.classList.remove('is-empty');
+    /* 2b. apodos: todos en un mismo recuadro, tal como se escriben */
+    var nk = raiz.querySelector('.rperfil__nicks');
+    if (nk && !nk.getAttribute('data-bts-one')) {
+      var txt = apodos && apodos.textContent.replace(/\s+/g, '').length ? apodos.innerHTML
+        : Array.prototype.map.call(nk.querySelectorAll('span'), function (x) { return x.textContent; }).join(', ');
+      if (txt) { nk.innerHTML = ''; var one = document.createElement('span'); one.innerHTML = txt; nk.appendChild(one); nk.classList.remove('is-empty'); }
+      nk.setAttribute('data-bts-one', '1');
     }
-    if (pwrap) { var h3 = pwrap.querySelector('h3'); if (h3) h3.textContent = 'Poder perfil'; }
+
+    /* 3. campo unico "Poder": mismo estilo que "Nivel de poder" */
+    var pwrap = raiz.querySelector('.rperfil__powers-wrap');
+    if (pwrap && pwrap.parentNode) pwrap.parentNode.removeChild(pwrap);
+    var poderTile = null;
+    if (poderes && poderes.textContent.replace(/\s+/g, '').length) {
+      poderTile = el('div', 'rstat rstat--power rstat--poder');
+      var pv = el('span', 'rtile__v'); pv.innerHTML = poderes.innerHTML;
+      var pl = el('span', 'rtile__l', 'Poder');
+      poderTile.appendChild(pv); poderTile.appendChild(pl);
+    }
 
     /* 4. cuadro de texto con el detalle del poder */
     var desc = el('div', 'rperfil__powerdesc');
@@ -908,21 +917,20 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       var info = el('div', 'rperfil__info');
       var rk = raiz.querySelector('.rperfil__rank'), st = raiz.querySelector('.rperfil__stats');
       if (rk) info.appendChild(rk);
-      if (st) info.appendChild(st);
-      if (pwrap) info.appendChild(pwrap);
+      if (st) { if (poderTile) st.insertBefore(poderTile, st.children[1] || null); info.appendChild(st); }
       info.appendChild(desc);
       info.appendChild(barras(f));
       banner.parentNode.insertBefore(info, banner.nextSibling);
     }
 
-    /* 6. imagen del aliado (250x150), al final de la columna central */
-    var main = raiz.querySelector('.rperfil__main');
-    if (main && !main.querySelector('.rperfil__ally')) {
+    /* 6. imagen del aliado (250x150) debajo del avatar */
+    if (col && !col.querySelector('.rperfil__ally')) {
       var al = el('div', 'rperfil__ally'), im = aliado && aliado.querySelector('img');
       if (!im && aliado) { var uu = urlDe(aliado); if (uu) { im = document.createElement('img'); im.src = uu; im.alt = 'Aliado'; } }
-      if (im) { al.appendChild(im.cloneNode(true)); al.classList.add('tiene'); }
-      else { al.classList.add('vacio'); al.appendChild(el('span', '', 'Aliado')); }
-      main.appendChild(al);
+      if (!im) { im = document.createElement('img'); im.src = 'https://placehold.co/250x150'; im.alt = 'Aliado'; al.classList.add('vacio'); }
+      al.appendChild(im.cloneNode(true));
+      var av = col.querySelector('.rperfil__avatarimg');
+      col.insertBefore(al, av ? av.nextSibling : col.firstChild);
     }
   }
 
@@ -950,7 +958,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
         if (!f.playlist && esPlaylist(c)) f.playlist = c;
         else if (!f.icono && es(c, CLAVES.icono) && c.querySelector('img')) f.icono = c;
         else if (!f.frase && es(c, CLAVES.frase)) f.frase = c;
-        else if (!f.poder && es(c, CLAVES.poder)) f.poder = c;
+        else if (!f.poder && (slug(nombre(c)) === 'poder' || es(c, CLAVES.poder))) f.poder = c;
         else if (!f.pop && es(c, CLAVES.pop)) f.pop = c;
         else if (!f.auto && es(c, CLAVES.auto)) f.auto = c;
         else if (!f.imp1 && esImplante(c, 1)) f.imp1 = c;
@@ -977,7 +985,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       }
       if (poBox) {
         if (f.poder && !vacio(f.poder)) {
-          var lb = f.poder.querySelector('.postprofile-field-label'); if (lb) lb.textContent = 'Poder';
+          var lb = f.poder.querySelector('.postprofile-field-label'); if (lb) lb.textContent = 'Poder:';
           poBox.appendChild(f.poder); poBox.classList.add('tiene');
         }
         else { if (f.poder) f.poder.parentNode.removeChild(f.poder); hueco(poBox, 'sin poder'); }
