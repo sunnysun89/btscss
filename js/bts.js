@@ -827,6 +827,100 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     [/mode=editprofile|editar/, 'cp-edit-o',         'Editar perfil'],
     [/search/,                  'cp-search',         'Buscar sus mensajes']
   ];
+  /* ---- HTML y CSS escritos por el usuario en campos "zona de texto" ----------
+     Foroactivo escapa el HTML de los campos de perfil: el usuario escribe
+     <div style="..."> y el foro lo muestra como texto. Aquí se lee ese texto, se
+     interpreta en un documento inerte (DOMParser) y se reconstruye SOLO con
+     etiquetas, atributos y propiedades CSS permitidos. No hay scripts, ni
+     posiciones fijas/absolutas, ni @import. Los <style> se acotan a su campo y
+     las clases se renombran con el prefijo "u-" (.caja -> .u-caja).
+     Si el campo no contiene etiquetas, se muestra tal cual (BBCode normal).
+     Campos que lo usan: Curiosidades, Cronología y Detalle poder. */
+  var HTML_OK = /^(div|span|p|br|b|strong|i|em|u|s|del|small|sub|sup|h[1-6]|ul|ol|li|blockquote|hr|a|img|table|thead|tbody|tr|td|th|center|mark|code|pre|details|summary|figure|figcaption|style)$/;
+  var CSS_OK = /^(color|background(-(color|image|size|position|repeat|clip))?|border(-(top|right|bottom|left))?(-(color|style|width|radius))?|border-radius|margin(-(top|right|bottom|left))?|padding(-(top|right|bottom|left))?|font(-(family|size|style|weight|variant))?|text-(align|decoration|transform|indent|shadow)|letter-spacing|word-spacing|line-height|width|height|(min|max)-(width|height)|display|flex(-(direction|wrap|grow|shrink|basis|flow))?|grid(-(template(-(columns|rows|areas))?|column|row|gap|area|auto-flow))?|gap|row-gap|column-gap|align-(items|content|self)|justify-(content|items|self)|opacity|box-shadow|transform|transform-origin|transition(-(property|duration|timing-function|delay))?|filter|cursor|list-style(-type)?|vertical-align|white-space|word-break|overflow-wrap|object-fit|object-position|float|clear|outline(-(color|style|width|offset))?|text-overflow|aspect-ratio|mix-blend-mode)$/;
+  var contadorHtml = 0;
+
+  function cssValorOk(v) {
+    if (/expression|javascript|behavior|binding|@import|[<>\\]/i.test(v)) return false;
+    var m, re = /url\(\s*(['"]?)([^'")]*)\1\s*\)/gi;
+    while ((m = re.exec(v))) if (!/^https:\/\//i.test(m[2])) return false;
+    return !/url\(/i.test(v.replace(re, ''));
+  }
+  function cssDecl(estilo) {
+    var out = '';
+    for (var i = 0; i < estilo.length; i++) {
+      var p = estilo[i], v = estilo.getPropertyValue(p);
+      if (CSS_OK.test(p) && cssValorOk(v)) out += p + ':' + v + ';';
+    }
+    return out;
+  }
+  function textoDe(n) {
+    if (n.nodeType === 3) return n.nodeValue;
+    if (n.nodeType !== 1) return '';
+    var t = n.nodeName.toLowerCase();
+    if (t === 'br') return '\n';
+    if (t === 'a' && n.getAttribute('href')) return n.getAttribute('href');
+    var s = ''; for (var c = n.firstChild; c; c = c.nextSibling) s += textoDe(c);
+    return s;
+  }
+  function escalaSelector(sel, id) {
+    return sel.split(',').map(function (x) {
+      x = x.trim();
+      if (!x || /[{}@<>;\\]/.test(x)) return '';
+      x = x.replace(/\.(-?[_a-zA-Z][\w-]*)/g, '.u-$1');
+      return '[data-rh="' + id + '"] ' + x;
+    }).filter(Boolean).join(',');
+  }
+  function hojaEstilos(css, id) {
+    var out = '';
+    try {
+      var hoja = new CSSStyleSheet(); hoja.replaceSync(css);
+      Array.prototype.forEach.call(hoja.cssRules, function (r) {
+        if (r.type !== 1) return;
+        var d = cssDecl(r.style), s = escalaSelector(r.selectorText, id);
+        if (d && s) out += s + '{' + d + '}';
+      });
+    } catch (e) {}
+    return out;
+  }
+  function limpia(nodo, destino, estilos, id) {
+    for (var c = nodo.firstChild; c; c = c.nextSibling) {
+      if (c.nodeType === 3) { destino.appendChild(document.createTextNode(c.nodeValue)); continue; }
+      if (c.nodeType !== 1) continue;
+      var t = c.nodeName.toLowerCase();
+      if (/^(script|iframe|object|embed|noscript|template|svg|math|form|input|button|textarea|select|link|meta|base|audio|video)$/.test(t)) continue;   /* se descarta con su contenido */
+      if (!HTML_OK.test(t)) { limpia(c, destino, estilos, id); continue; }   /* etiqueta no permitida: se conserva el texto */
+      if (t === 'style') { estilos.push(hojaEstilos(c.textContent, id)); continue; }
+      var n = document.createElement(t);
+      var st = cssDecl(c.style || {}); if (st) n.setAttribute('style', st);
+      var cl = (c.getAttribute('class') || '').split(/\s+/).filter(function (x) { return /^[\w-]+$/.test(x); }).map(function (x) { return 'u-' + x; }).join(' ');
+      if (cl) n.className = cl;
+      ['title', 'alt', 'width', 'height', 'colspan', 'rowspan', 'align'].forEach(function (a) { if (c.hasAttribute(a)) n.setAttribute(a, c.getAttribute(a)); });
+      if (t === 'a') {
+        var h = c.getAttribute('href') || '';
+        if (/^(https?:\/\/|mailto:|#)/i.test(h)) { n.setAttribute('href', h); n.setAttribute('target', '_blank'); n.setAttribute('rel', 'noopener noreferrer'); }
+      }
+      if (t === 'img') {
+        var sr = c.getAttribute('src') || '';
+        if (/^https:\/\//i.test(sr)) { n.setAttribute('src', sr); n.setAttribute('loading', 'lazy'); } else continue;
+      }
+      limpia(c, n, estilos, id);
+      destino.appendChild(n);
+    }
+  }
+  /* Devuelve el HTML a mostrar para un campo (.rpf-c / .postprofile-field-content). */
+  function htmlUsuario(campo) {
+    if (!campo) return '';
+    var txt = textoDe(campo);
+    if (!/<\/?[a-z][^>]*>/i.test(txt)) return campo.innerHTML;
+    var doc = new DOMParser().parseFromString('<body>' + txt + '</body>', 'text/html');
+    var id = ++contadorHtml, estilos = [], caja = document.createElement('div');
+    caja.className = 'rhtml'; caja.setAttribute('data-rh', id);
+    limpia(doc.body, caja, estilos, id);
+    if (estilos.join('')) { var st = document.createElement('style'); st.textContent = estilos.join(''); caja.insertBefore(st, caja.firstChild); }
+    return caja.outerHTML;
+  }
+
   var PESTANAS = ['Perfil', 'Red y lore', 'Multicuentas y logbook'];   // nombres de las pestañas del perfil
   var MIN_REL = 6, MIN_MULTI = 3;     // casillas mínimas (las que faltan salen con imagen placeholder)
   var IMG_RE = /\.(png|jpe?g|gif|webp|svg|avif)(\?|#|$)|placehold\.co|imgur|postimg|i\.ibb/i;
@@ -912,7 +1006,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     }
 
     /* campos del perfil */
-    var f = {}, extras = [], playlist = null, poderes = null, detalle = null, aliado = null, apodos = null, curiosidades = null, relaciones = [], multis = [], ooc = [];
+    var f = {}, extras = [], playlist = null, poderes = null, detalle = null, aliado = null, apodos = null, curiosidades = null, cronologia = null, relaciones = [], multis = [], ooc = [];
     var rpf = raiz.querySelectorAll('#rperfil-campos .rpf');
     for (var j = 0; j < rpf.length; j++) {
       var l = rpf[j].querySelector('.rpf-l'), c = rpf[j].querySelector('.rpf-c');
@@ -929,6 +1023,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       else if (/^poder-perfil|^poder(es)?$|^habilidades?$/.test(sl)) poderes = c;
       else if (/^apodos?$/.test(sl)) apodos = c;
       else if (/^curiosidad/.test(sl)) curiosidades = c;
+      else if (/^cronologia/.test(sl)) cronologia = c;
       else if (/^(relacion|vinculo)/.test(sl)) relaciones.push(c);
       else if (/^(multicuenta|alter|cuenta)/.test(sl)) multis.push(c);
       else if (/^ooc(-|$)/.test(sl)) ooc.push({ l: l.textContent.replace(/\s*:\s*$/, '').replace(/^\s*ooc\s*[-:·]?\s*/i, '').trim() || 'OOC', c: c });
@@ -984,13 +1079,6 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
         col.appendChild(acts);
       }
 
-      /* imagen del aliado (250x150) y cuadro de Alianza */
-      var al = el('div', 'rperfil__ally'), im = aliado && aliado.querySelector('img');
-      if (!im && aliado) { var uu = urlDe(aliado); if (uu) { im = document.createElement('img'); im.src = uu; im.alt = 'Aliado'; } }
-      if (!im) { im = document.createElement('img'); im.src = 'https://placehold.co/250x150'; im.alt = 'Aliado'; al.classList.add('vacio'); }
-      al.appendChild(im.cloneNode(true));
-      col.appendChild(al);
-      col.appendChild(quita(q1('[data-slot="alianza"]')) || document.createComment(''));
     }
 
     /* ===== PESTAÑA 1 · columna central ===== */
@@ -1020,7 +1108,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     pTile.appendChild(pv); pTile.appendChild(pl);
     info.appendChild(pTile);
     var desc = el('div', 'rperfil__powerdesc');
-    if (detalle && detalle.textContent.replace(/\s+/g, '').length) { desc.innerHTML = detalle.innerHTML; desc.classList.add('tiene'); }
+    if (detalle && detalle.textContent.replace(/\s+/g, '').length) { desc.innerHTML = htmlUsuario(detalle); desc.classList.add('tiene'); }
     else { desc.textContent = 'Sin detalles del poder.'; desc.classList.add('vacio'); }
     info.appendChild(desc);
     if (rango) info.appendChild(rango);
@@ -1031,6 +1119,20 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       if (banner) side.insertBefore(info, banner.nextSibling); else side.appendChild(info);
     }
     if (main) main.appendChild(barras(f));
+    /* Curiosidades: terminal bajo las barras (pestaña 1) */
+    {
+      var w2 = ventanaPf('Archivo oculto'), term = el('div', 'rterm');
+      var alias = (q1('.rperfil__alias') || {}).textContent || '';
+      term.appendChild(el('div', 'rterm__l', '> ACCESO CONCEDIDO · EXPEDIENTE: ' + alias.trim().toUpperCase()));
+      term.appendChild(el('div', 'rterm__l', '> BIOGRAFÍA Y NOTAS OCULTAS'));
+      var cu = el('div', 'rterm__body');
+      if (curiosidades && curiosidades.textContent.replace(/\s+/g, '').length) cu.innerHTML = htmlUsuario(curiosidades);
+      else { cu.textContent = 'SIN REGISTROS. ARCHIVO VACÍO.'; cu.classList.add('vacio'); }
+      term.appendChild(cu);
+      term.appendChild(el('div', 'rterm__l rterm__cur', '> '));
+      w2.appendChild(term);
+      if (main) main.appendChild(w2);
+    }
 
     /* ===== PESTAÑA 2 · red de contactos y lore ===== */
     if (paneles[1]) {
@@ -1055,17 +1157,22 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       w1.appendChild(rg);
       paneles[1].appendChild(w1);
 
-      var w2 = ventanaPf('Archivo oculto'), term = el('div', 'rterm');
-      var alias = (q1('.rperfil__alias') || {}).textContent || '';
-      term.appendChild(el('div', 'rterm__l', '> ACCESO CONCEDIDO · EXPEDIENTE: ' + alias.trim().toUpperCase()));
-      term.appendChild(el('div', 'rterm__l', '> BIOGRAFÍA Y NOTAS OCULTAS'));
-      var cu = el('div', 'rterm__body');
-      if (curiosidades && curiosidades.textContent.replace(/\s+/g, '').length) cu.innerHTML = curiosidades.innerHTML;
-      else { cu.textContent = 'SIN REGISTROS. ARCHIVO VACÍO.'; cu.classList.add('vacio'); }
-      term.appendChild(cu);
-      term.appendChild(el('div', 'rterm__l rterm__cur', '> '));
-      w2.appendChild(term);
-      paneles[1].appendChild(w2);
+      /* alianza (imagen + cuadro) a la izquierda y Cronología a la derecha, debajo de las relaciones */
+      var w5 = ventanaPf('Alianza y cronología'), ag = el('div', 'ralian'), izq = el('div', 'ralian__l');
+      var al = el('div', 'rperfil__ally'), im = aliado && aliado.querySelector('img');
+      if (!im && aliado) { var uu = urlDe(aliado); if (uu) { im = document.createElement('img'); im.src = uu; im.alt = 'Aliado'; } }
+      if (!im) { im = document.createElement('img'); im.src = 'https://placehold.co/250x150'; im.alt = 'Aliado'; al.classList.add('vacio'); }
+      al.appendChild(im.cloneNode(true));
+      izq.appendChild(al);
+      var ti = quita(q1('[data-slot="alianza"]')); if (ti) izq.appendChild(ti);
+      var der = el('div', 'ralian__r'), cr = el('div', 'rcrono');
+      cr.appendChild(el('h3', 'rcrono__t', 'Cronología'));
+      var cb = el('div', 'rcrono__b');
+      if (cronologia && cronologia.textContent.replace(/\s+/g, '').length) cb.innerHTML = htmlUsuario(cronologia);
+      else { cb.textContent = 'Sin cronología.'; cb.classList.add('vacio'); }
+      cr.appendChild(cb); der.appendChild(cr);
+      ag.appendChild(izq); ag.appendChild(der); w5.appendChild(ag);
+      paneles[1].appendChild(w5);
     }
 
     /* ===== PESTAÑA 3 · multicuentas y logbook ===== */
@@ -1110,6 +1217,8 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       w4.appendChild(lg);
       paneles[2].appendChild(w4);
     }
+    /* los botones de nacimiento e inscripción ya no se muestran: sus datos están en el Logbook */
+    Array.prototype.forEach.call(raiz.querySelectorAll('.rdate'), quita);
   }
 
   var avisado = false;

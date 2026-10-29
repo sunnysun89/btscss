@@ -124,7 +124,7 @@
   /* VELOCIDAD DE LOS HOVERS: se cambian aquí y afectan a todo el foro.
      --burnthesky-ease ..... enlaces, tarjetas, botones, bordes, sombras
      --burnthesky-ease-img . imágenes (de gris a color) */
-  --burnthesky-css:           "v2.3";   /* la consola la muestra al cargar: sirve para saber si el navegador tiene el CSS nuevo */
+  --burnthesky-css:           "v2.4";   /* la consola la muestra al cargar: sirve para saber si el navegador tiene el CSS nuevo */
   --burnthesky-ease:          2s cubic-bezier(.22, .61, .36, 1);
   --burnthesky-ease-img:      2s ease;
 
@@ -6470,3 +6470,53 @@ a.rbtn-main img { display: none; }
 @media (max-width: 760px) {
   .rrel { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+
+/* ============================================================================
+   49 · PERFIL: hovers, Alianza + Cronología, terminal en la pestaña 1 y
+        HTML/CSS de usuario (.rhtml)
+   ========================================================================== */
+/* hover de relaciones: sube, borde rojo vivo, sombra fantasma y la imagen recupera el color */
+.rrel__it { transition: transform var(--burnthesky-ease); }
+.rrel__it:not(.vacio):hover { transform: translateY(calc(-1 * var(--burnthesky-lift))); }
+.rrel__ph { transition: border-color var(--burnthesky-ease), box-shadow var(--burnthesky-ease); }
+.rrel__it:not(.vacio):hover .rrel__ph {
+  border-color: var(--burnthesky-red-vivid);
+  box-shadow: 0 0 0 3px var(--burnthesky-red-ghost-2), var(--burnthesky-ghost-sm);
+}
+.rrel__it:not(.vacio):hover .rrel__n { color: var(--burnthesky-red-vivid); }
+.rrel__n { transition: color var(--burnthesky-ease); }
+
+/* hover de multicuentas */
+.rmulti__it { transition: filter var(--burnthesky-ease-img), transform var(--burnthesky-ease), border-color var(--burnthesky-ease), box-shadow var(--burnthesky-ease); }
+.rmulti__it:not(.vacio):hover {
+  transform: translateY(calc(-1 * var(--burnthesky-lift)));
+  border-color: var(--burnthesky-red-vivid);
+  box-shadow: 4px 4px 0 var(--burnthesky-red-ghost-2);
+}
+.rmulti__n { transition: color var(--burnthesky-ease), background var(--burnthesky-ease); }
+.rmulti__it:hover .rmulti__n { color: var(--burnthesky-red-vivid); }
+
+/* alianza (izquierda) + cronología (derecha): mitad y mitad */
+.ralian { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; align-items: start; }
+.ralian__l { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.ralian__l .rtile { margin: 0; }
+.ralian__r { min-width: 0; }
+.rcrono { display: flex; flex-direction: column; height: 100%; background: var(--burnthesky-void); border: 1px solid var(--burnthesky-line); border-left: 3px solid var(--burnthesky-red); }
+.rcrono__t {
+  margin: 0 !important; padding: 10px 14px !important;
+  border-bottom: 1px solid var(--burnthesky-line) !important;
+  font: var(--burnthesky-fs-xs) / 1 var(--burnthesky-ff-mono); letter-spacing: 3px; text-transform: uppercase; color: var(--burnthesky-red-vivid);
+}
+.rcrono__b { padding: 12px 14px; font: 12px / 1.7 var(--burnthesky-ff-sans); color: var(--burnthesky-gray-lt); overflow-wrap: anywhere; min-height: 120px; }
+.rcrono__b.vacio { font-style: italic; color: var(--burnthesky-gray); opacity: .6; }
+@media (max-width: 760px) { .ralian { grid-template-columns: 1fr; } }
+
+/* terminal dentro de la columna central (pestaña 1) */
+.rperfil__main .rperfil__win { margin-top: var(--burnthesky-gap); }
+.rperfil__main .rterm { margin: 12px; padding: 12px 14px; font-size: 12px; }
+
+/* HTML/CSS del usuario: contenido aislado dentro de su campo */
+.rhtml { position: relative; contain: layout paint; isolation: isolate; overflow: hidden; max-width: 100%; }
+.rhtml img { max-width: 100%; height: auto; }
+.rhtml a { text-decoration: underline; }
