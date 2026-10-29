@@ -11,8 +11,9 @@
    - Panel al pasar el ratón por el avatar: solo Edad, Orientación sexual,
      Estado sentimental, Alias, Apodos, Ocupación, Facción, Alianza y
      Ubicación, y solo los que el usuario rellena.
-   - En el perfil: botones con iconos y los datos de "Otros datos" (barras,
-     poderes y enlaces) debajo del avatar.
+   - En el perfil: botones con iconos, enlaces bajo el avatar, y bajo el
+     banner: rango, estadísticas, Poder perfil, su detalle y las barras.
+     Frase bajo el título; imagen del aliado al final de la columna central.
    - Botones del mensaje (citar, editar, borrar...) -> iconos Capucciicons
      (hoja tempcf.css en la cabecera) y botones Responder / Nuevo tema.
    - Lo demás queda en el panel que aparece al pasar el ratón por el avatar.
@@ -26,8 +27,8 @@
 !function () {
   var CLAVES = {
     icono:  ['icon'],
-    frase:  ['frase', 'cita', 'quote', 'lema'],
-    poder:  ['poder', 'habilidad'],
+    frase:  ['frase-post', 'frase-mensaje'],      // campo "Frase post"
+    poder:  ['poder-mensaje', 'poder-post'],      // campo "Poder mensajes"
     inv:    ['inventario', 'objeto', 'item'],
     med:    ['medall', 'insignia'],
     pop:    ['popularidad'],
@@ -322,45 +323,84 @@
       }
     }
 
-    /* datos bajo el avatar */
-    var col = raiz.querySelector('.rperfil__avatar');
+    /* campos del perfil */
+    var f = {}, extras = [], playlist = null, poderes = null, detalle = null, aliado = null;
     var rpf = raiz.querySelectorAll('#rperfil-campos .rpf');
-    if (!col || !rpf.length) return;
-    var f = {}, extras = [], playlist = null, poderes = null;
     for (var j = 0; j < rpf.length; j++) {
       var l = rpf[j].querySelector('.rpf-l'), c = rpf[j].querySelector('.rpf-c');
       if (!l || !c) continue;
       var sl = slug(l.textContent.replace(/\s*:\s*$/, '').replace(/\*/g, ''));
-      var par = { c: c };
       var ex = null;
       for (var e = 0; e < EXTRAS.length; e++) if (EXTRAS[e][1].test(sl)) ex = EXTRAS[e][0];
       if (ex) extras.push({ t: ex, f: c });
       else if (/(^|-)(playlist|ost)(-|$)/.test(sl)) playlist = c;
       else if (/popularidad/.test(sl)) f.pop = c;
       else if (/autocontrol/.test(sl)) f.auto = c;
-      else if (/(^|-)(poder|poderes|habilidades?)(-|$)/.test(sl)) poderes = c;
+      else if (/(detalle|descripcion|explicacion).*poder|poder.*(detalle|descripcion|explicacion)/.test(sl)) detalle = c;
+      else if (/aliad[oa].*(imagen|img)|(imagen|img).*aliad[oa]/.test(sl)) aliado = c;
+      else if (/^poder-perfil|^poderes?$|^habilidades?$/.test(sl)) poderes = c;
     }
-    if (col.querySelector('.rbars, .rcontactfields.rpf-bajo')) return;
 
-    if (poderes && poderes.textContent.replace(/\s+/g, '').length) {
-      var po = el('div', 'rpower tiene');
-      po.innerHTML = '<span class="postprofile-field-label">Poderes</span> <span class="postprofile-field-content"></span>';
-      po.querySelector('.postprofile-field-content').innerHTML = poderes.innerHTML;
-      col.appendChild(po);
+    /* 1. la frase pasa debajo de la identidad, encima de los apodos */
+    var q = raiz.querySelector('.rperfil__quote'), idb = raiz.querySelector('.rperfil__id');
+    if (q && idb && idb.nextSibling !== q) idb.parentNode.insertBefore(q, idb.nextSibling);
+
+    /* 2. debajo del avatar: solo los botones de enlace */
+    var col = raiz.querySelector('.rperfil__avatar');
+    if (col && !col.querySelector('.rpf-bajo')) {
+      var box = el('div', 'rcontactfields rpf-bajo');
+      var u = urlDe(playlist);
+      if (u) box.appendChild(botonContacto('playlist', u, 'Playlist / OST', 'cp-music-note', true));
+      EXTRAS.forEach(function (d) {
+        for (var q2 = 0; q2 < extras.length; q2++) {
+          if (extras[q2].t !== d[0]) continue;
+          var url = urlDe(extras[q2].f);
+          if (url) box.appendChild(botonContacto(d[0], url, d[3], d[2], true));
+          break;
+        }
+      });
+      if (box.firstChild) col.appendChild(box);
     }
-    col.appendChild(barras(f));
-    var box = el('div', 'rcontactfields rpf-bajo');
-    var u = urlDe(playlist);
-    if (u) box.appendChild(botonContacto('playlist', u, 'Playlist / OST', 'cp-music-note', true));
-    EXTRAS.forEach(function (d) {
-      for (var q = 0; q < extras.length; q++) {
-        if (extras[q].t !== d[0]) continue;
-        var url = urlDe(extras[q].f);
-        if (url) box.appendChild(botonContacto(d[0], url, d[3], d[2], true));
-        break;
-      }
-    });
-    if (box.firstChild) col.appendChild(box);
+
+    /* 3. "Poder perfil": una etiqueta por poder (si js-perfil no lo rellenó ya) */
+    var pw = raiz.querySelector('.rperfil__powers'), pwrap = raiz.querySelector('.rperfil__powers-wrap');
+    if (pw && poderes && !pw.querySelector('span') && poderes.textContent.replace(/\s+/g, '').length) {
+      var tmp = poderes.cloneNode(true);
+      Array.prototype.forEach.call(tmp.querySelectorAll('br'), function (br) { br.parentNode.replaceChild(document.createTextNode('\n'), br); });
+      tmp.textContent.split(/[,;\/|·•\n]+/).map(function (x) { return x.trim(); }).filter(Boolean).forEach(function (x) {
+        var sp = document.createElement('span'); sp.textContent = x; pw.appendChild(sp);
+      });
+      pw.classList.remove('is-empty');
+    }
+    if (pwrap) { var h3 = pwrap.querySelector('h3'); if (h3) h3.textContent = 'Poder perfil'; }
+
+    /* 4. cuadro de texto con el detalle del poder */
+    var desc = el('div', 'rperfil__powerdesc');
+    if (detalle && detalle.textContent.replace(/\s+/g, '').length) { desc.innerHTML = detalle.innerHTML; desc.classList.add('tiene'); }
+    else { desc.textContent = 'Sin detalles del poder.'; desc.classList.add('vacio'); }
+
+    /* 5. bloque bajo el banner: rango, estadísticas, poder, detalle y barras */
+    var banner = raiz.querySelector('.rperfil__banner');
+    if (banner && !raiz.querySelector('.rperfil__info')) {
+      var info = el('div', 'rperfil__info');
+      var rk = raiz.querySelector('.rperfil__rank'), st = raiz.querySelector('.rperfil__stats');
+      if (rk) info.appendChild(rk);
+      if (st) info.appendChild(st);
+      if (pwrap) info.appendChild(pwrap);
+      info.appendChild(desc);
+      info.appendChild(barras(f));
+      banner.parentNode.insertBefore(info, banner.nextSibling);
+    }
+
+    /* 6. imagen del aliado (250x150), al final de la columna central */
+    var main = raiz.querySelector('.rperfil__main');
+    if (main && !main.querySelector('.rperfil__ally')) {
+      var al = el('div', 'rperfil__ally'), im = aliado && aliado.querySelector('img');
+      if (!im && aliado) { var uu = urlDe(aliado); if (uu) { im = document.createElement('img'); im.src = uu; im.alt = 'Aliado'; } }
+      if (im) { al.appendChild(im.cloneNode(true)); al.classList.add('tiene'); }
+      else { al.classList.add('vacio'); al.appendChild(el('span', '', 'Aliado')); }
+      main.appendChild(al);
+    }
   }
 
   var avisado = false;
@@ -413,7 +453,10 @@
         else { if (f.frase) f.frase.parentNode.removeChild(f.frase); hueco(frBox, 'sin frase'); }
       }
       if (poBox) {
-        if (f.poder && !vacio(f.poder)) { poBox.appendChild(f.poder); poBox.classList.add('tiene'); }
+        if (f.poder && !vacio(f.poder)) {
+          var lb = f.poder.querySelector('.postprofile-field-label'); if (lb) lb.textContent = 'Poder';
+          poBox.appendChild(f.poder); poBox.classList.add('tiene');
+        }
         else { if (f.poder) f.poder.parentNode.removeChild(f.poder); hueco(poBox, 'sin poder'); }
       }
 

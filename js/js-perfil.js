@@ -173,7 +173,7 @@
       banner: ["banner", "banner imagen", "banner pequeno", "cabecera"],
       musica: ["musica", "cancion", "tema musical"],
       nivel: ["nivel de poder", "nivel poder", "poder nivel", "nivel"],
-      poderes: ["poderes", "poder", "habilidades"],
+      poderes: ["poder perfil", "poderes", "poder", "habilidades"],
       rango: ["rango"],
       creditos: ["creditos", "credito"],
       nacimiento: ["fecha de nacimiento", "fecha nacimiento", "nacimiento", "cumpleanos"],
