@@ -124,7 +124,7 @@
   /* VELOCIDAD DE LOS HOVERS: se cambian aquí y afectan a todo el foro.
      --burnthesky-ease ..... enlaces, tarjetas, botones, bordes, sombras
      --burnthesky-ease-img . imágenes (de gris a color) */
-  --burnthesky-css:           "v2.4";   /* la consola la muestra al cargar: sirve para saber si el navegador tiene el CSS nuevo */
+  --burnthesky-css:           "v2.5";   /* la consola la muestra al cargar: sirve para saber si el navegador tiene el CSS nuevo */
   --burnthesky-ease:          2s cubic-bezier(.22, .61, .36, 1);
   --burnthesky-ease-img:      2s ease;
 
@@ -6520,3 +6520,35 @@ a.rbtn-main img { display: none; }
 .rhtml { position: relative; contain: layout paint; isolation: isolate; overflow: hidden; max-width: 100%; }
 .rhtml img { max-width: 100%; height: auto; }
 .rhtml a { text-decoration: underline; }
+
+
+/* ============================================================================
+   50 · PERFIL: poder y barras bajo el avatar, terminal con scroll, Alianza al lado de la imagen
+   ========================================================================== */
+:root { --burnthesky-pf-term-h: 220px; }   /* alto máximo de Curiosidades antes de usar scroll */
+.rperfil__powerbox { display: flex; flex-direction: column; gap: var(--burnthesky-gap); margin-top: 14px; }
+.rperfil__powerbox .rstat { width: 100%; }
+.rperfil__powerbox .rstat--power .rtile__v,
+.rperfil__powerbox .rstat--poder .rtile__v { font-size: var(--burnthesky-pf-power-fs); line-height: 1.25; overflow-wrap: anywhere; }
+.rperfil__powerbox .rstat--poder.is-empty .rtile__v { color: var(--burnthesky-gray); }
+.rperfil__powerbox .rbars { margin: 0; }
+
+.rperfil__win--nohead { }
+.rperfil__main .rterm__body {
+  max-height: var(--burnthesky-pf-term-h); overflow-y: auto; padding-right: 8px;
+  scrollbar-width: thin; scrollbar-color: var(--burnthesky-red) transparent;
+}
+.rterm__body::-webkit-scrollbar { width: 6px; }
+.rterm__body::-webkit-scrollbar-thumb { background: var(--burnthesky-red); }
+.rterm__body::-webkit-scrollbar-track { background: transparent; }
+
+.ralian__l { flex-direction: row; align-items: flex-start; flex-wrap: wrap; gap: 14px; }
+.ralian__l .rperfil__ally { margin: 0; flex: none; }
+.ralian__d { flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.ralian__txt {
+  min-height: 70px; max-height: 120px; overflow-y: auto; padding: 10px 12px;
+  background: var(--burnthesky-void); border: 1px solid var(--burnthesky-line);
+  font: 12px / 1.6 var(--burnthesky-ff-sans); color: var(--burnthesky-gray-lt); overflow-wrap: anywhere;
+  scrollbar-width: thin; scrollbar-color: var(--burnthesky-red) transparent;
+}
+.ralian__txt.vacio { font-style: italic; color: var(--burnthesky-gray); opacity: .6; }

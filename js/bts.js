@@ -835,7 +835,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
      posiciones fijas/absolutas, ni @import. Los <style> se acotan a su campo y
      las clases se renombran con el prefijo "u-" (.caja -> .u-caja).
      Si el campo no contiene etiquetas, se muestra tal cual (BBCode normal).
-     Campos que lo usan: Curiosidades, Cronología y Detalle poder. */
+     Campos que lo usan: Curiosidades, Cronología, Detalle poder y Aliado (descripción). */
   var HTML_OK = /^(div|span|p|br|b|strong|i|em|u|s|del|small|sub|sup|h[1-6]|ul|ol|li|blockquote|hr|a|img|table|thead|tbody|tr|td|th|center|mark|code|pre|details|summary|figure|figcaption|style)$/;
   var CSS_OK = /^(color|background(-(color|image|size|position|repeat|clip))?|border(-(top|right|bottom|left))?(-(color|style|width|radius))?|border-radius|margin(-(top|right|bottom|left))?|padding(-(top|right|bottom|left))?|font(-(family|size|style|weight|variant))?|text-(align|decoration|transform|indent|shadow)|letter-spacing|word-spacing|line-height|width|height|(min|max)-(width|height)|display|flex(-(direction|wrap|grow|shrink|basis|flow))?|grid(-(template(-(columns|rows|areas))?|column|row|gap|area|auto-flow))?|gap|row-gap|column-gap|align-(items|content|self)|justify-(content|items|self)|opacity|box-shadow|transform|transform-origin|transition(-(property|duration|timing-function|delay))?|filter|cursor|list-style(-type)?|vertical-align|white-space|word-break|overflow-wrap|object-fit|object-position|float|clear|outline(-(color|style|width|offset))?|text-overflow|aspect-ratio|mix-blend-mode)$/;
   var contadorHtml = 0;
@@ -1006,7 +1006,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     }
 
     /* campos del perfil */
-    var f = {}, extras = [], playlist = null, poderes = null, detalle = null, aliado = null, apodos = null, curiosidades = null, cronologia = null, relaciones = [], multis = [], ooc = [];
+    var f = {}, extras = [], playlist = null, poderes = null, detalle = null, aliado = null, aliadoDesc = null, apodos = null, curiosidades = null, cronologia = null, relaciones = [], multis = [], ooc = [];
     var rpf = raiz.querySelectorAll('#rperfil-campos .rpf');
     for (var j = 0; j < rpf.length; j++) {
       var l = rpf[j].querySelector('.rpf-l'), c = rpf[j].querySelector('.rpf-c');
@@ -1018,6 +1018,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       else if (/(^|-)(playlist|ost)(-|$)/.test(sl)) playlist = c;
       else if (/popularidad/.test(sl)) f.pop = c;
       else if (/autocontrol/.test(sl)) f.auto = c;
+      else if (/aliad[oa].*descripcion|descripcion.*aliad[oa]/.test(sl)) aliadoDesc = c;
       else if (/(detalle|descripcion|explicacion).*poder|poder.*(detalle|descripcion|explicacion)/.test(sl)) detalle = c;
       else if (/aliad[oa].*(imagen|img)|(imagen|img).*aliad[oa]/.test(sl)) aliado = c;
       else if (/^poder-perfil|^poder(es)?$|^habilidades?$/.test(sl)) poderes = c;
@@ -1100,13 +1101,11 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     var nivel = q1('[data-slot="nivel"]'), rango = q1('[data-slot="rango"]'), creditos = q1('[data-slot="creditos"]');
     var credTxt = creditos ? (creditos.querySelector('.rtile__v') || creditos).textContent.trim() : '';
     var info = el('div', 'rperfil__info');
-    if (nivel) info.appendChild(nivel);
     var pTile = el('div', 'rstat rstat--power rstat--poder');
     var pv = el('span', 'rtile__v'), pl = el('span', 'rtile__l', 'Poder');
     if (poderes && poderes.textContent.replace(/\s+/g, '').length) pv.innerHTML = poderes.innerHTML;
     else { pv.textContent = '—'; pTile.classList.add('is-empty'); }
     pTile.appendChild(pv); pTile.appendChild(pl);
-    info.appendChild(pTile);
     var desc = el('div', 'rperfil__powerdesc');
     if (detalle && detalle.textContent.replace(/\s+/g, '').length) { desc.innerHTML = htmlUsuario(detalle); desc.classList.add('tiene'); }
     else { desc.textContent = 'Sin detalles del poder.'; desc.classList.add('vacio'); }
@@ -1118,10 +1117,18 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     if (side) {
       if (banner) side.insertBefore(info, banner.nextSibling); else side.appendChild(info);
     }
-    if (main) main.appendChild(barras(f));
+    /* nivel de poder, poder y barras: bajo el avatar, encima de los botones */
+    if (col) {
+      var pb = el('div', 'rperfil__powerbox');
+      if (nivel) pb.appendChild(nivel);
+      pb.appendChild(pTile);
+      pb.appendChild(barras(f));
+      var avi = col.querySelector('.rperfil__avatarimg');
+      col.insertBefore(pb, avi ? avi.nextSibling : col.firstChild);
+    }
     /* Curiosidades: terminal bajo las barras (pestaña 1) */
     {
-      var w2 = ventanaPf('Archivo oculto'), term = el('div', 'rterm');
+      var w2 = el('section', 'rperfil__win rperfil__win--nohead'), term = el('div', 'rterm');
       var alias = (q1('.rperfil__alias') || {}).textContent || '';
       term.appendChild(el('div', 'rterm__l', '> ACCESO CONCEDIDO · EXPEDIENTE: ' + alias.trim().toUpperCase()));
       term.appendChild(el('div', 'rterm__l', '> BIOGRAFÍA Y NOTAS OCULTAS'));
@@ -1164,7 +1171,12 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       if (!im) { im = document.createElement('img'); im.src = 'https://placehold.co/250x150'; im.alt = 'Aliado'; al.classList.add('vacio'); }
       al.appendChild(im.cloneNode(true));
       izq.appendChild(al);
-      var ti = quita(q1('[data-slot="alianza"]')); if (ti) izq.appendChild(ti);
+      var dd = el('div', 'ralian__d');
+      var ti = quita(q1('[data-slot="alianza"]')); if (ti) dd.appendChild(ti);
+      var ad = el('div', 'ralian__txt');
+      if (aliadoDesc && aliadoDesc.textContent.replace(/\s+/g, '').length) ad.innerHTML = htmlUsuario(aliadoDesc);
+      else { ad.textContent = 'Sin descripción.'; ad.classList.add('vacio'); }
+      dd.appendChild(ad); izq.appendChild(dd);
       var der = el('div', 'ralian__r'), cr = el('div', 'rcrono');
       cr.appendChild(el('h3', 'rcrono__t', 'Cronología'));
       var cb = el('div', 'rcrono__b');
