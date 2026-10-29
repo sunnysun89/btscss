@@ -124,7 +124,7 @@
   /* VELOCIDAD DE LOS HOVERS: se cambian aquí y afectan a todo el foro.
      --burnthesky-ease ..... enlaces, tarjetas, botones, bordes, sombras
      --burnthesky-ease-img . imágenes (de gris a color) */
-  --burnthesky-css:           "v2.7";   /* la consola la muestra al cargar: sirve para saber si el navegador tiene el CSS nuevo */
+  --burnthesky-css:           "v2.8";   /* la consola la muestra al cargar: sirve para saber si el navegador tiene el CSS nuevo */
   --burnthesky-ease:          2s cubic-bezier(.22, .61, .36, 1);
   --burnthesky-ease-img:      2s ease;
 
@@ -6478,18 +6478,18 @@ a.rbtn-main img { display: none; }
    ========================================================================== */
 /* hover de relaciones: sube, borde rojo vivo, sombra fantasma y la imagen recupera el color */
 .rrel__it { transition: transform var(--burnthesky-ease); }
-.rrel__it:not(.vacio):is(:hover, .is-hover) { transform: translateY(calc(-1 * var(--burnthesky-lift))); }
+.rrel__it:is(:hover, .is-hover) { transform: translateY(calc(-1 * var(--burnthesky-lift))); }
 .rrel__ph { transition: border-color var(--burnthesky-ease), box-shadow var(--burnthesky-ease); }
-.rrel__it:not(.vacio):is(:hover, .is-hover) .rrel__ph {
+.rrel__it:is(:hover, .is-hover) .rrel__ph {
   border-color: var(--burnthesky-red-vivid);
   box-shadow: 0 0 0 3px var(--burnthesky-red-ghost-2), var(--burnthesky-ghost-sm);
 }
-.rrel__it:not(.vacio):is(:hover, .is-hover) .rrel__n { color: var(--burnthesky-red-vivid); }
+.rrel__it:is(:hover, .is-hover) .rrel__n { color: var(--burnthesky-red-vivid); }
 .rrel__n { transition: color var(--burnthesky-ease); }
 
 /* hover de multicuentas */
 .rmulti__it { transition: filter var(--burnthesky-ease-img), transform var(--burnthesky-ease), border-color var(--burnthesky-ease), box-shadow var(--burnthesky-ease); }
-.rmulti__it:not(.vacio):is(:hover, .is-hover) {
+.rmulti__it:is(:hover, .is-hover) {
   transform: translateY(calc(-1 * var(--burnthesky-lift)));
   border-color: var(--burnthesky-red-vivid);
   box-shadow: 4px 4px 0 var(--burnthesky-red-ghost-2);
@@ -6561,16 +6561,16 @@ a.rbtn-main img { display: none; }
    ========================================================================== */
 :root { --burnthesky-pf-hover-zoom: 1.1; --burnthesky-pf-hover-t: .35s ease; }
 .rrel__ph img, .rmulti__it img { transition: transform var(--burnthesky-pf-hover-t), filter var(--burnthesky-pf-hover-t); }
-.rrel__it:not(.vacio):is(:hover, .is-hover) .rrel__ph img,
-.rmulti__it:not(.vacio):is(:hover, .is-hover) img { transform: scale(var(--burnthesky-pf-hover-zoom)); filter: none !important; }
+.rrel__it:is(:hover, .is-hover) .rrel__ph img,
+.rmulti__it:is(:hover, .is-hover) img { transform: scale(var(--burnthesky-pf-hover-zoom)); filter: none !important; }
 .rrel__ph, .rrel__n { transition-duration: .35s; }
-.rrel__it:not(.vacio):is(:hover, .is-hover) .rrel__ph {
+.rrel__it:is(:hover, .is-hover) .rrel__ph {
   border-color: var(--burnthesky-red-vivid);
   box-shadow: 0 0 0 4px var(--burnthesky-red-ghost-2), 0 0 18px var(--burnthesky-red-ghost-2);
 }
 .rmulti__it { transition: filter var(--burnthesky-pf-hover-t), transform var(--burnthesky-pf-hover-t), border-color var(--burnthesky-pf-hover-t), box-shadow var(--burnthesky-pf-hover-t); }
-.rmulti__it:not(.vacio):is(:hover, .is-hover) { filter: none !important; }
-.rrel__it:not(.vacio), .rmulti__it:not(.vacio) { cursor: pointer; }
+.rmulti__it:is(:hover, .is-hover) { filter: none !important; }
+.rrel__it, .rmulti__it { cursor: pointer; }
 
 /* barras en la columna derecha */
 .rperfil__info .rbars { margin: 0; }
@@ -6599,3 +6599,8 @@ a.rbtn-main img { display: none; }
 .rmulti__arrow[hidden] { display: none; }
 .rmulti__arrow--prev { left: 6px; }
 .rmulti__arrow--next { right: 6px; }
+
+
+/* las casillas vacías (placeholder) también reaccionan: se aclaran al pasar el ratón */
+.rrel__it.vacio:is(:hover, .is-hover), .rmulti__it.vacio:is(:hover, .is-hover) { opacity: .9; }
+.rrel__it.vacio, .rmulti__it.vacio { transition: opacity var(--burnthesky-pf-hover-t); }

@@ -921,6 +921,22 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     return caja.outerHTML;
   }
 
+  /* Lista de fichas: un campo normal = una ficha; un campo plural ("Relaciones",
+     "Multicuentas") = una ficha por línea (separadas por salto de línea). */
+  function fichasDe(campos) {
+    var out = [];
+    campos.forEach(function (c) {
+      if (!c.getAttribute('data-plural')) { out.push(leerFicha(c)); return; }
+      var grupos = [document.createElement('div')];
+      for (var n = c.firstChild; n; n = n.nextSibling) {
+        if (n.nodeType === 1 && n.nodeName.toLowerCase() === 'br') grupos.push(document.createElement('div'));
+        else grupos[grupos.length - 1].appendChild(n.cloneNode(true));
+      }
+      grupos.forEach(function (g) { if (g.querySelector('img') || g.textContent.trim()) out.push(leerFicha(g)); });
+    });
+    return out;
+  }
+
   var PESTANAS = ['Perfil', 'Red y lore', 'Multicuentas y logbook'];   // nombres de las pestañas del perfil
   var MIN_REL = 6, MIN_MULTI = 3;     // casillas mínimas (las que faltan salen con imagen placeholder)
   var IMG_RE = /\.(png|jpe?g|gif|webp|svg|avif)(\?|#|$)|placehold\.co|imgur|postimg|i\.ibb/i;
@@ -1025,8 +1041,8 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       else if (/^apodos?$/.test(sl)) apodos = c;
       else if (/^curiosidad/.test(sl)) curiosidades = c;
       else if (/^cronologia/.test(sl)) cronologia = c;
-      else if (/^(relacion|vinculo)/.test(sl)) relaciones.push(c);
-      else if (/^(multicuenta|alter|cuenta)/.test(sl)) multis.push(c);
+      else if (/^(relacion|vinculo)/.test(sl)) { if (/^(relaciones|vinculos)$/.test(sl)) c.setAttribute('data-plural', '1'); relaciones.push(c); }
+      else if (/^(multicuenta|alter|cuenta)/.test(sl)) { if (/^(multicuentas|alters|cuentas)$/.test(sl)) c.setAttribute('data-plural', '1'); multis.push(c); }
       else if (/^ooc(-|$)/.test(sl)) ooc.push({ l: l.textContent.replace(/\s*:\s*$/, '').replace(/^\s*ooc\s*[-:·]?\s*/i, '').trim() || 'OOC', c: c });
     }
 
@@ -1145,8 +1161,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     if (paneles[1]) {
       var w1 = ventanaPf('Relaciones'), rg = el('div', 'rrel');
       var n = 0;
-      relaciones.forEach(function (c2) {
-        var d = leerFicha(c2);
+      fichasDe(relaciones).forEach(function (d) {
         var it = el('div', 'rrel__it'), ph = el('div', 'rrel__ph'), imx = document.createElement('img');
         imx.src = d.img || 'https://placehold.co/100'; imx.alt = d.nombre || 'Vínculo';
         ph.appendChild(imx); it.appendChild(ph);
@@ -1190,8 +1205,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     /* ===== PESTAÑA 3 · multicuentas y logbook ===== */
     if (paneles[2]) {
       var w3 = ventanaPf('Multicuentas'), mg = el('div', 'rmulti'), m = 0;
-      multis.forEach(function (c3) {
-        var d = leerFicha(c3);
+      fichasDe(multis).forEach(function (d) {
         var tile = d.link ? document.createElement('a') : document.createElement('div');
         tile.className = 'rmulti__it';
         if (d.link) tile.href = d.link;
@@ -1248,7 +1262,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     if (!raiz.getAttribute('data-bts-hv')) {
       raiz.setAttribute('data-bts-hv', '1');
       var marca = function (x, y) {
-        Array.prototype.forEach.call(raiz.querySelectorAll('.rrel__it:not(.vacio), .rmulti__it:not(.vacio)'), function (t) {
+        Array.prototype.forEach.call(raiz.querySelectorAll('.rrel__it, .rmulti__it'), function (t) {
           var r = t.getBoundingClientRect();
           t.classList.toggle('is-hover', x != null && x >= r.left && x <= r.right && y >= r.top && y <= r.bottom);
         });
