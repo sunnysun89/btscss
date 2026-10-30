@@ -940,10 +940,23 @@
     }
   }
 
+  /* Banner hacia arriba: la imagen ocupa también el hueco libre sobre el banner
+     (hasta el borde superior de la página). Mide ese hueco y lo guarda en
+     --burnthesky-banner-up; el CSS estira el banner esa cantidad hacia arriba. */
+  function bannerArriba() {
+    var h = document.querySelector('#headercontainer #header');
+    if (!h) return;
+    var root = document.documentElement;
+    var up = parseFloat(root.style.getPropertyValue('--burnthesky-banner-up')) || 0;
+    var top = Math.max(0, Math.round(h.getBoundingClientRect().top + (window.pageYOffset || 0) + up));
+    if (top !== up) root.style.setProperty('--burnthesky-banner-up', top + 'px');
+  }
+  window.addEventListener('resize', function () { try { bannerArriba(); } catch (e) {} });
+
   var avisado = false;
 
   function arrancar() {
-    try { iconosPost(); botonesTema(); perfil(); indiceV3(); } catch (e) {}
+    try { iconosPost(); botonesTema(); perfil(); indiceV3(); bannerArriba(); } catch (e) {}
     var posts = document.querySelectorAll('.post');
     for (var n = 0; n < posts.length; n++) {
       var post = posts[n];
@@ -1032,7 +1045,7 @@
     }
   }
 
-  function tarde() { setTimeout(arrancar, 0); setTimeout(function () { try { iconosPost(); botonesTema(); perfil(); indiceV3(); } catch (e) {} }, 800); }
+  function tarde() { setTimeout(arrancar, 0); setTimeout(function () { try { iconosPost(); botonesTema(); perfil(); indiceV3(); bannerArriba(); } catch (e) {} }, 800); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tarde);
   else tarde();
 }();

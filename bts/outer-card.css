@@ -6911,3 +6911,22 @@ html { scrollbar-color: rgba(var(--burnthesky-accent-rgb), .35) var(--burnthesky
 
 /* terminal de curiosidades sin barras punteadas */
 .rterm__body { margin: 0; padding: 0 8px 0 0; border: 0 !important; max-height: var(--burnthesky-pf-term-h); }
+
+
+/* ============================================================================
+   55 · BANNER HASTA EL BORDE SUPERIOR + DEGRADADO INFERIOR A TRANSPARENTE
+   js-post.js (bannerArriba) mide el hueco que hay sobre el banner y lo guarda en
+   --burnthesky-banner-up; aquí el banner crece esa cantidad hacia arriba, sin
+   mover el título. El borde inferior se difumina con una máscara y deja ver la
+   imagen de fondo del foro.
+   --burnthesky-banner-fade ... dónde empieza el degradado (60% = a partir del 60% del alto)
+   ========================================================================== */
+:root { --burnthesky-banner-up: 0px; --burnthesky-banner-fade: 62%; }
+#headercontainer #header {
+  margin-top: calc(-1 * var(--burnthesky-banner-up));
+  height: calc(var(--burnthesky-banner-h) + var(--burnthesky-banner-up));
+  padding-top: var(--burnthesky-banner-up);
+  -webkit-mask-image: linear-gradient(180deg, #000 var(--burnthesky-banner-fade), transparent 100%);
+          mask-image: linear-gradient(180deg, #000 var(--burnthesky-banner-fade), transparent 100%);
+}
+#headercontainer #header::after { background: none; }
