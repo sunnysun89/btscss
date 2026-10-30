@@ -479,6 +479,101 @@
     return d;
   }
 
+  /* ---- Paleta del perfil según el grupo del usuario --------------------------
+     El color del grupo (el de su nombre en el foro) se toma, por orden, de:
+       1. el propio perfil: un enlace a /uNN con color en línea (listas de conectados, etc.)
+       2. una búsqueda de sus mensajes (/search?search_author=...), donde su nombre sale
+          con el color de su grupo
+       3. el mapa GRUPOS_PERFIL de abajo (por id de usuario), si quieres fijarlo a mano
+     A partir de ese color se calculan el acento, su versión clara y oscura, el brillo y
+     dos colores de apoyo, y se aplican SOLO dentro de #rperfil. Sin color de grupo (o con
+     un gris/blanco/negro) se queda la paleta normal. En la consola: "[BTS] perfil: grupo → …". */
+  var GRUPOS_PERFIL = {};   // ej. { 12: '#7ac1ff' }  (id de usuario → color)
+  var COLORES_NEUTROS = /^(#?(fff(fff)?|000(000)?)|rgb\(\s*(0,\s*0,\s*0|255,\s*255,\s*255)\s*\))$/i;
+
+  function aRgb(c) {
+    c = (c || '').trim();
+    var m = c.match(/^#([0-9a-f]{3})$/i); if (m) { var h = m[1]; return [parseInt(h[0] + h[0], 16), parseInt(h[1] + h[1], 16), parseInt(h[2] + h[2], 16)]; }
+    m = c.match(/^#([0-9a-f]{6})$/i); if (m) return [parseInt(m[1].substr(0, 2), 16), parseInt(m[1].substr(2, 2), 16), parseInt(m[1].substr(4, 2), 16)];
+    m = c.match(/^rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)/i); if (m) return [+m[1], +m[2], +m[3]];
+    return null;
+  }
+  function rgb2hsl(r, g, b) {
+    r /= 255; g /= 255; b /= 255;
+    var mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2, h = 0, s = 0, d = mx - mn;
+    if (d) {
+      s = l > .5 ? d / (2 - mx - mn) : d / (mx + mn);
+      h = mx === r ? (g - b) / d + (g < b ? 6 : 0) : mx === g ? (b - r) / d + 2 : (r - g) / d + 4;
+      h *= 60;
+    }
+    return [h, s, l];
+  }
+  function hsl2rgb(h, s, l) {
+    h = ((h % 360) + 360) % 360 / 360;
+    var q = l < .5 ? l * (1 + s) : l + s - l * s, p = 2 * l - q;
+    function f(t) { t = (t + 1) % 1; return t < 1 / 6 ? p + (q - p) * 6 * t : t < .5 ? q : t < 2 / 3 ? p + (q - p) * (2 / 3 - t) * 6 : p; }
+    return s ? [f(h + 1 / 3), f(h), f(h - 1 / 3)].map(function (x) { return Math.round(x * 255); }) : [l, l, l].map(function (x) { return Math.round(x * 255); });
+  }
+  function hex(r) { return '#' + r.map(function (x) { return ('0' + x.toString(16)).slice(-2); }).join(''); }
+
+  function colorEnlace(doc, id) {
+    var re = new RegExp('(^|/)u' + id + '(?!\\d)'), as = doc.querySelectorAll('a[href]');
+    for (var i = 0; i < as.length; i++) {
+      var h = as[i].getAttribute('href') || '';
+      if (!re.test(h.split('?')[0].split('#')[0]) && !new RegExp('[?&]u=' + id + '(?!\\d)').test(h)) continue;
+      var cands = [as[i]].concat(Array.prototype.slice.call(as[i].querySelectorAll('[style*="color"], font[color]')));
+      for (var k = 0; k < cands.length; k++) {
+        var c = (cands[k].style && cands[k].style.color) || cands[k].getAttribute('color') || '';
+        if (c && aRgb(c) && !COLORES_NEUTROS.test(c)) return c;
+      }
+    }
+    return '';
+  }
+
+  function aplicaPaleta(raiz, color, fuente) {
+    var rgb = aRgb(color); if (!rgb) return;
+    var hsl = rgb2hsl(rgb[0], rgb[1], rgb[2]);
+    if (hsl[1] < .12 || hsl[2] > .93 || hsl[2] < .07) return;      /* gris, blanco o negro: se queda el tema */
+    var h = hsl[0], s = Math.min(.85, Math.max(.35, hsl[1]));
+    var base = hsl2rgb(h, s, .6), vivid = hsl2rgb(h, Math.min(.9, s + .05), .74), dark = hsl2rgb(h, s * .8, .3);
+    var a2 = hsl2rgb(h + 40, s * .85, .76), a3 = hsl2rgb(h - 35, s * .85, .78);
+    var rv = vivid.join(', '), st = raiz.style;
+    var v = {
+      '--burnthesky-red': hex(base), '--burnthesky-red-vivid': hex(vivid), '--burnthesky-red-dark': hex(dark),
+      '--burnthesky-red-ghost': 'rgba(' + rv + ', .32)', '--burnthesky-red-ghost-2': 'rgba(' + rv + ', .16)',
+      '--burnthesky-red-glow': 'rgba(' + rv + ', .38)', '--burnthesky-red-wash': 'rgba(' + rv + ', .07)',
+      '--burnthesky-accent-rgb': rv, '--burnthesky-accent-2': hex(a2), '--burnthesky-accent-3': hex(a3),
+      '--burnthesky-dot-1': hex(vivid), '--burnthesky-dot-2': hex(a3), '--burnthesky-dot-3': hex(a2),
+      '--burnthesky-glow': '0 10px 34px rgba(' + rv + ', .14)', '--burnthesky-glow-hover': '0 12px 36px rgba(' + rv + ', .26)',
+      '--burnthesky-soft-bg': 'linear-gradient(145deg, rgba(' + rv + ', .06), rgba(' + a2.join(', ') + ', .04) 60%, transparent)'
+    };
+    for (var k in v) st.setProperty(k, v[k]);
+    raiz.setAttribute('data-bts-grupo', color);
+    try { console.log('[BTS] perfil: grupo →', color, '(' + fuente + ')'); } catch (e) {}
+  }
+
+  function paletaPerfil(raiz) {
+    var m = location.pathname.match(/\/u(\d+)(?!\d)/) || location.search.match(/[?&]u=(\d+)/);
+    var id = m ? m[1] : '';
+    if (!id) { try { console.log('[BTS] perfil: no encuentro el id del usuario en la URL'); } catch (e) {} return; }
+    if (GRUPOS_PERFIL[id]) { aplicaPaleta(raiz, GRUPOS_PERFIL[id], 'GRUPOS_PERFIL'); return; }
+    var guardado = ''; try { guardado = sessionStorage.getItem('bts-gc-' + id) || ''; } catch (e) {}
+    if (guardado) { aplicaPaleta(raiz, guardado, 'caché'); return; }
+    var c = colorEnlace(document, id);
+    if (c) { try { sessionStorage.setItem('bts-gc-' + id, c); } catch (e) {} aplicaPaleta(raiz, c, 'enlace en esta página'); return; }
+    var nombre = ((raiz.querySelector('[data-bind="usuario"]') || {}).textContent || '').trim();
+    if (!nombre) { var al = raiz.querySelector('.rperfil__alias'); nombre = al ? al.textContent.trim() : ''; }
+    if (!nombre || !window.fetch) return;
+    fetch('/search?search_author=' + encodeURIComponent(nombre) + '&show_results=posts', { credentials: 'same-origin' })
+      .then(function (r) { return r.text(); })
+      .then(function (t) {
+        var doc = new DOMParser().parseFromString(t, 'text/html');
+        var col = colorEnlace(doc, id);
+        if (col) { try { sessionStorage.setItem('bts-gc-' + id, col); } catch (e) {} aplicaPaleta(raiz, col, 'búsqueda de sus mensajes'); }
+        else { try { console.log('[BTS] perfil: no encontré el color del grupo de', nombre, '(id ' + id + '). Puedes fijarlo en GRUPOS_PERFIL.'); } catch (e) {} }
+      }).catch(function () {});
+  }
+
   function perfil() {
     var raiz = document.getElementById('rperfil');
     if (!raiz || raiz.getAttribute('data-bts-pf')) return;
@@ -736,6 +831,7 @@
       w4.appendChild(lg);
       paneles[2].appendChild(w4);
     }
+    paletaPerfil(raiz);
     /* hover por coordenadas: funciona aunque algo transparente tape las imágenes */
     if (!raiz.getAttribute('data-bts-hv')) {
       raiz.setAttribute('data-bts-hv', '1');

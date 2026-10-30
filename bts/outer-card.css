@@ -125,7 +125,7 @@
   /* VELOCIDAD DE LOS HOVERS: se cambian aquí y afectan a todo el foro.
      --burnthesky-ease ..... enlaces, tarjetas, botones, bordes, sombras
      --burnthesky-ease-img . imágenes (de gris a color) */
-  --burnthesky-css:           "v3.0-soft";   /* la consola la muestra al cargar: sirve para saber si el navegador tiene el CSS nuevo */
+  --burnthesky-css:           "v3.1-grupo";   /* la consola la muestra al cargar: sirve para saber si el navegador tiene el CSS nuevo */
   --burnthesky-ease:          .45s cubic-bezier(.22, .61, .36, 1);
   --burnthesky-ease-img:      .9s ease;
 
@@ -156,8 +156,8 @@
   --burnthesky-seg-h:             0px;                   /* segmento rojo de arriba: alto */
   --burnthesky-lift:              2px;                   /* cuánto suben las tarjetas al pasar el ratón */
   --burnthesky-dot-1:             var(--burnthesky-red-vivid);   /* tres puntos de la cabecera */
-  --burnthesky-dot-2:             #f2c4a5;
-  --burnthesky-dot-3:             #b9a8e6;
+  --burnthesky-dot-2:             var(--burnthesky-accent-3);
+  --burnthesky-dot-3:             var(--burnthesky-accent-2);
   --burnthesky-scroll-w:          6px;                   /* grosor del scroll de las listas */
 
   /* ---- Estadísticas ---- */
@@ -1463,7 +1463,7 @@ p.copyright a:hover { color: var(--burnthesky-red-vivid); }
   border-radius: 50%;
   background: radial-gradient(ellipse at 37% 31%,
     var(--burnthesky-red-vivid) 0%, var(--burnthesky-red) 40%, var(--burnthesky-red-dark) 86%);
-  box-shadow: 0 0 18px var(--burnthesky-red-glow), 0 0 46px rgba(242, 169, 195, .18);
+  box-shadow: 0 0 18px var(--burnthesky-red-glow), 0 0 46px rgba(var(--burnthesky-accent-rgb), .18);
 }
 .bts-globe::before {
   content: '';
@@ -1487,8 +1487,8 @@ p.copyright a:hover { color: var(--burnthesky-red-vivid); }
 .bts-globe--pulse { animation: burnthesky-pulse 3.2s ease-in-out infinite; }
 
 @keyframes burnthesky-pulse {
-  0%, 100% { box-shadow: 0 0 18px var(--burnthesky-red-glow), 0 0 46px rgba(242, 169, 195, .18); }
-  50%      { box-shadow: 0 0 26px rgba(242, 169, 195, .70), 0 0 64px rgba(242, 169, 195, .28); }
+  0%, 100% { box-shadow: 0 0 18px var(--burnthesky-red-glow), 0 0 46px rgba(var(--burnthesky-accent-rgb), .18); }
+  50%      { box-shadow: 0 0 26px rgba(var(--burnthesky-accent-rgb), .70), 0 0 64px rgba(var(--burnthesky-accent-rgb), .28); }
 }
 
 .bts-globe-line {
@@ -2004,7 +2004,7 @@ table tr:hover td {
 /* Velo sobre la foto de fondo: sin él la nebulosa compite con el texto. */
 body {
   background-image:
-    radial-gradient(ellipse 60% 45% at 12% 8%, rgba(242, 169, 195, .16), transparent 70%),
+    radial-gradient(ellipse 60% 45% at 12% 8%, rgba(var(--burnthesky-accent-rgb), .16), transparent 70%),
     radial-gradient(ellipse 55% 50% at 92% 92%, rgba(185, 168, 230, .14), transparent 70%),
     linear-gradient(rgba(21, 18, 26, .82), rgba(21, 18, 26, .92)),
     var(--burnthesky-img-bg) !important;
@@ -2639,7 +2639,7 @@ div#tabs a[href*="contact"] {
 
 #rstatscontainer .rbgimg > div {
   height: 120px;
-  background: linear-gradient(180deg, transparent, rgba(242, 169, 195, .12)),
+  background: linear-gradient(180deg, transparent, rgba(var(--burnthesky-accent-rgb), .12)),
     repeating-linear-gradient(0deg, transparent 0 3px, rgba(0,0,0,.25) 3px 4px);
   border: 1px solid var(--burnthesky-line);
 }
@@ -3758,7 +3758,7 @@ form[name="form_login"] .user_login_form label {
   width: 200px;
   height: 200px;
   margin: 0;
-  box-shadow: 0 0 40px rgba(242, 169, 195, .12);
+  box-shadow: 0 0 40px rgba(var(--burnthesky-accent-rgb), .12);
 }
 .rdb__dtxt {
   position: relative;
@@ -6772,9 +6772,13 @@ a.rc3__btn:hover .rc3__arrow { transform: translateX(4px); }
   --burnthesky-peach:    #f2c4a5;
   --burnthesky-lavender: #b9a8e6;
   --burnthesky-sage:     #a9d6bd;
-  --burnthesky-glow:     0 10px 34px rgba(242, 169, 195, .14);       /* resplandor de tarjetas */
-  --burnthesky-glow-hover: 0 12px 36px rgba(242, 169, 195, .26);     /* ... al pasar el ratón */
-  --burnthesky-soft-bg:  linear-gradient(145deg, rgba(242, 169, 195, .06), rgba(185, 168, 230, .04) 60%, transparent);
+  /* acento del perfil: el JS lo recalcula según el color del grupo del usuario (js-post.js → paletaPerfil) */
+  --burnthesky-accent-rgb: 237, 135, 149;
+  --burnthesky-accent-2:   #b9a8e6;
+  --burnthesky-accent-3:   #f2c4a5;
+  --burnthesky-glow:     0 10px 34px rgba(var(--burnthesky-accent-rgb), .14);       /* resplandor de tarjetas */
+  --burnthesky-glow-hover: 0 12px 36px rgba(var(--burnthesky-accent-rgb), .26);     /* ... al pasar el ratón */
+  --burnthesky-soft-bg:  linear-gradient(145deg, rgba(var(--burnthesky-accent-rgb), .06), rgba(185, 168, 230, .04) 60%, transparent);
 }
 
 /* -- esquinas suaves en todos los componentes (:where = no pisa los círculos ya definidos) -- */
@@ -6796,10 +6800,10 @@ a.rc3__btn:hover .rc3__arrow { transform: translateX(4px); }
 /* -- superficies con resplandor suave en lugar de bordes duros -- */
 .forabg, .forumbg, .post, .panel, .rforumstats, .rdb, #rneonfooter, .rinv, .rperfil__win, .rperfil__top, .rperfil__cols, .rperfil__foot, .rmes3-card {
   background-image: var(--burnthesky-soft-bg);
-  border-color: rgba(242, 169, 195, .12);
+  border-color: rgba(var(--burnthesky-accent-rgb), .12);
   box-shadow: var(--burnthesky-glow);
 }
-.forabg ul.topiclist.forums > li.row, .rtile, .rstat, .rc3__desc, .rlog__row, .rcrono { border-color: rgba(242, 169, 195, .12) !important; }
+.forabg ul.topiclist.forums > li.row, .rtile, .rstat, .rc3__desc, .rlog__row, .rcrono { border-color: rgba(var(--burnthesky-accent-rgb), .12) !important; }
 .forabg ul.topiclist.forums > li.row:hover, .rtile:hover, .rstat:hover, .rlog__row:hover { box-shadow: var(--burnthesky-glow-hover) !important; }
 
 /* -- etiquetas: sin mayúsculas forzadas ni espaciado de "terminal" -- */
@@ -6821,18 +6825,18 @@ a.rc3__btn:hover .rc3__arrow { transform: translateX(4px); }
 }
 
 /* -- botones y fichas: relleno suave y brillo -- */
-.rcbtn, a.rcbtn, .rbtn, .rbtn-main, .rc3__btn, .button1, .mainoption { background-color: rgba(242, 169, 195, .07); transition: background var(--burnthesky-ease), box-shadow var(--burnthesky-ease), transform var(--burnthesky-ease), color var(--burnthesky-ease); }
+.rcbtn, a.rcbtn, .rbtn, .rbtn-main, .rc3__btn, .button1, .mainoption { background-color: rgba(var(--burnthesky-accent-rgb), .07); transition: background var(--burnthesky-ease), box-shadow var(--burnthesky-ease), transform var(--burnthesky-ease), color var(--burnthesky-ease); }
 .rcbtn:hover, a.rcbtn:hover, .rbtn:hover, .rbtn-main:hover, a.rc3__btn:hover, .button1:hover, .mainoption:hover {
-  background-color: rgba(242, 169, 195, .16);
-  box-shadow: 0 6px 22px rgba(242, 169, 195, .22);
+  background-color: rgba(var(--burnthesky-accent-rgb), .16);
+  box-shadow: 0 6px 22px rgba(var(--burnthesky-accent-rgb), .22);
 }
-.rtag, .rc3__desc .rtag { background: linear-gradient(135deg, var(--burnthesky-red), #c58bd0); color: #fff; box-shadow: 0 4px 14px rgba(212, 120, 155, .35); }
-.rcrono, .rterm { border-left-width: 1px !important; border-left-color: rgba(242, 169, 195, .25) !important; }
-.rstat--power { border-left-width: 1px !important; background: linear-gradient(135deg, rgba(242, 169, 195, .14), rgba(185, 168, 230, .08)), var(--burnthesky-void) !important; }
-.rstat--power .rtile__v { text-shadow: 0 0 18px rgba(242, 169, 195, .5); }
+.rtag, .rc3__desc .rtag { background: linear-gradient(135deg, var(--burnthesky-red), var(--burnthesky-accent-2)); color: #fff; box-shadow: 0 4px 14px rgba(var(--burnthesky-accent-rgb), .35); }
+.rcrono, .rterm { border-left-width: 1px !important; border-left-color: rgba(var(--burnthesky-accent-rgb), .25) !important; }
+.rstat--power { border-left-width: 1px !important; background: linear-gradient(135deg, rgba(var(--burnthesky-accent-rgb), .14), rgba(185, 168, 230, .08)), var(--burnthesky-void) !important; }
+.rstat--power .rtile__v { text-shadow: 0 0 18px rgba(var(--burnthesky-accent-rgb), .5); }
 
 /* -- barras de progreso suaves -- */
-.rbar__fill, .burnts-bar { background: linear-gradient(90deg, #f2a9c3, #c9a8f0) !important; box-shadow: 0 0 14px rgba(242, 169, 195, .45); }
+.rbar__fill, .burnts-bar { background: linear-gradient(90deg, var(--burnthesky-red-vivid), var(--burnthesky-accent-2)) !important; box-shadow: 0 0 14px rgba(var(--burnthesky-accent-rgb), .45); }
 .rbar__track, .burnts-bar-container { background: rgba(255, 255, 255, .07) !important; }
 
 /* -- iconos: glifos pequeños y discretos; los de FontAwesome en trazo ligero -- */
@@ -6843,15 +6847,15 @@ a.rc3__btn:hover .rc3__arrow { transform: translateX(4px); }
 .rperfil__idicon { filter: drop-shadow(0 0 8px var(--burnthesky-red-glow)); }
 
 /* -- barra lateral: panel flotante suave -- */
-#page-header .navbar { border-right-color: rgba(242, 169, 195, .12) !important; box-shadow: 8px 0 40px rgba(242, 169, 195, .06); }
+#page-header .navbar { border-right-color: rgba(var(--burnthesky-accent-rgb), .12) !important; box-shadow: 8px 0 40px rgba(var(--burnthesky-accent-rgb), .06); }
 #page-header .navbar::after { display: none; }
 
 /* -- avatares con halo -- */
 .bts-sidebar-avatar, .rc3__av, .rrel__ph { border-color: var(--burnthesky-red) !important; box-shadow: 0 0 22px var(--burnthesky-red-glow) !important; }
 
 /* -- selección y scroll -- */
-::selection { background: rgba(212, 120, 155, .55); }
-html { scrollbar-color: rgba(242, 169, 195, .35) var(--burnthesky-void); }
+::selection { background: rgba(var(--burnthesky-accent-rgb), .55); }
+html { scrollbar-color: rgba(var(--burnthesky-accent-rgb), .35) var(--burnthesky-void); }
 
 /* -- fondo de la tarjeta de foro: sin imagen en gris, con color suave -- */
 .forabg ul.topiclist.forums > li.row.rc3-row::before { filter: saturate(.7); }
@@ -6861,7 +6865,18 @@ html { scrollbar-color: rgba(242, 169, 195, .35) var(--burnthesky-void); }
 .rterm { background-image: none !important; background-color: #100d15 !important; box-shadow: inset 0 0 30px rgba(0, 0, 0, .35); }
 .rterm__l { color: var(--burnthesky-red-vivid); }
 .forabg a.forumtitle::before, .rc3__title::before { border-radius: 50%; box-shadow: 0 0 12px var(--burnthesky-red-glow); }
-.rperfil__id { border-left-width: 1px !important; border-left-color: rgba(242, 169, 195, .25) !important; }
+.rperfil__id { border-left-width: 1px !important; border-left-color: rgba(var(--burnthesky-accent-rgb), .25) !important; }
 
 .post.bg1, .post.bg2, .post { background-color: var(--burnthesky-void-2) !important; }
 .rpower .postprofile-field-label, .rpower .postprofile-field-content, .postprofile-field-label, .rpost-head .author, .rtopicuser b { text-transform: none !important; letter-spacing: .3px !important; }
+
+
+/* Variables derivadas del acento: se vuelven a declarar dentro del perfil para que
+   sigan el color del grupo del usuario (js-post.js → paletaPerfil). */
+.rperfil {
+  --burnthesky-post-icon-ring: var(--burnthesky-red-dark);
+  --burnthesky-post-bar-title: var(--burnthesky-red);
+  --burnthesky-post-bar-fill: var(--burnthesky-red);
+  --burnthesky-btn-icon-hover: var(--burnthesky-red-vivid);
+  --burnthesky-post-dato-line: var(--burnthesky-red-ghost-2);
+}
