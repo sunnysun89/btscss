@@ -1240,32 +1240,18 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     }
     /* Curiosidades: terminal bajo las barras (pestaña 1) */
     {
-  var w2 = el('section', 'rperfil__win rperfil__win--nohead'), term = el('div', 'rterm');
-  var alias = (q1('.rperfil__alias') || {}).textContent || '';
-  term.appendChild(el('div', 'rterm__l', '> acceso concedido · expediente de ' + alias.trim()));
-  term.appendChild(el('div', 'rterm__l', '> biografía y notas ocultas'));
-  
-  var cu = el('div', 'rterm__body');
-  
-  // Seleccionamos el textarea u elemento con el ID exacto de la captura
-  var campoCuriosidades = document.getElementById('profile_field_2_25');
-
-  // Obtenemos el texto correctamente dependiendo de si es un campo de formulario (.value) o un contenedor de texto (.textContent)
-  var textoCuriosidades = campoCuriosidades ? (campoCuriosidades.value || campoCuriosidades.textContent || '') : '';
-
-  if (textoCuriosidades.replace(/\s+/g, '').length) {
-    // Si tienes una función para formatear el HTML del usuario, úsala aquí, o asigna el texto directamente
-    cu.innerHTML = typeof htmlUsuario === 'function' ? htmlUsuario(campoCuriosidades) : textoCuriosidades;
-  } else { 
-    cu.textContent = 'Sin registros. Archivo vacío.'; 
-    cu.classList.add('vacio'); 
-  }
-  
-  term.appendChild(cu);
-  term.appendChild(el('div', 'rterm__l rterm__cur', '> '));
-  w2.appendChild(term);
-  if (main) main.appendChild(w2);
-}
+      var w2 = el('section', 'rperfil__win rperfil__win--nohead'), term = el('div', 'rterm');
+      var alias = (q1('.rperfil__alias') || {}).textContent || '';
+      term.appendChild(el('div', 'rterm__l', '> acceso concedido · expediente de ' + alias.trim()));
+      term.appendChild(el('div', 'rterm__l', '> biografía y notas ocultas'));
+      var cu = el('div', 'rterm__body');
+      if (curiosidades && curiosidades.textContent.replace(/\s+/g, '').length) cu.innerHTML = htmlUsuario(curiosidades);
+      else { cu.textContent = 'Sin registros. Archivo vacío.'; cu.classList.add('vacio'); }
+      term.appendChild(cu);
+      term.appendChild(el('div', 'rterm__l rterm__cur', '> '));
+      w2.appendChild(term);
+      if (main) main.appendChild(w2);
+    }
 
     /* ===== PESTAÑA 2 · red de contactos y lore ===== */
     if (paneles[1]) {
