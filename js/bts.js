@@ -1147,11 +1147,11 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     {
       var w2 = el('section', 'rperfil__win rperfil__win--nohead'), term = el('div', 'rterm');
       var alias = (q1('.rperfil__alias') || {}).textContent || '';
-      term.appendChild(el('div', 'rterm__l', '> ACCESO CONCEDIDO · EXPEDIENTE: ' + alias.trim().toUpperCase()));
-      term.appendChild(el('div', 'rterm__l', '> BIOGRAFÍA Y NOTAS OCULTAS'));
+      term.appendChild(el('div', 'rterm__l', '> acceso concedido · expediente de ' + alias.trim()));
+      term.appendChild(el('div', 'rterm__l', '> biografía y notas ocultas'));
       var cu = el('div', 'rterm__body');
       if (curiosidades && curiosidades.textContent.replace(/\s+/g, '').length) cu.innerHTML = htmlUsuario(curiosidades);
-      else { cu.textContent = 'SIN REGISTROS. ARCHIVO VACÍO.'; cu.classList.add('vacio'); }
+      else { cu.textContent = 'Sin registros. Archivo vacío.'; cu.classList.add('vacio'); }
       term.appendChild(cu);
       term.appendChild(el('div', 'rterm__l rterm__cur', '> '));
       w2.appendChild(term);

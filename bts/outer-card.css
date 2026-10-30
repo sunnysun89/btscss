@@ -1,7 +1,7 @@
 /* ============================================================================
    BURN THE SKY · burnthesky.foroactivo.com
    Hoja de estilos base · v1.0
-   Base visual: "Outer Card" — negro #090909, rojo señal, Impact, monoespaciada,
+   Base visual: "Outer Card" — negro #15121a, rojo señal, Impact, monoespaciada,
    líneas de escaneo, motivos de anillo y esfera roja.
 
    CONVENCIONES
@@ -44,7 +44,7 @@
                     salen firmes sin tocar cada regla)
    · Inter ........ texto, etiquetas y campos
    ========================================================================== */
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@600&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,500;1,400;1,500&display=swap');
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css");
 
 
@@ -54,37 +54,38 @@
 :root {
 
   /* ---- Color · superficies y texto ---- */
-  --burnthesky-void:          #090909;   /* fondo principal */
-  --burnthesky-void-2:        #111114;   /* superficie 1 (cajas, categorías) */
-  --burnthesky-void-3:        #131313;   /* superficie 2 (inputs, filas alternas) */
-  --burnthesky-white:         #ebebeb;   /* texto principal */
-  --burnthesky-gray:          #6e6e6e;   /* decorativo (anillos, etiquetas mudas) */
-  --burnthesky-gray-lt:       #9a9a9a;   /* texto secundario legible */
-  --burnthesky-gray-dim:      #262626;   /* líneas tenues */
-  --burnthesky-line:          #2b2b2e;   /* separadores */
-  --burnthesky-line-2:        #414146;   /* bordes de controles */
+  --burnthesky-void:          #15121a;   /* fondo principal */
+  --burnthesky-void-2:        #1d1923;   /* superficie 1 (cajas, categorías) */
+  --burnthesky-void-3:        #26202d;   /* superficie 2 (inputs, filas alternas) */
+  --burnthesky-white:         #f3edf1;   /* texto principal */
+  --burnthesky-gray:          #81788a;   /* decorativo (anillos, etiquetas mudas) */
+  --burnthesky-gray-lt:       #b9afc0;   /* texto secundario legible */
+  --burnthesky-gray-dim:      #2e2836;   /* líneas tenues */
+  --burnthesky-line:          #342d3d;   /* separadores */
+  --burnthesky-line-2:        #4a4155;   /* bordes de controles */
 
   /* ---- Color · rojo señal ---- */
-  --burnthesky-red:           #c51515;
-  --burnthesky-red-vivid:     #ef4545;
-  --burnthesky-red-dark:      #6a0808;
-  --burnthesky-red-ghost:     rgba(197, 21, 21, .42);
-  --burnthesky-red-ghost-2:   rgba(197, 21, 21, .20);
-  --burnthesky-red-glow:      rgba(197, 21, 21, .48);
-  --burnthesky-red-wash:      rgba(197, 21, 21, .06);
+  --burnthesky-red:           #d4789b;   /* acento principal: rosa (el nombre 'red' se conserva por compatibilidad) */
+  --burnthesky-red-vivid:     #f2a9c3;
+  --burnthesky-red-dark:      #6b3a4f;
+  --burnthesky-red-ghost:     rgba(242, 169, 195, .32);
+  --burnthesky-red-ghost-2:   rgba(242, 169, 195, .16);
+  --burnthesky-red-glow:      rgba(242, 169, 195, .38);
+  --burnthesky-red-wash:      rgba(242, 169, 195, .07);
 
   /* ---- Color · por usuario (lo puede escribir un script JS) ---- */
   --burnthesky-user-color:    var(--burnthesky-white);
 
   /* ---- Tipografía ---- */
-  --burnthesky-ff-display:    'Outfit', 'Inter', 'Segoe UI', Arial, sans-serif;
-  --burnthesky-ff-mono:       'Inter', 'Segoe UI', Arial, sans-serif;   /* nombre heredado: ya no es monoespaciada */
-  --burnthesky-ff-sans:       'Inter', 'Segoe UI', Arial, sans-serif;
+  --burnthesky-ff-display:    'Poppins', 'DM Sans', 'Segoe UI', Arial, sans-serif;
+  --burnthesky-ff-mono:       'DM Sans', 'Segoe UI', Arial, sans-serif;   /* nombre heredado: ya no es monoespaciada */
+  --burnthesky-ff-sans:       'DM Sans', 'Segoe UI', Arial, sans-serif;
+  --burnthesky-ff-serif:      'Cormorant Garamond', Georgia, serif;   /* frases y citas */
 
-  --burnthesky-fs-2xs:        9px;
-  --burnthesky-fs-xs:         10px;
-  --burnthesky-fs-sm:         11px;
-  --burnthesky-fs-base:       13px;
+  --burnthesky-fs-2xs:        10px;
+  --burnthesky-fs-xs:         11px;
+  --burnthesky-fs-sm:         12px;
+  --burnthesky-fs-base:       14px;
   --burnthesky-fs-md:         15px;
   --burnthesky-fs-lg:         22px;
   --burnthesky-fs-xl:         34px;
@@ -111,7 +112,7 @@
   --burnthesky-img-banner:    url("https://i.imgur.com/j3PPf2b.jpeg");
 
   /* ---- Efectos ---- */
-  --burnthesky-scan-alpha:    .10;
+  --burnthesky-scan-alpha:    0;
   --burnthesky-scanlines:     repeating-linear-gradient(0deg,
                                 transparent 0, transparent 3px,
                                 rgba(0, 0, 0, var(--burnthesky-scan-alpha)) 3px,
@@ -124,9 +125,9 @@
   /* VELOCIDAD DE LOS HOVERS: se cambian aquí y afectan a todo el foro.
      --burnthesky-ease ..... enlaces, tarjetas, botones, bordes, sombras
      --burnthesky-ease-img . imágenes (de gris a color) */
-  --burnthesky-css:           "v2.9";   /* la consola la muestra al cargar: sirve para saber si el navegador tiene el CSS nuevo */
-  --burnthesky-ease:          2s cubic-bezier(.22, .61, .36, 1);
-  --burnthesky-ease-img:      2s ease;
+  --burnthesky-css:           "v3.0-soft";   /* la consola la muestra al cargar: sirve para saber si el navegador tiene el CSS nuevo */
+  --burnthesky-ease:          .45s cubic-bezier(.22, .61, .36, 1);
+  --burnthesky-ease-img:      .9s ease;
 
   /* ---- Capas ---- */
   --burnthesky-z-navbar:      99;
@@ -150,13 +151,13 @@
   --burnthesky-banner-veil-bottom:.55;                   /* oscurecido abajo (0 a 1) */
 
   /* ---- Ventanas ---- */
-  --burnthesky-radius:            0px;                   /* esquinas redondeadas de todas las ventanas */
+  --burnthesky-radius:            18px;                  /* esquinas redondeadas de todas las ventanas */
   --burnthesky-seg-w:             110px;                 /* segmento rojo de arriba: ancho */
-  --burnthesky-seg-h:             3px;                   /* segmento rojo de arriba: alto */
-  --burnthesky-lift:              3px;                   /* cuánto suben las tarjetas al pasar el ratón */
+  --burnthesky-seg-h:             0px;                   /* segmento rojo de arriba: alto */
+  --burnthesky-lift:              2px;                   /* cuánto suben las tarjetas al pasar el ratón */
   --burnthesky-dot-1:             var(--burnthesky-red-vivid);   /* tres puntos de la cabecera */
-  --burnthesky-dot-2:             var(--burnthesky-gray);
-  --burnthesky-dot-3:             var(--burnthesky-gray-lt);
+  --burnthesky-dot-2:             #f2c4a5;
+  --burnthesky-dot-3:             #b9a8e6;
   --burnthesky-scroll-w:          6px;                   /* grosor del scroll de las listas */
 
   /* ---- Estadísticas ---- */
@@ -370,7 +371,7 @@ ul#picture_legend { display: none !important; }
   height: var(--burnthesky-navbar-h);
   padding: 0 140px 0 20px;
   overflow: hidden;
-  background: rgba(9, 9, 9, .94);
+  background: rgba(21, 18, 26, .94);
   border: 0;
   border-bottom: 1px solid var(--burnthesky-line);
   backdrop-filter: blur(4px);
@@ -869,7 +870,7 @@ dl.codebox,
 pre {
   margin: 14px 0;
   padding: 12px 16px;
-  background: #050505;
+  background: #100d14;
   border: 1px solid var(--burnthesky-line);
   color: #cfcfcf;
   font: 12px / 1.6 var(--burnthesky-ff-mono);
@@ -972,7 +973,7 @@ textarea:focus,
 select:focus {
   outline: 0;
   border-color: var(--burnthesky-red) !important;
-  box-shadow: 3px 3px 0 var(--burnthesky-red-ghost-2);
+  box-shadow: 0 8px 28px var(--burnthesky-red-ghost-2);
 }
 
 ::placeholder { color: var(--burnthesky-gray); opacity: 1; }
@@ -1008,7 +1009,7 @@ button.button2:hover,
 .bts-btn:hover {
   border-color: var(--burnthesky-red);
   color: #fff;
-  box-shadow: 3px 3px 0 var(--burnthesky-red-ghost-2);
+  box-shadow: 0 8px 28px var(--burnthesky-red-ghost-2);
 }
 
 /* Botón principal: relleno rojo */
@@ -1462,7 +1463,7 @@ p.copyright a:hover { color: var(--burnthesky-red-vivid); }
   border-radius: 50%;
   background: radial-gradient(ellipse at 37% 31%,
     var(--burnthesky-red-vivid) 0%, var(--burnthesky-red) 40%, var(--burnthesky-red-dark) 86%);
-  box-shadow: 0 0 18px var(--burnthesky-red-glow), 0 0 46px rgba(197, 21, 21, .18);
+  box-shadow: 0 0 18px var(--burnthesky-red-glow), 0 0 46px rgba(242, 169, 195, .18);
 }
 .bts-globe::before {
   content: '';
@@ -1486,8 +1487,8 @@ p.copyright a:hover { color: var(--burnthesky-red-vivid); }
 .bts-globe--pulse { animation: burnthesky-pulse 3.2s ease-in-out infinite; }
 
 @keyframes burnthesky-pulse {
-  0%, 100% { box-shadow: 0 0 18px var(--burnthesky-red-glow), 0 0 46px rgba(197, 21, 21, .18); }
-  50%      { box-shadow: 0 0 26px rgba(197, 21, 21, .70), 0 0 64px rgba(197, 21, 21, .28); }
+  0%, 100% { box-shadow: 0 0 18px var(--burnthesky-red-glow), 0 0 46px rgba(242, 169, 195, .18); }
+  50%      { box-shadow: 0 0 26px rgba(242, 169, 195, .70), 0 0 64px rgba(242, 169, 195, .28); }
 }
 
 .bts-globe-line {
@@ -1526,7 +1527,7 @@ p.copyright a:hover { color: var(--burnthesky-red-vivid); }
   width: var(--burnthesky-frame-w);
   height: var(--burnthesky-frame-h);
   overflow: hidden;
-  background: #050505;
+  background: #100d14;
   border: 2px solid var(--burnthesky-red);
 }
 .bts-frame__img {
@@ -2003,11 +2004,13 @@ table tr:hover td {
 /* Velo sobre la foto de fondo: sin él la nebulosa compite con el texto. */
 body {
   background-image:
-    linear-gradient(rgba(9, 9, 9, .80), rgba(9, 9, 9, .88)),
+    radial-gradient(ellipse 60% 45% at 12% 8%, rgba(242, 169, 195, .16), transparent 70%),
+    radial-gradient(ellipse 55% 50% at 92% 92%, rgba(185, 168, 230, .14), transparent 70%),
+    linear-gradient(rgba(21, 18, 26, .82), rgba(21, 18, 26, .92)),
     var(--burnthesky-img-bg) !important;
-  background-position: center, center !important;
-  background-size: auto, cover !important;
-  background-attachment: scroll, fixed !important;
+  background-position: center, center, center, center !important;
+  background-size: auto, auto, auto, cover !important;
+  background-attachment: fixed, fixed, scroll, fixed !important;
 }
 
 /* Hueco del icono 70px: si sigue el placeholder, se esconde (el JS lo
@@ -2392,7 +2395,7 @@ body {
   padding: 14px 0;
   overflow-x: visible;
   overflow-y: auto;
-  background: rgba(9, 9, 9, .96);
+  background: rgba(21, 18, 26, .96);
   border: 0;
   border-right: 1px solid var(--burnthesky-line);
   backdrop-filter: blur(4px);
@@ -2636,7 +2639,7 @@ div#tabs a[href*="contact"] {
 
 #rstatscontainer .rbgimg > div {
   height: 120px;
-  background: linear-gradient(180deg, transparent, rgba(197,21,21,.12)),
+  background: linear-gradient(180deg, transparent, rgba(242, 169, 195, .12)),
     repeating-linear-gradient(0deg, transparent 0 3px, rgba(0,0,0,.25) 3px 4px);
   border: 1px solid var(--burnthesky-line);
 }
@@ -3104,7 +3107,7 @@ form[name="form_login"] .user_login_form label {
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: linear-gradient(180deg, transparent 45%, rgba(9, 9, 9, .88) 100%);
+  background: linear-gradient(180deg, transparent 45%, rgba(21, 18, 26, .88) 100%);
   pointer-events: none;
 }
 
@@ -3220,7 +3223,7 @@ form[name="form_login"] .user_login_form label {
   height: 140px;
   object-fit: cover;
   object-position: top center;
-  background: #050505;
+  background: #100d14;
   border: 1px solid var(--burnthesky-line-2);
   filter: grayscale(1) brightness(.8);
   transition: filter var(--burnthesky-ease-img);
@@ -3259,7 +3262,7 @@ form[name="form_login"] .user_login_form label {
   border-radius: 0;
   object-fit: cover;
   object-position: top center;
-  background: #050505;
+  background: #100d14;
   border: 1px solid var(--burnthesky-line-2);
   filter: grayscale(1) brightness(.85);
   transition: filter var(--burnthesky-ease-img), border-color var(--burnthesky-ease);
@@ -3510,7 +3513,7 @@ form[name="form_login"] .user_login_form label {
   height: 300px;
   object-fit: cover;
   object-position: top center;
-  background: #050505;
+  background: #100d14;
   border: 0;
   border-right: 1px solid var(--burnthesky-line);
   filter: grayscale(1) brightness(.8) contrast(1.05);
@@ -3697,7 +3700,7 @@ form[name="form_login"] .user_login_form label {
 .rforumstats .rstatsc p.page-bottom:hover {
   transform: translateY(calc(-1 * var(--burnthesky-lift)));
   border-color: var(--burnthesky-red);
-  box-shadow: 4px 4px 0 var(--burnthesky-red-ghost-2);
+  box-shadow: 0 8px 28px var(--burnthesky-red-ghost-2);
 }
 .rforumstats .rstatsc strong { margin-bottom: 6px; }
 
@@ -3755,7 +3758,7 @@ form[name="form_login"] .user_login_form label {
   width: 200px;
   height: 200px;
   margin: 0;
-  box-shadow: 0 0 40px rgba(197, 21, 21, .12);
+  box-shadow: 0 0 40px rgba(242, 169, 195, .12);
 }
 .rdb__dtxt {
   position: relative;
@@ -3881,7 +3884,7 @@ form[name="form_login"] .user_login_form label {
   display: block;
   padding: 3px;
   line-height: 0;
-  background: #050505;
+  background: #100d14;
   border: 1px solid var(--burnthesky-line-2);
   transition: transform var(--burnthesky-ease), border-color var(--burnthesky-ease),
               box-shadow var(--burnthesky-ease);
@@ -3898,7 +3901,7 @@ form[name="form_login"] .user_login_form label {
 #rneonfooter td.rpartners a:hover {
   transform: translateY(calc(-1 * var(--burnthesky-lift)));
   border-color: var(--burnthesky-red);
-  box-shadow: 3px 3px 0 var(--burnthesky-red-ghost-2), 0 0 14px var(--burnthesky-red-glow);
+  box-shadow: 0 8px 28px var(--burnthesky-red-ghost-2), 0 0 14px var(--burnthesky-red-glow);
 }
 #rneonfooter td.raffiliates a:hover img,
 #rneonfooter td.rpartners a:hover img { filter: none; }
@@ -4002,7 +4005,7 @@ form[name="form_login"] .user_login_form label {
   transform: translateY(-2px);
   background: var(--burnthesky-void) !important;
   border-color: var(--burnthesky-red) !important;
-  box-shadow: 4px 4px 0 var(--burnthesky-red-ghost-2) !important;
+  box-shadow: 0 8px 28px var(--burnthesky-red-ghost-2) !important;
 }
 
 /* título */
@@ -4064,7 +4067,7 @@ form[name="form_login"] .user_login_form label {
 
 /* imagen del foro */
 .rforimg {
-  background-color: #050505;
+  background-color: #100d14;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -4375,7 +4378,7 @@ li.row:hover .rforimg { filter: none; }
   max-width: 100%;
   margin: 0 auto;
   overflow: hidden;
-  background: #050505;
+  background: #100d14;
   border: 1px solid var(--burnthesky-line-2);
   box-shadow: var(--burnthesky-ghost-sm);
 }
@@ -4448,7 +4451,7 @@ li.row:hover .rforimg { filter: none; }
   line-height: 1.5; letter-spacing: 1px; color: var(--burnthesky-white);
   transition: border-color var(--burnthesky-ease), color var(--burnthesky-ease), box-shadow var(--burnthesky-ease);
 }
-.rperfil__nicks span:hover { border-color: var(--burnthesky-red); color: var(--burnthesky-red-vivid); box-shadow: 3px 3px 0 var(--burnthesky-red-ghost-2); }
+.rperfil__nicks span:hover { border-color: var(--burnthesky-red); color: var(--burnthesky-red-vivid); box-shadow: 0 8px 28px var(--burnthesky-red-ghost-2); }
 .rperfil__nicks.is-empty { display: none; }
 
 /* tiles de datos */
@@ -4470,7 +4473,7 @@ li.row:hover .rforimg { filter: none; }
   transform: rotate(45deg) scale(.8);
   background: linear-gradient(var(--burnthesky-red-ghost), var(--burnthesky-red-ghost)) center / 6px 6px no-repeat;
 }
-.rtile:hover { transform: translateY(calc(-1 * var(--burnthesky-lift))); border-color: var(--burnthesky-red); box-shadow: 4px 4px 0 var(--burnthesky-red-ghost-2); }
+.rtile:hover { transform: translateY(calc(-1 * var(--burnthesky-lift))); border-color: var(--burnthesky-red); box-shadow: 0 8px 28px var(--burnthesky-red-ghost-2); }
 .rtile--wide { grid-column: 1 / -1; }
 .rtile__v {
   font: 14px / 1.2 var(--burnthesky-ff-display);
@@ -4647,7 +4650,7 @@ li.row:hover .rforimg { filter: none; }
   clip-path: none;
   transition: transform var(--burnthesky-ease), border-color var(--burnthesky-ease), box-shadow var(--burnthesky-ease);
 }
-.rslot.is-on:hover { transform: translateY(calc(-1 * var(--burnthesky-lift))); border-color: var(--burnthesky-red); box-shadow: 3px 3px 0 var(--burnthesky-red-ghost-2); }
+.rslot.is-on:hover { transform: translateY(calc(-1 * var(--burnthesky-lift))); border-color: var(--burnthesky-red); box-shadow: 0 8px 28px var(--burnthesky-red-ghost-2); }
 .rslot.is-on img { display: block; max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; }
 .rslot.is-on a { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
 
@@ -4662,7 +4665,7 @@ li.row:hover .rforimg { filter: none; }
   transition: transform var(--burnthesky-ease), border-color var(--burnthesky-ease), box-shadow var(--burnthesky-ease);
 }
 .rimp.is-on { border-left-color: var(--burnthesky-red); }
-.rimp:hover { transform: translateY(calc(-1 * var(--burnthesky-lift))); border-color: var(--burnthesky-red); box-shadow: 4px 4px 0 var(--burnthesky-red-ghost-2); }
+.rimp:hover { transform: translateY(calc(-1 * var(--burnthesky-lift))); border-color: var(--burnthesky-red); box-shadow: 0 8px 28px var(--burnthesky-red-ghost-2); }
 .rimp__ico {
   flex: 0 0 56px; height: 56px;
   display: flex; align-items: center; justify-content: center;
@@ -4729,7 +4732,7 @@ li.row:hover .rforimg { filter: none; }
   border: 1px solid var(--burnthesky-line);
   transition: transform var(--burnthesky-ease), border-color var(--burnthesky-ease), box-shadow var(--burnthesky-ease);
 }
-.rstat:hover { transform: translateY(calc(-1 * var(--burnthesky-lift))); border-color: var(--burnthesky-red); box-shadow: 4px 4px 0 var(--burnthesky-red-ghost-2); }
+.rstat:hover { transform: translateY(calc(-1 * var(--burnthesky-lift))); border-color: var(--burnthesky-red); box-shadow: 0 8px 28px var(--burnthesky-red-ghost-2); }
 .rstat--power { border-left: 3px solid var(--burnthesky-red); background: linear-gradient(90deg, var(--burnthesky-red-wash), transparent 70%), var(--burnthesky-void); }
 .rstat .rtile__v { font-size: 22px; line-height: 1; }
 .rstat--power .rtile__v { font-size: 24px; color: var(--burnthesky-red-vivid); text-shadow: var(--burnthesky-ghost-sm); }
@@ -4758,7 +4761,7 @@ li.row:hover .rforimg { filter: none; }
   width: 6px; height: 6px; margin-top: -3px;
   background: var(--burnthesky-red-vivid); transform: rotate(45deg);
 }
-.rperfil__powers span:hover { border-color: var(--burnthesky-red); color: var(--burnthesky-red-vivid); box-shadow: 3px 3px 0 var(--burnthesky-red-ghost-2); }
+.rperfil__powers span:hover { border-color: var(--burnthesky-red); color: var(--burnthesky-red-vivid); box-shadow: 0 8px 28px var(--burnthesky-red-ghost-2); }
 
 /* botones de fecha: la fecha solo aparece al pasar el ratón / enfocar */
 .rdate {
@@ -4826,7 +4829,7 @@ body:has(#cp-main) div#tabs ul li a {
 body:has(#cp-main) div#tabs ul li a:hover { border-color: var(--burnthesky-red); background: var(--burnthesky-red-wash) !important; }
 body:has(#cp-main) div#tabs ul li.activetab a {
   border-color: var(--burnthesky-red);
-  box-shadow: 3px 3px 0 var(--burnthesky-red-ghost-2);
+  box-shadow: 0 8px 28px var(--burnthesky-red-ghost-2);
   background: var(--burnthesky-red-wash) !important;
 }
 
@@ -5097,7 +5100,7 @@ html, body { overflow-x: clip; }   /* el ancho 100vw incluye la barra de scroll 
 }
 #headercontainer #header::before { display: none; }
 #headercontainer #header::after {
-  background: linear-gradient(180deg, rgba(9, 9, 9, var(--burnthesky-banner-veil-top)), rgba(9, 9, 9, var(--burnthesky-banner-veil-bottom)));
+  background: linear-gradient(180deg, rgba(21, 18, 26, var(--burnthesky-banner-veil-top)), rgba(21, 18, 26, var(--burnthesky-banner-veil-bottom)));
 }
 #headercontainer .position { max-width: var(--burnthesky-w-main); }
 #headercontainer .rtitle { font-size: var(--burnthesky-banner-title); letter-spacing: var(--burnthesky-banner-title-ls); text-shadow: none; }
@@ -5499,7 +5502,7 @@ body:not(:has(.topiclist.forums)) .rmensual {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 14px rgba(255, 74, 53, 0.4);
+  box-shadow: 0 0 14px var(--burnthesky-red-glow);
   background: var(--burnthesky-void-2);
   flex-shrink: 0;
 }
@@ -5657,7 +5660,7 @@ html { scroll-padding-top: 64px; }
   --burnthesky-post-avatar-h:   400px;   /* avatar: alto */
   --burnthesky-post-icon:       120px;    /* icono redondo del cuadro del nombre */
   --burnthesky-post-icon-ring:  var(--burnthesky-red-dark);
-  --burnthesky-post-hover-bg:   rgba(9, 9, 9, .88);   /* panel de datos sobre el avatar */
+  --burnthesky-post-hover-bg:   rgba(21, 18, 26, .88);   /* panel de datos sobre el avatar */
   --burnthesky-post-pad:        26px;    /* margen interior del cuerpo del mensaje */
   --burnthesky-post-text:       14px;    /* tamaño del texto del mensaje */
   --burnthesky-post-lh:         1.85;    /* interlineado del mensaje */
@@ -5902,9 +5905,9 @@ html { scroll-padding-top: 64px; }
   --burnthesky-post-bar-box:    #18181a;   /* fondo de cada caja */
   --burnthesky-post-bar-line:   #222;      /* borde de cada caja */
   --burnthesky-post-bar-pad:    15px;      /* margen interior de la caja */
-  --burnthesky-post-bar-title:  #ff2a5f;   /* color del título */
+  --burnthesky-post-bar-title:  var(--burnthesky-red);   /* color del título */
   --burnthesky-post-bar-track:  #2a2a2a;   /* fondo de la barra vacía */
-  --burnthesky-post-bar-fill:   #ff2a5f;   /* color de la barra */
+  --burnthesky-post-bar-fill:   var(--burnthesky-red);   /* color de la barra */
   --burnthesky-post-bar-h:      20px;      /* alto de la barra */
   --burnthesky-post-bar-r:      3px;       /* redondeo de la barra */
 }
@@ -6085,7 +6088,7 @@ a.rbtn-main:hover {
   border-color: var(--burnthesky-red);
   background-color: var(--burnthesky-red-wash);
   color: #fff;
-  box-shadow: 3px 3px 0 var(--burnthesky-red-ghost-2);
+  box-shadow: 0 8px 28px var(--burnthesky-red-ghost-2);
 }
 a.rbtn-main--reply { border-color: var(--burnthesky-red-dark); }
 a.rbtn-main--locked { opacity: .7; pointer-events: none; }
@@ -6353,7 +6356,7 @@ a.rbtn-main img { display: none; }
   --burnthesky-pf-rel-col:    150px;     /* ancho mínimo de cada relación */
   --burnthesky-pf-multi-w:    250px;     /* multicuentas: ancho */
   --burnthesky-pf-multi-h:    150px;     /* multicuentas: alto */
-  --burnthesky-pf-term-bg:    #050505;   /* fondo de la terminal */
+  --burnthesky-pf-term-bg:    #100d14;   /* fondo de la terminal */
   --burnthesky-pf-term-fg:    #d6d6d6;   /* texto de la terminal */
 }
 
@@ -6462,7 +6465,7 @@ a.rbtn-main img { display: none; }
   background: var(--burnthesky-void);
   border: 1px solid var(--burnthesky-line);
 }
-.rlog__row:hover { border-color: var(--burnthesky-red); box-shadow: 4px 4px 0 var(--burnthesky-red-ghost-2); }
+.rlog__row:hover { border-color: var(--burnthesky-red); box-shadow: 0 8px 28px var(--burnthesky-red-ghost-2); }
 .rlog__l { order: -1; font: var(--burnthesky-fs-2xs) / 1 var(--burnthesky-ff-mono); letter-spacing: 3px; text-transform: uppercase; color: var(--burnthesky-gray); }
 .rlog__v { font: var(--burnthesky-fs-sm) / 1.4 var(--burnthesky-ff-mono); letter-spacing: 1px; color: var(--burnthesky-white); overflow-wrap: anywhere; }
 .rlog__row.is-empty .rlog__v { color: var(--burnthesky-gray); }
@@ -6492,7 +6495,7 @@ a.rbtn-main img { display: none; }
 .rmulti__it:is(:hover, .is-hover) {
   transform: translateY(calc(-1 * var(--burnthesky-lift)));
   border-color: var(--burnthesky-red-vivid);
-  box-shadow: 4px 4px 0 var(--burnthesky-red-ghost-2);
+  box-shadow: 0 8px 28px var(--burnthesky-red-ghost-2);
 }
 .rmulti__n { transition: color var(--burnthesky-ease), background var(--burnthesky-ease); }
 .rmulti__it:is(:hover, .is-hover) .rmulti__n { color: var(--burnthesky-red-vivid); }
@@ -6710,7 +6713,7 @@ a.rbtn-main img { display: none; }
 .rc3__side.sin-av { grid-template-columns: minmax(0, 1fr); }
 .rc3__img {
   grid-column: 1 / -1; height: var(--burnthesky-idx-img-h);
-  background: #050505 center / cover no-repeat;
+  background: #100d14 center / cover no-repeat;
   border: 1px solid var(--burnthesky-line-2);
   filter: grayscale(1) brightness(.8);
   transition: filter var(--burnthesky-ease-img);
@@ -6722,13 +6725,13 @@ li.row:hover .rc3__img { filter: none; }
   width: var(--burnthesky-idx-av); height: var(--burnthesky-idx-av);
   border-radius: 50%; overflow: hidden;
   border: 2px solid var(--burnthesky-red);
-  box-shadow: 0 0 14px rgba(255, 74, 53, 0.4);
+  box-shadow: 0 0 14px var(--burnthesky-red-glow);
   background: var(--burnthesky-void-2);
   display: flex; align-items: center; justify-content: center;
   transition: transform var(--burnthesky-ease), box-shadow var(--burnthesky-ease);
 }
 .rc3__av img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; float: none; margin: 0; }
-li.row:hover .rc3__av { transform: scale(1.06); box-shadow: 0 0 20px rgba(255, 74, 53, .65); }
+li.row:hover .rc3__av { transform: scale(1.06); box-shadow: 0 0 20px var(--burnthesky-red-glow); }
 .rc3__side:not(:has(.rc3__img)) .rc3__av { grid-row: 1 / span 2; }
 .rc3__side > .rc3__btn { grid-column: 2; }
 .rc3__side.sin-av > .rc3__btn { grid-column: 1; }
@@ -6751,3 +6754,114 @@ a.rc3__btn:hover .rc3__arrow { transform: translateX(4px); }
   .rc3 { grid-template-columns: minmax(0, 1fr); }
   .rc3__side { grid-column: 1; grid-row: 4; }
 }
+
+
+/* ============================================================================
+   54 · TEMA SUAVE (slice of life · romántico)
+   Paleta, tipografías, esquinas y sombras se cambian en las VARIABLES de la
+   sección 01 (--burnthesky-red = rosa acento, --burnthesky-radius, etc.).
+   Esta sección solo añade lo que no se resuelve con variables: esquinas en
+   todos los componentes, etiquetas sin mayúsculas forzadas, iconos finos y
+   resplandor suave. Para volver al estilo anterior, borra esta sección y
+   restaura las variables (copia: outer-card.before-soft.css).
+   ========================================================================== */
+:root {
+  --burnthesky-r-sm: 8px;
+  --burnthesky-r-md: 14px;
+  --burnthesky-r-lg: 20px;
+  --burnthesky-peach:    #f2c4a5;
+  --burnthesky-lavender: #b9a8e6;
+  --burnthesky-sage:     #a9d6bd;
+  --burnthesky-glow:     0 10px 34px rgba(242, 169, 195, .14);       /* resplandor de tarjetas */
+  --burnthesky-glow-hover: 0 12px 36px rgba(242, 169, 195, .26);     /* ... al pasar el ratón */
+  --burnthesky-soft-bg:  linear-gradient(145deg, rgba(242, 169, 195, .06), rgba(185, 168, 230, .04) 60%, transparent);
+}
+
+/* -- esquinas suaves en todos los componentes (:where = no pisa los círculos ya definidos) -- */
+:where(.forabg, .forumbg, .panel, .post, .rforumstats, .rdb, .rdb__g, .rdb__apart, .rmes3-card, #mural, #rneonfooter,
+  [class*="rperfil__"], [class*="rtile"], [class*="rstat"], [class*="rc3"], [class*="rlog"], [class*="rcrono"], [class*="rterm"], [class*="ralian"],
+  [class*="rinv"], [class*="rbtn"], [class*="rcbtn"], [class*="rtopic"], [class*="rpost"], [class*="rphrase"], [class*="rpower"],
+  [class*="ravatar"], [class*="rdato"], [class*="rimp"], [class*="rbar"], [class*="rmulti"], [class*="rrel"], [class*="rdate"],
+  .burnts-meter, .burnts-bar-container, .burnts-bar, .bts-box, .bts-tablilla, .bts-card, .bts-frame,
+  input.post, input.inputbox, textarea, select, .button1, .button2, .mainoption, .sceditor-container, .sceditor-toolbar) {
+  border-radius: var(--burnthesky-r-md);
+}
+:where(.rtile, .rstat, .rbtn, .rcbtn, .rc3__btn, .rc3__badge, .rc3__chips, .rdato, .rlog__row, .rperfil__tab, .rperfil__quote, .rbar__track, .rbar__fill,
+  .burnts-bar-container, .burnts-bar, input.post, input.inputbox, select, .button1, .button2, .mainoption) { border-radius: var(--burnthesky-r-sm); }
+:where(.rperfil__tab, .rc3__badge, .rtag, .rcbtn, .rbtn, .rdb__pill) { border-radius: 999px; }
+/* ventanas contenedoras: recortan su contenido a la esquina */
+.forabg, .forumbg, .rinv, .rperfil__win, .rperfil__top, .rperfil__cols, .rperfil__foot, .rcrono, .rterm, .rc3-row, .rforumstats, .rdb, .post, .panel { overflow: clip; }
+.rperfil__avatarimg, .rperfil__banner, .rperfil__ally, .rmulti__it, .rc3__img { border-radius: var(--burnthesky-r-md); overflow: hidden; }
+
+/* -- superficies con resplandor suave en lugar de bordes duros -- */
+.forabg, .forumbg, .post, .panel, .rforumstats, .rdb, #rneonfooter, .rinv, .rperfil__win, .rperfil__top, .rperfil__cols, .rperfil__foot, .rmes3-card {
+  background-image: var(--burnthesky-soft-bg);
+  border-color: rgba(242, 169, 195, .12);
+  box-shadow: var(--burnthesky-glow);
+}
+.forabg ul.topiclist.forums > li.row, .rtile, .rstat, .rc3__desc, .rlog__row, .rcrono { border-color: rgba(242, 169, 195, .12) !important; }
+.forabg ul.topiclist.forums > li.row:hover, .rtile:hover, .rstat:hover, .rlog__row:hover { box-shadow: var(--burnthesky-glow-hover) !important; }
+
+/* -- etiquetas: sin mayúsculas forzadas ni espaciado de "terminal" -- */
+.rtile__l, .rlog__l, .rbar__l, .rperfil__tab, .rinv__head, .rinv__box h3, .rcbtn__t, .rc3__badge, .rc3__chips a, .rforlinks a,
+.rcrono__t, .rterm__l, .rmulti__n, .rrel__n, .rperfil__rank, .rperfil__last, .rperfil__foot, .rperfil__nicks::before,
+.rdb__title, .rdb__pill, .rdb__gname, #page-header a.mainmenu, .rtag, .rstat > .rtile__l, .rpost-foot, .rbtn, .rbtn-main, .rdato__l,
+.rperfil__powerdesc, .rc3__btn, .table-title, .rmes3-card__name, .rmes3-card__sub, .rdate__tip {
+  text-transform: none !important;
+  letter-spacing: .3px !important;
+}
+.rinv__head, .rcrono__t, .rtile__l, .rlog__l, .rperfil__nicks::before { font-weight: 500; }
+.forabg a.forumtitle, .rc3__title, .rperfil__alias, .rtopicbanner a, .rtopicuser, .bts-hero h1, h1, h2, h3, h4 { text-transform: none !important; letter-spacing: -.2px !important; font-weight: 500; }
+.rperfil__alias { font-weight: 600; }
+
+/* -- frases y citas en serif cursiva: toque romántico -- */
+.rperfil__quote, .rphrase, .rperfil__quote *, .rphrase * {
+  font-family: var(--burnthesky-ff-serif) !important;
+  font-style: italic; font-size: 16px; letter-spacing: .2px;
+}
+
+/* -- botones y fichas: relleno suave y brillo -- */
+.rcbtn, a.rcbtn, .rbtn, .rbtn-main, .rc3__btn, .button1, .mainoption { background-color: rgba(242, 169, 195, .07); transition: background var(--burnthesky-ease), box-shadow var(--burnthesky-ease), transform var(--burnthesky-ease), color var(--burnthesky-ease); }
+.rcbtn:hover, a.rcbtn:hover, .rbtn:hover, .rbtn-main:hover, a.rc3__btn:hover, .button1:hover, .mainoption:hover {
+  background-color: rgba(242, 169, 195, .16);
+  box-shadow: 0 6px 22px rgba(242, 169, 195, .22);
+}
+.rtag, .rc3__desc .rtag { background: linear-gradient(135deg, var(--burnthesky-red), #c58bd0); color: #fff; box-shadow: 0 4px 14px rgba(212, 120, 155, .35); }
+.rcrono, .rterm { border-left-width: 1px !important; border-left-color: rgba(242, 169, 195, .25) !important; }
+.rstat--power { border-left-width: 1px !important; background: linear-gradient(135deg, rgba(242, 169, 195, .14), rgba(185, 168, 230, .08)), var(--burnthesky-void) !important; }
+.rstat--power .rtile__v { text-shadow: 0 0 18px rgba(242, 169, 195, .5); }
+
+/* -- barras de progreso suaves -- */
+.rbar__fill, .burnts-bar { background: linear-gradient(90deg, #f2a9c3, #c9a8f0) !important; box-shadow: 0 0 14px rgba(242, 169, 195, .45); }
+.rbar__track, .burnts-bar-container { background: rgba(255, 255, 255, .07) !important; }
+
+/* -- iconos: glifos pequeños y discretos; los de FontAwesome en trazo ligero -- */
+#page-header a.mainmenu::before { font-size: 14px; opacity: .8; transition: opacity var(--burnthesky-ease), text-shadow var(--burnthesky-ease); }
+#page-header a.mainmenu:hover::before { opacity: 1; text-shadow: 0 0 14px var(--burnthesky-red-glow); }
+#page-header a.mainmenu:hover { box-shadow: none; }
+.cp, i.cp { font-size: 1.05em; opacity: .9; }
+.rperfil__idicon { filter: drop-shadow(0 0 8px var(--burnthesky-red-glow)); }
+
+/* -- barra lateral: panel flotante suave -- */
+#page-header .navbar { border-right-color: rgba(242, 169, 195, .12) !important; box-shadow: 8px 0 40px rgba(242, 169, 195, .06); }
+#page-header .navbar::after { display: none; }
+
+/* -- avatares con halo -- */
+.bts-sidebar-avatar, .rc3__av, .rrel__ph { border-color: var(--burnthesky-red) !important; box-shadow: 0 0 22px var(--burnthesky-red-glow) !important; }
+
+/* -- selección y scroll -- */
+::selection { background: rgba(212, 120, 155, .55); }
+html { scrollbar-color: rgba(242, 169, 195, .35) var(--burnthesky-void); }
+
+/* -- fondo de la tarjeta de foro: sin imagen en gris, con color suave -- */
+.forabg ul.topiclist.forums > li.row.rc3-row::before { filter: saturate(.7); }
+
+.rtile__v, .rstat .rtile__v, .rperfil__alias, [class*="rimp"] *, .rperfil__rankname { text-transform: none !important; letter-spacing: .2px !important; }
+[class*="rimp"] * { letter-spacing: .3px !important; }
+.rterm { background-image: none !important; background-color: #100d15 !important; box-shadow: inset 0 0 30px rgba(0, 0, 0, .35); }
+.rterm__l { color: var(--burnthesky-red-vivid); }
+.forabg a.forumtitle::before, .rc3__title::before { border-radius: 50%; box-shadow: 0 0 12px var(--burnthesky-red-glow); }
+.rperfil__id { border-left-width: 1px !important; border-left-color: rgba(242, 169, 195, .25) !important; }
+
+.post.bg1, .post.bg2, .post { background-color: var(--burnthesky-void-2) !important; }
+.rpower .postprofile-field-label, .rpower .postprofile-field-content, .postprofile-field-label, .rpost-head .author, .rtopicuser b { text-transform: none !important; letter-spacing: .3px !important; }
