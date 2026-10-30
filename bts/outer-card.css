@@ -65,13 +65,13 @@
   --burnthesky-line-2:        #4a4155;   /* bordes de controles */
 
   /* ---- Color · rojo señal ---- */
-  --burnthesky-red:           #d4789b;   /* acento principal: rosa (el nombre 'red' se conserva por compatibilidad) */
-  --burnthesky-red-vivid:     #f2a9c3;
-  --burnthesky-red-dark:      #6b3a4f;
-  --burnthesky-red-ghost:     rgba(242, 169, 195, .32);
-  --burnthesky-red-ghost-2:   rgba(242, 169, 195, .16);
-  --burnthesky-red-glow:      rgba(242, 169, 195, .38);
-  --burnthesky-red-wash:      rgba(242, 169, 195, .07);
+  --burnthesky-red:           #c85b70;
+--burnthesky-red-vivid:     #ed8795;
+--burnthesky-red-dark:      #713541;
+--burnthesky-red-ghost:     rgba(237, 135, 149, .32);
+--burnthesky-red-ghost-2:   rgba(237, 135, 149, .16);
+--burnthesky-red-glow:      rgba(237, 135, 149, .38);
+--burnthesky-red-wash:      rgba(237, 135, 149, .07);
 
   /* ---- Color · por usuario (lo puede escribir un script JS) ---- */
   --burnthesky-user-color:    var(--burnthesky-white);
