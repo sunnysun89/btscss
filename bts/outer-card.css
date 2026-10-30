@@ -6935,3 +6935,15 @@ html { scrollbar-color: rgba(var(--burnthesky-accent-rgb), .35) var(--burnthesky
 /* premios nativos: el módulo original se oculta, sus medallas pasan al Medallero */
 .awards_module[data-bts-prem] { display: none !important; }
 .rslot.rpremio { cursor: help; }
+
+
+/* casillas con imagen (medallas, objetos, premios): dentro del hexágono, con la imagen cubriéndolo */
+.rslot.is-on {
+  clip-path: polygon(25% 4%, 75% 4%, 98% 50%, 75% 96%, 25% 96%, 2% 50%);
+  border: 0; background: var(--burnthesky-void-3); padding: 0;
+}
+.rslot.is-on:hover { transform: none; box-shadow: none; }
+.rslot.is-on img,
+.rslot.is-on a { position: absolute; inset: 0; width: 100% !important; height: 100% !important; max-width: none !important; max-height: none !important; }
+.rslot.is-on img { object-fit: cover; transition: transform var(--burnthesky-ease), filter var(--burnthesky-ease); }
+.rslot.is-on:hover img { transform: scale(1.12); filter: brightness(1.1); }
