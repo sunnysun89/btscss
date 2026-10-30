@@ -5495,7 +5495,7 @@ body:not(:has(.topiclist.forums)) .rmensual {
 .bts-sidebar-avatar {
   width: var(--burnthesky-sidebar-icon);
   height: var(--burnthesky-sidebar-icon);
-  margin: 0 auto 16px;
+  margin: 0 auto 30px;
   border-radius: 50%;
   overflow: hidden;
   border: 2px solid var(--burnthesky-red);
