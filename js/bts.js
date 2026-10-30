@@ -1245,6 +1245,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       term.appendChild(el('div', 'rterm__l', '> acceso concedido · expediente de ' + alias.trim()));
       term.appendChild(el('div', 'rterm__l', '> biografía y notas ocultas'));
       var cu = el('div', 'rterm__body');
+		var campoCuriosidades = document.querySelector('.field_profile_field_2_25, [data-field-id="2_25"]');
       if (curiosidades && curiosidades.textContent.replace(/\s+/g, '').length) cu.innerHTML = htmlUsuario(curiosidades);
       else { cu.textContent = 'Sin registros. Archivo vacío.'; cu.classList.add('vacio'); }
       term.appendChild(cu);
