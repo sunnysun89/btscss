@@ -315,10 +315,27 @@
       h.innerHTML = "";
       var n = 0;
       if (c) {
+        /* [img]url[/img] Nombre -> el texto tras cada imagen es su nombre (tooltip) */
+        var noms = [], act = null;
+        (function rec(nd) {
+          Array.prototype.forEach.call(nd.childNodes, function (x) {
+            if (x.nodeType === 3) { if (act) act.t += x.nodeValue; }
+            else if (x.nodeType === 1) {
+              if (x.tagName === "BR") act = null;
+              else if (x.tagName === "IMG") { act = { img: x, t: "" }; noms.push(act); }
+              else if (x.querySelector && x.querySelector("img")) {
+                if (x.tagName === "A") { act = { img: x.querySelector("img"), t: "" }; noms.push(act); } else rec(x);
+              } else if (act) act.t += x.textContent;
+            }
+          });
+        })(c.el);
         c.el.querySelectorAll("img").forEach(function (img) {
           var cas = document.createElement("div"); cas.className = "rslot is-on";
           var a = img.closest("a");
           cas.appendChild((a && c.el.contains(a) ? a : img).cloneNode(true));
+          var o = noms.filter(function (q) { return q.img === img; })[0];
+          var t = o ? o.t.replace(/\s+/g, " ").trim() : "";
+          if (t) { cas.title = t; cas.setAttribute("data-nombre", t); }
           h.appendChild(cas); n++;
         });
       }

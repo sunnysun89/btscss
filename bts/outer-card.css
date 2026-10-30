@@ -6873,7 +6873,7 @@ html { scrollbar-color: rgba(var(--burnthesky-accent-rgb), .35) var(--burnthesky
 
 /* Variables derivadas del acento: se vuelven a declarar dentro del perfil para que
    sigan el color del grupo del usuario (js-post.js → paletaPerfil). */
-.rperfil {
+.rperfil, .post {
   --burnthesky-post-icon-ring: var(--burnthesky-red-dark);
   --burnthesky-post-bar-title: var(--burnthesky-red);
   --burnthesky-post-bar-fill: var(--burnthesky-red);
@@ -6947,3 +6947,42 @@ html { scrollbar-color: rgba(var(--burnthesky-accent-rgb), .35) var(--burnthesky
 .rslot.is-on a { position: absolute; inset: 0; width: 100% !important; height: 100% !important; max-width: none !important; max-height: none !important; }
 .rslot.is-on img { object-fit: cover; transition: transform var(--burnthesky-ease), filter var(--burnthesky-ease); }
 .rslot.is-on:hover img { transform: scale(1.12); filter: brightness(1.1); }
+
+
+/* ==========================================================================
+   56. Mensajes con paleta de grupo · franja de estadísticas · nombres de ítems
+   Variables: --burnthesky-stats-gap (separación), --burnthesky-stats-fs (tamaño),
+   --burnthesky-stats-bg (fondo de la franja).
+   ========================================================================== */
+:root {
+  --burnthesky-stats-gap: 28px;
+  --burnthesky-stats-fs: 12px;
+  --burnthesky-stats-bg: rgba(var(--burnthesky-accent-rgb), .08);
+}
+/* el mensaje toma un velo suave del color de su grupo */
+.post[data-bts-grupo] { background-image: var(--burnthesky-soft-bg) !important; }
+.post[data-bts-grupo] .rpost-head .author { color: var(--burnthesky-red-vivid); }
+
+.rpost-stats {
+  display: flex; flex-wrap: wrap; justify-content: space-evenly; align-items: center;
+  gap: 8px var(--burnthesky-stats-gap);
+  margin: 14px 0 0; padding: 12px 18px;
+  background: var(--burnthesky-stats-bg);
+  border-radius: var(--burnthesky-r-md, 14px);
+  box-shadow: var(--burnthesky-glow);
+}
+.rpost-stat { display: flex; align-items: baseline; gap: 7px; text-align: center; }
+.rpost-stat__v { font: 600 calc(var(--burnthesky-stats-fs) + 3px) / 1 var(--burnthesky-ff-display); color: var(--burnthesky-white, #fff); }
+.rpost-stat__l { font-size: var(--burnthesky-stats-fs); letter-spacing: 1.6px; text-transform: uppercase; color: var(--burnthesky-white, #fff); opacity: .88; }
+.rpost-stat + .rpost-stat { position: relative; }
+.rpost-stat + .rpost-stat::before {
+  content: ""; position: absolute; left: calc(-.5 * var(--burnthesky-stats-gap)); top: 15%; bottom: 15%;
+  width: 1px; background: rgba(var(--burnthesky-accent-rgb), .35);
+}
+.rpost-n { display: none !important; }
+
+/* nombre del ítem al pasar el ratón (además del tooltip nativo) */
+.rslot[data-nombre] { position: relative; cursor: help; }
+
+/* nombres del grupo en Recent topics: el color lo pone el JS en línea */
+#mural .rrecent__meta b.rrecent__grupo { font-weight: 600; }

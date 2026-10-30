@@ -18,182 +18,108 @@ if (window.console) console.log("[BTS] bts.js cargado v1.9");
       console.info("[BTS] CSS: " + (cs.getPropertyValue("--burnthesky-css").trim() || "SIN MARCA (el navegador tiene un CSS viejo en caché)") + " · hover (--burnthesky-ease) = " + cs.getPropertyValue("--burnthesky-ease").trim());
     }
 /* --- js-banner.js --- */
-(function(){
-/* --- banner: solo si hay mural que mover --- */
-if (!document.querySelector('#left #startindex')) return;
 /* Banner: todas las páginas.
-   Mueve el widget Banner (#startindex) a #rheader, rellena la ventana de
-   Recent topics con los últimos temas, pone el nombre en la bienvenida, el
-   copyright a icono y construye la lista de más activos.
-   Requiere el widget "Banner" (plantillas/widget-mural.html) y el widget
-   estándar de últimos temas dentro de #left.
-   Cada bloque va en safe(): si uno falla, los demás siguen funcionando. */
+   Mueve el widget Banner (#startindex) a #rheader, los últimos temas a la
+   tabla del mural, el avatar y nombre al bloque de bienvenida, el copyright
+   a icono, y construye la lista de más activos. Requiere el widget "Banner"
+   (plantillas/widget-mural.html) y los widgets estándar en #left. */
 jQuery(document).ready(function(){
-
-  function safe(nombre, fn) {
-    try { fn(); } catch (e) { if (window.console) console.warn("[BTS banner] " + nombre, e); }
-  }
-
-  safe("mover banner", function () {
-    $("#rheader").replaceWith($("#left #startindex"));
-  });
-
-  /* ---- Recent topics ----------------------------------------------------
-     Antes se buscaba SOLO #comments_scroll_div, y si el widget no tenía ese
-     id la ventana quedaba vacía. Ahora se busca por id, por título del
-     módulo ("Últimos temas", "Recent topics"...) o, como último recurso, por
-     cualquier módulo de #left que contenga enlaces a temas. */
-  safe("recent topics", function () {
-    var $slot = $("#mural .rsubsrecent").first();
-    if (!$slot.length) return;
-
-    var esTema = function (a) {
-      var h = a.getAttribute("href") || "";
-      return /\/t\d+[^\/]*(#\d+)?$/.test(h) && !$(a).closest(".h3").length;
-    };
-
-    var $src = $("#left #comments_scroll_div, #comments_scroll_div").not("#mural *").first();
-
-    if (!$src.length) {
-      $("#left .module").each(function () {
-        var titulo = $(this).find(".h3").first().text().toLowerCase();
-        if (/últimos temas|ultimos temas|últimos mensajes|ultimos mensajes|recent topics|latest topics|recent posts|latest posts/.test(titulo)) {
-          $src = $(this);
-          return false;
-        }
-      });
-    }
-    if (!$src.length) {
-      $("#left .module").each(function () {
-        if ($(this).find("a").filter(function () { return esTema(this); }).length >= 2) {
-          $src = $(this);
-          return false;
-        }
-      });
-    }
-
-    var items = [];
-    if ($src.length) {
-      $src.find("a").each(function () {
-        if (!esTema(this) || items.length >= 8) return;
-        var a = this, meta = "", n = a.nextSibling;
-
-        while (n) {
-          if (n.nodeType === 1 && (esTema(n) || (n.querySelector && $(n).find("a").filter(function () { return esTema(this); }).length))) break;
-          meta += n.textContent || "";
-          n = n.nextSibling;
-        }
-        if (!meta.replace(/\s+/g, "")) {
-          var p = a.parentNode;
-          if (p && $(p).find("a").filter(function () { return esTema(this); }).length === 1) {
-            meta = (p.textContent || "").replace(a.textContent, "");
+  
+  $("#rheader").replaceWith($("#left #startindex"));
+  /* Recent topics: se lee la lista del widget estándar (#comments_scroll_div,
+     que se queda donde está para que su script siga funcionando) y se pinta
+     una lista .rrecent propia en la ventana del mural. Se reintenta hasta 8 s
+     porque el widget rellena su contenido después de cargar la página. */
+  (function btsRecent() {
+    var intentos = 0;
+    var t = setInterval(function () {
+      intentos++;
+      var cont = $("#mural .rsubsrecent, #mural .rrecent").first();
+      var src = $("#comments_scroll_div").first();
+      var enlaces = src.find("a[href]").filter(function () { return /\/t\d+/.test($(this).attr("href")); });
+      if (cont.length && enlaces.length) {
+        clearInterval(t);
+        var lista = $('<div class="rrecent"></div>');
+        var vistos = {};
+        enlaces.each(function () {
+          var a = $(this), href = a.attr("href");
+          if (vistos[href]) return;
+          vistos[href] = 1;
+          var bloque = a.closest(".gensmall, p, li, div").not(src);
+          if (!bloque.length || bloque.is(src)) bloque = a.parent();
+          var autorA = bloque.find("a[href]").not(a).first();
+          var autor = autorA.text().trim();
+          /* color del grupo: el que lleve el enlace del autor (style, <font color> o un hijo con color) */
+          var colAutor = "";
+          autorA.add(autorA.find("[style*='color'], font[color]")).each(function () {
+            if (colAutor) return;
+            var c = (this.style && this.style.color) || this.getAttribute("color") || "";
+            if (c) colAutor = c;
+          });
+          var resto = bloque.text().replace(a.text(), "");
+          var fecha = resto.indexOf("»") > -1 ? resto.split("»").slice(1).join("»") : "";
+          fecha = fecha.replace(/\s+/g, " ").trim();
+          var item = $('<a class="rrecent__item"></a>').attr("href", href);
+          item.append($('<span class="rrecent__title"></span>').text(a.text().trim()));
+          var meta = $('<span class="rrecent__meta"></span>');
+          if (autor) {
+            var bAutor = $("<b></b>").text(autor);
+            if (colAutor) bAutor.css("color", colAutor).addClass("rrecent__grupo");
+            meta.append("por ").append(bAutor);
           }
-        }
-        meta = meta.replace(/\s+/g, " ").replace(/^[\s»>]+/, "").replace(/[\s»>]+$/, "").trim();
-
-        var fecha = meta, autor = "";
-        var m = meta.match(/^(.*)\s+por\s+(.+)$/i);
-        if (m) { fecha = m[1].trim(); autor = m[2].trim(); }
-
-        var titulo = (a.textContent || "").replace(/^[\s»>]+/, "").trim();
-        if (/(\.\.\.|…)$/.test(titulo) && a.getAttribute("title")) titulo = a.getAttribute("title");
-
-        items.push({ href: a.getAttribute("href"), titulo: titulo, fecha: fecha, autor: autor });
-      });
-    }
-
-    if (window.console) console.info("[BTS] recent topics: módulo " + ($src.length ? "encontrado" : "NO encontrado") + ", " + items.length + " temas");
-    var $lista = $('<div class="rsubsrecent rrecent"></div>');
-    if (!items.length) {
-      $lista.append($('<p class="rrecent__empty"></p>').text("Aún no hay temas recientes."));
-    }
-    $.each(items, function (i, it) {
-      var $a = $('<a class="rrecent__item"></a>').attr("href", it.href);
-      $a.append($('<span class="rrecent__title"></span>').text(it.titulo));
-      var $meta = $('<span class="rrecent__meta"></span>');
-      if (it.autor) $meta.append($("<b></b>").text(it.autor)).append(document.createTextNode(" · "));
-      $meta.append(document.createTextNode(it.fecha));
-      $a.append($meta);
-      $lista.append($a);
-    });
-    $slot.replaceWith($lista);
-
-    /* ---- Scroll automático ----------------------------------------------
-       SPEED = píxeles por segundo (menor = más lento). Solo se mueve si la
-       lista no cabe entera en la ventana (alto = max-height de .rrecent).
-       Usa la Web Animations API: no depende de la hoja de estilos (ni de su
-       caché) y "reducir movimiento" no la desactiva. Pausa con el ratón. */
-    var SPEED = 28;
-    var $pista = $('<div class="rrecent__track"></div>').append($lista.children());
-    $lista.empty().append($pista);
-    $lista.css({ maxHeight: "340px", overflow: "hidden" });
-    var originales = $pista.children().length;
-    var anim = null;
-
-    function medir() {
-      if (anim) { anim.cancel(); anim = null; }
-      $pista.children().slice(originales).remove();
-      $lista.removeClass("rrecent--on").off(".rscroll");
-      var alto = $pista.outerHeight(), ventana = $lista.innerHeight();
-      var mover = originales && alto > ventana + 1;
-      if (window.console) console.info("[BTS] scroll recent: lista " + alto + "px, ventana " + ventana + "px -> " + (mover ? "se mueve" : "no hace falta"));
-      if (!mover) return;
-      $pista.append($pista.children().clone().attr("aria-hidden", "true"));
-      $lista.addClass("rrecent--on");
-      if (!$pista[0].animate) return;
-      anim = $pista[0].animate(
-        [{ transform: "translateY(0)" }, { transform: "translateY(-" + alto + "px)" }],
-        { duration: alto / SPEED * 1000, iterations: Infinity }
-      );
-      $lista.on("mouseenter.rscroll", function () { if (anim) anim.pause(); })
-            .on("mouseleave.rscroll", function () { if (anim) anim.play(); });
-    }
-    medir();
-    $(window).on("load", medir);
-  });
-
-  safe("avatar", function () {
-    if (document.querySelector('.mod-login-avatar') !== null) {
-      $("#mural .rintro .ricon img").replaceWith($(".mod-login-avatar img"));
-    }
-    var avatar = $("#left .mod-login-avatar img");
-    if (avatar.length == 0) avatar = '<img src="https://placehold.co/250x400" />';
-    $("#mural .rmuralavatar img").replaceWith(avatar);
-  });
-
-  safe("copyright", function () {
-    var legend = $("p.copyright strong a").text();
-    $("p.copyright strong a").html('<i class="fa fa-gear" title="' + legend + '"></i>');
-  });
-
-  safe("bienvenida", function () {
-    var nombre = $("#left .module .inner span.corners-top ~ div.h3 span strong").text();
-    if (nombre) $("#mural .rwelcomesub span").text(nombre);
-  });
-
-  safe("más activos", function () {
-    var activeUsersHtml = "";
-    $("#left .module .inner").each(function () {
-      var check1 = $(this).find("div.h3").text();
-      var check2 = $(this).find("table").attr("summary");
-      if (check2 != null && check1 == check2) {
-        $(this).find("div.h3 ~ table > tbody > tr").each(function (index) {
-          if ($(this).find("td > table").attr("title") != null) {
-            activeUsersHtml += '<div class="ruser" title="' + $(this).find("td > table").attr("title").split("-")[0] + '">';
-            activeUsersHtml += '<span>> ' + $(this).find("td > a").text() + '</span>';
-            var percentage = parseInt($(this).find("td > table").attr("title").split("-")[1]);
-            var accent = (index % 2 == 0) ? 2 : 1;
-            activeUsersHtml += '<div><div style="background: linear-gradient(90deg, var(--accent' + accent + ') ' + percentage + '%, transparent ' + (percentage + 10) + '%);"></div></div>';
-            activeUsersHtml += '</div>';
-          }
+          if (fecha) { meta.append((autor ? " · " : "") + fecha); }
+          item.append(meta);
+          lista.append(item);
         });
+        cont.replaceWith(lista);
+      } else if (intentos > 80) {
+        clearInterval(t);
+        if (cont.length) cont.replaceWith('<p class="rrecent__empty">Sin temas recientes.</p>');
       }
-      $("#mural .ractiveusers").html(activeUsersHtml);
-    });
+    }, 100);
+  })();
+  if (document.querySelector('.mod-login-avatar') !== null) {
+    $("#mural .rintro .ricon img").replaceWith($(".mod-login-avatar img"));
+  }
+  
+  let legend = $("p.copyright strong a").text();
+  $("p.copyright strong a").html('<i class="fa fa-gear" title="' + legend + '"></i>');
+  
+  let avatar = $("#left .mod-login-avatar img");
+  if(avatar.length == 0)
+    avatar = '<img src="https://placehold.co/250x400" />';
+  $("#mural .rmuralavatar img").replaceWith(avatar);
+  $("#mural .rwelcomesub span").text($("#left .module .inner span.corners-top ~ div.h3 span strong").text());
+  
+  let activeUsersHtml = "";
+  $("#left .module .inner").each(function( index ) {
+    let check1 = $(this).find("div.h3").text();
+    let check2 = $(this).find("table").attr("summary");
+    if(check2 != null && check1 == check2) {
+      $(this).find("div.h3 ~ table > tbody > tr").each(function( index ) {
+        
+        if($(this).find("td > table").attr("title") != null) {
+        
+        activeUsersHtml += '<div class="ruser" title="' + $(this).find("td > table").attr("title").split("-")[0] + '">';
+        activeUsersHtml += '<span>> ' + $(this).find("td > a").text() + '</span>';
+        let percentage = parseInt($(this).find("td > table").attr("title").split("-")[1]);
+        let accent = 1;
+        if(index % 2 == 0)
+          accent = 2;
+        activeUsersHtml += '<div>' + 
+          '<div style="background: linear-gradient(90deg, var(--accent' + accent + ') ' + percentage + '%, transparent ' + (percentage + 10) + '%);">' +
+          '</div></div>';
+        activeUsersHtml += '</div>';
+        
+      	}
+      });
+    }
+    $("#mural .ractiveusers").html(activeUsersHtml);
   });
-
+  
+  
+  
 });
-})();
 /* --- js-indice.js --- */
 (function(){
 /* --- índice: solo con bloque de estadísticas --- */
@@ -662,14 +588,39 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     try { console.log('[BTS] perfil: premios →', lista.length); } catch (e) {}
   }
 
+  /* Nombres de ítem: en el campo se escribe  [img]url[/img] Nombre  y el texto que
+     sigue a cada imagen (hasta la siguiente imagen o salto de línea) pasa a ser el
+     nombre que se ve al pasar el ratón por la casilla. */
+  function nombresDeImagenes(cont) {
+    var out = [], actual = null;
+    (function rec(n) {
+      Array.prototype.forEach.call(n.childNodes, function (h) {
+        if (h.nodeType === 3) { if (actual) actual.t += h.nodeValue; }
+        else if (h.nodeType === 1) {
+          if (h.tagName === 'BR') { actual = null; }
+          else if (h.tagName === 'IMG') { actual = { img: h, t: '' }; out.push(actual); }
+          else if (h.querySelector && h.querySelector('img') && h.tagName !== 'A') rec(h);
+          else if (h.tagName === 'A' && h.querySelector('img')) { actual = { img: h.querySelector('img'), t: '' }; out.push(actual); }
+          else if (actual) actual.t += h.textContent;
+        }
+      });
+    })(cont);
+    out.forEach(function (o) { o.t = o.t.replace(/\s+/g, ' ').trim(); });
+    return out;
+  }
   function rejilla(c, extra) {
     var g = el('div', 'rinv__grid'), n = 0;
     var cont = c && c.querySelector('.postprofile-field-content');
-    if (cont) Array.prototype.forEach.call(cont.querySelectorAll('img'), function (img) {
-      var cas = el('div', 'rslot is-on'), a = img.closest ? img.closest('a') : null;
-      cas.appendChild((a && cont.contains(a) ? a : img).cloneNode(true));
-      g.appendChild(cas); n++;
-    });
+    if (cont) {
+      var noms = nombresDeImagenes(cont);
+      Array.prototype.forEach.call(cont.querySelectorAll('img'), function (img) {
+        var cas = el('div', 'rslot is-on'), a = img.closest ? img.closest('a') : null;
+        cas.appendChild((a && cont.contains(a) ? a : img).cloneNode(true));
+        var o = noms.filter(function (x) { return x.img === img; })[0];
+        if (o && o.t) { cas.title = o.t; cas.setAttribute('data-nombre', o.t); }
+        g.appendChild(cas); n++;
+      });
+    }
     (extra || []).forEach(function (p) { g.appendChild(casillaPremio(p)); n++; });
     for (var i = n; i < Math.max(MIN_CASILLAS, Math.ceil(n / 6) * 6); i++) {
       var e = el('div', 'rslot'); e.setAttribute('aria-hidden', 'true'); g.appendChild(e);
@@ -1121,7 +1072,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     return '';
   }
 
-  function aplicaPaleta(raiz, color, fuente) {
+  function aplicaPaleta(raiz, color, fuente, callado) {
     var rgb = aRgb(color); if (!rgb) return;
     var hsl = rgb2hsl(rgb[0], rgb[1], rgb[2]);
     if (hsl[1] < .12 || hsl[2] > .93 || hsl[2] < .07) return;      /* gris, blanco o negro: se queda el tema */
@@ -1140,7 +1091,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     };
     for (var k in v) st.setProperty(k, v[k]);
     raiz.setAttribute('data-bts-grupo', color);
-    try { console.log('[BTS] perfil: grupo →', color, '(' + fuente + ')'); } catch (e) {}
+    if (!callado) { try { console.log('[BTS] perfil: grupo →', color, '(' + fuente + ')'); } catch (e) {} }
   }
 
   function paletaPerfil(raiz) {
@@ -1592,6 +1543,47 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       if (ancla && ancla.parentNode) ancla.parentNode.insertBefore(barras(f), ancla.nextSibling);
       ['pop', 'auto'].forEach(function (k) { if (f[k] && f[k].parentNode) f[k].parentNode.removeChild(f[k]); });
 
+      /* paleta del mensaje según el color del grupo del autor */
+      try {
+        var nm0 = post.querySelector('.rtopicuser span'), cc = '';
+        if (nm0) {
+          var cs = [nm0].concat(Array.prototype.slice.call(nm0.querySelectorAll('a, strong, span, font, b')));
+          for (var q = 0; q < cs.length && !cc; q++) {
+            var col = (cs[q].style && cs[q].style.color) || cs[q].getAttribute('color') || '';
+            if (col && aRgb(col) && !COLORES_NEUTROS.test(col)) cc = col;
+          }
+        }
+        if (cc) aplicaPaleta(post, cc, 'mensaje', true);
+      } catch (e) {}
+
+      /* franja Mensajes · Créditos · Nivel de poder, entre el texto y el inventario */
+      (function () {
+        var vals = [], num = post.querySelector('.rpost-n');
+        var nMsg = num ? num.textContent.replace(/[^\d.,]/g, '') : '';
+        var cred = null, niv = null;
+        for (var i2 = 0; i2 < campos.length; i2++) {
+          var sl = slug(nombre(campos[i2]));
+          if (!cred && /credit|byun|moneda|dinero/.test(sl)) cred = campos[i2];
+          else if (!niv && /nivel-de-poder|nivel-poder|^nivel$/.test(sl)) niv = campos[i2];
+        }
+        function tx(c) { return c && !vacio(c) ? c.querySelector('.postprofile-field-content').textContent.replace(/\s+/g, ' ').trim() : ''; }
+        if (nMsg) vals.push([nMsg, 'Mensajes']);
+        if (tx(cred)) vals.push([tx(cred), (nombre(cred) || 'Créditos').replace(/:$/, '')]);
+        if (tx(niv)) vals.push([tx(niv), (nombre(niv) || 'Nivel de poder').replace(/:$/, '')]);
+        var box = post.querySelector('.rpost-stats');
+        if (!box && invBox) { box = el('div', 'rpost-stats'); invBox.parentNode.insertBefore(box, invBox); }
+        if (box) {
+          box.innerHTML = '';
+          vals.forEach(function (v) {
+            var it = el('div', 'rpost-stat');
+            it.appendChild(el('b', 'rpost-stat__v', v[0])); it.appendChild(el('span', 'rpost-stat__l', v[1]));
+            box.appendChild(it);
+          });
+          if (!vals.length) box.style.display = 'none';
+        }
+        [cred, niv].forEach(function (c) { if (c && c.parentNode) c.parentNode.removeChild(c); });
+      })();
+
       /* implantes, inventario y medallero: ventana debajo del mensaje */
       var prem = premiosDe(post);
       if (invBox) {
@@ -1621,7 +1613,6 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tarde);
   else tarde();
 }();
-
 /* --- js-subforos.js --- */
 (function(){
 /* --- subforos: solo con lista de temas --- */
@@ -1992,10 +1983,27 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       h.innerHTML = "";
       var n = 0;
       if (c) {
+        /* [img]url[/img] Nombre -> el texto tras cada imagen es su nombre (tooltip) */
+        var noms = [], act = null;
+        (function rec(nd) {
+          Array.prototype.forEach.call(nd.childNodes, function (x) {
+            if (x.nodeType === 3) { if (act) act.t += x.nodeValue; }
+            else if (x.nodeType === 1) {
+              if (x.tagName === "BR") act = null;
+              else if (x.tagName === "IMG") { act = { img: x, t: "" }; noms.push(act); }
+              else if (x.querySelector && x.querySelector("img")) {
+                if (x.tagName === "A") { act = { img: x.querySelector("img"), t: "" }; noms.push(act); } else rec(x);
+              } else if (act) act.t += x.textContent;
+            }
+          });
+        })(c.el);
         c.el.querySelectorAll("img").forEach(function (img) {
           var cas = document.createElement("div"); cas.className = "rslot is-on";
           var a = img.closest("a");
           cas.appendChild((a && c.el.contains(a) ? a : img).cloneNode(true));
+          var o = noms.filter(function (q) { return q.img === img; })[0];
+          var t = o ? o.t.replace(/\s+/g, " ").trim() : "";
+          if (t) { cas.title = t; cas.setAttribute("data-nombre", t); }
           h.appendChild(cas); n++;
         });
       }
