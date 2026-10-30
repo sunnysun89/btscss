@@ -92,7 +92,54 @@
     h.appendChild(ico); h.appendChild(txt);
     return h;
   }
-  function rejilla(c) {
+  /* ---- Premios nativos de Foroactivo -> medallero ---------------------------
+     El sistema de premios inserta <div class="module awards_module"> con un
+     <div class="award" style="--award-image: url('...')"> por premio (el título y la
+     descripción van en .award_tooltiptext). Aquí se leen, se ocultan los módulos
+     originales y cada premio pasa a ser una casilla del Medallero, con su nombre
+     y descripción al pasar el ratón. Se suman a las imágenes del campo "Medallero". */
+  function premiosDe(raiz) {
+    var out = [], mods = raiz.querySelectorAll('.awards_module');
+    Array.prototype.forEach.call(mods, function (m) {
+      Array.prototype.forEach.call(m.querySelectorAll('.award'), function (a) {
+        var st = a.getAttribute('style') || '', mm = st.match(/--award-image:\s*url\(\s*['"]?([^'")]+)['"]?\s*\)/i);
+        var im = a.querySelector('img'), src = mm ? mm[1] : (im ? im.getAttribute('src') : '');
+        if (!src) return;
+        var tt = a.querySelector('.award_tooltiptext_title'), tip = a.querySelector('.award_tooltiptext');
+        var titulo = tt ? tt.textContent.trim() : '';
+        var desc = tip ? tip.textContent.replace(titulo, '').replace(/\s+/g, ' ').trim() : '';
+        out.push({ src: src, titulo: titulo, desc: desc });
+      });
+      m.setAttribute('data-bts-prem', '1');
+    });
+    return out;
+  }
+  function casillaPremio(p) {
+    var c = el('div', 'rslot is-on rpremio'), im = document.createElement('img');
+    im.src = p.src; im.alt = p.titulo || 'Premio'; im.loading = 'lazy';
+    c.title = (p.titulo || 'Premio') + (p.desc ? ' — ' + p.desc : '');
+    c.appendChild(im);
+    return c;
+  }
+  /* Perfil: las casillas del medallero que js-perfil ya montó */
+  function premiosPerfil() {
+    var raiz = document.getElementById('rperfil');
+    if (!raiz) return;
+    var grid = raiz.querySelector('[data-slot="medallero"]');
+    var mods = document.querySelectorAll('.awards_module:not([data-bts-prem])');
+    if (!grid || !mods.length) return;
+    var lista = [];
+    Array.prototype.forEach.call(mods, function (m) { lista = lista.concat(premiosDe(m.parentNode ? m.parentNode : document)); });
+    lista = lista.filter(function (p, i, arr) { return arr.findIndex(function (q) { return q.src === p.src && q.titulo === p.titulo; }) === i; });
+    lista.forEach(function (p) {
+      var hueco = grid.querySelector('.rslot:not(.is-on)');
+      var c = casillaPremio(p);
+      if (hueco) hueco.parentNode.replaceChild(c, hueco); else grid.appendChild(c);
+    });
+    try { console.log('[BTS] perfil: premios →', lista.length); } catch (e) {}
+  }
+
+  function rejilla(c, extra) {
     var g = el('div', 'rinv__grid'), n = 0;
     var cont = c && c.querySelector('.postprofile-field-content');
     if (cont) Array.prototype.forEach.call(cont.querySelectorAll('img'), function (img) {
@@ -100,6 +147,7 @@
       cas.appendChild((a && cont.contains(a) ? a : img).cloneNode(true));
       g.appendChild(cas); n++;
     });
+    (extra || []).forEach(function (p) { g.appendChild(casillaPremio(p)); n++; });
     for (var i = n; i < Math.max(MIN_CASILLAS, Math.ceil(n / 6) * 6); i++) {
       var e = el('div', 'rslot'); e.setAttribute('aria-hidden', 'true'); g.appendChild(e);
     }
@@ -107,7 +155,7 @@
   }
   /* Ventana "Inventario y medallero": tres columnas (implantes, inventario,
      medallero), como en el perfil. Sin título en la cabecera. */
-  function ventana(f) {
+  function ventana(f, prem) {
     var w = el('div', 'rinv'), cols = el('div', 'rinv__cols');
     w.appendChild(el('div', 'rinv__head'));
     var b1 = el('section', 'rinv__box rinv__box--imp'), b2 = el('section', 'rinv__box'), b3 = el('section', 'rinv__box');
@@ -116,7 +164,7 @@
     im.appendChild(implante(f.imp1, 'Implante 01')); im.appendChild(implante(f.imp2, 'Implante 02'));
     b1.appendChild(im);
     b2.appendChild(el('h3', '', 'Inventario')); b2.appendChild(rejilla(f.inv));
-    b3.appendChild(el('h3', '', 'Medallero'));  b3.appendChild(rejilla(f.med));
+    b3.appendChild(el('h3', '', 'Medallero'));  b3.appendChild(rejilla(f.med, prem));
     cols.appendChild(b1); cols.appendChild(b2); cols.appendChild(b3);
     w.appendChild(cols);
     return w;
@@ -956,7 +1004,7 @@
   var avisado = false;
 
   function arrancar() {
-    try { iconosPost(); botonesTema(); perfil(); indiceV3(); bannerArriba(); } catch (e) {}
+    try { iconosPost(); botonesTema(); perfil(); premiosPerfil(); indiceV3(); bannerArriba(); } catch (e) {}
     var posts = document.querySelectorAll('.post');
     for (var n = 0; n < posts.length; n++) {
       var post = posts[n];
@@ -1022,12 +1070,13 @@
       ['pop', 'auto'].forEach(function (k) { if (f[k] && f[k].parentNode) f[k].parentNode.removeChild(f[k]); });
 
       /* implantes, inventario y medallero: ventana debajo del mensaje */
+      var prem = premiosDe(post);
       if (invBox) {
         invBox.innerHTML = '';
-        invBox.appendChild(ventana(f));
+        invBox.appendChild(ventana(f, prem));
         invBox.style.display = '';
         invBox.classList.add('tiene');
-        if (!(f.imp1 && !vacio(f.imp1)) && !(f.imp2 && !vacio(f.imp2)) && !(f.inv && !vacio(f.inv)) && !(f.med && !vacio(f.med)))
+        if (!(f.imp1 && !vacio(f.imp1)) && !(f.imp2 && !vacio(f.imp2)) && !(f.inv && !vacio(f.inv)) && !(f.med && !vacio(f.med)) && !prem.length)
           invBox.classList.add('sin-datos');
         ['imp1', 'imp2', 'inv', 'med'].forEach(function (k) {
           if (f[k] && f[k].parentNode) f[k].parentNode.removeChild(f[k]);
@@ -1045,7 +1094,7 @@
     }
   }
 
-  function tarde() { setTimeout(arrancar, 0); setTimeout(function () { try { iconosPost(); botonesTema(); perfil(); indiceV3(); bannerArriba(); } catch (e) {} }, 800); }
+  function tarde() { setTimeout(arrancar, 0); setTimeout(function () { try { iconosPost(); botonesTema(); perfil(); premiosPerfil(); indiceV3(); bannerArriba(); } catch (e) {} }, 800); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tarde);
   else tarde();
 }();
