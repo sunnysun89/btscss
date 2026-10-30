@@ -937,6 +937,26 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     return out;
   }
 
+  /* Carrusel lateral: envuelve una fila con scroll horizontal y le añade flechas ‹ › */
+  function carrusel(fila, itemSel) {
+    var wrap = el('div', 'rmulti-wrap');
+    var bp = el('button', 'rmulti__arrow rmulti__arrow--prev', '‹'), bn = el('button', 'rmulti__arrow rmulti__arrow--next', '›');
+    bp.type = bn.type = 'button'; bp.setAttribute('aria-label', 'Anterior'); bn.setAttribute('aria-label', 'Siguiente');
+    function paso(d) { var it = fila.querySelector(itemSel); fila.scrollBy({ left: d * ((it ? it.offsetWidth : 150) + 14), behavior: 'smooth' }); }
+    bp.addEventListener('click', function () { paso(-1); });
+    bn.addEventListener('click', function () { paso(1); });
+    function act() {
+      bp.hidden = fila.scrollLeft < 4;
+      bn.hidden = fila.scrollLeft + fila.clientWidth >= fila.scrollWidth - 4;
+    }
+    fila.addEventListener('scroll', act);
+    window.addEventListener('resize', act);
+    if (window.ResizeObserver) new ResizeObserver(act).observe(fila);
+    wrap.appendChild(bp); wrap.appendChild(fila); wrap.appendChild(bn);
+    setTimeout(act, 300);
+    return wrap;
+  }
+
   var PESTANAS = ['Perfil', 'Red y lore', 'Multicuentas y logbook'];   // nombres de las pestañas del perfil
   var MIN_REL = 6, MIN_MULTI = 3;     // casillas mínimas (las que faltan salen con imagen placeholder)
   var IMG_RE = /\.(png|jpe?g|gif|webp|svg|avif)(\?|#|$)|placehold\.co|imgur|postimg|i\.ibb/i;
@@ -1250,13 +1270,10 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     try {
       var w2 = el('section', 'rperfil__win rperfil__win--nohead'), term = el('div', 'rterm');
       var alias = (q1('.rperfil__alias') || {}).textContent || '';
-      term.appendChild(el('div', 'rterm__l', '> acceso concedido · expediente de ' + alias.trim()));
-      term.appendChild(el('div', 'rterm__l', '> biografía y notas ocultas'));
       var cu = el('div', 'rterm__body');
       if (curiosidades && curiosidades.textContent.replace(/\s+/g, '').length) cu.innerHTML = htmlUsuario(curiosidades);
       else { cu.textContent = 'Sin registros. Archivo vacío.'; cu.classList.add('vacio'); }
       term.appendChild(cu);
-      term.appendChild(el('div', 'rterm__l rterm__cur', '> '));
       w2.appendChild(term);
       if (main) main.appendChild(w2);
     } catch (eT) { try { console.log('[BTS] perfil: error en Curiosidades', eT && eT.message); } catch (e2) {} }
@@ -1280,7 +1297,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
         vimg.src = 'https://placehold.co/100'; vimg.alt = ''; vp.appendChild(vimg); vi.appendChild(vp);
         vi.appendChild(el('b', 'rrel__n', 'Sin vínculo')); rg.appendChild(vi);
       }
-      w1.appendChild(rg);
+      w1.appendChild(carrusel(rg, '.rrel__it'));
       paneles[1].appendChild(w1);
 
       /* alianza (imagen + cuadro) a la izquierda y Cronología a la derecha, debajo de las relaciones */
@@ -1322,23 +1339,8 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
         var vt = el('div', 'rmulti__it vacio'), vim = document.createElement('img');
         vim.src = 'https://placehold.co/250x150'; vim.alt = ''; vt.appendChild(vim); mg.appendChild(vt);
       }
-      /* carrusel lateral: flechas que desplazan una multicuenta */
-      var carr = el('div', 'rmulti-wrap');
-      var bPrev = el('button', 'rmulti__arrow rmulti__arrow--prev', '‹'), bNext = el('button', 'rmulti__arrow rmulti__arrow--next', '›');
-      bPrev.type = bNext.type = 'button'; bPrev.setAttribute('aria-label', 'Anterior'); bNext.setAttribute('aria-label', 'Siguiente');
-      function paso(dir) { var it = mg.querySelector('.rmulti__it'); mg.scrollBy({ left: dir * ((it ? it.offsetWidth : 250) + 14), behavior: 'smooth' }); }
-      bPrev.addEventListener('click', function () { paso(-1); });
-      bNext.addEventListener('click', function () { paso(1); });
-      function flechas() {
-        bPrev.hidden = mg.scrollLeft < 4;
-        bNext.hidden = mg.scrollLeft + mg.clientWidth >= mg.scrollWidth - 4;
-      }
-      mg.addEventListener('scroll', flechas);
-      window.addEventListener('resize', flechas);
-      carr.appendChild(bPrev); carr.appendChild(mg); carr.appendChild(bNext);
-      w3.appendChild(carr);
-      paneles[2].appendChild(w3);   /* (se añade ya para poder medir) */
-      flechas(); setTimeout(flechas, 300);
+      w3.appendChild(carrusel(mg, '.rmulti__it'));
+      paneles[2].appendChild(w3);
 
       var w4 = ventanaPf('Logbook OOC'), lg = el('div', 'rlog');
       var tip = function (s) { var b = q1(s + ' .rdate__tip'); return b ? b.textContent.replace(/^[^·]*·\s*/, '').trim() : ''; };

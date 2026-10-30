@@ -6889,3 +6889,25 @@ html { scrollbar-color: rgba(var(--burnthesky-accent-rgb), .35) var(--burnthesky
 }
 .rstat--poder .rperfil__powerdesc.vacio { display: var(--burnthesky-pf-empty); }
 .rperfil__nicks:empty { display: none; }
+
+
+/* relaciones en carrusel lateral */
+.rrel { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 22px 14px; padding: 8px 2px 12px; scroll-snap-type: x proximity; scrollbar-width: none; }
+.rrel::-webkit-scrollbar { display: none; }
+.rrel > * { flex: 0 0 var(--burnthesky-pf-rel-col); scroll-snap-align: start; }
+.rrel__a { display: block; }
+
+/* scroll fino en las cajas de texto */
+:root { --burnthesky-pf-scroll-h: 160px; }
+.rcrono__b, .rperfil__powerdesc, .ralian__txt, .rterm__body {
+  overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(var(--burnthesky-accent-rgb), .45) transparent;
+}
+.rcrono__b { max-height: var(--burnthesky-pf-scroll-h); }
+.rstat--poder .rperfil__powerdesc { max-height: 110px; }
+.ralian__txt { max-height: 120px; }
+.rcrono__b::-webkit-scrollbar, .rperfil__powerdesc::-webkit-scrollbar, .ralian__txt::-webkit-scrollbar, .rterm__body::-webkit-scrollbar { width: 6px; }
+.rcrono__b::-webkit-scrollbar-thumb, .rperfil__powerdesc::-webkit-scrollbar-thumb, .ralian__txt::-webkit-scrollbar-thumb, .rterm__body::-webkit-scrollbar-thumb { background: rgba(var(--burnthesky-accent-rgb), .45); border-radius: 6px; }
+.rcrono { height: auto; }
+
+/* terminal de curiosidades sin barras punteadas */
+.rterm__body { margin: 0; padding: 0 8px 0 0; border: 0 !important; max-height: var(--burnthesky-pf-term-h); }
