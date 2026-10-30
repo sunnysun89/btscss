@@ -6880,3 +6880,12 @@ html { scrollbar-color: rgba(var(--burnthesky-accent-rgb), .35) var(--burnthesky
   --burnthesky-btn-icon-hover: var(--burnthesky-red-vivid);
   --burnthesky-post-dato-line: var(--burnthesky-red-ghost-2);
 }
+
+/* descripción del poder unida al recuadro de Poder */
+.rstat--poder.con-desc { gap: 8px; }
+.rstat--poder .rperfil__powerdesc {
+  order: 3; min-height: 0; margin: 4px 0 0; padding: 10px 0 0;
+  background: none; border: 0; border-top: 1px solid rgba(var(--burnthesky-accent-rgb), .18); border-radius: 0;
+}
+.rstat--poder .rperfil__powerdesc.vacio { display: var(--burnthesky-pf-empty); }
+.rperfil__nicks:empty { display: none; }

@@ -1203,6 +1203,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
         var txt = apodos && apodos.textContent.replace(/\s+/g, '').length ? apodos.innerHTML
           : Array.prototype.map.call(nk.querySelectorAll('span'), function (x) { return x.textContent; }).join(', ');
         if (txt) { nk.innerHTML = ''; var one = document.createElement('span'); one.innerHTML = txt; nk.appendChild(one); nk.classList.remove('is-empty'); }
+        else quita(nk);   /* sin apodos: no se muestra nada */
         nk.setAttribute('data-bts-one', '1');
       }
       var ub = q1('[data-slot="ubicacion"]'); if (ub) ub.classList.remove('rtile--wide');
@@ -1233,13 +1234,20 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     if (col) {
       var pb = el('div', 'rperfil__powerbox');
       if (nivel) pb.appendChild(nivel);
+      pTile.appendChild(desc); pTile.classList.add('con-desc');
       pb.appendChild(pTile);
-      pb.appendChild(desc);
       var avi = col.querySelector('.rperfil__avatarimg');
       col.insertBefore(pb, avi ? avi.nextSibling : col.firstChild);
     }
     /* Curiosidades: terminal bajo las barras (pestaña 1) */
-    {
+    if (!curiosidades) {   /* respaldo: cualquier campo del perfil cuyo texto de etiqueta contenga "curiosid" */
+      Array.prototype.forEach.call(raiz.querySelectorAll('.rpf'), function (r) {
+        var lb = r.querySelector('.rpf-l'), ct = r.querySelector('.rpf-c');
+        if (!curiosidades && lb && ct && slug(lb.textContent).indexOf('curiosid') > -1) curiosidades = ct;
+      });
+    }
+    try { console.log('[BTS] perfil: Curiosidades →', curiosidades ? JSON.stringify(curiosidades.textContent.slice(0, 60)) : 'no encontrado'); } catch (e1) {}
+    try {
       var w2 = el('section', 'rperfil__win rperfil__win--nohead'), term = el('div', 'rterm');
       var alias = (q1('.rperfil__alias') || {}).textContent || '';
       term.appendChild(el('div', 'rterm__l', '> acceso concedido · expediente de ' + alias.trim()));
@@ -1251,7 +1259,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       term.appendChild(el('div', 'rterm__l rterm__cur', '> '));
       w2.appendChild(term);
       if (main) main.appendChild(w2);
-    }
+    } catch (eT) { try { console.log('[BTS] perfil: error en Curiosidades', eT && eT.message); } catch (e2) {} }
 
     /* ===== PESTAÑA 2 · red de contactos y lore ===== */
     if (paneles[1]) {
