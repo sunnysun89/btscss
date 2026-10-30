@@ -18,108 +18,198 @@ if (window.console) console.log("[BTS] bts.js cargado v1.9");
       console.info("[BTS] CSS: " + (cs.getPropertyValue("--burnthesky-css").trim() || "SIN MARCA (el navegador tiene un CSS viejo en caché)") + " · hover (--burnthesky-ease) = " + cs.getPropertyValue("--burnthesky-ease").trim());
     }
 /* --- js-banner.js --- */
+(function(){
+/* --- banner: solo si hay mural que mover --- */
+if (!document.querySelector('#left #startindex')) return;
 /* Banner: todas las páginas.
-   Mueve el widget Banner (#startindex) a #rheader, los últimos temas a la
-   tabla del mural, el avatar y nombre al bloque de bienvenida, el copyright
-   a icono, y construye la lista de más activos. Requiere el widget "Banner"
-   (plantillas/widget-mural.html) y los widgets estándar en #left. */
+   Mueve el widget Banner (#startindex) a #rheader, rellena la ventana de
+   Recent topics con los últimos temas, pone el nombre en la bienvenida, el
+   copyright a icono y construye la lista de más activos.
+   Requiere el widget "Banner" (plantillas/widget-mural.html) y el widget
+   estándar de últimos temas dentro de #left.
+   Cada bloque va en safe(): si uno falla, los demás siguen funcionando. */
 jQuery(document).ready(function(){
-  
-  $("#rheader").replaceWith($("#left #startindex"));
-  /* Recent topics: se lee la lista del widget estándar (#comments_scroll_div,
-     que se queda donde está para que su script siga funcionando) y se pinta
-     una lista .rrecent propia en la ventana del mural. Se reintenta hasta 8 s
-     porque el widget rellena su contenido después de cargar la página. */
-  (function btsRecent() {
-    var intentos = 0;
-    var t = setInterval(function () {
-      intentos++;
-      var cont = $("#mural .rsubsrecent, #mural .rrecent").first();
-      var src = $("#comments_scroll_div").first();
-      var enlaces = src.find("a[href]").filter(function () { return /\/t\d+/.test($(this).attr("href")); });
-      if (cont.length && enlaces.length) {
-        clearInterval(t);
-        var lista = $('<div class="rrecent"></div>');
-        var vistos = {};
-        enlaces.each(function () {
-          var a = $(this), href = a.attr("href");
-          if (vistos[href]) return;
-          vistos[href] = 1;
-          var bloque = a.closest(".gensmall, p, li, div").not(src);
-          if (!bloque.length || bloque.is(src)) bloque = a.parent();
-          var autorA = bloque.find("a[href]").not(a).first();
-          var autor = autorA.text().trim();
-          /* color del grupo: el que lleve el enlace del autor (style, <font color> o un hijo con color) */
-          var colAutor = "";
-          autorA.add(autorA.find("[style*='color'], font[color]")).each(function () {
-            if (colAutor) return;
-            var c = (this.style && this.style.color) || this.getAttribute("color") || "";
-            if (c) colAutor = c;
-          });
-          var resto = bloque.text().replace(a.text(), "");
-          var fecha = resto.indexOf("»") > -1 ? resto.split("»").slice(1).join("»") : "";
-          fecha = fecha.replace(/\s+/g, " ").trim();
-          var item = $('<a class="rrecent__item"></a>').attr("href", href);
-          item.append($('<span class="rrecent__title"></span>').text(a.text().trim()));
-          var meta = $('<span class="rrecent__meta"></span>');
-          if (autor) {
-            var bAutor = $("<b></b>").text(autor);
-            if (colAutor) bAutor.css("color", colAutor).addClass("rrecent__grupo");
-            meta.append("por ").append(bAutor);
-          }
-          if (fecha) { meta.append((autor ? " · " : "") + fecha); }
-          item.append(meta);
-          lista.append(item);
-        });
-        cont.replaceWith(lista);
-      } else if (intentos > 80) {
-        clearInterval(t);
-        if (cont.length) cont.replaceWith('<p class="rrecent__empty">Sin temas recientes.</p>');
-      }
-    }, 100);
-  })();
-  if (document.querySelector('.mod-login-avatar') !== null) {
-    $("#mural .rintro .ricon img").replaceWith($(".mod-login-avatar img"));
+
+  function safe(nombre, fn) {
+    try { fn(); } catch (e) { if (window.console) console.warn("[BTS banner] " + nombre, e); }
   }
-  
-  let legend = $("p.copyright strong a").text();
-  $("p.copyright strong a").html('<i class="fa fa-gear" title="' + legend + '"></i>');
-  
-  let avatar = $("#left .mod-login-avatar img");
-  if(avatar.length == 0)
-    avatar = '<img src="https://placehold.co/250x400" />';
-  $("#mural .rmuralavatar img").replaceWith(avatar);
-  $("#mural .rwelcomesub span").text($("#left .module .inner span.corners-top ~ div.h3 span strong").text());
-  
-  let activeUsersHtml = "";
-  $("#left .module .inner").each(function( index ) {
-    let check1 = $(this).find("div.h3").text();
-    let check2 = $(this).find("table").attr("summary");
-    if(check2 != null && check1 == check2) {
-      $(this).find("div.h3 ~ table > tbody > tr").each(function( index ) {
-        
-        if($(this).find("td > table").attr("title") != null) {
-        
-        activeUsersHtml += '<div class="ruser" title="' + $(this).find("td > table").attr("title").split("-")[0] + '">';
-        activeUsersHtml += '<span>> ' + $(this).find("td > a").text() + '</span>';
-        let percentage = parseInt($(this).find("td > table").attr("title").split("-")[1]);
-        let accent = 1;
-        if(index % 2 == 0)
-          accent = 2;
-        activeUsersHtml += '<div>' + 
-          '<div style="background: linear-gradient(90deg, var(--accent' + accent + ') ' + percentage + '%, transparent ' + (percentage + 10) + '%);">' +
-          '</div></div>';
-        activeUsersHtml += '</div>';
-        
-      	}
+
+  safe("mover banner", function () {
+    $("#rheader").replaceWith($("#left #startindex"));
+  });
+
+  /* ---- Recent topics ----------------------------------------------------
+     Antes se buscaba SOLO #comments_scroll_div, y si el widget no tenía ese
+     id la ventana quedaba vacía. Ahora se busca por id, por título del
+     módulo ("Últimos temas", "Recent topics"...) o, como último recurso, por
+     cualquier módulo de #left que contenga enlaces a temas. */
+  safe("recent topics", function () {
+    var $slot = $("#mural .rsubsrecent").first();
+    if (!$slot.length) return;
+
+    var esTema = function (a) {
+      var h = a.getAttribute("href") || "";
+      return /\/t\d+[^\/]*(#\d+)?$/.test(h) && !$(a).closest(".h3").length;
+    };
+
+    var $src = $("#left #comments_scroll_div, #comments_scroll_div").not("#mural *").first();
+
+    if (!$src.length) {
+      $("#left .module").each(function () {
+        var titulo = $(this).find(".h3").first().text().toLowerCase();
+        if (/últimos temas|ultimos temas|últimos mensajes|ultimos mensajes|recent topics|latest topics|recent posts|latest posts/.test(titulo)) {
+          $src = $(this);
+          return false;
+        }
       });
     }
-    $("#mural .ractiveusers").html(activeUsersHtml);
+    if (!$src.length) {
+      $("#left .module").each(function () {
+        if ($(this).find("a").filter(function () { return esTema(this); }).length >= 2) {
+          $src = $(this);
+          return false;
+        }
+      });
+    }
+
+    var items = [];
+    if ($src.length) {
+      $src.find("a").each(function () {
+        if (!esTema(this) || items.length >= 8) return;
+        var a = this, meta = "", n = a.nextSibling;
+
+        while (n) {
+          if (n.nodeType === 1 && (esTema(n) || (n.querySelector && $(n).find("a").filter(function () { return esTema(this); }).length))) break;
+          meta += n.textContent || "";
+          n = n.nextSibling;
+        }
+        if (!meta.replace(/\s+/g, "")) {
+          var p = a.parentNode;
+          if (p && $(p).find("a").filter(function () { return esTema(this); }).length === 1) {
+            meta = (p.textContent || "").replace(a.textContent, "");
+          }
+        }
+        meta = meta.replace(/\s+/g, " ").replace(/^[\s»>]+/, "").replace(/[\s»>]+$/, "").trim();
+
+        var fecha = meta, autor = "";
+        var m = meta.match(/^(.*)\s+por\s+(.+)$/i);
+        if (m) { fecha = m[1].trim(); autor = m[2].trim(); }
+
+        var titulo = (a.textContent || "").replace(/^[\s»>]+/, "").trim();
+        if (/(\.\.\.|…)$/.test(titulo) && a.getAttribute("title")) titulo = a.getAttribute("title");
+
+        /* color del grupo del autor: el elemento con color (style / <font color>) que contenga su nombre */
+        var colAutor = "";
+        if (autor) {
+          $src.find("*").each(function () {
+            if (colAutor || $(this).children().length) return;
+            if ($(this).text().trim() !== autor) return;
+            var cand = $(this).parents().addBack().slice(-3).get().reverse();
+            for (var k = 0; k < cand.length && !colAutor; k++) {
+              colAutor = (cand[k].style && cand[k].style.color) || cand[k].getAttribute("color") || "";
+            }
+          });
+        }
+        items.push({ href: a.getAttribute("href"), titulo: titulo, fecha: fecha, autor: autor, color: colAutor });
+      });
+    }
+
+    if (window.console) console.info("[BTS] recent topics: módulo " + ($src.length ? "encontrado" : "NO encontrado") + ", " + items.length + " temas");
+    var $lista = $('<div class="rsubsrecent rrecent"></div>');
+    if (!items.length) {
+      $lista.append($('<p class="rrecent__empty"></p>').text("Aún no hay temas recientes."));
+    }
+    $.each(items, function (i, it) {
+      var $a = $('<a class="rrecent__item"></a>').attr("href", it.href);
+      $a.append($('<span class="rrecent__title"></span>').text(it.titulo));
+      var $meta = $('<span class="rrecent__meta"></span>');
+      if (it.autor) {
+        var $b = $("<b></b>").text(it.autor);
+        if (it.color) $b.css("color", it.color).addClass("rrecent__grupo");
+        $meta.append($b).append(document.createTextNode(" · "));
+      }
+      $meta.append(document.createTextNode(it.fecha));
+      $a.append($meta);
+      $lista.append($a);
+    });
+    $slot.replaceWith($lista);
+
+    /* ---- Scroll automático ----------------------------------------------
+       SPEED = píxeles por segundo (menor = más lento). Solo se mueve si la
+       lista no cabe entera en la ventana (alto = max-height de .rrecent).
+       Usa la Web Animations API: no depende de la hoja de estilos (ni de su
+       caché) y "reducir movimiento" no la desactiva. Pausa con el ratón. */
+    var SPEED = 28;
+    var $pista = $('<div class="rrecent__track"></div>').append($lista.children());
+    $lista.empty().append($pista);
+    $lista.css({ maxHeight: "340px", overflow: "hidden" });
+    var originales = $pista.children().length;
+    var anim = null;
+
+    function medir() {
+      if (anim) { anim.cancel(); anim = null; }
+      $pista.children().slice(originales).remove();
+      $lista.removeClass("rrecent--on").off(".rscroll");
+      var alto = $pista.outerHeight(), ventana = $lista.innerHeight();
+      var mover = originales && alto > ventana + 1;
+      if (window.console) console.info("[BTS] scroll recent: lista " + alto + "px, ventana " + ventana + "px -> " + (mover ? "se mueve" : "no hace falta"));
+      if (!mover) return;
+      $pista.append($pista.children().clone().attr("aria-hidden", "true"));
+      $lista.addClass("rrecent--on");
+      if (!$pista[0].animate) return;
+      anim = $pista[0].animate(
+        [{ transform: "translateY(0)" }, { transform: "translateY(-" + alto + "px)" }],
+        { duration: alto / SPEED * 1000, iterations: Infinity }
+      );
+      $lista.on("mouseenter.rscroll", function () { if (anim) anim.pause(); })
+            .on("mouseleave.rscroll", function () { if (anim) anim.play(); });
+    }
+    medir();
+    $(window).on("load", medir);
   });
-  
-  
-  
+
+  safe("avatar", function () {
+    if (document.querySelector('.mod-login-avatar') !== null) {
+      $("#mural .rintro .ricon img").replaceWith($(".mod-login-avatar img"));
+    }
+    var avatar = $("#left .mod-login-avatar img");
+    if (avatar.length == 0) avatar = '<img src="https://placehold.co/250x400" />';
+    $("#mural .rmuralavatar img").replaceWith(avatar);
+  });
+
+  safe("copyright", function () {
+    var legend = $("p.copyright strong a").text();
+    $("p.copyright strong a").html('<i class="fa fa-gear" title="' + legend + '"></i>');
+  });
+
+  safe("bienvenida", function () {
+    var nombre = $("#left .module .inner span.corners-top ~ div.h3 span strong").text();
+    if (nombre) $("#mural .rwelcomesub span").text(nombre);
+  });
+
+  safe("más activos", function () {
+    var activeUsersHtml = "";
+    $("#left .module .inner").each(function () {
+      var check1 = $(this).find("div.h3").text();
+      var check2 = $(this).find("table").attr("summary");
+      if (check2 != null && check1 == check2) {
+        $(this).find("div.h3 ~ table > tbody > tr").each(function (index) {
+          if ($(this).find("td > table").attr("title") != null) {
+            activeUsersHtml += '<div class="ruser" title="' + $(this).find("td > table").attr("title").split("-")[0] + '">';
+            activeUsersHtml += '<span>> ' + $(this).find("td > a").text() + '</span>';
+            var percentage = parseInt($(this).find("td > table").attr("title").split("-")[1]);
+            var accent = (index % 2 == 0) ? 2 : 1;
+            activeUsersHtml += '<div><div style="background: linear-gradient(90deg, var(--accent' + accent + ') ' + percentage + '%, transparent ' + (percentage + 10) + '%);"></div></div>';
+            activeUsersHtml += '</div>';
+          }
+        });
+      }
+      $("#mural .ractiveusers").html(activeUsersHtml);
+    });
+  });
+
 });
+})();
 /* --- js-indice.js --- */
 (function(){
 /* --- índice: solo con bloque de estadísticas --- */
@@ -1613,6 +1703,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tarde);
   else tarde();
 }();
+
 /* --- js-subforos.js --- */
 (function(){
 /* --- subforos: solo con lista de temas --- */
