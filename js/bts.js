@@ -134,6 +134,43 @@ jQuery(document).ready(function(){
     });
     $slot.replaceWith($lista);
 
+    /* Color de grupo de los autores que el widget no trae coloreados: se busca su nombre en un
+       enlace de usuario de esta página y, si no, en sus mensajes (/search), con caché de sesión. */
+    (function () {
+      var neutro = /^(#?(fff(fff)?|000(000)?)|rgb\(\s*(0,\s*0,\s*0|255,\s*255,\s*255)\s*\))$/i;
+      function colorDe(doc, nombre) {
+        var as = doc.querySelectorAll("a[href]");
+        for (var i = 0; i < as.length; i++) {
+          if (as[i].textContent.trim() !== nombre || !/\/u\d+|[?&]u=\d+/.test(as[i].getAttribute("href") || "")) continue;
+          var c = [as[i]].concat([].slice.call(as[i].querySelectorAll("[style*='color'], font[color]")));
+          for (var k = 0; k < c.length; k++) {
+            var v = (c[k].style && c[k].style.color) || c[k].getAttribute("color") || "";
+            if (v && !neutro.test(v)) return v;
+          }
+        }
+        return "";
+      }
+      function pinta(nombre, color) {
+        $lista.find("b").filter(function () { return $(this).text() === nombre; }).css("color", color).addClass("rrecent__grupo");
+      }
+      var pend = {};
+      $lista.find("b").not(".rrecent__grupo").each(function () { pend[$(this).text()] = 1; });
+      Object.keys(pend).forEach(function (nombre) {
+        var guardado = ""; try { guardado = sessionStorage.getItem("bts-gn-" + nombre) || ""; } catch (e) {}
+        if (guardado) { pinta(nombre, guardado); return; }
+        var c = colorDe(document, nombre);
+        if (c) { try { sessionStorage.setItem("bts-gn-" + nombre, c); } catch (e) {} pinta(nombre, c); return; }
+        if (!window.fetch) return;
+        fetch("/search?search_author=" + encodeURIComponent(nombre) + "&show_results=posts", { credentials: "same-origin" })
+          .then(function (r) { return r.text(); })
+          .then(function (t) {
+            var col = colorDe(new DOMParser().parseFromString(t, "text/html"), nombre);
+            if (col) { try { sessionStorage.setItem("bts-gn-" + nombre, col); } catch (e) {} pinta(nombre, col); }
+            else if (window.console) console.info("[BTS] recent topics: no encontré el color de grupo de " + nombre);
+          }).catch(function () {});
+      });
+    })();
+
     /* ---- Scroll automático ----------------------------------------------
        SPEED = píxeles por segundo (menor = más lento). Solo se mueve si la
        lista no cabe entera en la ventana (alto = max-height de .rrecent).
