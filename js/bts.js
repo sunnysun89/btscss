@@ -72,6 +72,26 @@ jQuery(document).ready(function(){
       });
     }
 
+    /* ---- Colores de grupo en Recent topics -------------------------------
+       1) Colores de cada grupo (edítalos aquí).
+       2) Grupo de cada usuario: "Nombre": "Grupo". Si falta un usuario, su nombre
+          se queda con el color normal del tema. También vale un color directo:
+          "Nombre": "#RRGGBB". Las mayúsculas del nombre no importan. */
+    var BTS_GRUPOS = {
+      "authority": "#D96A50", "divine": "#D6AD68", "infamous": "#C85B70", "notorious": "#9290D4",
+      "underdogs": "#C77B55", "unknown": "#B77AC4", "ordinary": "#72A995", "missing": "#9296AA"
+    };
+    var BTS_USUARIOS = {
+      "Faceless": "Authority"
+      /* , "Otro usuario": "Divine" */
+    };
+    function BTS_COLOR_USUARIO(nombre) {
+      var k = (nombre || "").toLowerCase(), g = "";
+      for (var u in BTS_USUARIOS) { if (u.toLowerCase() === k) g = BTS_USUARIOS[u]; }
+      if (!g) return "";
+      return /^#/.test(g) ? g : (BTS_GRUPOS[g.toLowerCase()] || "");
+    }
+
     var items = [];
     if ($src.length) {
       $src.find("a").each(function () {
@@ -98,18 +118,7 @@ jQuery(document).ready(function(){
         var titulo = (a.textContent || "").replace(/^[\s»>]+/, "").trim();
         if (/(\.\.\.|…)$/.test(titulo) && a.getAttribute("title")) titulo = a.getAttribute("title");
 
-        /* color del grupo del autor: el elemento con color (style / <font color>) que contenga su nombre */
-        var colAutor = "";
-        if (autor) {
-          $src.find("*").each(function () {
-            if (colAutor || $(this).children().length) return;
-            if ($(this).text().trim() !== autor) return;
-            var nodo = this;   /* el elemento y hasta 2 padres (sin addBack: el jQuery del foro es antiguo) */
-            for (var k = 0; k < 3 && nodo && nodo.nodeType === 1 && !colAutor; k++, nodo = nodo.parentNode) {
-              colAutor = (nodo.style && nodo.style.color) || nodo.getAttribute("color") || "";
-            }
-          });
-        }
+        var colAutor = BTS_COLOR_USUARIO(autor);
         items.push({ href: a.getAttribute("href"), titulo: titulo, fecha: fecha, autor: autor, color: colAutor });
       });
     }
@@ -134,48 +143,6 @@ jQuery(document).ready(function(){
     });
     $slot.replaceWith($lista);
 
-    /* Color de grupo de los autores que el widget no trae coloreados: se busca su nombre en un
-       enlace de usuario de esta página y, si no, en sus mensajes (/search), con caché de sesión. */
-    (function () {
-      var neutro = /^(#?(fff(fff)?|000(000)?)|rgb\(\s*(0,\s*0,\s*0|255,\s*255,\s*255)\s*\))$/i;
-      function colorDe(doc, nombre) {
-        var as = doc.querySelectorAll("a[href]");
-        for (var i = 0; i < as.length; i++) {
-          if (as[i].textContent.trim() !== nombre || !/\/u\d+|[?&]u=\d+/.test(as[i].getAttribute("href") || "")) continue;
-          var c = [as[i]].concat([].slice.call(as[i].querySelectorAll("[style*='color'], font[color]")));
-          for (var up = as[i].parentNode, n3 = 0; up && up.nodeType === 1 && n3 < 3; up = up.parentNode, n3++) c.push(up);
-          for (var k = 0; k < c.length; k++) {
-            var v = (c[k].style && c[k].style.color) || c[k].getAttribute("color") || "";
-            if (v && !neutro.test(v)) return v;
-          }
-        }
-        return "";
-      }
-      function pinta(nombre, color) {
-        $lista.find("b").filter(function () { return $(this).text() === nombre; }).css("color", color).addClass("rrecent__grupo");
-      }
-      var pend = {};
-      $lista.find("b").not(".rrecent__grupo").each(function () { pend[$(this).text()] = 1; });
-      Object.keys(pend).forEach(function (nombre) {
-        var guardado = ""; try { guardado = sessionStorage.getItem("bts-gn-" + nombre) || ""; } catch (e) {}
-        if (guardado) { pinta(nombre, guardado); return; }
-        var c = colorDe(document, nombre);
-        if (c) { try { sessionStorage.setItem("bts-gn-" + nombre, c); } catch (e) {} pinta(nombre, c); return; }
-        if (!window.fetch) return;
-        fetch("/search?search_author=" + encodeURIComponent(nombre) + "&show_results=posts", { credentials: "same-origin" })
-          .then(function (r) { return r.text(); })
-          .then(function (t) {
-            var docB = new DOMParser().parseFromString(t, "text/html");
-            var col = colorDe(docB, nombre);
-            if (!col && window.console) {
-              var ls = [].filter.call(docB.querySelectorAll("a[href]"), function (a) { return a.textContent.trim() === nombre; });
-              console.info("[BTS] recent topics: " + nombre + " → " + ls.length + " enlaces con su nombre en /search" + (ls[0] ? ": " + ls[0].outerHTML.slice(0, 220) : "") + " (respuesta " + t.length + " caracteres)");
-            }
-            if (col) { try { sessionStorage.setItem("bts-gn-" + nombre, col); } catch (e) {} pinta(nombre, col); }
-            else if (window.console) console.info("[BTS] recent topics: no encontré el color de grupo de " + nombre);
-          }).catch(function () {});
-      });
-    })();
 
     /* ---- Scroll automático ----------------------------------------------
        SPEED = píxeles por segundo (menor = más lento). Solo se mueve si la
