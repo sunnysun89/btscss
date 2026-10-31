@@ -2581,6 +2581,10 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     ['Underdogs', '#C77B55'], ['Unknown', '#B77AC4'], ['Ordinary', '#72A995'], ['Missing', '#9296AA']
   ];
 
+  /* Cuentas que deben mostrarse en un grupo concreto aunque su nombre salga con otro color
+     (por ejemplo la cuenta admin, que está en todos los grupos): "Nombre": "Grupo". */
+  var FORZAR = { "Faceless": "Authority" };
+
   function iniciar() {
     var tabla = document.getElementById('memberlist') || document.querySelector('table#memberlist');
     if (!tabla || tabla.getAttribute('data-bts-m')) return;
@@ -2630,6 +2634,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     var rej = document.createElement('div'); rej.className = 'rmiembros';
     datos.forEach(function (m) {
       var g = grupoDe(m.color), c = g ? g[1] : (rgb(m.color) ? m.color : '');
+      for (var fz in FORZAR) { if (fz.toLowerCase() === m.nombre.toLowerCase()) { var gf = GRUPOS.filter(function (x) { return x[0].toLowerCase() === FORZAR[fz].toLowerCase(); })[0]; if (gf) { g = gf; c = gf[1]; } } }
       var a = document.createElement('a'); a.className = 'rmiembro'; a.href = m.href;
       if (c) a.style.setProperty('--g', c);
       if (g) a.setAttribute('data-grupo', g[0].toLowerCase());
