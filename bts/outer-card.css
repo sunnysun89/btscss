@@ -7167,7 +7167,7 @@ html { scrollbar-color: rgba(var(--burnthesky-accent-rgb), .35) var(--burnthesky
    Sin los botones "Compartir" y "¡Más!".
    ========================================================================== */
 :root {
-  --burnthesky-topic-title-fs: clamp(24px, 3.4vw, 38px);
+  --burnthesky-topic-title-fs: clamp(24px, 3.4vw, 30px);
   --burnthesky-topic-bar-bg: transparent;
 }
 body:has(.rpostcontainer) h1.page-title {
