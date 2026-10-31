@@ -70,6 +70,13 @@ jQuery(document).ready(function(){
     /* el widget usa el plugin "marquee": se copia solo el contenido real (sin su envoltorio animado ni duplicados) */
     var $real = $src.find(".js-marquee").first();
     var $copia = $('<div class="rsubsrecent rrecent-nativo"></div>').html($real.length ? $real.html() : $src.html());
+    /* el widget entrega todo seguido (título <br> imagen vacía + fecha y autor <br><br>): se
+       reparte en un bloque por tema y se quita la imagen vacía (empty.gif) */
+    (function () {
+      var h = $copia.html().replace(/<img[^>]*empty\.gif[^>]*>/gi, "");
+      var partes = h.split(/(?:<br\s*\/?>\s*){2,}/i).filter(function (x) { return x.replace(/&nbsp;|\s|<br\s*\/?>/gi, "") !== ""; });
+      if (partes.length > 1 || /<br/i.test(h)) $copia.html(partes.map(function (x) { return '<div class="rrecent__it">' + x.replace(/^(?:\s|<br\s*\/?>)+/i, "") + "</div>"; }).join(""));
+    })();
     $copia.find("[id]").removeAttr("id");
     $copia.find("script").remove();
     if (window.console) console.info("[BTS] recent topics: " + $copia.find("a").length + " enlaces copiados; origen: " + $src.prop("tagName") + "#" + ($src.attr("id") || "") + " " + $src.width() + "x" + $src.height() + " · " + ($src.html() || "").slice(0, 260).replace(/\s+/g, " "));

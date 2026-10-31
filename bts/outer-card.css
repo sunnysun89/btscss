@@ -3306,11 +3306,15 @@ form[name="form_login"] .user_login_form label {
 #mural .rrecent-nativo .rrecent__track { will-change: transform; }
 #mural .rrecent-nativo .rrecent__dup, #mural .rrecent-nativo .rrecent__dup * { transform: none !important; }
 #mural .rrecent-nativo br + br { display: none; }
+/* un bloque por tema: título arriba, fecha y autor debajo */
+#mural .rrecent-nativo .rrecent__it { display: block; margin: 0 0 12px !important; padding: 0 0 12px !important; border-bottom: 1px solid var(--burnthesky-line); line-height: 1.5; }
+#mural .rrecent-nativo .rrecent__it:last-child { border-bottom: 0; }
+#mural .rrecent-nativo .rrecent__it > a:first-of-type { color: var(--burnthesky-white); font-weight: 500; }
+#mural .rrecent-nativo img { display: none !important; }
 /* el nombre lleva el color de su grupo en un <span style="color:…">; strong/b/em lo heredan */
 #mural .rrecent-nativo .usr_grp_clr strong, #mural .rrecent-nativo .usr_grp_clr b,
 #mural .rrecent-nativo [class*="group-"] strong, #mural .rrecent-nativo [style*="color"] strong,
 #mural .rrecent-nativo [style*="color"] b, #mural .rrecent-nativo [style*="color"] em { color: inherit !important; }
-#mural .rrecent-nativo p, #mural .rrecent-nativo div { margin-bottom: 10px; }
 #mural .rrecent-nativo a { display: inline; }
 #mural .rsubsrecent a, #mural #comments_scroll_div a { color: var(--burnthesky-white); }
 #mural .rsubsrecent a:hover, #mural #comments_scroll_div a:hover { color: var(--burnthesky-red-vivid); }
