@@ -7130,3 +7130,22 @@ html { scrollbar-color: rgba(var(--burnthesky-accent-rgb), .35) var(--burnthesky
   .burnts-header-overlay { flex-direction: column-reverse; align-items: flex-start; padding: 28px 20px; }
   .burnts-header-title h1 { font-size: 26px; }
 }
+
+/* Foroactivo convierte cada salto de línea del mensaje en <br>. Dentro de los contenedores flex/grid de
+   la ficha cada <br> se convertía en un elemento más (y sumaba su separación): se ocultan ahí y se
+   dejan solo dentro de los párrafos. */
+.burnts-sheet :is(.burnts-header, .burnts-header-overlay, .burnts-header-title, .burnts-body, .burnts-sidebar,
+  .burnts-avatar-container, .burnts-quick-specs, .burnts-spec-item, .burnts-meter, .burnts-bar-container,
+  .burnts-main-content, .burnts-section, .burnts-power-box, .burnts-footer) > br { display: none !important; }
+.burnts-sheet :is(.burnts-section, .burnts-power-box) > p { white-space: normal; }
+.burnts-sheet :is(.burnts-section, .burnts-power-box) > p br { display: inline; }
+/* el contenedor del mensaje no debe añadir relleno propio a la ficha */
+.postbody .content > .burnts-sheet, .postbody .content > div > .burnts-sheet { margin-left: auto; margin-right: auto; }
+.burnts-sheet > br, .burnts-sheet p > br:last-child, .burnts-sheet p > br:first-child { display: none !important; }
+/* tipografía de la ficha con más peso que los h1-h4 y p del mensaje */
+.burnts-sheet .burnts-header-title h1 { font: 600 34px / 1.08 var(--burnthesky-ff-display); letter-spacing: .5px; margin: 0; text-transform: uppercase; padding: 0; }
+.burnts-sheet .burnts-header-title h2 { font: italic 400 22px / 1.2 var(--burnthesky-ff-serif); margin: 8px 0 0; padding: 0; text-transform: none; letter-spacing: .3px; }
+.burnts-sheet .burnts-section-title { font: 600 13px / 1.2 var(--burnthesky-ff-sans); letter-spacing: 2.4px; text-transform: uppercase; margin: 0 0 16px; padding: 0 0 12px; }
+.burnts-sheet .burnts-power-box h4 { font: 600 12px / 1.3 var(--burnthesky-ff-sans); letter-spacing: 1.6px; text-transform: uppercase; margin: 0 0 8px; padding: 0; text-align: left; }
+.burnts-sheet .burnts-section p, .burnts-sheet .burnts-power-box p { padding: 0; text-indent: 0; }
+@media (max-width: 768px) { .burnts-sheet .burnts-header-title h1 { font-size: 26px; } }
