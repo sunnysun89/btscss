@@ -226,7 +226,7 @@ jQuery(document).ready(function(){
                          admin (u1): se les resta 1 miembro. Authority ya está
                          fuera de la rosca, así que normalmente va vacío. */
     var APARTE = ["authority", "missing"];
-    var ADMIN_EN_GRUPOS = ["missing", "divine", "notable", "infamous", "underdogs", "unknown", "ordinary"];
+    var ADMIN_EN_GRUPOS = ["missing", "divine", "notable", "notorious", "infamous", "underdogs", "unknown", "ordinary"];
 
     var todos = [];
     enlaces.each(function () {
