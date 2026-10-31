@@ -143,6 +143,7 @@ jQuery(document).ready(function(){
         for (var i = 0; i < as.length; i++) {
           if (as[i].textContent.trim() !== nombre || !/\/u\d+|[?&]u=\d+/.test(as[i].getAttribute("href") || "")) continue;
           var c = [as[i]].concat([].slice.call(as[i].querySelectorAll("[style*='color'], font[color]")));
+          for (var up = as[i].parentNode, n3 = 0; up && up.nodeType === 1 && n3 < 3; up = up.parentNode, n3++) c.push(up);
           for (var k = 0; k < c.length; k++) {
             var v = (c[k].style && c[k].style.color) || c[k].getAttribute("color") || "";
             if (v && !neutro.test(v)) return v;
@@ -164,7 +165,12 @@ jQuery(document).ready(function(){
         fetch("/search?search_author=" + encodeURIComponent(nombre) + "&show_results=posts", { credentials: "same-origin" })
           .then(function (r) { return r.text(); })
           .then(function (t) {
-            var col = colorDe(new DOMParser().parseFromString(t, "text/html"), nombre);
+            var docB = new DOMParser().parseFromString(t, "text/html");
+            var col = colorDe(docB, nombre);
+            if (!col && window.console) {
+              var ls = [].filter.call(docB.querySelectorAll("a[href]"), function (a) { return a.textContent.trim() === nombre; });
+              console.info("[BTS] recent topics: " + nombre + " → " + ls.length + " enlaces con su nombre en /search" + (ls[0] ? ": " + ls[0].outerHTML.slice(0, 220) : "") + " (respuesta " + t.length + " caracteres)");
+            }
             if (col) { try { sessionStorage.setItem("bts-gn-" + nombre, col); } catch (e) {} pinta(nombre, col); }
             else if (window.console) console.info("[BTS] recent topics: no encontré el color de grupo de " + nombre);
           }).catch(function () {});
