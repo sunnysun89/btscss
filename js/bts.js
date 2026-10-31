@@ -78,6 +78,12 @@ jQuery(document).ready(function(){
       if (partes.length > 1 || /<br/i.test(h)) $copia.html(partes.map(function (x) { return '<div class="rrecent__it">' + x.replace(/^(?:\s|<br\s*\/?>)+/i, "") + "</div>"; }).join(""));
     })();
     $copia.find("[id]").removeAttr("id");
+    /* el color de grupo va en línea (style="color:#…"); alguna hoja del foro lo anula con !important,
+       así que se vuelve a poner con prioridad !important (y el <strong> de dentro lo hereda) */
+    $copia.find("[style*='color']").each(function () {
+      var c = this.style.color;
+      if (c) this.style.setProperty("color", c, "important");
+    });
     $copia.find("script").remove();
     if (window.console) console.info("[BTS] recent topics: " + $copia.find("a").length + " enlaces copiados; origen: " + $src.prop("tagName") + "#" + ($src.attr("id") || "") + " " + $src.width() + "x" + $src.height() + " · " + ($src.html() || "").slice(0, 260).replace(/\s+/g, " "));
     $slot.replaceWith($copia);
