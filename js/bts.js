@@ -65,8 +65,13 @@ jQuery(document).ready(function(){
     }
     if (window.console) console.info("[BTS] recent topics: widget nativo " + ($src.length ? "encontrado" : "NO encontrado"));
     if (!$src.length) { $slot.replaceWith('<p class="rrecent__empty">Sin temas recientes.</p>'); return; }
-    $src.addClass("rsubsrecent rrecent-nativo").show();
-    $slot.replaceWith($src);
+    /* Se copia el contenido (con sus colores) y el widget original se queda donde está: al
+       moverlo, su propio script de desplazamiento lo medía oculto y lo dejaba con alto 0. */
+    var $copia = $('<div class="rsubsrecent rrecent-nativo"></div>').html($src.html());
+    $copia.find("[id]").removeAttr("id");
+    $copia.find("script").remove();
+    if (window.console) console.info("[BTS] recent topics: " + $copia.find("a").length + " enlaces copiados; origen: " + $src.prop("tagName") + "#" + ($src.attr("id") || "") + " " + $src.width() + "x" + $src.height() + " · " + ($src.html() || "").slice(0, 260).replace(/\s+/g, " "));
+    $slot.replaceWith($copia);
   });
 
   safe("avatar", function () {

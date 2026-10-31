@@ -3294,6 +3294,14 @@ form[name="form_login"] .user_login_form label {
   font-family: var(--burnthesky-recent-ff) !important;
   font-size: var(--burnthesky-recent-fs) !important;
 }
+/* la copia no debe heredar posiciones/alturas del desplazador original */
+#mural .rrecent-nativo, #mural .rrecent-nativo * {
+  position: static !important; height: auto !important; transform: none !important;
+  float: none !important; width: auto !important; max-width: 100% !important; text-indent: 0 !important;
+}
+#mural .rrecent-nativo { max-height: var(--burnthesky-recent-h) !important; display: block !important; visibility: visible !important; }
+#mural .rrecent-nativo br { display: block; }
+#mural .rrecent-nativo a { display: inline; }
 #mural .rsubsrecent a, #mural #comments_scroll_div a { color: var(--burnthesky-white); }
 #mural .rsubsrecent a:hover, #mural #comments_scroll_div a:hover { color: var(--burnthesky-red-vivid); }
 #mural .rrecent__empty { margin: 0; padding: 12px 14px; color: var(--burnthesky-gray-lt); }
