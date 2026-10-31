@@ -1542,10 +1542,21 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     });
   }
 
+  /* Paginación de los temas: quita los puntos "•" sueltos que separaban Compartir y ¡Más! */
+  function limpiaPaginacion() {
+    Array.prototype.forEach.call(document.querySelectorAll('.topic-actions .pagination'), function (p) {
+      Array.prototype.slice.call(p.childNodes).forEach(function (n) {
+        if (n.nodeType === 3 && /^[\s\u00a0]*[•·][\s\u00a0]*$/.test(n.nodeValue)) p.removeChild(n);
+      });
+      var t = p.lastChild;
+      if (t && t.nodeType === 3) t.nodeValue = t.nodeValue.replace(/[\s\u00a0]*[•·][\s\u00a0]*$/, '');
+    });
+  }
+
   var avisado = false;
 
   function arrancar() {
-    try { limpiaFichas(); iconosPost(); botonesTema(); perfil(); premiosPerfil(); indiceV3(); bannerArriba(); } catch (e) {}
+    try { limpiaFichas(); limpiaPaginacion(); iconosPost(); botonesTema(); perfil(); premiosPerfil(); indiceV3(); bannerArriba(); } catch (e) {}
     var posts = document.querySelectorAll('.post');
     for (var n = 0; n < posts.length; n++) {
       var post = posts[n];
@@ -1678,7 +1689,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     }
   }
 
-  function tarde() { setTimeout(arrancar, 0); setTimeout(function () { try { limpiaFichas(); iconosPost(); botonesTema(); perfil(); premiosPerfil(); indiceV3(); bannerArriba(); } catch (e) {} }, 800); }
+  function tarde() { setTimeout(arrancar, 0); setTimeout(function () { try { limpiaFichas(); limpiaPaginacion(); iconosPost(); botonesTema(); perfil(); premiosPerfil(); indiceV3(); bannerArriba(); } catch (e) {} }, 800); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tarde);
   else tarde();
 }();

@@ -82,28 +82,6 @@ showHiddenMessage = function(id)
 
 	<div class="pagination">
 		{PAGE_NUMBER}
-		<!-- BEGIN switch_plus_menu -->
-		&nbsp;&bull;&nbsp;
-		<div id="addthis-toolbar" style="display: inline-block; margin-right:5px;">
-			<div class="btn-floating-left" tabindex="100">
-                {L_SHARE}
-			</div>
-			<div class="addthis-toolbar-btn" style="display:none;">
-                {switch_plus_menu.SOCIAL_BUTTONS}
-			</div>
-		</div>
-		&nbsp;&bull;&nbsp;
-		<script type="text/javascript">//<![CDATA[
-			var url_favourite = '{U_FAVOURITE_JS_PLUS_MENU}';
-			var url_newposts = '{U_NEWPOSTS_JS_PLUS_MENU}';
-			var url_egosearch = '{U_EGOSEARCH_JS_PLUS_MENU}';
-			var url_unanswered = '{U_UNANSWERED_JS_PLUS_MENU}';
-			var url_watchsearch = '{U_WATCHSEARCH_JS_PLUS_MENU}';
-			insert_plus_menu_new('f{FORUM_ID}&amp;t={TOPIC_ID}','{JS_SESSION_ID}', {JS_AUTH_FAVOURITES});
-		//]]>
-		</script>
-        {switch_plus_menu.JS_SOCIAL_BUTTONS}
-		<!-- END switch_plus_menu -->
 	</div>
 	<div class="clear"></div>
 </div>

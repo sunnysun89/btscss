@@ -7159,3 +7159,47 @@ html { scrollbar-color: rgba(var(--burnthesky-accent-rgb), .35) var(--burnthesky
 .burnts-sheet p br { display: inline !important; }
 .burnts-sheet .burnts-power-box p, .burnts-sheet .burnts-section p { white-space: normal; }
 .burnts-sheet :is(.burnts-header-overlay, .burnts-body, .burnts-sidebar, .burnts-main-content, .burnts-quick-specs, .burnts-meter, .burnts-section) > :is(p:empty, div:empty, span:empty):not(.burnts-bar) { display: none; }
+
+
+/* ==========================================================================
+   59. Cabecera de los temas: título más pequeño, ruta, barra de botones y paginación
+   Variables: --burnthesky-topic-title-fs (tamaño del título), --burnthesky-topic-bar-bg (fondo de la barra de botones)
+   Sin los botones "Compartir" y "¡Más!".
+   ========================================================================== */
+:root {
+  --burnthesky-topic-title-fs: clamp(24px, 3.4vw, 38px);
+  --burnthesky-topic-bar-bg: transparent;
+}
+body:has(.rpostcontainer) h1.page-title {
+  margin: 0 0 12px; padding: 6px 0 14px;
+  font-size: var(--burnthesky-topic-title-fs); line-height: 1.1; letter-spacing: -.5px;
+  border-bottom: 1px solid transparent;
+  border-image: linear-gradient(90deg, rgba(var(--burnthesky-accent-rgb), .55), rgba(var(--burnthesky-accent-rgb), .08) 70%, transparent) 1;
+}
+/* fuera Compartir y ¡Más! (y los puntos que los separan, que quita js-post.js) */
+.topic-actions .pagination #addthis-toolbar,
+.topic-actions .pagination .btn-floating-left,
+.topic-actions .pagination .addthis-toolbar-btn,
+.topic-actions .pagination [id*="plus_menu"],
+.topic-actions .pagination [class*="plus_menu"],
+.topic-actions .pagination .plus-menu,
+.topic-actions .pagination .more-menu { display: none !important; }
+
+/* estructura: ruta -> barra de botones -> paginación */
+.topic-actions { gap: 0; margin: 0 0 18px; }
+.topic-actions .pathname-box { order: 1; flex: 0 0 100%; margin: 0 0 12px; }
+.topic-actions .buttons {
+  order: 2; flex: 0 0 100%; gap: 0; padding: 4px 0; background: var(--burnthesky-topic-bar-bg);
+  border-top: 1px solid var(--burnthesky-line); border-bottom: 1px solid var(--burnthesky-line);
+}
+.topic-actions .buttons a.rbtn-main {
+  background: transparent; border: 0; border-radius: var(--burnthesky-r-sm, 8px); padding: 10px 18px;
+}
+.topic-actions .buttons a.rbtn-main + a.rbtn-main { position: relative; margin-left: 4px; }
+.topic-actions .buttons a.rbtn-main + a.rbtn-main::before {
+  content: ""; position: absolute; left: -3px; top: 22%; bottom: 22%; width: 1px; background: var(--burnthesky-line);
+}
+.topic-actions .buttons a.rbtn-main:hover { background: var(--burnthesky-red-wash); box-shadow: 0 6px 22px var(--burnthesky-red-ghost-2); }
+.topic-actions .pagination { order: 3; flex: 0 0 100%; margin: 12px 0 0; text-align: left; }
+.topic-actions p.right { order: 4; }
+.topic-actions p.right:empty, .topic-actions p.right:not(:has(*)) { display: none; }
