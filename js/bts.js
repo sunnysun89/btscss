@@ -104,9 +104,9 @@ jQuery(document).ready(function(){
           $src.find("*").each(function () {
             if (colAutor || $(this).children().length) return;
             if ($(this).text().trim() !== autor) return;
-            var cand = $(this).parents().addBack().slice(-3).get().reverse();
-            for (var k = 0; k < cand.length && !colAutor; k++) {
-              colAutor = (cand[k].style && cand[k].style.color) || cand[k].getAttribute("color") || "";
+            var nodo = this;   /* el elemento y hasta 2 padres (sin addBack: el jQuery del foro es antiguo) */
+            for (var k = 0; k < 3 && nodo && nodo.nodeType === 1 && !colAutor; k++, nodo = nodo.parentNode) {
+              colAutor = (nodo.style && nodo.style.color) || nodo.getAttribute("color") || "";
             }
           });
         }
