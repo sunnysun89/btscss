@@ -6986,3 +6986,56 @@ html { scrollbar-color: rgba(var(--burnthesky-accent-rgb), .35) var(--burnthesky
 
 /* nombres del grupo en Recent topics: el color lo pone el JS en línea */
 #mural .rrecent__meta b.rrecent__grupo { font-weight: 600; }
+
+
+/* ==========================================================================
+   57. Lista de miembros en tarjetas (js-miembros.js)
+   Variables: --burnthesky-ml-cols (columnas), --burnthesky-ml-ratio (proporción de la
+   tarjeta), --burnthesky-ml-gap (separación), --burnthesky-ml-fade (altura del degradado).
+   El color de cada tarjeta (--g) lo pone el script según el grupo.
+   ========================================================================== */
+:root {
+  --burnthesky-ml-cols: 3;
+  --burnthesky-ml-ratio: 3 / 4;
+  --burnthesky-ml-gap: 14px;
+  --burnthesky-ml-fade: 62%;
+}
+.rmiembros {
+  display: grid; grid-template-columns: repeat(var(--burnthesky-ml-cols), minmax(0, 1fr));
+  gap: var(--burnthesky-ml-gap); margin: 18px 0;
+}
+.rmiembro {
+  --g: var(--burnthesky-red-vivid);
+  position: relative; display: block; overflow: hidden; aspect-ratio: var(--burnthesky-ml-ratio);
+  border-radius: var(--burnthesky-r-lg, 18px); background: var(--burnthesky-void-3);
+  box-shadow: 0 10px 30px color-mix(in srgb, var(--g) 18%, transparent);
+  text-decoration: none !important; transition: transform .28s ease, box-shadow .28s ease;
+}
+.rmiembro:hover { transform: translateY(-4px); box-shadow: 0 16px 40px color-mix(in srgb, var(--g) 38%, transparent); }
+.rmiembro__foto, .rmiembro__foto img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.rmiembro__foto img { object-fit: cover; transition: transform .5s ease; max-width: none; }
+.rmiembro:hover .rmiembro__foto img { transform: scale(1.06); }
+.rmiembro__foto.sin-foto {
+  display: flex; align-items: center; justify-content: center;
+  font: 600 72px / 1 var(--burnthesky-ff-display); color: color-mix(in srgb, var(--g) 70%, #fff);
+  background: radial-gradient(circle at 50% 35%, color-mix(in srgb, var(--g) 35%, transparent), transparent 70%), var(--burnthesky-void-2);
+}
+/* degradado del color del grupo, de transparente (arriba) a color (abajo) */
+.rmiembro::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, transparent 0, transparent calc(100% - var(--burnthesky-ml-fade)),
+    color-mix(in srgb, var(--g) 55%, transparent) 78%, color-mix(in srgb, var(--g) 88%, #000 12%) 100%);
+  mix-blend-mode: normal; opacity: .92;
+}
+.rmiembro__txt { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 14px 16px 14px; display: flex; flex-direction: column; gap: 3px; }
+.rmiembro__grupo { font: 11px / 1 var(--burnthesky-ff-mono); letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,.82); }
+.rmiembro__grupo:empty { display: none; }
+.rmiembro__nombre { font: 600 18px / 1.15 var(--burnthesky-ff-display); letter-spacing: .6px; text-transform: uppercase; color: #fff; overflow-wrap: anywhere; text-shadow: 0 2px 12px rgba(0,0,0,.35); }
+.rmiembro__meta {
+  font: 11px / 1.3 var(--burnthesky-ff-mono); letter-spacing: .6px; color: rgba(255,255,255,.85);
+  max-height: 0; opacity: 0; overflow: hidden; transition: max-height .3s ease, opacity .3s ease;
+}
+.rmiembro:hover .rmiembro__meta, .rmiembro:focus-visible .rmiembro__meta { max-height: 40px; opacity: 1; }
+@media (hover: none) { .rmiembro__meta { max-height: 40px; opacity: 1; } }
+@media (max-width: 900px) { :root { --burnthesky-ml-cols: 2; } }
+@media (max-width: 480px) { .rmiembro__nombre { font-size: 15px; } .rmiembro__txt { padding: 10px 12px; } }
