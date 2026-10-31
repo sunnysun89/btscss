@@ -3306,6 +3306,10 @@ form[name="form_login"] .user_login_form label {
 #mural .rrecent-nativo .rrecent__track { will-change: transform; }
 #mural .rrecent-nativo .rrecent__dup, #mural .rrecent-nativo .rrecent__dup * { transform: none !important; }
 #mural .rrecent-nativo br + br { display: none; }
+/* el nombre lleva el color de su grupo en un <span style="color:…">; strong/b/em lo heredan */
+#mural .rrecent-nativo .usr_grp_clr strong, #mural .rrecent-nativo .usr_grp_clr b,
+#mural .rrecent-nativo [class*="group-"] strong, #mural .rrecent-nativo [style*="color"] strong,
+#mural .rrecent-nativo [style*="color"] b, #mural .rrecent-nativo [style*="color"] em { color: inherit !important; }
 #mural .rrecent-nativo p, #mural .rrecent-nativo div { margin-bottom: 10px; }
 #mural .rrecent-nativo a { display: inline; }
 #mural .rsubsrecent a, #mural #comments_scroll_div a { color: var(--burnthesky-white); }

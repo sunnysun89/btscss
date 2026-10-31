@@ -67,7 +67,9 @@ jQuery(document).ready(function(){
     if (!$src.length) { $slot.replaceWith('<p class="rrecent__empty">Sin temas recientes.</p>'); return; }
     /* Se copia el contenido (con sus colores) y el widget original se queda donde está: al
        moverlo, su propio script de desplazamiento lo medía oculto y lo dejaba con alto 0. */
-    var $copia = $('<div class="rsubsrecent rrecent-nativo"></div>').html($src.html());
+    /* el widget usa el plugin "marquee": se copia solo el contenido real (sin su envoltorio animado ni duplicados) */
+    var $real = $src.find(".js-marquee").first();
+    var $copia = $('<div class="rsubsrecent rrecent-nativo"></div>').html($real.length ? $real.html() : $src.html());
     $copia.find("[id]").removeAttr("id");
     $copia.find("script").remove();
     if (window.console) console.info("[BTS] recent topics: " + $copia.find("a").length + " enlaces copiados; origen: " + $src.prop("tagName") + "#" + ($src.attr("id") || "") + " " + $src.width() + "x" + $src.height() + " · " + ($src.html() || "").slice(0, 260).replace(/\s+/g, " "));
