@@ -7149,3 +7149,13 @@ html { scrollbar-color: rgba(var(--burnthesky-accent-rgb), .35) var(--burnthesky
 .burnts-sheet .burnts-power-box h4 { font: 600 12px / 1.3 var(--burnthesky-ff-sans); letter-spacing: 1.6px; text-transform: uppercase; margin: 0 0 8px; padding: 0; text-align: left; }
 .burnts-sheet .burnts-section p, .burnts-sheet .burnts-power-box p { padding: 0; text-indent: 0; }
 @media (max-width: 768px) { .burnts-sheet .burnts-header-title h1 { font-size: 26px; } }
+
+/* Refuerzo: cualquier <br> fuera de un párrafo se oculta (aunque Foroactivo lo meta dentro de un
+   <span> o un <div> intermedio) y el espacio en blanco entre etiquetas no cuenta como elemento
+   (con white-space: pre-line/pre-wrap en el mensaje, cada salto entre etiquetas añadía una línea
+   más dentro de los contenedores flex). */
+.burnts-sheet, .burnts-sheet * { white-space: normal; }
+.burnts-sheet br { display: none !important; }
+.burnts-sheet p br { display: inline !important; }
+.burnts-sheet .burnts-power-box p, .burnts-sheet .burnts-section p { white-space: normal; }
+.burnts-sheet :is(.burnts-header-overlay, .burnts-body, .burnts-sidebar, .burnts-main-content, .burnts-quick-specs, .burnts-meter, .burnts-section) > :is(p:empty, div:empty, span:empty):not(.burnts-bar) { display: none; }
