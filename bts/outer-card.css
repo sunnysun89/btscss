@@ -3274,7 +3274,7 @@ form[name="form_login"] .user_login_form label {
    tipografía (la del foro). Variables: --burnthesky-recent-h (alto máximo),
    --burnthesky-recent-ff (fuente), --burnthesky-recent-fs (tamaño). */
 :root {
-  --burnthesky-recent-h: 260px;
+  --burnthesky-recent-h: 340px;
   --burnthesky-recent-ff: var(--burnthesky-ff-sans);
   --burnthesky-recent-fs: 13px;
 }
@@ -3295,12 +3295,18 @@ form[name="form_login"] .user_login_form label {
   font-size: var(--burnthesky-recent-fs) !important;
 }
 /* la copia no debe heredar posiciones/alturas del desplazador original */
-#mural .rrecent-nativo, #mural .rrecent-nativo * {
+#mural .rrecent-nativo, #mural .rrecent-nativo *:not(.rrecent__track) {
   position: static !important; height: auto !important; transform: none !important;
   float: none !important; width: auto !important; max-width: 100% !important; text-indent: 0 !important;
 }
 #mural .rrecent-nativo { max-height: var(--burnthesky-recent-h) !important; display: block !important; visibility: visible !important; }
-#mural .rrecent-nativo br { display: block; }
+#mural .rrecent-nativo, #mural .rrecent-nativo * { margin-top: 0 !important; padding-top: 0 !important; min-height: 0 !important; }
+#mural .rrecent-nativo { padding: 10px 14px 12px !important; height: var(--burnthesky-recent-h) !important; max-height: none !important; overflow: hidden; }
+/* la pista debe poder moverse (transform) aunque se fuerce todo lo demás */
+#mural .rrecent-nativo .rrecent__track { will-change: transform; }
+#mural .rrecent-nativo .rrecent__dup, #mural .rrecent-nativo .rrecent__dup * { transform: none !important; }
+#mural .rrecent-nativo br + br { display: none; }
+#mural .rrecent-nativo p, #mural .rrecent-nativo div { margin-bottom: 10px; }
 #mural .rrecent-nativo a { display: inline; }
 #mural .rsubsrecent a, #mural #comments_scroll_div a { color: var(--burnthesky-white); }
 #mural .rsubsrecent a:hover, #mural #comments_scroll_div a:hover { color: var(--burnthesky-red-vivid); }

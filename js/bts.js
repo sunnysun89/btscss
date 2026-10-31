@@ -72,6 +72,31 @@ jQuery(document).ready(function(){
     $copia.find("script").remove();
     if (window.console) console.info("[BTS] recent topics: " + $copia.find("a").length + " enlaces copiados; origen: " + $src.prop("tagName") + "#" + ($src.attr("id") || "") + " " + $src.width() + "x" + $src.height() + " · " + ($src.html() || "").slice(0, 260).replace(/\s+/g, " "));
     $slot.replaceWith($copia);
+
+    /* Desplazamiento automático (SPEED = píxeles por segundo; se pausa con el ratón).
+       Solo se mueve si la lista no cabe entera en la ventana; si cabe, no hace nada. */
+    var SPEED = 28;
+    var $pista = $('<div class="rrecent__track"></div>').append($copia.contents());
+    $copia.append($pista);
+    var anim = null;
+    function medir() {
+      if (anim) { anim.cancel(); anim = null; }
+      $pista.children(".rrecent__dup").remove();
+      $copia.off(".rscroll").removeClass("rrecent--on");
+      var alto = $pista.outerHeight(), ventana = $copia.innerHeight();
+      var mover = alto > ventana + 1;
+      $copia.css("overflow-y", mover ? "hidden" : "auto");
+      if (window.console) console.info("[BTS] scroll recent: lista " + alto + "px, ventana " + ventana + "px -> " + (mover ? "se mueve" : "no hace falta"));
+      if (!mover || !$pista[0].animate) return;
+      var $dup = $('<div class="rrecent__dup" aria-hidden="true"></div>').html($pista.html());
+      $pista.append($dup);
+      $copia.addClass("rrecent--on");
+      anim = $pista[0].animate([{ transform: "translateY(0)" }, { transform: "translateY(-" + alto + "px)" }], { duration: alto / SPEED * 1000, iterations: Infinity });
+      $copia.on("mouseenter.rscroll", function () { if (anim) anim.pause(); }).on("mouseleave.rscroll", function () { if (anim) anim.play(); });
+    }
+    medir();
+    $(window).on("load", medir);
+    setTimeout(medir, 1500);
   });
 
   safe("avatar", function () {
