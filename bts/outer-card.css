@@ -7006,3 +7006,127 @@ html { scrollbar-color: rgba(var(--burnthesky-accent-rgb), .35) var(--burnthesky
 @media (hover: none) { .rmiembro__meta { max-height: 40px; opacity: 1; } }
 @media (max-width: 560px) { .rmiembros { grid-template-columns: repeat(2, minmax(0, 1fr)); } .rmiembro { aspect-ratio: 250 / 400; } }
 @media (max-width: 480px) { .rmiembro__nombre { font-size: 15px; } .rmiembro__txt { padding: 10px 12px; } }
+
+
+/* ==========================================================================
+   58. Expediente de personaje (.burnts-sheet)
+   Mismo HTML de siempre (plantillas/ficha-expediente.html), con la estética del foro.
+   Variables: --burnts-acc (color de acento; por defecto el del tema), --burnts-w (ancho
+   máximo). Para darle a una ficha el color de su grupo basta con poner en el primer div:
+   style="--burnts-acc:#D96A50"
+   ========================================================================== */
+.burnts-sheet {
+  --burnts-acc: var(--burnthesky-red-vivid);
+  --burnts-w: 850px;
+  --burnts-acc-rgb: var(--burnthesky-accent-rgb);
+  width: auto; max-width: var(--burnts-w); margin: 24px auto; box-sizing: border-box;
+  background: var(--burnthesky-void-2); color: var(--burnthesky-white);
+  font-family: var(--burnthesky-ff-sans);
+  border: 1px solid var(--burnthesky-line); border-radius: var(--burnthesky-r-lg);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, .35), 0 0 60px color-mix(in srgb, var(--burnts-acc) 12%, transparent);
+  overflow: hidden; text-align: left;
+}
+.burnts-sheet * { box-sizing: border-box; }
+
+/* cabecera */
+.burnts-header {
+  position: relative; border-bottom: 0;
+  background:
+    radial-gradient(120% 140% at 100% 0%, color-mix(in srgb, var(--burnts-acc) 26%, transparent), transparent 60%),
+    linear-gradient(135deg, var(--burnthesky-void-3), var(--burnthesky-void));
+}
+.burnts-header::after {
+  content: ""; position: absolute; left: 8%; right: 8%; bottom: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--burnts-acc) 70%, transparent), transparent);
+}
+.burnts-header-overlay { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 44px 40px; background: none; }
+.burnts-header-title { flex: 1; min-width: 0; }
+.burnts-badge {
+  display: inline-block; margin-bottom: 14px; padding: 6px 14px; border-radius: 999px;
+  background: color-mix(in srgb, var(--burnts-acc) 18%, transparent); color: var(--burnts-acc);
+  border: 1px solid color-mix(in srgb, var(--burnts-acc) 45%, transparent);
+  font: 600 10px / 1 var(--burnthesky-ff-sans); letter-spacing: 2.4px; text-transform: uppercase;
+  box-shadow: 0 0 18px color-mix(in srgb, var(--burnts-acc) 25%, transparent);
+}
+.burnts-header-title h1 {
+  margin: 0; font: 600 34px / 1.08 var(--burnthesky-ff-display); letter-spacing: .5px; text-transform: uppercase;
+  color: var(--burnthesky-white); overflow-wrap: anywhere;
+}
+.burnts-header-title h2 {
+  margin: 8px 0 0; font: italic 400 22px / 1.2 var(--burnthesky-ff-serif); letter-spacing: .3px;
+  color: var(--burnthesky-gray-lt);
+}
+.burnts-header-img {
+  width: 120px; height: 120px; flex-shrink: 0; margin: 0; object-fit: cover; border-radius: 50%;
+  border: 2px solid color-mix(in srgb, var(--burnts-acc) 55%, transparent);
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--burnts-acc) 10%, transparent), 0 10px 30px rgba(0, 0, 0, .4);
+}
+
+/* cuerpo */
+.burnts-body { display: flex; gap: 28px; padding: 30px; }
+.burnts-sidebar { width: 280px; flex-shrink: 0; display: flex; flex-direction: column; gap: 14px; }
+.burnts-avatar-container {
+  width: 280px; height: 430px; padding: 14px; display: flex; justify-content: center; align-items: center;
+  background: linear-gradient(160deg, color-mix(in srgb, var(--burnts-acc) 10%, var(--burnthesky-void-3)), var(--burnthesky-void));
+  border: 1px solid var(--burnthesky-line); border-radius: var(--burnthesky-r-md);
+}
+.burnts-avatar {
+  width: 250px; height: 400px; display: block; object-fit: cover; border-radius: var(--burnthesky-r-sm);
+  filter: saturate(.85); transition: filter .35s ease, transform .35s ease, box-shadow .35s ease;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .4);
+}
+.burnts-avatar:hover { filter: none; transform: translateY(-2px); box-shadow: 0 14px 34px color-mix(in srgb, var(--burnts-acc) 28%, transparent); }
+
+.burnts-quick-specs, .burnts-meter {
+  background: var(--burnthesky-void); border: 1px solid var(--burnthesky-line); border-radius: var(--burnthesky-r-md);
+  padding: 14px 16px;
+}
+.burnts-quick-specs { font-size: 13px; }
+.burnts-spec-item { display: flex; flex-direction: column; gap: 3px; padding: 9px 0; border-bottom: 1px solid var(--burnthesky-line); }
+.burnts-spec-item:first-child { padding-top: 0; }
+.burnts-spec-item:last-child { border-bottom: 0; padding-bottom: 0; }
+.burnts-spec-item strong { font: 600 10px / 1.3 var(--burnthesky-ff-sans); letter-spacing: 1.8px; text-transform: uppercase; color: var(--burnthesky-gray); }
+.burnts-spec-item span { color: var(--burnthesky-white); }
+
+.burnts-meter-title { margin-bottom: 10px; text-align: center; font: 600 10px / 1 var(--burnthesky-ff-sans); letter-spacing: 2px; color: var(--burnts-acc); }
+.burnts-bar-container { height: 14px; border-radius: 999px; overflow: hidden; background: rgba(255, 255, 255, .07) !important; }
+.burnts-bar { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--burnts-acc), var(--burnthesky-accent-2)) !important; box-shadow: 0 0 14px color-mix(in srgb, var(--burnts-acc) 45%, transparent); }
+
+.burnts-main-content { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+.burnts-section {
+  padding: 22px 24px; background: var(--burnthesky-void); border: 1px solid var(--burnthesky-line);
+  border-left: 1px solid var(--burnthesky-line); border-radius: var(--burnthesky-r-md);
+}
+.burnts-section-title {
+  display: flex; align-items: center; gap: 10px; margin: 0 0 16px; padding: 0 0 12px;
+  font: 600 13px / 1.2 var(--burnthesky-ff-sans); letter-spacing: 2.4px; text-transform: uppercase; color: var(--burnthesky-white);
+  border-bottom: 1px solid var(--burnthesky-line);
+}
+.burnts-section-title::before {
+  content: ""; width: 8px; height: 8px; flex-shrink: 0; border-radius: 50%;
+  background: var(--burnts-acc); box-shadow: 0 0 10px var(--burnts-acc);
+}
+.burnts-section p { margin: 0 0 12px; font-size: 13px; line-height: 1.75; color: var(--burnthesky-white); text-align: justify; white-space: pre-line; }
+.burnts-section p:last-child { margin-bottom: 0; }
+
+.burnts-power-box {
+  margin-bottom: 14px; padding: 16px 18px; border: 1px solid color-mix(in srgb, var(--burnts-acc) 28%, var(--burnthesky-line));
+  border-left: 3px solid var(--burnts-acc); border-radius: var(--burnthesky-r-sm);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--burnts-acc) 8%, var(--burnthesky-void-2)), var(--burnthesky-void-2));
+}
+.burnts-power-box h4 { margin: 0 0 8px; font: 600 12px / 1.3 var(--burnthesky-ff-sans); letter-spacing: 1.6px; text-transform: uppercase; color: var(--burnts-acc); }
+.burnts-power-box p { margin: 0; font-size: 12.5px; line-height: 1.65; white-space: pre-wrap; }
+.burnts-weakness { border-color: color-mix(in srgb, var(--burnthesky-red-dark) 55%, var(--burnthesky-line)); border-left-color: var(--burnthesky-red-dark); background: var(--burnthesky-void-2); }
+.burnts-weakness h4 { color: var(--burnthesky-gray-lt); }
+
+/* pie */
+.burnts-footer { padding: 16px; text-align: center; background: var(--burnthesky-void); border-top: 1px solid var(--burnthesky-line); }
+.burnts-footer span { font: 300 10px / 1.6 var(--burnthesky-ff-sans); letter-spacing: 2.2px; text-transform: uppercase; color: var(--burnts-acc); }
+
+@media (max-width: 768px) {
+  .burnts-body { flex-direction: column; padding: 18px; }
+  .burnts-sidebar { width: 100%; }
+  .burnts-avatar-container { width: 100%; max-width: 280px; margin: 0 auto; }
+  .burnts-header-overlay { flex-direction: column-reverse; align-items: flex-start; padding: 28px 20px; }
+  .burnts-header-title h1 { font-size: 26px; }
+}
