@@ -85,11 +85,41 @@ jQuery(document).ready(function(){
       "Faceless": "Authority"
       /* , "Otro usuario": "Divine" */
     };
+    var BTS_MAPA = {};   /* nombre en minúsculas -> color, leído de /memberlist */
+    try { var gm = JSON.parse(localStorage.getItem("bts-miembros") || "null"); if (gm && gm.m) BTS_MAPA = gm.m; } catch (e) {}
     function BTS_COLOR_USUARIO(nombre) {
       var k = (nombre || "").toLowerCase(), g = "";
       for (var u in BTS_USUARIOS) { if (u.toLowerCase() === k) g = BTS_USUARIOS[u]; }
-      if (!g) return "";
-      return /^#/.test(g) ? g : (BTS_GRUPOS[g.toLowerCase()] || "");
+      if (g) return /^#/.test(g) ? g : (BTS_GRUPOS[g.toLowerCase()] || "");
+      return BTS_MAPA[k] || "";
+    }
+    /* Lee /memberlist (30 miembros por página) y guarda nombre -> color de grupo durante 1 hora */
+    function BTS_LEER_MIEMBROS(listo) {
+      var mapa = {}, vistos = 0;
+      function rgbDe(c) { var m = (c || "").match(/rgba?\(\s*(\d+)[ ,]+(\d+)[ ,]+(\d+)/i) || (c || "").match(/^#(..)(..)(..)$/i); if (!m) return null; return m.length === 4 && /^#/.test(c) ? [parseInt(m[1], 16), parseInt(m[2], 16), parseInt(m[3], 16)] : [+m[1], +m[2], +m[3]]; }
+      function norm(c) {
+        var a = rgbDe(c); if (!a) return "";
+        var mejor = "", d0 = 1e9;
+        for (var g in BTS_GRUPOS) { var b = rgbDe(BTS_GRUPOS[g]); var d = Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]) + Math.abs(a[2] - b[2]); if (d < d0) { d0 = d; mejor = BTS_GRUPOS[g]; } }
+        return d0 <= 24 ? mejor : c;
+      }
+      function pagina(n) {
+        fetch("/memberlist?start=" + (n * 30), { credentials: "same-origin" }).then(function (r) { return r.text(); }).then(function (t) {
+          var doc = new DOMParser().parseFromString(t, "text/html"), filas = 0;
+          [].forEach.call(doc.querySelectorAll("table#memberlist tr"), function (tr) {
+            var a = [].filter.call(tr.querySelectorAll("a[href]"), function (x) { return /\/u\d+/.test(x.getAttribute("href") || "") && x.textContent.trim(); })[0];
+            if (!a) return;
+            filas++;
+            var sp = a.querySelector("[style*='color'], font[color]");
+            var c = (sp && (sp.style.color || sp.getAttribute("color"))) || a.style.color || a.getAttribute("color") || "";
+            if (c) mapa[a.textContent.replace(/\u00a0/g, " ").trim().toLowerCase()] = norm(c);
+          });
+          vistos += filas;
+          if (filas >= 30 && n < 20) pagina(n + 1);
+          else { BTS_MAPA = mapa; try { localStorage.setItem("bts-miembros", JSON.stringify({ t: Date.now(), m: mapa })); } catch (e) {} listo(); if (window.console) console.info("[BTS] recent topics: " + vistos + " miembros leídos de /memberlist"); }
+        }).catch(function () {});
+      }
+      pagina(0);
     }
 
     var items = [];
@@ -142,6 +172,15 @@ jQuery(document).ready(function(){
       $lista.append($a);
     });
     $slot.replaceWith($lista);
+    function BTS_PINTAR() {
+      $lista.find("b").each(function () {
+        var c = BTS_COLOR_USUARIO($(this).text());
+        if (c) $(this).css("color", c).addClass("rrecent__grupo");
+      });
+    }
+    var BTS_VIEJO = true;
+    try { var gm2 = JSON.parse(localStorage.getItem("bts-miembros") || "null"); BTS_VIEJO = !(gm2 && gm2.t && Date.now() - gm2.t < 3600000); } catch (e) {}
+    if (BTS_VIEJO) BTS_LEER_MIEMBROS(BTS_PINTAR);
 
 
     /* ---- Scroll automático ----------------------------------------------

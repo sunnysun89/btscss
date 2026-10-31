@@ -6990,19 +6990,18 @@ html { scrollbar-color: rgba(var(--burnthesky-accent-rgb), .35) var(--burnthesky
 
 /* ==========================================================================
    57. Lista de miembros en tarjetas (js-miembros.js)
-   Variables: --burnthesky-ml-cols (columnas), --burnthesky-ml-ratio (proporción de la
-   tarjeta), --burnthesky-ml-gap (separación), --burnthesky-ml-fade (altura del degradado).
+   Variables: --burnthesky-ml-w (ancho de la tarjeta), --burnthesky-ml-ratio (proporción), --burnthesky-ml-gap (separación), --burnthesky-ml-fade (altura del degradado).
    El color de cada tarjeta (--g) lo pone el script según el grupo.
    ========================================================================== */
 :root {
-  --burnthesky-ml-cols: 3;
-  --burnthesky-ml-ratio: 3 / 4;
+  --burnthesky-ml-w: 250px;       /* ancho de la tarjeta (tamaño del avatar: 250x400) */
+  --burnthesky-ml-ratio: 250 / 400;
   --burnthesky-ml-gap: 14px;
   --burnthesky-ml-fade: 62%;
 }
 .rmiembros {
-  display: grid; grid-template-columns: repeat(var(--burnthesky-ml-cols), minmax(0, 1fr));
-  gap: var(--burnthesky-ml-gap); margin: 18px 0;
+  display: grid; grid-template-columns: repeat(auto-fill, var(--burnthesky-ml-w));
+  justify-content: center; gap: var(--burnthesky-ml-gap); margin: 18px 0;
 }
 .rmiembro {
   --g: var(--burnthesky-red-vivid);
@@ -7037,5 +7036,5 @@ html { scrollbar-color: rgba(var(--burnthesky-accent-rgb), .35) var(--burnthesky
 }
 .rmiembro:hover .rmiembro__meta, .rmiembro:focus-visible .rmiembro__meta { max-height: 40px; opacity: 1; }
 @media (hover: none) { .rmiembro__meta { max-height: 40px; opacity: 1; } }
-@media (max-width: 900px) { :root { --burnthesky-ml-cols: 2; } }
+@media (max-width: 560px) { .rmiembros { grid-template-columns: repeat(2, minmax(0, 1fr)); } .rmiembro { aspect-ratio: 250 / 400; } }
 @media (max-width: 480px) { .rmiembro__nombre { font-size: 15px; } .rmiembro__txt { padding: 10px 12px; } }
