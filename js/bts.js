@@ -1650,13 +1650,15 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       (function () {
         var vals = [], num = post.querySelector('.rpost-n');
         var nMsg = num ? num.textContent.replace(/[^\d.,]/g, '') : '';
-        var cred = null, niv = null;
+        var cred = null, niv = null, msgF = null;
         for (var i2 = 0; i2 < campos.length; i2++) {
           var sl = slug(nombre(campos[i2]));
-          if (!cred && /credit|byun|moneda|dinero/.test(sl)) cred = campos[i2];
+          if (!msgF && /^(mensajes?|posts?|n-de-mensajes)$/.test(sl)) msgF = campos[i2];
+          else if (!cred && /credit|byun|moneda|dinero/.test(sl)) cred = campos[i2];
           else if (!niv && /nivel-de-poder|nivel-poder|^nivel$/.test(sl)) niv = campos[i2];
         }
         function tx(c) { return c && !vacio(c) ? c.querySelector('.postprofile-field-content').textContent.replace(/\s+/g, ' ').trim() : ''; }
+        if (!nMsg && msgF) nMsg = ((msgF.querySelector('.postprofile-field-content') || msgF).textContent.match(/[\d.,]+/) || [''])[0];
         if (nMsg) vals.push([nMsg, 'Mensajes']);
         if (tx(cred)) vals.push([tx(cred), (nombre(cred) || 'Créditos').replace(/:$/, '')]);
         if (tx(niv)) vals.push([tx(niv), (nombre(niv) || 'Nivel de poder').replace(/:$/, '')]);
@@ -1671,7 +1673,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
           });
           if (!vals.length) box.style.display = 'none';
         }
-        [cred, niv].forEach(function (c) { if (c && c.parentNode) c.parentNode.removeChild(c); });
+        [cred, niv, msgF].forEach(function (c) { if (c && c.parentNode) c.parentNode.removeChild(c); });
       })();
 
       /* implantes, inventario y medallero: ventana debajo del mensaje */
