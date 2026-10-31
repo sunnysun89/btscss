@@ -102,7 +102,7 @@
   --burnthesky-frame-h:       280px;
   --burnthesky-sidebar-w:     120px;     /* ancho de la barra lateral */
   --burnthesky-content-w:     min(var(--burnthesky-w-main), 100vw - var(--burnthesky-sidebar-w) - 32px);   /* ancho real del contenido */
-  --burnthesky-content-left:  calc(var(--burnthesky-sidebar-w) + (100vw - var(--burnthesky-sidebar-w) - var(--burnthesky-content-w)) / 2);   /* centrado en el espacio libre a la derecha de la barra */
+  --burnthesky-content-left:  calc(var(--burnthesky-sidebar-w) + (95vw - var(--burnthesky-sidebar-w) - var(--burnthesky-content-w)) / 2);   /* centrado en el espacio libre a la derecha de la barra */
   --burnthesky-sidebar-icon:  100px;     /* imagen de la barra lateral (campo Icono) */
   --burnthesky-switcher-size: 34px;      /* botón del MultiSwitcher */
   --burnthesky-toolbar-right: 72px;      /* posición de las notificaciones */
