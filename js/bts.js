@@ -39,10 +39,10 @@ jQuery(document).ready(function(){
   });
 
   /* ---- Recent topics ----------------------------------------------------
-     Antes se buscaba SOLO #comments_scroll_div, y si el widget no tenía ese
-     id la ventana quedaba vacía. Ahora se busca por id, por título del
-     módulo ("Últimos temas", "Recent topics"...) o, como último recurso, por
-     cualquier módulo de #left que contenga enlaces a temas. */
+     Se usa el widget NATIVO de Foroactivo (ya trae los colores de grupo y su
+     propio desplazamiento): se localiza y se coloca en el hueco .rsubsrecent
+     de la ventana del mural. Se busca por id (#comments_scroll_div), por el
+     título del módulo o, si no, por cualquier módulo de #left con enlaces a temas. */
   safe("recent topics", function () {
     var $slot = $("#mural .rsubsrecent").first();
     if (!$slot.length) return;
@@ -51,170 +51,22 @@ jQuery(document).ready(function(){
       var h = a.getAttribute("href") || "";
       return /\/t\d+[^\/]*(#\d+)?$/.test(h) && !$(a).closest(".h3").length;
     };
-
     var $src = $("#left #comments_scroll_div, #comments_scroll_div").not("#mural *").first();
-
     if (!$src.length) {
       $("#left .module").each(function () {
         var titulo = $(this).find(".h3").first().text().toLowerCase();
-        if (/últimos temas|ultimos temas|últimos mensajes|ultimos mensajes|recent topics|latest topics|recent posts|latest posts/.test(titulo)) {
-          $src = $(this);
-          return false;
-        }
+        if (/últimos temas|ultimos temas|últimos mensajes|ultimos mensajes|recent topics|latest topics|recent posts|latest posts/.test(titulo)) { $src = $(this); return false; }
       });
     }
     if (!$src.length) {
       $("#left .module").each(function () {
-        if ($(this).find("a").filter(function () { return esTema(this); }).length >= 2) {
-          $src = $(this);
-          return false;
-        }
+        if ($(this).find("a").filter(function () { return esTema(this); }).length >= 2) { $src = $(this); return false; }
       });
     }
-
-    /* ---- Colores de grupo en Recent topics -------------------------------
-       1) Colores de cada grupo (edítalos aquí).
-       2) Grupo de cada usuario: "Nombre": "Grupo". Si falta un usuario, su nombre
-          se queda con el color normal del tema. También vale un color directo:
-          "Nombre": "#RRGGBB". Las mayúsculas del nombre no importan. */
-    var BTS_GRUPOS = {
-      "authority": "#D96A50", "divine": "#D6AD68", "infamous": "#C85B70", "notorious": "#9290D4",
-      "underdogs": "#C77B55", "unknown": "#B77AC4", "ordinary": "#72A995", "missing": "#9296AA"
-    };
-    var BTS_USUARIOS = {
-      "Faceless": "Authority"
-      /* , "Otro usuario": "Divine" */
-    };
-    var BTS_MAPA = {};   /* nombre en minúsculas -> color, leído de /memberlist */
-    try { var gm = JSON.parse(localStorage.getItem("bts-miembros") || "null"); if (gm && gm.m) BTS_MAPA = gm.m; } catch (e) {}
-    function BTS_COLOR_USUARIO(nombre) {
-      var k = (nombre || "").toLowerCase(), g = "";
-      for (var u in BTS_USUARIOS) { if (u.toLowerCase() === k) g = BTS_USUARIOS[u]; }
-      if (g) return /^#/.test(g) ? g : (BTS_GRUPOS[g.toLowerCase()] || "");
-      return BTS_MAPA[k] || "";
-    }
-    /* Lee /memberlist (30 miembros por página) y guarda nombre -> color de grupo durante 1 hora */
-    function BTS_LEER_MIEMBROS(listo) {
-      var mapa = {}, vistos = 0;
-      function rgbDe(c) { var m = (c || "").match(/rgba?\(\s*(\d+)[ ,]+(\d+)[ ,]+(\d+)/i) || (c || "").match(/^#(..)(..)(..)$/i); if (!m) return null; return m.length === 4 && /^#/.test(c) ? [parseInt(m[1], 16), parseInt(m[2], 16), parseInt(m[3], 16)] : [+m[1], +m[2], +m[3]]; }
-      function norm(c) {
-        var a = rgbDe(c); if (!a) return "";
-        var mejor = "", d0 = 1e9;
-        for (var g in BTS_GRUPOS) { var b = rgbDe(BTS_GRUPOS[g]); var d = Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]) + Math.abs(a[2] - b[2]); if (d < d0) { d0 = d; mejor = BTS_GRUPOS[g]; } }
-        return d0 <= 24 ? mejor : c;
-      }
-      function pagina(n) {
-        fetch("/memberlist?start=" + (n * 30), { credentials: "same-origin" }).then(function (r) { return r.text(); }).then(function (t) {
-          var doc = new DOMParser().parseFromString(t, "text/html"), filas = 0;
-          [].forEach.call(doc.querySelectorAll("table#memberlist tr"), function (tr) {
-            var a = [].filter.call(tr.querySelectorAll("a[href]"), function (x) { return /\/u\d+/.test(x.getAttribute("href") || "") && x.textContent.trim(); })[0];
-            if (!a) return;
-            filas++;
-            var sp = a.querySelector("[style*='color'], font[color]");
-            var c = (sp && (sp.style.color || sp.getAttribute("color"))) || a.style.color || a.getAttribute("color") || "";
-            if (c) mapa[a.textContent.replace(/\u00a0/g, " ").trim().toLowerCase()] = norm(c);
-          });
-          vistos += filas;
-          if (filas >= 30 && n < 20) pagina(n + 1);
-          else { BTS_MAPA = mapa; try { localStorage.setItem("bts-miembros", JSON.stringify({ t: Date.now(), m: mapa })); } catch (e) {} listo(); if (window.console) console.info("[BTS] recent topics: " + vistos + " miembros leídos de /memberlist"); }
-        }).catch(function () {});
-      }
-      pagina(0);
-    }
-
-    var items = [];
-    if ($src.length) {
-      $src.find("a").each(function () {
-        if (!esTema(this) || items.length >= 8) return;
-        var a = this, meta = "", n = a.nextSibling;
-
-        while (n) {
-          if (n.nodeType === 1 && (esTema(n) || (n.querySelector && $(n).find("a").filter(function () { return esTema(this); }).length))) break;
-          meta += n.textContent || "";
-          n = n.nextSibling;
-        }
-        if (!meta.replace(/\s+/g, "")) {
-          var p = a.parentNode;
-          if (p && $(p).find("a").filter(function () { return esTema(this); }).length === 1) {
-            meta = (p.textContent || "").replace(a.textContent, "");
-          }
-        }
-        meta = meta.replace(/\s+/g, " ").replace(/^[\s»>]+/, "").replace(/[\s»>]+$/, "").trim();
-
-        var fecha = meta, autor = "";
-        var m = meta.match(/^(.*)\s+por\s+(.+)$/i);
-        if (m) { fecha = m[1].trim(); autor = m[2].trim(); }
-
-        var titulo = (a.textContent || "").replace(/^[\s»>]+/, "").trim();
-        if (/(\.\.\.|…)$/.test(titulo) && a.getAttribute("title")) titulo = a.getAttribute("title");
-
-        var colAutor = BTS_COLOR_USUARIO(autor);
-        items.push({ href: a.getAttribute("href"), titulo: titulo, fecha: fecha, autor: autor, color: colAutor });
-      });
-    }
-
-    if (window.console) console.info("[BTS] recent topics: módulo " + ($src.length ? "encontrado" : "NO encontrado") + ", " + items.length + " temas");
-    var $lista = $('<div class="rsubsrecent rrecent"></div>');
-    if (!items.length) {
-      $lista.append($('<p class="rrecent__empty"></p>').text("Aún no hay temas recientes."));
-    }
-    $.each(items, function (i, it) {
-      var $a = $('<a class="rrecent__item"></a>').attr("href", it.href);
-      $a.append($('<span class="rrecent__title"></span>').text(it.titulo));
-      var $meta = $('<span class="rrecent__meta"></span>');
-      if (it.autor) {
-        var $b = $("<b></b>").text(it.autor);
-        if (it.color) $b.css("color", it.color).addClass("rrecent__grupo");
-        $meta.append($b).append(document.createTextNode(" · "));
-      }
-      $meta.append(document.createTextNode(it.fecha));
-      $a.append($meta);
-      $lista.append($a);
-    });
-    $slot.replaceWith($lista);
-    function BTS_PINTAR() {
-      $lista.find("b").each(function () {
-        var c = BTS_COLOR_USUARIO($(this).text());
-        if (c) $(this).css("color", c).addClass("rrecent__grupo");
-      });
-    }
-    var BTS_VIEJO = true;
-    try { var gm2 = JSON.parse(localStorage.getItem("bts-miembros") || "null"); BTS_VIEJO = !(gm2 && gm2.t && Date.now() - gm2.t < 3600000); } catch (e) {}
-    if (BTS_VIEJO) BTS_LEER_MIEMBROS(BTS_PINTAR);
-
-
-    /* ---- Scroll automático ----------------------------------------------
-       SPEED = píxeles por segundo (menor = más lento). Solo se mueve si la
-       lista no cabe entera en la ventana (alto = max-height de .rrecent).
-       Usa la Web Animations API: no depende de la hoja de estilos (ni de su
-       caché) y "reducir movimiento" no la desactiva. Pausa con el ratón. */
-    var SPEED = 28;
-    var $pista = $('<div class="rrecent__track"></div>').append($lista.children());
-    $lista.empty().append($pista);
-    $lista.css({ maxHeight: "340px", overflow: "hidden" });
-    var originales = $pista.children().length;
-    var anim = null;
-
-    function medir() {
-      if (anim) { anim.cancel(); anim = null; }
-      $pista.children().slice(originales).remove();
-      $lista.removeClass("rrecent--on").off(".rscroll");
-      var alto = $pista.outerHeight(), ventana = $lista.innerHeight();
-      var mover = originales && alto > ventana + 1;
-      if (window.console) console.info("[BTS] scroll recent: lista " + alto + "px, ventana " + ventana + "px -> " + (mover ? "se mueve" : "no hace falta"));
-      if (!mover) return;
-      $pista.append($pista.children().clone().attr("aria-hidden", "true"));
-      $lista.addClass("rrecent--on");
-      if (!$pista[0].animate) return;
-      anim = $pista[0].animate(
-        [{ transform: "translateY(0)" }, { transform: "translateY(-" + alto + "px)" }],
-        { duration: alto / SPEED * 1000, iterations: Infinity }
-      );
-      $lista.on("mouseenter.rscroll", function () { if (anim) anim.pause(); })
-            .on("mouseleave.rscroll", function () { if (anim) anim.play(); });
-    }
-    medir();
-    $(window).on("load", medir);
+    if (window.console) console.info("[BTS] recent topics: widget nativo " + ($src.length ? "encontrado" : "NO encontrado"));
+    if (!$src.length) { $slot.replaceWith('<p class="rrecent__empty">Sin temas recientes.</p>'); return; }
+    $src.addClass("rsubsrecent rrecent-nativo").show();
+    $slot.replaceWith($src);
   });
 
   safe("avatar", function () {

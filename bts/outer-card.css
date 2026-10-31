@@ -3269,85 +3269,34 @@ form[name="form_login"] .user_login_form label {
 }
 #mural .rstaffmemb a:hover img { filter: none; border-color: var(--burnthesky-red); }
 
-/* Recent topics. El JS sustituye .rsubsrecent por #comments_scroll_div (el
-   widget estándar), que ya no lleva esa clase: se estilan los dos. */
+/* Recent topics: widget NATIVO de Foroactivo (js lo coloca en .rsubsrecent).
+   Conserva los colores de grupo de los nombres; aquí solo se ajusta la caja y la
+   tipografía (la del foro). Variables: --burnthesky-recent-h (alto máximo),
+   --burnthesky-recent-ff (fuente), --burnthesky-recent-fs (tamaño). */
+:root {
+  --burnthesky-recent-h: 260px;
+  --burnthesky-recent-ff: var(--burnthesky-ff-sans);
+  --burnthesky-recent-fs: 13px;
+}
 #mural .rsubsrecent,
 #mural #comments_scroll_div {
-  max-height: 260px;
+  max-height: var(--burnthesky-recent-h);
   padding: 8px 14px 12px;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--burnthesky-red-dark) var(--burnthesky-void);
-  font: var(--burnthesky-fs-xs) / 1.7 var(--burnthesky-ff-mono);
+  font: var(--burnthesky-recent-fs) / 1.6 var(--burnthesky-recent-ff);
   color: var(--burnthesky-gray-lt);
 }
-
-#mural .rsubsrecent:not(.rrecent) *,
+#mural .rsubsrecent *,
 #mural #comments_scroll_div * {
   background: transparent !important;
-  font-family: var(--burnthesky-ff-mono) !important;
-  font-size: var(--burnthesky-fs-xs) !important;
-  color: var(--burnthesky-gray-lt) !important;
+  font-family: var(--burnthesky-recent-ff) !important;
+  font-size: var(--burnthesky-recent-fs) !important;
 }
-
-#mural .rsubsrecent:not(.rrecent) a,
-#mural #comments_scroll_div a { color: var(--burnthesky-white) !important; }
-#mural .rsubsrecent:not(.rrecent) a:hover,
-#mural #comments_scroll_div a:hover { color: var(--burnthesky-red-vivid) !important; }
-
-/* Recent topics (lista que construye js-banner.js) */
-#mural .rrecent {
-  position: relative;
-  max-height: 340px;
-  padding: 0;
-  overflow: hidden;
-}
-
-/* Scroll AUTOMÁTICO: lo mueve el JS (Web Animations, ver SPEED en js-banner.js);
-   aquí solo el fundido de los bordes cuando la lista se está desplazando.
-   · altura de la ventana ..... max-height de .rrecent (arriba) */
-#mural .rrecent__track { display: flex; flex-direction: column; }
-
-#mural .rrecent--on {
-  -webkit-mask-image: linear-gradient(transparent, #000 7%, #000 93%, transparent);
-          mask-image: linear-gradient(transparent, #000 7%, #000 93%, transparent);
-}
-
-#mural .rrecent__item {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--burnthesky-line);
-  border-left: 2px solid transparent;
-  transition: background var(--burnthesky-ease), border-color var(--burnthesky-ease);
-}
-#mural .rrecent__item:last-child { border-bottom: 1px solid var(--burnthesky-line); }
-#mural .rrecent__item:hover { background: var(--burnthesky-red-wash); border-left-color: var(--burnthesky-red); }
-
-#mural .rrecent__title {
-  font: 16px / 1.15 var(--burnthesky-ff-display);
-  letter-spacing: -.2px;
-  text-transform: uppercase;
-  color: var(--burnthesky-white);
-  overflow-wrap: anywhere;
-}
-#mural .rrecent__item:hover .rrecent__title { color: var(--burnthesky-red-vivid); }
-
-#mural .rrecent__meta {
-  font: var(--burnthesky-fs-xs) / 1.5 var(--burnthesky-ff-mono);
-  letter-spacing: 1px;
-  color: var(--burnthesky-gray-lt);
-}
-#mural .rrecent__meta b { font-weight: 400; color: var(--burnthesky-red-vivid); }
-
-#mural .rrecent__empty {
-  margin: 0;
-  padding: 14px;
-  font: var(--burnthesky-fs-xs) / 1.6 var(--burnthesky-ff-mono);
-  letter-spacing: 1px;
-  color: var(--burnthesky-gray-lt);
-}
+#mural .rsubsrecent a, #mural #comments_scroll_div a { color: var(--burnthesky-white); }
+#mural .rsubsrecent a:hover, #mural #comments_scroll_div a:hover { color: var(--burnthesky-red-vivid); }
+#mural .rrecent__empty { margin: 0; padding: 12px 14px; color: var(--burnthesky-gray-lt); }
 
 /* Noticias: una .rnews__item por noticia (fecha + texto), a mano en el widget */
 #mural .rnews {
@@ -6983,9 +6932,6 @@ html { scrollbar-color: rgba(var(--burnthesky-accent-rgb), .35) var(--burnthesky
 
 /* nombre del ítem al pasar el ratón (además del tooltip nativo) */
 .rslot[data-nombre] { position: relative; cursor: help; }
-
-/* nombres del grupo en Recent topics: el color lo pone el JS en línea */
-#mural .rrecent__meta b.rrecent__grupo { font-weight: 600; }
 
 
 /* ==========================================================================

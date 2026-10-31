@@ -27,26 +27,14 @@ jQuery(document).ready(function(){
           vistos[href] = 1;
           var bloque = a.closest(".gensmall, p, li, div").not(src);
           if (!bloque.length || bloque.is(src)) bloque = a.parent();
-          var autorA = bloque.find("a[href]").not(a).first();
-          var autor = autorA.text().trim();
-          /* color del grupo: el que lleve el enlace del autor (style, <font color> o un hijo con color) */
-          var colAutor = "";
-          autorA.add(autorA.find("[style*='color'], font[color]")).each(function () {
-            if (colAutor) return;
-            var c = (this.style && this.style.color) || this.getAttribute("color") || "";
-            if (c) colAutor = c;
-          });
+          var autor = bloque.find("a[href]").not(a).first().text().trim();
           var resto = bloque.text().replace(a.text(), "");
           var fecha = resto.indexOf("»") > -1 ? resto.split("»").slice(1).join("»") : "";
           fecha = fecha.replace(/\s+/g, " ").trim();
           var item = $('<a class="rrecent__item"></a>').attr("href", href);
           item.append($('<span class="rrecent__title"></span>').text(a.text().trim()));
           var meta = $('<span class="rrecent__meta"></span>');
-          if (autor) {
-            var bAutor = $("<b></b>").text(autor);
-            if (colAutor) bAutor.css("color", colAutor).addClass("rrecent__grupo");
-            meta.append("por ").append(bAutor);
-          }
+          if (autor) { meta.append("por ").append($("<b></b>").text(autor)); }
           if (fecha) { meta.append((autor ? " · " : "") + fecha); }
           item.append(meta);
           lista.append(item);
