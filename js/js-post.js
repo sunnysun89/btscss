@@ -1026,10 +1026,41 @@
   }
   window.addEventListener('resize', function () { try { bannerArriba(); } catch (e) {} });
 
+
+  /* ---- Expediente (.burnts-sheet): limpieza del HTML que deja el editor de Foroactivo ----------
+     El editor mete <br> y texto "&nbsp; &nbsp;" entre las etiquetas (por la sangría del código). Dentro
+     de las columnas flex cada uno de esos textos se convierte en un elemento más y suma separación. Aquí
+     se quitan los <br> y los textos en blanco/nbsp que cuelgan directamente de un contenedor y, en los
+     párrafos, la sangría del principio y del final. El texto real no se toca. */
+  function limpiaFichas() {
+    var hojas = document.querySelectorAll('.burnts-sheet');
+    Array.prototype.forEach.call(hojas, function (h) {
+      if (h.getAttribute('data-bts-limpia')) return;
+      h.setAttribute('data-bts-limpia', '1');
+      var vacio = /^[\s\u00a0]*$/;
+      var todos = [h].concat(Array.prototype.slice.call(h.querySelectorAll('*')));
+      todos.forEach(function (n) {
+        var esP = n.tagName === 'P';
+        var hijos = Array.prototype.slice.call(n.childNodes);
+        hijos.forEach(function (c) {
+          if (c.nodeType === 3 && vacio.test(c.nodeValue) && !esP) n.removeChild(c);
+          else if (c.nodeType === 1 && c.tagName === 'BR' && !esP) n.removeChild(c);
+        });
+        if (esP) {
+          var primero = n.firstChild, ultimo = n.lastChild;
+          while (primero && ((primero.nodeType === 3 && vacio.test(primero.nodeValue)) || (primero.nodeType === 1 && primero.tagName === 'BR'))) { n.removeChild(primero); primero = n.firstChild; }
+          while (ultimo && ((ultimo.nodeType === 3 && vacio.test(ultimo.nodeValue)) || (ultimo.nodeType === 1 && ultimo.tagName === 'BR'))) { n.removeChild(ultimo); ultimo = n.lastChild; }
+          if (n.firstChild && n.firstChild.nodeType === 3) n.firstChild.nodeValue = n.firstChild.nodeValue.replace(/^[\s\u00a0]+/, '');
+          if (n.lastChild && n.lastChild.nodeType === 3) n.lastChild.nodeValue = n.lastChild.nodeValue.replace(/[\s\u00a0]+$/, '');
+        }
+      });
+    });
+  }
+
   var avisado = false;
 
   function arrancar() {
-    try { iconosPost(); botonesTema(); perfil(); premiosPerfil(); indiceV3(); bannerArriba(); } catch (e) {}
+    try { limpiaFichas(); iconosPost(); botonesTema(); perfil(); premiosPerfil(); indiceV3(); bannerArriba(); } catch (e) {}
     var posts = document.querySelectorAll('.post');
     for (var n = 0; n < posts.length; n++) {
       var post = posts[n];
@@ -1162,7 +1193,7 @@
     }
   }
 
-  function tarde() { setTimeout(arrancar, 0); setTimeout(function () { try { iconosPost(); botonesTema(); perfil(); premiosPerfil(); indiceV3(); bannerArriba(); } catch (e) {} }, 800); }
+  function tarde() { setTimeout(arrancar, 0); setTimeout(function () { try { limpiaFichas(); iconosPost(); botonesTema(); perfil(); premiosPerfil(); indiceV3(); bannerArriba(); } catch (e) {} }, 800); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tarde);
   else tarde();
 }();
