@@ -7205,10 +7205,12 @@ body:has(.rpostcontainer) h1.page-title {
 .topic-actions p.right:empty, .topic-actions p.right:not(:has(*)) { display: none; }
 
 /* ==========================================================================
-   60. Saltos de línea de los mensajes
-   Foroactivo guarda cada Enter como un <br>, que por sí solo apenas separa dos líneas. js-post.js añade tras
-   cada Enter suelto un pequeño espacio (.rbr-gap), así un Enter ya se nota como separación; dos Enter seguidos
-   siguen siendo una línea en blanco. Variable: --burnthesky-br-gap (0 = sin espacio extra; .9em = párrafo).
+   60. Saltos de línea (prueba con white-space)
+   Foroactivo escribe cada Enter como <br> y, en el código fuente, normalmente también un salto de línea real
+   justo después. Con white-space: pre-line el navegador respeta ese salto real además del <br>, y un Enter
+   pasa a verse como una línea en blanco. Si no cambia nada, el HTML no trae el salto real y no se puede
+   resolver solo con white-space. Para desactivarlo: cambiar pre-line por normal (o borrar este bloque).
    ========================================================================== */
-:root { --burnthesky-br-gap: .9em; }
-.rbr-gap { display: block; height: var(--burnthesky-br-gap); }
+.postbody .content, .signature_div { white-space: pre-line; }
+.postbody .content pre, .postbody .content code { white-space: pre-wrap; }
+.burnts-sheet p { white-space: pre-line; }
