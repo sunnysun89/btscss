@@ -7203,23 +7203,3 @@ body:has(.rpostcontainer) h1.page-title {
 .topic-actions .pagination { order: 3; flex: 0 0 100%; margin: 12px 0 0; text-align: left; }
 .topic-actions p.right { order: 4; }
 .topic-actions p.right:empty, .topic-actions p.right:not(:has(*)) { display: none; }
-
-/* ==========================================================================
-   60. Color de grupo de la ficha por clase + saltos de línea normales en los mensajes
-   ========================================================================== */
-/* Foroactivo puede borrar las variables CSS escritas en style="…" (style="--burnts-acc:…"); por eso la
-   ficha también acepta una clase: <div class="burnts-sheet burnts-authority"> */
-.burnts-sheet.burnts-authority { --burnts-acc: #D96A50; }
-.burnts-sheet.burnts-divine    { --burnts-acc: #D6AD68; }
-.burnts-sheet.burnts-infamous  { --burnts-acc: #C85B70; }
-.burnts-sheet.burnts-notorious { --burnts-acc: #9290D4; }
-.burnts-sheet.burnts-underdogs { --burnts-acc: #C77B55; }
-.burnts-sheet.burnts-unknown   { --burnts-acc: #B77AC4; }
-.burnts-sheet.burnts-ordinary  { --burnts-acc: #72A995; }
-.burnts-sheet.burnts-missing   { --burnts-acc: #9296AA; }
-
-/* Un Enter = un salto de línea; dos Enter = una línea en blanco. Foroactivo guarda cada Enter como <br>
-   seguido de un salto real; si el contenedor respeta ese salto (white-space: pre-line/pre-wrap) cada
-   Enter se veía doble. Los bloques de código y <pre> conservan su formato. */
-.postbody .content, .postbody .content > div, .signature_div { white-space: normal; }
-.postbody .content pre, .postbody .content code, .postbody .content .codebox * { white-space: pre-wrap; }
