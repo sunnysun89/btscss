@@ -1,0 +1,23 @@
+<!-- TABLILLAS DE ADMINISTRACIÓN
+Estilos: sección 61 de bts/outer-card.css. No uses style="…": Foroactivo lo borra. El color es el del grupo de quien publica.
+Cada tablilla va en UNA sola línea para que el editor de Foroactivo no meta saltos ni espacios. Pégala en el modo código fuente (HTML) del editor. -->
+
+<!-- ===== ANUNCIO =====
+     Anuncios generales (actualizaciones, eventos, avisos). Cambia el texto de la etiqueta (btab__tag) por "ANUNCIO", "EVENTO", "ACTUALIZACIÓN"... -->
+<div class="btab"><div class="btab__head"><span class="btab__tag">ANUNCIO</span><h3 class="btab__titulo">Título del anuncio</h3><p class="btab__sub">Subtítulo opcional</p></div><div class="btab__body"><p>Texto del anuncio. Puedes escribir varios párrafos.</p><p>Segundo párrafo.</p></div><div class="btab__foot">Administración · Burn The Sky</div></div>
+
+<!-- ===== RESPUESTA DE GESTIÓN =====
+     Respuesta del staff a temas de gestión (ausencias, cuentas, cambios, expedientes). Estados: btab__estado--ok (aprobado), --no (rechazado), --pend (pendiente), --info (aviso). -->
+<div class="btab btab--compacta"><div class="btab__head"><span class="btab__tag">GESTIÓN · EXPEDIENTE</span><h3 class="btab__titulo">Nombre del personaje</h3></div><div class="btab__body"><div><span class="btab__estado btab__estado--ok">Aprobado</span></div><div class="btab__datos"><div class="btab__dato"><b>Usuario</b><span>Nombre</span></div><div class="btab__dato"><b>Gestión</b><span>Expediente / Ausencia / Cuenta / Cambio</span></div><div class="btab__dato"><b>Revisó</b><span>Faceless</span></div></div><div class="btab__caja"><h4 class="btab__h">Observaciones</h4><p>Comentarios del staff, correcciones pendientes o próximos pasos.</p></div></div><div class="btab__foot">Staff · Burn The Sky</div></div>
+
+<!-- ===== REGISTRO (general) =====
+     Registros de físicos, nombres, grupos, anomalías, alias, facciones/alianzas, ocupaciones, popularidad... Es una tabla: añade o quita filas <tr> y columnas. -->
+<div class="btab btab--ancha"><div class="btab__head"><span class="btab__tag">REGISTRO</span><h3 class="btab__titulo">Registro de anomalías</h3><p class="btab__sub">Cambia el título según el registro</p></div><div class="btab__body"><table class="btab__tabla"><thead><tr><th>Nombre</th><th>Usuario</th><th>Detalle</th><th>Estado</th></tr></thead><tbody><tr><td>Dato 1</td><td>Usuario</td><td>Descripción breve</td><td>Disponible</td></tr><tr><td>Dato 2</td><td>Usuario</td><td>Descripción breve</td><td>Reservado</td></tr><tr><td>Dato 3</td><td>Usuario</td><td>Descripción breve</td><td>Disponible</td></tr></tbody></table></div><div class="btab__foot">Actualizado por la administración</div></div>
+
+<!-- ===== FORMULARIO (para los usuarios) =====
+     Formulario que el usuario copia, rellena y publica en el registro correspondiente (físico, nombre, anomalía, alias, facción, ocupación...). Cambia las etiquetas (b) según el registro. btab__campo--largo es para texto largo. -->
+<div class="btab"><div class="btab__head"><span class="btab__tag">FORMULARIO</span><h3 class="btab__titulo">Solicitud de registro</h3><p class="btab__sub">Copia este modelo, rellénalo y publícalo en el tema del registro.</p></div><div class="btab__body"><div class="btab__form"><div class="btab__campo"><b>Usuario</b><span>[tu usuario]</span></div><div class="btab__campo"><b>Personaje</b><span>[nombre del personaje]</span></div><div class="btab__campo"><b>Registro</b><span>[físico / nombre / anomalía / alias / facción / ocupación]</span></div><div class="btab__campo"><b>Elección</b><span>[lo que solicitas]</span></div><div class="btab__campo btab__campo--largo"><b>Descripción</b><span>[explica brevemente tu solicitud]</span></div></div></div><div class="btab__foot">Un registro por solicitud</div></div>
+
+<!-- ===== TIENDA / MEDALLERO =====
+     Objetos a la venta o medallas. Cada btab__item lleva imagen, nombre, precio (em) y descripción (small). -->
+<div class="btab btab--ancha"><div class="btab__head"><span class="btab__tag">TIENDA</span><h3 class="btab__titulo">Artículos disponibles</h3><p class="btab__sub">Para el medallero usa la etiqueta MEDALLERO</p></div><div class="btab__body"><div class="btab__items"><div class="btab__item"><img src="https://placehold.co/72" alt=""><strong>Objeto</strong><em>250 Byuns</em><small>Descripción breve del objeto.</small></div><div class="btab__item"><img src="https://placehold.co/72" alt=""><strong>Objeto</strong><em>250 Byuns</em><small>Descripción breve del objeto.</small></div><div class="btab__item"><img src="https://placehold.co/72" alt=""><strong>Objeto</strong><em>250 Byuns</em><small>Descripción breve del objeto.</small></div></div></div><div class="btab__foot">Compras: abre un tema en Gestiones</div></div>

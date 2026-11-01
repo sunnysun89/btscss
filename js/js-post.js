@@ -1033,7 +1033,7 @@
      se quitan los <br> y los textos en blanco/nbsp que cuelgan directamente de un contenedor y, en los
      párrafos, la sangría del principio y del final. El texto real no se toca. */
   function limpiaFichas() {
-    var hojas = document.querySelectorAll('.burnts-sheet');
+    var hojas = document.querySelectorAll('.burnts-sheet, .btab');
     Array.prototype.forEach.call(hojas, function (h) {
       if (h.getAttribute('data-bts-limpia')) return;
       h.setAttribute('data-bts-limpia', '1');
