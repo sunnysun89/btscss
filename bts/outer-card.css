@@ -7203,3 +7203,12 @@ body:has(.rpostcontainer) h1.page-title {
 .topic-actions .pagination { order: 3; flex: 0 0 100%; margin: 12px 0 0; text-align: left; }
 .topic-actions p.right { order: 4; }
 .topic-actions p.right:empty, .topic-actions p.right:not(:has(*)) { display: none; }
+
+/* ==========================================================================
+   60. Saltos de línea de los mensajes
+   Foroactivo guarda cada Enter como un <br>, que por sí solo apenas separa dos líneas. js-post.js añade tras
+   cada Enter suelto un pequeño espacio (.rbr-gap), así un Enter ya se nota como separación; dos Enter seguidos
+   siguen siendo una línea en blanco. Variable: --burnthesky-br-gap (0 = sin espacio extra; .9em = párrafo).
+   ========================================================================== */
+:root { --burnthesky-br-gap: .9em; }
+.rbr-gap { display: block; height: var(--burnthesky-br-gap); }

@@ -1553,10 +1553,35 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     });
   }
 
+  /* Un Enter = un <br>, que apenas separa líneas. Tras cada <br> suelto se añade un espacio (.rbr-gap, alto
+     --burnthesky-br-gap). Varios <br> seguidos (línea en blanco) no llevan espacio extra. No toca <pre>,
+     <code> ni los contenedores de la ficha (ahí los <br> no se muestran). */
+  function espaciaSaltos() {
+    var zonas = document.querySelectorAll('.postbody .content, .signature_div');
+    Array.prototype.forEach.call(zonas, function (z) {
+      if (z.getAttribute('data-bts-br')) return;
+      z.setAttribute('data-bts-br', '1');
+      Array.prototype.forEach.call(z.querySelectorAll('br'), function (b) {
+        if (b.closest('pre, code, .codebox, textarea')) return;
+        var padre = b.parentNode;
+        if (!padre || padre.nodeType !== 1) return;
+        var cs = window.getComputedStyle(padre);
+        if (/flex|grid/.test(cs.display)) return;
+        var ant = b.previousSibling, sig = b.nextSibling;
+        while (ant && ant.nodeType === 3 && !ant.nodeValue.trim()) ant = ant.previousSibling;
+        while (sig && sig.nodeType === 3 && !sig.nodeValue.trim()) sig = sig.nextSibling;
+        if (!sig) return;                                         // <br> final: no hace falta
+        if ((ant && ant.nodeName === 'BR') || sig.nodeName === 'BR') return;   // parte de una línea en blanco
+        var g = document.createElement('span'); g.className = 'rbr-gap'; g.setAttribute('aria-hidden', 'true');
+        b.parentNode.insertBefore(g, b.nextSibling);
+      });
+    });
+  }
+
   var avisado = false;
 
   function arrancar() {
-    try { limpiaFichas(); limpiaPaginacion(); iconosPost(); botonesTema(); perfil(); premiosPerfil(); indiceV3(); bannerArriba(); } catch (e) {}
+    try { limpiaFichas(); espaciaSaltos(); limpiaPaginacion(); iconosPost(); botonesTema(); perfil(); premiosPerfil(); indiceV3(); bannerArriba(); } catch (e) {}
     var posts = document.querySelectorAll('.post');
     for (var n = 0; n < posts.length; n++) {
       var post = posts[n];
@@ -1689,7 +1714,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     }
   }
 
-  function tarde() { setTimeout(arrancar, 0); setTimeout(function () { try { limpiaFichas(); limpiaPaginacion(); iconosPost(); botonesTema(); perfil(); premiosPerfil(); indiceV3(); bannerArriba(); } catch (e) {} }, 800); }
+  function tarde() { setTimeout(arrancar, 0); setTimeout(function () { try { limpiaFichas(); espaciaSaltos(); limpiaPaginacion(); iconosPost(); botonesTema(); perfil(); premiosPerfil(); indiceV3(); bannerArriba(); } catch (e) {} }, 800); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tarde);
   else tarde();
 }();
