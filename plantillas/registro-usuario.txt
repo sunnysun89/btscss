@@ -4,7 +4,7 @@ Publica este formulario (todo lo que hay debajo de la línea «=== FORMULARIO ==
 === FORMULARIO ===
 REGISTRO GENERAL — rellena solo lo que está entre comillas o en MAYÚSCULAS y borra estas líneas de ayuda.
 · PERFIL = el enlace a tu perfil (por ejemplo https://burnthesky.foroactivo.com/u12).
-· class="masc": cambia masc por fem o nb según tu personaje (solo cambia el color del nombre).
+· En «Nombre y apellido» y «Faceclaim», class="masc": cambia masc por fem o nb según tu personaje (solo cambia el color del nombre). En el resto no se toca nada.
 · Peligro: elige UN nivel. 1 Mínimo (rasguños, golpes) · 2 Bajo (heridas leves) · 3 Medio (heridas serias) · 4 Alto (riesgo de secuelas permanentes) · 5 Máximo (riesgo de muerte).
 · Si algo no aplica, borra ese bloque. Conserva las etiquetas [b] y [code] tal cual.
 
@@ -15,25 +15,25 @@ REGISTRO GENERAL — rellena solo lo que está entre comillas o en MAYÚSCULAS y
 [code]<div class="registro"> <a class="masc" href="PERFIL">Nombre del faceclaim</a> </div>[/code]
 
 [b]Alias[/b]
-[code]<div class="registro"> <a class="masc" href="PERFIL">Alias de superhéroe / villano / etc.</a> </div>[/code]
+[code]<div class="registro"> <a href="PERFIL">Alias de superhéroe / villano / etc.</a> </div>[/code]
 
 [b]Ubicación[/b]
-[code]<div class="registro"> <a class="masc" href="PERFIL">Ciudad / zona</a> </div>[/code]
+[code]<div class="registro"> <a href="PERFIL">Ciudad / zona</a> </div>[/code]
 
 [b]Grupo y rango[/b]
-[code]<div class="registro"> <a class="masc" href="PERFIL">Grupo · Rango</a> </div>[/code]
+[code]<div class="registro"> <a href="PERFIL">Grupo · Rango</a> </div>[/code]
 
 [b]Empleos y negocios[/b]
-[code]<div class="registro"> <a class="masc" href="PERFIL">Empleo o negocio</a> </div>[/code]
+[code]<div class="registro"> <a href="PERFIL">Empleo o negocio</a> </div>[/code]
 
 [b]Facción[/b]
-[code]<div class="registro"> <a class="masc" href="PERFIL">Nombre de la facción (ej.: Liga de la Justicia)</a> </div>[/code]
+[code]<div class="registro"> <a href="PERFIL">Nombre de la facción (ej.: Liga de la Justicia)</a> </div>[/code]
 
 [b]Alianza[/b]
-[code]<div class="registro"> <a class="masc" href="PERFIL">Personaje A y Personaje B (ej.: Batman y Robin)</a> </div>[/code]
+[code]<div class="registro"> <a href="PERFIL">Personaje A y Personaje B (ej.: Batman y Robin)</a> </div>[/code]
 
 [b]Poder y nivel de poder[/b]
-[code]<div class="registro"> <a class="masc" href="PERFIL">Poder · Nivel</a> </div>[/code]
+[code]<div class="registro"> <a href="PERFIL">Poder · Nivel</a> </div>[/code]
 
 [b]Peligro[/b]
-[code]<div class="registro"> <a class="masc" href="PERFIL">Nivel 1-5 · Descripción corta</a> </div>[/code]
+[code]<div class="registro"> <a href="PERFIL">Nivel 1-5 · Descripción corta</a> </div>[/code]

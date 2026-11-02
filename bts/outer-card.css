@@ -7352,19 +7352,34 @@ body:has(.rpostcontainer) h1.page-title {
 .btab-aviso .btab-aviso__txt { position: relative; margin: 0; padding: 0; text-align: center; font-size: 13px; line-height: 1.8; color: var(--burnthesky-white); opacity: .92; }
 @media (max-width: 600px) { .btab-aviso { padding: 26px 20px 22px; } .btab-aviso .btab-aviso__titulo { font-size: 26px; } .btab-aviso .btab-aviso__ico { left: 6%; font-size: 64px; } }
 
-/* cajas de código */
-.postbody .codebox.rcode { margin: 8px 0 18px; padding: 0; overflow: hidden; border: 0; border-radius: var(--burnthesky-r-md); background: #121016; box-shadow: 0 8px 24px rgba(0, 0, 0, .3); }
+/* cajas de código (estilo Burn The Sky: oscuras, bordes suaves y brillo del color de acento) */
+.postbody .codebox.rcode {
+  margin: 8px 0 18px; padding: 0; overflow: hidden; border-radius: var(--burnthesky-r-md);
+  background: var(--burnthesky-void); border: 1px solid color-mix(in srgb, var(--burnthesky-red-vivid) 28%, var(--burnthesky-line));
+  box-shadow: 0 8px 28px rgba(0, 0, 0, .3), 0 0 30px color-mix(in srgb, var(--burnthesky-red-vivid) 8%, transparent);
+}
 .codebox.rcode > .rcode__orig { display: none !important; }
 .rcode__head {
   display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 16px;
-  background: linear-gradient(135deg, color-mix(in srgb, var(--burnthesky-red-vivid) 70%, #000), color-mix(in srgb, var(--burnthesky-red-vivid) 45%, #000));
-  font: 600 11px / 1 var(--burnthesky-ff-sans); letter-spacing: 1.6px; text-transform: uppercase; color: #fff;
+  background: radial-gradient(120% 220% at 100% 0%, color-mix(in srgb, var(--burnthesky-red-vivid) 16%, transparent), transparent 60%), var(--burnthesky-void-3);
+  border-bottom: 1px solid color-mix(in srgb, var(--burnthesky-red-vivid) 30%, var(--burnthesky-line));
+  font: 600 10px / 1 var(--burnthesky-ff-sans); letter-spacing: 2px; text-transform: uppercase; color: var(--burnthesky-red-vivid);
 }
-.rcode__btn { cursor: pointer; padding: 5px 10px; border: 1px solid rgba(255, 255, 255, .35); border-radius: 999px; background: rgba(255, 255, 255, .08); color: #fff; font: inherit; letter-spacing: 1.4px; transition: background .2s ease; }
-.rcode__btn:hover { background: rgba(255, 255, 255, .22); }
-.codebox.rcode code, .codebox.rcode pre, .codebox.rcode dd { display: block; margin: 0; padding: 16px 18px; background: transparent; border: 0; color: #e9e3ec; font: 12.5px / 1.7 var(--burnthesky-ff-sans); white-space: pre-wrap; overflow-wrap: anywhere; }
-.rcode__titulo { display: block; margin: 18px 0 6px; font: 600 14px / 1.3 var(--burnthesky-ff-sans); letter-spacing: .6px; color: var(--burnthesky-red-vivid); }
-.rcode__titulo::before { content: "\2726  "; }
+.rcode__btn {
+  cursor: pointer; padding: 6px 12px; border: 1px solid color-mix(in srgb, var(--burnthesky-red-vivid) 45%, transparent); border-radius: 999px;
+  background: color-mix(in srgb, var(--burnthesky-red-vivid) 12%, transparent); color: var(--burnthesky-white); font: inherit; letter-spacing: 1.6px;
+  transition: background .25s ease, box-shadow .25s ease;
+}
+.rcode__btn:hover { background: color-mix(in srgb, var(--burnthesky-red-vivid) 26%, transparent); box-shadow: 0 0 16px color-mix(in srgb, var(--burnthesky-red-vivid) 30%, transparent); }
+.codebox.rcode code, .codebox.rcode pre, .codebox.rcode dd {
+  display: block; margin: 0; padding: 16px 18px; background: transparent; border: 0; color: var(--burnthesky-gray-lt);
+  font: 12.5px / 1.7 var(--burnthesky-ff-sans); white-space: pre-wrap; overflow-wrap: anywhere;
+}
+.rcode__titulo {
+  display: flex; align-items: center; gap: 10px; margin: 20px 0 8px; font: 600 12px / 1.3 var(--burnthesky-ff-sans);
+  letter-spacing: 2.2px; text-transform: uppercase; color: var(--burnthesky-white);
+}
+.rcode__titulo::before { content: ""; width: 8px; height: 8px; flex-shrink: 0; border-radius: 50%; background: var(--burnthesky-red-vivid); box-shadow: 0 0 10px var(--burnthesky-red-vivid); }
 
 /* líneas de registro: <div class="registro"><a class="masc" href="PERFIL">Nombre</a></div> */
 .registro { margin: 0; padding: 4px 0; }
