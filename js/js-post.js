@@ -1033,7 +1033,7 @@
      se quitan los <br> y los textos en blanco/nbsp que cuelgan directamente de un contenedor y, en los
      párrafos, la sangría del principio y del final. El texto real no se toca. */
   function limpiaFichas() {
-    var hojas = document.querySelectorAll('.burnts-sheet, .btab');
+    var hojas = document.querySelectorAll('.burnts-sheet, .btab, .btab-aviso');
     Array.prototype.forEach.call(hojas, function (h) {
       if (h.getAttribute('data-bts-limpia')) return;
       h.setAttribute('data-bts-limpia', '1');
@@ -1068,10 +1068,42 @@
     });
   }
 
+  /* Cajas [code]: barra "CÓDIGO: / COPIAR CÓDIGO" y, si justo antes hay un título en negrita
+     ([b]Físico[/b]), ese título pasa a estilo de encabezado. */
+  function cajasCodigo() {
+    Array.prototype.forEach.call(document.querySelectorAll('.postbody .codebox'), function (cb) {
+      if (cb.getAttribute('data-bts-code')) return;
+      cb.setAttribute('data-bts-code', '1');
+      var fuente = cb.querySelector('code') || cb.querySelector('pre') || cb.querySelector('dd');
+      if (!fuente) return;
+      var etiqueta = cb.querySelector(':scope > dt, :scope > p, :scope > .codebox-title');
+      if (etiqueta) etiqueta.classList.add('rcode__orig');
+      var head = document.createElement('div'); head.className = 'rcode__head';
+      var lb = document.createElement('span'); lb.textContent = 'Código:';
+      var bt = document.createElement('button'); bt.type = 'button'; bt.className = 'rcode__btn'; bt.textContent = 'Copiar código';
+      bt.addEventListener('click', function () {
+        var txt = (fuente.innerText || fuente.textContent || '').replace(/\u00a0/g, ' ');
+        var ok = function () { bt.textContent = '¡Copiado!'; setTimeout(function () { bt.textContent = 'Copiar código'; }, 1600); };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(ok, function () { copiaViejo(txt); ok(); });
+        else { copiaViejo(txt); ok(); }
+      });
+      head.appendChild(lb); head.appendChild(bt);
+      cb.insertBefore(head, cb.firstChild);
+      cb.classList.add('rcode');
+      var ant = cb.previousSibling;
+      while (ant && ((ant.nodeType === 3 && !ant.nodeValue.trim()) || (ant.nodeType === 1 && ant.tagName === 'BR'))) ant = ant.previousSibling;
+      if (ant && ant.nodeType === 1 && /^(B|STRONG)$/.test(ant.tagName)) ant.classList.add('rcode__titulo');
+    });
+  }
+  function copiaViejo(t) {
+    var a = document.createElement('textarea'); a.value = t; a.style.position = 'fixed'; a.style.opacity = '0';
+    document.body.appendChild(a); a.select(); try { document.execCommand('copy'); } catch (e) {} document.body.removeChild(a);
+  }
+
   var avisado = false;
 
   function arrancar() {
-    try { limpiaFichas(); limpiaPaginacion(); iconosPost(); botonesTema(); perfil(); premiosPerfil(); indiceV3(); bannerArriba(); } catch (e) {}
+    try { limpiaFichas(); cajasCodigo(); limpiaPaginacion(); iconosPost(); botonesTema(); perfil(); premiosPerfil(); indiceV3(); bannerArriba(); } catch (e) {}
     var posts = document.querySelectorAll('.post');
     for (var n = 0; n < posts.length; n++) {
       var post = posts[n];
@@ -1204,7 +1236,7 @@
     }
   }
 
-  function tarde() { setTimeout(arrancar, 0); setTimeout(function () { try { limpiaFichas(); limpiaPaginacion(); iconosPost(); botonesTema(); perfil(); premiosPerfil(); indiceV3(); bannerArriba(); } catch (e) {} }, 800); }
+  function tarde() { setTimeout(arrancar, 0); setTimeout(function () { try { limpiaFichas(); cajasCodigo(); limpiaPaginacion(); iconosPost(); botonesTema(); perfil(); premiosPerfil(); indiceV3(); bannerArriba(); } catch (e) {} }, 800); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tarde);
   else tarde();
 }();

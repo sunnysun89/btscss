@@ -1,0 +1,39 @@
+INSTRUCCIONES PARA EL STAFF
+Publica este formulario (todo lo que hay debajo de la línea «=== FORMULARIO ===») dentro de un [code] en el tema de instrucciones del registro, para que el usuario lo copie con el botón «Copiar código». El usuario lo rellena cuando su expediente es aceptado y lo publica en el tema «Registro general». Después el staff copia cada bloque al listado que corresponda.
+
+=== FORMULARIO ===
+REGISTRO GENERAL — rellena solo lo que está entre comillas o en MAYÚSCULAS y borra estas líneas de ayuda.
+· PERFIL = el enlace a tu perfil (por ejemplo https://burnthesky.foroactivo.com/u12).
+· class="masc": cambia masc por fem o nb según tu personaje (solo cambia el color del nombre).
+· Peligro: elige UN nivel. 1 Mínimo (rasguños, golpes) · 2 Bajo (heridas leves) · 3 Medio (heridas serias) · 4 Alto (riesgo de secuelas permanentes) · 5 Máximo (riesgo de muerte).
+· Si algo no aplica, borra ese bloque. Conserva las etiquetas [b] y [code] tal cual.
+
+[b]Nombre y apellido[/b]
+[code]<div class="registro"> <a class="masc" href="PERFIL">Apellido, Nombre</a> </div>[/code]
+
+[b]Faceclaim[/b]
+[code]<div class="registro"> <a class="masc" href="PERFIL">Nombre del faceclaim</a> </div>[/code]
+
+[b]Alias[/b]
+[code]<div class="registro"> <a class="masc" href="PERFIL">Alias de superhéroe / villano / etc.</a> </div>[/code]
+
+[b]Ubicación[/b]
+[code]<div class="registro"> <a class="masc" href="PERFIL">Ciudad / zona</a> </div>[/code]
+
+[b]Grupo y rango[/b]
+[code]<div class="registro"> <a class="masc" href="PERFIL">Grupo · Rango</a> </div>[/code]
+
+[b]Empleos y negocios[/b]
+[code]<div class="registro"> <a class="masc" href="PERFIL">Empleo o negocio</a> </div>[/code]
+
+[b]Facción[/b]
+[code]<div class="registro"> <a class="masc" href="PERFIL">Nombre de la facción (ej.: Liga de la Justicia)</a> </div>[/code]
+
+[b]Alianza[/b]
+[code]<div class="registro"> <a class="masc" href="PERFIL">Personaje A y Personaje B (ej.: Batman y Robin)</a> </div>[/code]
+
+[b]Poder y nivel de poder[/b]
+[code]<div class="registro"> <a class="masc" href="PERFIL">Poder · Nivel</a> </div>[/code]
+
+[b]Peligro[/b]
+[code]<div class="registro"> <a class="masc" href="PERFIL">Nivel 1-5 · Descripción corta</a> </div>[/code]
