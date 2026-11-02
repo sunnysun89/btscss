@@ -3,16 +3,19 @@ Estilos: sección 61 de bts/outer-card.css. No uses style="…": Foroactivo lo b
 Cada tablilla va en UNA sola línea para que el editor de Foroactivo no meta saltos ni espacios. Pégala en el modo código fuente (HTML) del editor. -->
 
 <!-- ===== POST CON IMAGEN =====
-     Mensaje con imagen a la izquierda (btab__img--der la pasa a la derecha). La imagen puede llevar pie (small). -->
-<div class="btab"><div class="btab__head"><span class="btab__tag">ESCENA</span><h3 class="btab__titulo">Título del post</h3><p class="btab__sub">Lugar · fecha / hora</p></div><div class="btab__body"><div class="btab__cuerpo-img"><div class="btab__img"><img src="https://placehold.co/200x300" alt=""><small>Pie de imagen (opcional)</small></div><p>Texto del post. Escribe aquí tu mensaje; el texto rodea la imagen.</p><p>Segundo párrafo.</p></div></div></div>
+     Cabecera centrada: imagen circular (cuadrada de origen, se recorta sola) justo encima del título y barra de 4 datos: con quién, cuándo, dónde y uno más (clima, hora, ánimo...). -->
+<div class="btab btab--centro"><div class="btab__head"><div class="btab__avatar"><img src="https://placehold.co/300x300" alt=""></div><h3 class="btab__titulo">Título del post</h3><p class="btab__meta"><span><b>Con</b> Personaje</span><span><b>Cuándo</b> Fecha / hora</span><span><b>Dónde</b> Lugar</span><span><b>Clima</b> Dato extra</span></p></div><div class="btab__body"><p>Texto del post. Escribe aquí tu mensaje.</p><p>Segundo párrafo.</p></div></div>
 
 <!-- ===== POST SIN IMAGEN =====
-     Mensaje solo de texto, con diálogo o escena. -->
-<div class="btab"><div class="btab__head"><span class="btab__tag">ESCENA</span><h3 class="btab__titulo">Título del post</h3><p class="btab__sub">Lugar · fecha / hora</p></div><div class="btab__body"><p>Texto del post.</p><p>Segundo párrafo.</p></div></div>
+     Igual, sin imagen. Cambia el cuarto dato como quieras. -->
+<div class="btab btab--centro"><div class="btab__head"><h3 class="btab__titulo">Título del post</h3><p class="btab__meta"><span><b>Con</b> Personaje</span><span><b>Cuándo</b> Fecha / hora</span><span><b>Dónde</b> Lugar</span><span><b>Clima</b> Dato extra</span></p></div><div class="btab__body"><p>Texto del post.</p><p>Segundo párrafo.</p></div></div>
 
-<!-- ===== BÚSQUEDA =====
-     Modelo de búsqueda de rol o de personaje. Cambia la etiqueta por "BUSCO ROL", "BUSCO PERSONAJE"... -->
-<div class="btab"><div class="btab__head"><span class="btab__tag">BUSCO ROL</span><h3 class="btab__titulo">Nombre del personaje</h3><p class="btab__sub">Idea en una línea</p></div><div class="btab__body"><div class="btab__datos"><div class="btab__dato"><b>Personaje</b><span>Nombre · Edad · Ocupación</span></div><div class="btab__dato"><b>Lugar</b><span>Ciudad / zona</span></div><div class="btab__dato"><b>Tipo</b><span>Trama / Cotidiano / Combate</span></div><div class="btab__dato"><b>Ritmo</b><span>1 post por semana</span></div></div><div class="btab__caja"><h4 class="btab__h">Sinopsis</h4><p>Explica qué buscas y cómo empezaría la escena.</p></div><div class="btab__caja"><h4 class="btab__h">Contacto</h4><p>MP o menciones: tu usuario.</p></div></div></div>
+<!-- ===== BÚSQUEDA CON IMAGEN =====
+     Cabecera con imagen circular, título y frase corta; presentación; y una trama por bloque. Para más tramas copia desde <div class="btab__sep"> hasta el final del bloque btab__trama. -->
+<div class="btab btab--centro"><div class="btab__head"><div class="btab__avatar"><img src="https://placehold.co/300x300" alt=""></div><h3 class="btab__titulo">Nombre del personaje</h3><p class="btab__sub">Frase corta o lema</p></div><div class="btab__body"><p class="btab__intro">Presentación: quién es el personaje, qué buscas y cómo te gusta rolear. Puedes añadir advertencias o tono general.</p><div class="btab__sep"></div><div class="btab__trama"><h4 class="btab__trama-t">Nombre de la trama</h4><p class="btab__trama-meta">Género · Edad · Subgénero</p><p>Descripción de la trama y de lo que buscas en el otro personaje.</p></div><div class="btab__sep"></div><div class="btab__trama"><h4 class="btab__trama-t">Otra trama</h4><p class="btab__trama-meta">Género · Edad · Subgénero</p><p>Descripción de la trama.</p></div></div></div>
+
+<!-- ===== BÚSQUEDA SIN IMAGEN ===== -->
+<div class="btab btab--centro"><div class="btab__head"><span class="btab__tag">BUSCO ROL</span><h3 class="btab__titulo">Nombre del personaje</h3><p class="btab__sub">Frase corta o lema</p></div><div class="btab__body"><p class="btab__intro">Presentación: quién es el personaje, qué buscas y cómo te gusta rolear.</p><div class="btab__sep"></div><div class="btab__trama"><h4 class="btab__trama-t">Nombre de la trama</h4><p class="btab__trama-meta">Género · Edad · Subgénero</p><p>Descripción de la trama y de lo que buscas.</p></div><div class="btab__sep"></div><div class="btab__trama"><h4 class="btab__trama-t">Otra trama</h4><p class="btab__trama-meta">Género · Edad · Subgénero</p><p>Descripción de la trama.</p></div></div></div>
 
 <!-- ===== BAÚL =====
      Baúl de objetos de un personaje: tabla de objetos y rejilla de imágenes. Quita lo que no uses. -->

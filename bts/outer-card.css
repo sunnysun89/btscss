@@ -7388,3 +7388,36 @@ body:has(.rpostcontainer) h1.page-title {
 .registro a.fem  { color: #d98aa8; }
 .registro a.nb   { color: #b6a0d8; }
 .registro a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+
+/* ==========================================================================
+   63. Tablillas de usuario centradas (.btab--centro): posts y búsquedas
+   - Se suma a .btab: cabecera centrada, con imagen circular (.btab__avatar) justo encima del título.
+   - .btab__meta: barra pequeña con 4 datos (<span><b>Con</b> Nombre</span> ×4).
+   - Búsquedas: .btab__intro, .btab__sep (línea divisoria), .btab__trama (título, .btab__trama-meta y texto).
+   Variable: --btab-avatar (tamaño de la imagen circular)
+   ========================================================================== */
+.btab--centro { --btab-avatar: 120px; }
+.btab--centro .btab__head { text-align: center; padding-top: calc(var(--btab-pad) + 2px); }
+.btab--centro .btab__tag { margin-bottom: 12px; }
+.btab--centro .btab__titulo { text-align: center; }
+.btab--centro .btab__sub { text-align: center; }
+.btab--centro .btab__avatar { display: block; width: var(--btab-avatar); height: var(--btab-avatar); margin: 0 auto 14px; padding: 0; border-radius: 50%; overflow: hidden; border: 2px solid var(--btab-acc); box-shadow: 0 0 0 5px color-mix(in srgb, var(--btab-acc) 16%, transparent), 0 10px 30px color-mix(in srgb, var(--btab-acc) 28%, transparent); background: var(--burnthesky-void); }
+.btab--centro .btab__avatar img { display: block; width: 100%; height: 100%; object-fit: cover; border: 0; border-radius: 0; box-shadow: none; }
+
+/* barra de 4 datos */
+.btab .btab__meta { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 4px 0; width: fit-content; max-width: 100%; margin: 12px auto 0; padding: 6px 14px; border-radius: 999px; background: color-mix(in srgb, var(--btab-acc) 8%, var(--burnthesky-void)); border: 1px solid color-mix(in srgb, var(--btab-acc) 24%, var(--burnthesky-line)); font: 500 10px / 1.4 var(--burnthesky-ff-sans); letter-spacing: 1.4px; text-transform: uppercase; color: var(--burnthesky-gray-lt); }
+.btab__meta span { display: inline-flex; gap: 6px; align-items: baseline; }
+.btab__meta span + span::before { content: "\203A"; margin: 0 10px; color: var(--btab-acc); font-size: 13px; }
+.btab__meta b { font-weight: 600; color: var(--btab-acc); }
+
+/* búsquedas */
+.btab__intro { text-align: justify; }
+.btab .btab__sep { height: 1px; border: 0; margin: 4px 0; background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--btab-acc) 55%, var(--burnthesky-line)), transparent); }
+.btab__trama { display: flex; flex-direction: column; gap: 10px; }
+.btab .btab__trama-t { margin: 0; padding: 0; border: 0; text-align: center; font: 600 20px / 1.2 var(--burnthesky-ff-display); letter-spacing: 1.2px; text-transform: uppercase; color: var(--btab-acc); text-shadow: 0 0 18px color-mix(in srgb, var(--btab-acc) 40%, transparent); }
+.btab .btab__trama-t::before { content: "\27E8\00a0"; opacity: .6; }
+.btab .btab__trama-t::after { content: "\00a0\27E9"; opacity: .6; }
+.btab .btab__trama-meta { margin: 0; text-align: center; font: 500 10px / 1.5 var(--burnthesky-ff-sans); letter-spacing: 1.6px; text-transform: uppercase; color: var(--burnthesky-gray); }
+.btab .btab__trama-meta::before, .btab .btab__trama-meta::after { content: "\2726"; margin: 0 8px; color: var(--btab-acc); }
+@media (max-width: 600px) { .btab--centro { --btab-avatar: 96px; } .btab .btab__meta { border-radius: var(--burnthesky-r-md); } }
