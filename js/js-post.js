@@ -1058,6 +1058,24 @@
   }
 
   /* Paginación de los temas: quita los puntos "•" sueltos que separaban Compartir y ¡Más! */
+  // Botones de categoría de tiendas/medalleros: el botón n lleva a la sección n (.btab__seccion) de su tablilla
+  function navCategorias() {
+    Array.prototype.forEach.call(document.querySelectorAll('.btab__cats'), function (nav) {
+      if (nav.getAttribute('data-bts-cats')) return; nav.setAttribute('data-bts-cats', '1');
+      var tab = nav.parentNode;
+      while (tab && !(tab.className && /(^|\s)btab(\s|$)/.test(tab.className))) tab = tab.parentNode;
+      if (!tab) return;
+      var botones = nav.querySelectorAll('.btab__cat'), secs = tab.querySelectorAll('.btab__seccion');
+      Array.prototype.forEach.call(botones, function (b, i) {
+        b.onclick = function (e) {
+          var s = secs[i]; if (!s) return true;
+          if (e && e.preventDefault) e.preventDefault();
+          try { s.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (x) { s.scrollIntoView(); }
+          return false;
+        };
+      });
+    });
+  }
   function limpiaPaginacion() {
     Array.prototype.forEach.call(document.querySelectorAll('.topic-actions .pagination'), function (p) {
       Array.prototype.slice.call(p.childNodes).forEach(function (n) {
@@ -1103,7 +1121,7 @@
   var avisado = false;
 
   function arrancar() {
-    try { limpiaFichas(); cajasCodigo(); limpiaPaginacion(); iconosPost(); botonesTema(); perfil(); premiosPerfil(); indiceV3(); bannerArriba(); } catch (e) {}
+    try { limpiaFichas(); cajasCodigo(); navCategorias(); limpiaPaginacion(); iconosPost(); botonesTema(); perfil(); premiosPerfil(); indiceV3(); bannerArriba(); } catch (e) {}
     var posts = document.querySelectorAll('.post');
     for (var n = 0; n < posts.length; n++) {
       var post = posts[n];
@@ -1236,7 +1254,7 @@
     }
   }
 
-  function tarde() { setTimeout(arrancar, 0); setTimeout(function () { try { limpiaFichas(); cajasCodigo(); limpiaPaginacion(); iconosPost(); botonesTema(); perfil(); premiosPerfil(); indiceV3(); bannerArriba(); } catch (e) {} }, 800); }
+  function tarde() { setTimeout(arrancar, 0); setTimeout(function () { try { limpiaFichas(); cajasCodigo(); navCategorias(); limpiaPaginacion(); iconosPost(); botonesTema(); perfil(); premiosPerfil(); indiceV3(); bannerArriba(); } catch (e) {} }, 800); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tarde);
   else tarde();
 }();

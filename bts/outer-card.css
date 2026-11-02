@@ -7421,3 +7421,22 @@ body:has(.rpostcontainer) h1.page-title {
 .btab .btab__trama-meta { margin: 0; text-align: center; font: 500 10px / 1.5 var(--burnthesky-ff-sans); letter-spacing: 1.6px; text-transform: uppercase; color: var(--burnthesky-gray); }
 .btab .btab__trama-meta::before, .btab .btab__trama-meta::after { content: "\2726"; margin: 0 8px; color: var(--btab-acc); }
 @media (max-width: 600px) { .btab .btab__meta { border-radius: var(--burnthesky-r-md); } }
+
+
+/* ==========================================================================
+   64. Tienda y medallero (.btab__cats, .btab__seccion)
+   - .btab__cats: fila de botones con icono (.btab__cat > <i class="cp cp-…">); el botón n baja a la sección n (.btab__seccion).
+   - .btab__seccion: bloque con título (.btab__h) y rejilla de objetos (.btab__items).
+   - Tienda: cada objeto lleva nombre + precio en créditos (em). Medallero: nombre + descripción (small).
+   ========================================================================== */
+.btab .btab__cats { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 0; padding: 4px 0 2px; }
+.btab a.btab__cat { display: inline-flex; align-items: center; justify-content: center; width: 46px; height: 46px; border-radius: var(--burnthesky-r-md); border: 1px solid color-mix(in srgb, var(--btab-acc) 35%, var(--burnthesky-line)); background: var(--burnthesky-void); color: var(--btab-acc); font-size: 20px; line-height: 1; text-decoration: none; transition: transform .25s ease, box-shadow .25s ease, background .25s ease, color .25s ease; }
+.btab a.btab__cat i { color: inherit; font-size: inherit; line-height: 1; }
+.btab a.btab__cat:hover { transform: translateY(-3px); color: var(--burnthesky-white); background: color-mix(in srgb, var(--btab-acc) 22%, var(--burnthesky-void)); box-shadow: 0 8px 22px color-mix(in srgb, var(--btab-acc) 35%, transparent); }
+.btab__seccion { display: flex; flex-direction: column; gap: 12px; scroll-margin-top: 70px; }
+.btab__seccion + .btab__seccion { padding-top: 6px; }
+.btab .btab__seccion > .btab__h { margin: 0; justify-content: center; text-align: center; }
+.btab .btab__h i { color: var(--btab-acc); font-size: 18px; margin-right: 8px; }
+.btab .btab__h:has(i)::before { display: none; }
+.btab__item em { min-height: 1em; }
+@media (max-width: 600px) { .btab a.btab__cat { width: 42px; height: 42px; font-size: 18px; } }
