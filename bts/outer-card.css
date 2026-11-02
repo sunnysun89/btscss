@@ -7402,8 +7402,8 @@ body:has(.rpostcontainer) h1.page-title {
 .btab--centro .btab__tag { margin-bottom: 12px; }
 .btab--centro .btab__titulo { text-align: center; }
 .btab--centro .btab__sub { text-align: center; }
-.btab--centro .btab__avatar { display: block; width: var(--btab-avatar); height: var(--btab-avatar); margin: 0 auto 14px; padding: 0; border-radius: 50%; overflow: hidden; border: 2px solid var(--btab-acc); box-shadow: 0 0 0 5px color-mix(in srgb, var(--btab-acc) 16%, transparent), 0 10px 30px color-mix(in srgb, var(--btab-acc) 28%, transparent); background: var(--burnthesky-void); }
-.btab--centro .btab__avatar img { display: block; width: 100%; height: 100%; object-fit: cover; border: 0; border-radius: 0; box-shadow: none; }
+.btab--centro .btab__avatar, .btab .btab__avatar { display: block; width: 120px; height: 120px; min-width: 120px; margin: 0 auto 14px; float: none; padding: 0; border-radius: 50%; overflow: hidden; border: 2px solid var(--btab-acc); box-shadow: 0 0 0 5px color-mix(in srgb, var(--btab-acc) 16%, transparent), 0 10px 30px color-mix(in srgb, var(--btab-acc) 28%, transparent); background: var(--burnthesky-void); }
+.btab--centro .btab__avatar img, .btab .btab__avatar img { display: block; width: 120px; height: 120px; max-width: none; object-fit: cover; border: 0; border-radius: 0; box-shadow: none; }
 
 /* barra de 4 datos */
 .btab .btab__meta { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 4px 0; width: fit-content; max-width: 100%; margin: 12px auto 0; padding: 6px 14px; border-radius: 999px; background: color-mix(in srgb, var(--btab-acc) 8%, var(--burnthesky-void)); border: 1px solid color-mix(in srgb, var(--btab-acc) 24%, var(--burnthesky-line)); font: 500 10px / 1.4 var(--burnthesky-ff-sans); letter-spacing: 1.4px; text-transform: uppercase; color: var(--burnthesky-gray-lt); }
@@ -7420,4 +7420,4 @@ body:has(.rpostcontainer) h1.page-title {
 .btab .btab__trama-t::after { content: "\00a0\27E9"; opacity: .6; }
 .btab .btab__trama-meta { margin: 0; text-align: center; font: 500 10px / 1.5 var(--burnthesky-ff-sans); letter-spacing: 1.6px; text-transform: uppercase; color: var(--burnthesky-gray); }
 .btab .btab__trama-meta::before, .btab .btab__trama-meta::after { content: "\2726"; margin: 0 8px; color: var(--btab-acc); }
-@media (max-width: 600px) { .btab--centro { --btab-avatar: 96px; } .btab .btab__meta { border-radius: var(--burnthesky-r-md); } }
+@media (max-width: 600px) { .btab .btab__meta { border-radius: var(--burnthesky-r-md); } }
