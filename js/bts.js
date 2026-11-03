@@ -1968,6 +1968,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       nivel: ["nivel de poder", "nivel poder", "poder nivel", "nivel"],
       poderes: ["poder perfil", "poderes", "poder", "habilidades"],
       rango: ["rango"],
+      icono: ["icono", "icon", "icono de tema", "icono de usuario"],
       seudonimo: ["seudonimo", "seudonimos", "pseudonimo"],
       creditos: ["creditos", "credito"],
       nacimiento: ["fecha de nacimiento", "fecha nacimiento", "nacimiento", "cumpleanos"],
@@ -1987,7 +1988,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     });
 
     /* Respaldo por parte del nombre (tolera erratas: "inscriptión", "nacimento"...) */
-    var PARCIAL = { banner: /^banner/, nacimiento: /nacim|cumple/, inscripcion: /inscri|registro/, nivel: /^nivel/, creditos: /credit/ };
+    var PARCIAL = { icono: /^icon/, banner: /^banner/, nacimiento: /nacim|cumple/, inscripcion: /inscri|registro/, nivel: /^nivel/, creditos: /credit/ };
     function buscar(slot) {
       var syn = SINONIMOS[slot] || [slot], i;
       for (i = 0; i < campos.length; i++) {
@@ -2004,6 +2005,17 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     var vacio = function (el) {
       return !el || (!el.querySelector("img") && !el.textContent.replace(/[\s -]+/g, "").length);
     };
+
+    /* Icono: el mismo campo "Icono" que usa el post (rtopicicon) alimenta el círculo del avatar */
+    var ci = buscar("icono");
+    if (ci) {
+      var ii = ci.el.querySelector("img"), ico = root.querySelector(".rperfil__avico");
+      if (ii && ico) {
+        var im2 = new Image(); im2.alt = "";
+        im2.src = ii.getAttribute("data-src") || ii.currentSrc || ii.src;
+        ico.innerHTML = ""; ico.appendChild(im2);
+      }
+    }
 
     /* 2. Huecos de texto: apodos, alias, tiles y frase */
     root.querySelectorAll("[data-slot]").forEach(function (hueco) {
