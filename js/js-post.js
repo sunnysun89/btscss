@@ -917,10 +917,8 @@
         ['Última visita', lastB ? lastB.textContent.trim() : ''],
         ['Estado', onl ? onl.innerHTML.trim() : '', true],
         ['Registro', reg],
-        ['Cumpleaños', /sin fecha/i.test(nac) ? '' : nac],
-        ['Mensajes', msgB ? msgB.textContent.trim() : ''],
-        ['Créditos', credTxt]
-      ];
+        ['Cumpleaños', /sin fecha/i.test(nac) ? '' : nac]
+      ];   /* Mensajes y Créditos ahora están en el pie del perfil */
       ooc.forEach(function (o) { filas.push([o.l, o.c.innerHTML.trim(), true]); });
       filas.forEach(function (r) {
         var row = el('div', 'rlog__row'), lb = el('span', 'rlog__l', r[0]), vv = el('span', 'rlog__v');

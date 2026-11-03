@@ -1402,10 +1402,8 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
         ['Última visita', lastB ? lastB.textContent.trim() : ''],
         ['Estado', onl ? onl.innerHTML.trim() : '', true],
         ['Registro', reg],
-        ['Cumpleaños', /sin fecha/i.test(nac) ? '' : nac],
-        ['Mensajes', msgB ? msgB.textContent.trim() : ''],
-        ['Créditos', credTxt]
-      ];
+        ['Cumpleaños', /sin fecha/i.test(nac) ? '' : nac]
+      ];   /* Mensajes y Créditos ahora están en el pie del perfil */
       ooc.forEach(function (o) { filas.push([o.l, o.c.innerHTML.trim(), true]); });
       filas.forEach(function (r) {
         var row = el('div', 'rlog__row'), lb = el('span', 'rlog__l', r[0]), vv = el('span', 'rlog__v');
@@ -1890,6 +1888,9 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
 
     ligar("usuario", function (e) { e.textContent = nombre; });
     ligar("estatus", function (e) { e.textContent = enlinea ? "● En línea" : ""; });
+    /* total de mensajes (campo nativo "Mensajes") para el pie del perfil */
+    var men = dato(/^(mensajes|posts)\b/);
+    ligar("mensajes", function (e) { e.textContent = men ? (men.textContent.match(/[\d.,]+/) || [""])[0] : ""; });
 
     /* avatar: la primera imagen grande que no sea contenido de un campo */
     var av = main.querySelector("#profile-advanced-right .module img:not([src*='empty.gif'])");

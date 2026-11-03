@@ -75,6 +75,9 @@
 
     ligar("usuario", function (e) { e.textContent = nombre; });
     ligar("estatus", function (e) { e.textContent = enlinea ? "● En línea" : ""; });
+    /* total de mensajes (campo nativo "Mensajes") para el pie del perfil */
+    var men = dato(/^(mensajes|posts)\b/);
+    ligar("mensajes", function (e) { e.textContent = men ? (men.textContent.match(/[\d.,]+/) || [""])[0] : ""; });
 
     /* avatar: la primera imagen grande que no sea contenido de un campo */
     var av = main.querySelector("#profile-advanced-right .module img:not([src*='empty.gif'])");
