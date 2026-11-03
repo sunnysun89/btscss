@@ -76,8 +76,11 @@
     ligar("usuario", function (e) { e.textContent = nombre; });
     ligar("estatus", function (e) { e.textContent = enlinea ? "● En línea" : ""; });
     /* total de mensajes (campo nativo "Mensajes") para el pie del perfil */
-    var men = dato(/^(mensajes|posts)\b/);
-    ligar("mensajes", function (e) { e.textContent = men ? (men.textContent.match(/[\d.,]+/) || [""])[0] : ""; });
+    var men = dato(/^(total de )?(mensajes|posts?)\b/);
+    var nMen = men ? (men.textContent.match(/\d[\d.,]*/) || [""])[0] : "";
+    if (!nMen) { var mm = main.textContent.match(/(?:Mensajes|Posts)\s*:?\s*(\d[\d.,]*)/i); if (mm) nMen = mm[1]; }
+    try { console.log("[BTS] perfil: mensajes →", nMen || "no encontrado", "· etiquetas:", pares.map(function (p) { return p.raw; }).join(" | ")); } catch (e0) {}
+    ligar("mensajes", function (e) { e.textContent = nMen; });
 
     /* avatar: la primera imagen grande que no sea contenido de un campo */
     var av = main.querySelector("#profile-advanced-right .module img:not([src*='empty.gif'])");
