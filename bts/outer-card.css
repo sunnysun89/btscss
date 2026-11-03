@@ -7482,6 +7482,13 @@ body:has(.rpostcontainer) h1.page-title {
 .rperfil__seudl { font: 600 10px / 1.4 var(--burnthesky-ff-sans); letter-spacing: 1.8px; text-transform: uppercase; color: var(--burnthesky-red-vivid); margin-right: 4px; }
 .rperfil__seudv { overflow-wrap: anywhere; }
 
-/* 65b. Rectángulo del color del grupo bajo el avatar (toma el color de --burnthesky-red-vivid, que el perfil ya ajusta al grupo) */
-.rperfil__grupo { height: 38px; margin-top: 14px; border-radius: var(--burnthesky-r-md); background: linear-gradient(135deg, var(--burnthesky-red-vivid), color-mix(in srgb, var(--burnthesky-red-vivid) 55%, var(--burnthesky-void))); box-shadow: 0 8px 24px color-mix(in srgb, var(--burnthesky-red-vivid) 32%, transparent), inset 0 1px 0 rgba(255, 255, 255, .22); }
+/* 65b. Avatar del perfil: rectángulo del color del grupo SIEMPRE visible abajo, con nombre y estado dentro; el icono circular queda mitad sobre la imagen, mitad sobre el rectángulo.
+   El color sale de --burnthesky-red-vivid, que el perfil ya ajusta al grupo. */
+.rperfil__avbar { height: 78px; padding: 34px 10px 0; gap: 3px; justify-content: flex-start; background: linear-gradient(180deg, var(--burnthesky-red-vivid), color-mix(in srgb, var(--burnthesky-red-vivid) 82%, #000)); box-shadow: 0 -6px 22px color-mix(in srgb, var(--burnthesky-red-vivid) 30%, transparent); }
+.rperfil__avbar::after { display: none; }
+.rperfil__avico { position: absolute; left: 50%; top: -28px; transform: translateX(-50%); width: 56px; height: 56px; border: 3px solid var(--burnthesky-void); box-shadow: 0 4px 14px rgba(0, 0, 0, .5); }
+.rperfil__avname { margin-top: 0; color: var(--burnthesky-void); font-size: 15px; font-weight: 700; }
+.rperfil__avstatus, .rperfil__avbar.is-on .rperfil__avstatus { color: color-mix(in srgb, var(--burnthesky-void) 88%, transparent); font-weight: 600; }
+.rperfil__avstatus i, .rperfil__avbar.is-on .rperfil__avstatus i { width: 7px; height: 7px; background: transparent; border: 1.5px solid var(--burnthesky-void); box-shadow: none; }
+.rperfil__avbar.is-on .rperfil__avstatus i { background: var(--burnthesky-void); }
 .rperfil__info .rperfil__seud { margin-top: 0; text-align: left; }

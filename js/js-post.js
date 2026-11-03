@@ -808,7 +808,7 @@
       if (nivel) pb.appendChild(nivel);
       pTile.appendChild(desc); pTile.classList.add('con-desc');
       pb.appendChild(pTile);
-      var avi = col.querySelector('.rperfil__grupo') || col.querySelector('.rperfil__avatarimg');
+      var avi = col.querySelector('.rperfil__avatarimg');
       col.insertBefore(pb, avi ? avi.nextSibling : col.firstChild);
     }
     /* Curiosidades: terminal bajo las barras (pestaña 1) */
