@@ -7497,3 +7497,6 @@ body:has(.rpostcontainer) h1.page-title {
 .rperfil__foot.rpost-stats { margin: 0; border-radius: 0; box-shadow: none; justify-content: space-evenly; letter-spacing: normal; text-transform: none; }
 .rperfil__foot.rpost-stats .rperfil__stat { display: none; }
 .rperfil__foot.rpost-stats .rpost-stat__v { color: var(--burnthesky-red-vivid); }
+/* 66b. Créditos y mensajes centrados en el pie del perfil */
+.rperfil__foot.rpost-stats { --burnthesky-stats-gap: 56px; justify-content: center !important; align-items: center; text-align: center; }
+.rperfil__foot.rpost-stats .rpost-stat { justify-content: center; }
