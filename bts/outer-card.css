@@ -7500,3 +7500,38 @@ body:has(.rpostcontainer) h1.page-title {
 /* 66b. Créditos y mensajes centrados en el pie del perfil */
 .rperfil__foot.rpost-stats { --burnthesky-stats-gap: 56px; justify-content: center !important; align-items: center; text-align: center; }
 .rperfil__foot.rpost-stats .rpost-stat { justify-content: center; }
+
+
+/* ==========================================================================
+   67. Tablilla de registro con normas y listas (.btab--registro)  · modelo "Face claim"
+   - Cabecera grande centrada; .btab__reglas (lista con puntos; <b> resalta, <u> subraya);
+     .btab__bloque (caja con barra de título .btab__bh y contenido .btab__bc);
+     .btab__cols (bloques en columnas); .btab__scroll (lista con barra de desplazamiento);
+     .btab__letra (letra de sección) y .btab__reg ("Nombre es Personaje").
+   ========================================================================== */
+.btab--registro .btab__head { text-align: center; padding: calc(var(--btab-pad) + 8px) var(--btab-pad); }
+.btab--registro .btab__titulo { text-align: center; font-size: 40px; letter-spacing: 3px; color: var(--btab-acc); text-shadow: 0 0 28px color-mix(in srgb, var(--btab-acc) 40%, transparent); }
+.btab--registro .btab__sub { text-align: center; }
+.btab .btab__reglas, .btab .btab__lista { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.btab .btab__reglas li, .btab .btab__lista li { position: relative; margin: 0; padding: 0 0 0 20px; font-size: 13.5px; line-height: 1.75; color: var(--burnthesky-white); text-align: justify; list-style: none; }
+.btab .btab__reglas li::before, .btab .btab__lista li::before { content: ""; position: absolute; left: 3px; top: .72em; width: 6px; height: 6px; border-radius: 2px; background: var(--btab-acc); box-shadow: 0 0 8px color-mix(in srgb, var(--btab-acc) 60%, transparent); }
+.btab .btab__lista li { font-size: 12.5px; line-height: 1.6; text-align: left; }
+.btab .btab__reglas b, .btab .btab__lista a { color: var(--btab-acc); font-weight: 500; text-decoration: none; }
+.btab .btab__reglas u { text-decoration-color: var(--btab-acc); text-underline-offset: 3px; }
+.btab .btab__lista i { color: var(--burnthesky-white); }
+.btab__bloque { flex: 1 1 100%; min-width: 0; border: 1px solid var(--burnthesky-line); border-radius: var(--burnthesky-r-md); background: var(--burnthesky-void); overflow: hidden; }
+.btab .btab__bh { margin: 0; padding: 12px 16px; display: flex; align-items: center; gap: 10px; font: 600 12px / 1.3 var(--burnthesky-ff-sans); letter-spacing: 1.8px; text-transform: uppercase; color: var(--btab-acc); background: color-mix(in srgb, var(--btab-acc) 8%, var(--burnthesky-void-3)); border: 0; border-bottom: 1px solid var(--burnthesky-line); }
+.btab .btab__bh::before { content: ""; width: 7px; height: 7px; flex: none; border-radius: 50%; background: var(--btab-acc); box-shadow: 0 0 10px var(--btab-acc); }
+.btab__bc { padding: 14px 16px; }
+.btab .btab__vacio { color: var(--burnthesky-gray); font-style: italic; text-align: center; font-size: 12.5px; }
+.btab__cols { display: flex; flex-wrap: wrap; gap: 14px; }
+.btab__cols > .btab__bloque { flex: 1 1 280px; }
+.btab__scroll { max-height: 320px; overflow-y: auto; padding: 8px 16px 14px; scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--btab-acc) 55%, transparent) transparent; }
+.btab__scroll::-webkit-scrollbar { width: 6px; }
+.btab__scroll::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--btab-acc) 55%, transparent); border-radius: 3px; }
+.btab .btab__letra { display: block; width: fit-content; min-width: 46px; margin: 14px auto 6px; padding: 0 12px 4px; text-align: center; font: 600 24px / 1.1 var(--burnthesky-ff-display); color: var(--burnthesky-white); border: 0; border-bottom: 2px solid var(--btab-acc); }
+.btab .btab__reg { margin: 0; padding: 5px 0; text-align: center; font-size: 13px; line-height: 1.5; color: var(--burnthesky-gray-lt); }
+.btab .btab__reg a { color: var(--btab-acc); text-decoration: none; }
+.btab .btab__reg a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.btab .btab__reg i { color: var(--burnthesky-white); }
+@media (max-width: 600px) { .btab--registro .btab__titulo { font-size: 28px; letter-spacing: 2px; } .btab__bloque { flex-basis: 100%; } }
