@@ -1283,6 +1283,20 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     if (rk) info.appendChild(rk);
     info.appendChild(barras(f));
     quita(creditos); quita(q1('.rperfil__stats'));
+    /* Créditos y mensajes: pie del perfil con el aspecto de .rpost-stats */
+    var pie = q1('.rperfil__foot');
+    if (pie) {
+      var mB = pie.querySelector('.rperfil__stat b'), nMs = mB ? mB.textContent.trim() : '';
+      pie.classList.add('rpost-stats');
+      pie.innerHTML = '';
+      var oc = el('span', 'rperfil__stat'); oc.appendChild(el('b', '', nMs)); pie.appendChild(oc);   /* oculto por CSS; el logbook lo lee */
+      [[credTxt, 'Créditos'], [nMs, 'Mensajes']].forEach(function (v) {
+        if (!v[0] || v[0] === '—') return;
+        var it = el('div', 'rpost-stat');
+        it.appendChild(el('b', 'rpost-stat__v', v[0])); it.appendChild(el('span', 'rpost-stat__l', v[1]));
+        pie.appendChild(it);
+      });
+    }
     var banner = q1('.rperfil__banner');
     if (side) {
       if (banner) side.insertBefore(info, banner.nextSibling); else side.appendChild(info);

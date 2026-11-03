@@ -7492,3 +7492,8 @@ body:has(.rpostcontainer) h1.page-title {
 .rperfil__avstatus i, .rperfil__avbar.is-on .rperfil__avstatus i { width: 7px; height: 7px; background: transparent; border: 1.5px solid var(--burnthesky-void); box-shadow: none; }
 .rperfil__avbar.is-on .rperfil__avstatus i { background: var(--burnthesky-void); }
 .rperfil__info .rperfil__seud { margin-top: 0; text-align: left; }
+
+/* 66. Pie del perfil (.rperfil__foot) con créditos y mensajes, con el aspecto de .rpost-stats */
+.rperfil__foot.rpost-stats { margin: 0; border-radius: 0; box-shadow: none; justify-content: space-evenly; letter-spacing: normal; text-transform: none; }
+.rperfil__foot.rpost-stats .rperfil__stat { display: none; }
+.rperfil__foot.rpost-stats .rpost-stat__v { color: var(--burnthesky-red-vivid); }
