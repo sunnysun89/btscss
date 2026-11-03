@@ -7481,3 +7481,7 @@ body:has(.rpostcontainer) h1.page-title {
 .rperfil__seud.is-empty { display: none; }
 .rperfil__seudl { font: 600 10px / 1.4 var(--burnthesky-ff-sans); letter-spacing: 1.8px; text-transform: uppercase; color: var(--burnthesky-red-vivid); margin-right: 4px; }
 .rperfil__seudv { overflow-wrap: anywhere; }
+
+/* 65b. Rectángulo del color del grupo bajo el avatar (toma el color de --burnthesky-red-vivid, que el perfil ya ajusta al grupo) */
+.rperfil__grupo { height: 38px; margin-top: 14px; border-radius: var(--burnthesky-r-md); background: linear-gradient(135deg, var(--burnthesky-red-vivid), color-mix(in srgb, var(--burnthesky-red-vivid) 55%, var(--burnthesky-void))); box-shadow: 0 8px 24px color-mix(in srgb, var(--burnthesky-red-vivid) 32%, transparent), inset 0 1px 0 rgba(255, 255, 255, .22); }
+.rperfil__info .rperfil__seud { margin-top: 0; text-align: left; }

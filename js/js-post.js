@@ -793,6 +793,8 @@
     if (detalle && detalle.textContent.replace(/\s+/g, '').length) { desc.innerHTML = htmlUsuario(detalle); desc.classList.add('tiene'); }
     else { desc.textContent = 'Sin detalles del poder.'; desc.classList.add('vacio'); }
     if (rango) info.appendChild(rango);
+    var seud = quita(q1('.rperfil__seud'));   /* el seudónimo va justo debajo de Rango */
+    if (seud && !seud.classList.contains('is-empty')) info.appendChild(seud);
     if (rk) info.appendChild(rk);
     info.appendChild(barras(f));
     quita(creditos); quita(q1('.rperfil__stats'));
@@ -806,7 +808,7 @@
       if (nivel) pb.appendChild(nivel);
       pTile.appendChild(desc); pTile.classList.add('con-desc');
       pb.appendChild(pTile);
-      var avi = col.querySelector('.rperfil__seud') || col.querySelector('.rperfil__avatarimg');
+      var avi = col.querySelector('.rperfil__grupo') || col.querySelector('.rperfil__avatarimg');
       col.insertBefore(pb, avi ? avi.nextSibling : col.firstChild);
     }
     /* Curiosidades: terminal bajo las barras (pestaña 1) */
