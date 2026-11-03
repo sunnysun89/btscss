@@ -11,7 +11,7 @@
     campo, no hay que tocar la plantilla.
   · Campos que reconoce (el nombre exacto del panel; entre paréntesis, otros
     nombres que también valen):
-      Apodos · Alias (alter ego, superhéroe) · Edad · Orientación ·
+      Apodos · Seudónimo (sale bajo el avatar) · Alias (alter ego, superhéroe) · Edad · Orientación ·
       Estado sentimental · Ocupación · Facción (equipo, grupo) ·
       Alianza (dúo, dupla, pareja) · Ubicación · Frase ·
       Nivel de poder · Poderes · Rango · Créditos ·
@@ -57,11 +57,10 @@
 
 		<!-- Columna 1: avatar -->
 		<div class="rperfil__avatar">
-			<div class="rperfil__avatarimg">{AVATAR_IMG}</div>
-			<div class="rperfil__rank">
-				<span class="rperfil__rankname">{POSTER_RANK}</span>
-				<span class="rperfil__rankimg">{RANK_IMG}</span>
+			<div class="rperfil__avatarimg">{AVATAR_IMG}
+				<div class="rperfil__avbar"><span class="rperfil__avico">{AVATAR_IMG}</span><span class="rperfil__avname">{USERNAME}</span><span class="rperfil__avstatus"><i></i><span data-bind="estatus2"></span></span></div>
 			</div>
+			<div class="rperfil__seud" data-slot="seudonimo" data-label="Seudónimo"></div>
 		</div>
 
 		<!-- Columna 2: identidad y datos -->

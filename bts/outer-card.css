@@ -7457,3 +7457,27 @@ body:has(.rpostcontainer) h1.page-title {
 .btab__seccion .btab__tabla a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .btab__tabla a.masc { color: #7fa6d6; } .btab__tabla a.fem { color: #d98aa8; } .btab__tabla a.nb { color: #b6a0d8; }
 @media (max-width: 600px) { .btab__body--menu { gap: 12px; } .btab .btab__cats--txt { width: 130px; } .btab a.btab__cat--txt { padding: 6px 8px; } .btab a.btab__cat--txt span { font-size: 9px; letter-spacing: .8px; } .btab a.btab__cat--txt i { display: none; } }
+
+
+/* ==========================================================================
+   65. Avatar del perfil: barra inferior con icono circular, nombre y estatus; Seudónimo bajo el avatar
+   ========================================================================== */
+.rperfil__avbar {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  padding: 30px 10px 12px; text-align: center;
+  background: linear-gradient(to top, var(--burnthesky-void) 0%, color-mix(in srgb, var(--burnthesky-void) 88%, transparent) 62%, transparent 100%);
+}
+.rperfil__avbar::after { content: ""; position: absolute; left: 14%; right: 14%; bottom: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--burnthesky-red-vivid), transparent); }
+.rperfil__avico { display: block; width: 52px; height: 52px; flex: none; border-radius: 50%; overflow: hidden; border: 2px solid var(--burnthesky-red-vivid); box-shadow: 0 0 0 4px color-mix(in srgb, var(--burnthesky-red-vivid) 18%, transparent), 0 6px 18px rgba(0, 0, 0, .5); background: var(--burnthesky-void-3); }
+.rperfil__avico img { display: block; width: 100% !important; height: 100% !important; object-fit: cover; }
+.rperfil__avname { max-width: 100%; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 600 15px / 1.2 var(--burnthesky-ff-display); letter-spacing: .5px; color: var(--burnthesky-white); }
+.rperfil__avstatus { display: inline-flex; align-items: center; gap: 6px; font: 500 9.5px / 1 var(--burnthesky-ff-sans); letter-spacing: 1.8px; text-transform: uppercase; color: var(--burnthesky-gray); }
+.rperfil__avstatus i { width: 7px; height: 7px; border-radius: 50%; background: var(--burnthesky-gray); }
+.rperfil__avbar.is-on .rperfil__avstatus { color: #72a995; }
+.rperfil__avbar.is-on .rperfil__avstatus i { background: #72a995; box-shadow: 0 0 8px #72a995; }
+
+.rperfil__seud { margin-top: 14px; padding: 10px 12px; text-align: center; border: 1px solid var(--burnthesky-line); border-radius: var(--burnthesky-r-sm); font: 400 13px / 1.4 var(--burnthesky-ff-sans); color: var(--burnthesky-white); text-transform: none; letter-spacing: .2px; }
+.rperfil__seud.is-empty { display: none; }
+.rperfil__seudl { font: 600 10px / 1.4 var(--burnthesky-ff-sans); letter-spacing: 1.8px; text-transform: uppercase; color: var(--burnthesky-red-vivid); margin-right: 4px; }
+.rperfil__seudv { overflow-wrap: anywhere; }
