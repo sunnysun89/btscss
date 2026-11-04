@@ -2572,6 +2572,45 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     return true;
   }
 
+  /* Barra lateral: enlaces propios (perfil, ambientación, grupos, registros) tras el de inicio.
+     Si no conoce la dirección de Ambientación o Registros, la busca entre los enlaces de la página
+     (categorías, subforos) y la recuerda. Para fijarlas a mano, rellena estas dos líneas. */
+  var RAIL_URL_AMBIENTACION = "";   // ej. "/f2-ambientacion"
+  var RAIL_URL_REGISTROS = "";      // ej. "/f5-registros"
+  function enlacesRail() {
+    var ul = document.querySelector("#page-header .navbar ul.linklist.navlinks");
+    if (!ul) return false;
+    if (ul.querySelector(".rail-propio")) return true;
+    var ud = window._userdata, id = ud && +ud.user_id;
+    var mem = {}; try { mem = JSON.parse(localStorage.getItem("bts-rail") || "{}") || {}; } catch (e) {}
+    var hallar = function (clave, re) {
+      var as = document.querySelectorAll("a[href]");
+      for (var i = 0; i < as.length; i++) {
+        if (as[i].closest && as[i].closest("#page-header .navbar")) continue;
+        var h = as[i].getAttribute("href") || "";
+        if (/^\/?[fct]\d+/.test(h.replace(/^https?:\/\/[^\/]+/, "")) && re.test((as[i].textContent || "").trim())) {
+          mem[clave] = h; try { localStorage.setItem("bts-rail", JSON.stringify(mem)); } catch (e) {}
+          return h;
+        }
+      }
+      return mem[clave] || "";
+    };
+    var items = [
+      ["rail-perfil", id > 0 ? "/u" + id : "", "Mi perfil"],
+      ["rail-ambientacion", RAIL_URL_AMBIENTACION || hallar("amb", /ambientaci[oó]n/i), "Ambientación"],
+      ["rail-grupos", "/groups", "Grupos"],
+      ["rail-registros", RAIL_URL_REGISTROS || hallar("reg", /^registros/i), "Registros"]
+    ];
+    var inicio = ul.querySelector('a.mainmenu[href="/"]'), ref = inicio && inicio.parentNode ? inicio.parentNode.nextSibling : ul.firstChild;
+    items.forEach(function (it) {
+      if (!it[1]) return;
+      var li = document.createElement("li"), a = document.createElement("a");
+      a.className = "mainmenu rail-propio " + it[0]; a.href = it[1]; a.title = it[2]; a.setAttribute("aria-label", it[2]);
+      li.appendChild(a); ul.insertBefore(li, ref);
+    });
+    return true;
+  }
+
   /* Alineación: el contenido (#main-content) y el pie se alinean con #startindex.
      Si algún contenedor de Foroactivo les añade un desplazamiento propio, se mide la
      diferencia y se compensa con --burnthesky-main-shift / --burnthesky-footer-shift. */
@@ -2666,7 +2705,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     return true;
   }
 
-  function arrancar() { programarAlineacion(); esperar(herramientasRail, 80); esperar(ordenarIndice, 80); esperar(pestanasPerfil, 80); }
+  function arrancar() { programarAlineacion(); esperar(herramientasRail, 80); esperar(enlacesRail, 80); esperar(ordenarIndice, 80); esperar(pestanasPerfil, 80); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", arrancar);
   else arrancar();
 })();

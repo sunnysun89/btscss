@@ -7546,3 +7546,27 @@ html[data-bts-tema="claro"] {
 }
 html[data-bts-tema="claro"] body { background-color: #e8e0e6; background-blend-mode: screen; }
 html[data-bts-tema="claro"] #page-header .navbar { background: rgba(255, 255, 255, .6) !important; box-shadow: 0 10px 40px rgba(60, 40, 70, .15) !important; }
+
+
+/* 68b. Botones de la barra lateral: se quitan calendario, imágenes, descubrir, editar perfil y los grupos nativos;
+   se añaden Mi perfil, Ambientación, Grupos y Registros (los crea js-ajustes.js con la clase .rail-propio) */
+#page-header .navbar li:has(> a.mainmenu[href*="/calendar"]),
+#page-header .navbar li:has(> a.mainmenu[href*="/images"]),
+#page-header .navbar li:has(> a.mainmenu[href*="/discover"]),
+#page-header .navbar li:has(> a.mainmenu[href*="/profile"]),
+#page-header .navbar li:has(> a.mainmenu[href*="/groups"]:not(.rail-propio)),
+#page-header a.mainmenu[href*="/calendar"], #page-header a.mainmenu[href*="/images"], #page-header a.mainmenu[href*="/discover"],
+#page-header a.mainmenu[href*="/profile"], #page-header a.mainmenu[href*="/groups"]:not(.rail-propio) { display: none !important; }
+#page-header a.mainmenu.rail-perfil::before { content: "\f007"; }
+#page-header a.mainmenu.rail-ambientacion::before { content: "\f64f"; }
+#page-header a.mainmenu.rail-grupos::before { content: "\e533"; }
+#page-header a.mainmenu.rail-registros::before { content: "\f07c"; }
+
+/* 68c. Tema claro: textos comunes oscuros y mensajes claros; el título del banner se mantiene claro sobre la imagen */
+html[data-bts-tema="claro"] .post, html[data-bts-tema="claro"] .post.bg2, html[data-bts-tema="claro"] .post.row2 { background: var(--burnthesky-void-2) !important; }
+html[data-bts-tema="claro"] .post .inner, html[data-bts-tema="claro"] .post .rpostcontainer { background: transparent; }
+html[data-bts-tema="claro"] .postbody .content, html[data-bts-tema="claro"] .rperfil__quote { color: var(--burnthesky-white); }
+html[data-bts-tema="claro"] .rfordesc, html[data-bts-tema="claro"] .forabg ul.topiclist.forums > li.row { color: var(--burnthesky-gray-lt); }
+html[data-bts-tema="claro"] #mural .rnews__text, html[data-bts-tema="claro"] #mural .rnews__text a { color: var(--burnthesky-white); }
+html[data-bts-tema="claro"] #headercontainer .rtitle { color: #f6f0f4; text-shadow: 0 2px 22px rgba(0, 0, 0, .6); }
+html[data-bts-tema="claro"] #headercontainer .rdesc { color: #eae3ec; text-shadow: 0 1px 12px rgba(0, 0, 0, .6); }
