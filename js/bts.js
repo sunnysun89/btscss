@@ -2530,64 +2530,45 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     caja.appendChild(lista);
   }
 
-  /* Barra lateral: imagen de 130x130 con el campo de perfil "Icono" del usuario conectado.
-     Se lee de su propia página de perfil (misma web). Si ya existe un .bts-sidebar-avatar
-     (por ejemplo el que crea otro bloque del bts.js) lo reutiliza en vez de duplicarlo.
-     Sin campo Icono usa el avatar del foro; invitados: no se pinta nada. */
-  function iconoSidebar() {
-    var log = function (m) { if (window.console) console.info("[BTS] icono: " + m); };
+  /* Barra lateral: tres botones arriba (ir al inicio, cambiar claro/oscuro, ir al final).
+     El tema se guarda en localStorage ("bts-tema") y se aplica con html[data-bts-tema="claro"]. */
+  function herramientasRail() {
     var nav = document.querySelector("#page-header .navbar");
-    if (!nav) { log("no hay .navbar"); return true; }
-    var ud = window._userdata, id = ud && +ud.user_id;
-    if (!id || id < 1) { log("invitado o sin _userdata"); return true; }
+    if (!nav) return false;
+    var viejo = nav.querySelector(".bts-sidebar-avatar"); if (viejo && viejo.parentNode) viejo.parentNode.removeChild(viejo);
+    if (nav.querySelector(".bts-rail-tools")) return true;
     var host = nav.querySelector(".inner") || nav;
-    var caja = nav.querySelector(".bts-sidebar-avatar");
-    if (caja && caja.getAttribute("data-icono")) return true;
-    if (!caja) {
-      caja = document.createElement("a");
-      caja.className = "bts-sidebar-avatar";
-      host.insertBefore(caja, host.firstChild);
-    }
-    caja.setAttribute("data-icono", "1");
-    if (caja.tagName === "A") { caja.href = "/u" + id; caja.title = ud.username || ""; }
-    var vacia = !caja.querySelector("img");
-    var poner = function (src, origen) {
-      if (!src) return false;
-      caja.innerHTML = "";
-      var im = new Image();
-      im.alt = ""; im.src = src;
-      im.onload = function () { caja.hidden = false; log("imagen cargada (" + origen + ")"); };
-      im.onerror = function () { log("la imagen no carga: " + src); };
-      caja.appendChild(im);
-      caja.hidden = false;
-      return true;
+    var raiz = document.documentElement;
+    var caja = document.createElement("div"); caja.className = "bts-rail-tools";
+    var boton = function (cls, icono, titulo, fn) {
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "bts-rail-btn " + cls; b.title = titulo; b.setAttribute("aria-label", titulo);
+      b.innerHTML = '<i class="fa-solid ' + icono + '" aria-hidden="true"></i>';
+      b.addEventListener("click", fn);
+      return b;
     };
-    var avatarForo = function () {
-      var av = ud.avatar || "", m = typeof av === "string" ? av.match(/src=["']([^"']+)["']/i) : null;
-      var src = m ? m[1] : (/^https?:/i.test(av) ? av : "");
-      if (!poner(src, "avatar del foro")) { if (vacia) caja.hidden = true; log("sin Icono ni avatar"); }
+    var claro = function () { return raiz.getAttribute("data-bts-tema") === "claro"; };
+    var tema = boton("bts-rail-btn--tema", "fa-sun", "Cambiar entre tema claro y oscuro", function () {
+      var c = !claro();
+      if (c) raiz.setAttribute("data-bts-tema", "claro"); else raiz.removeAttribute("data-bts-tema");
+      try { localStorage.setItem("bts-tema", c ? "claro" : "oscuro"); } catch (e) {}
+      pintar();
+    });
+    var pintar = function () {
+      var i = tema.querySelector("i");
+      i.className = "fa-solid " + (claro() ? "fa-moon" : "fa-sun");
+      tema.title = claro() ? "Cambiar a tema oscuro" : "Cambiar a tema claro";
     };
-    var clave = "bts-icono:" + id, guardado = null;
-    try { guardado = JSON.parse(sessionStorage.getItem(clave) || "null"); } catch (e) {}
-    if (guardado && Date.now() - guardado.t < 600000) { if (guardado.s) poner(guardado.s, "Icono (caché)"); else avatarForo(); return true; }
-    fetch("/u" + id, { credentials: "same-origin" }).then(function (r) { return r.text(); }).then(function (html) {
-      var doc = new DOMParser().parseFromString(html, "text/html"), cont = null;
-      doc.querySelectorAll("#rperfil-campos .rpf").forEach(function (f) {
-        var l = f.querySelector(".rpf-l");
-        if (!cont && l && norm(l.textContent) === "icono") cont = f.querySelector(".rpf-c");
-      });
-      if (!cont) doc.querySelectorAll("dl").forEach(function (dl) {
-        var dt = dl.querySelector("dt"), dd = dl.querySelector("dd");
-        if (!cont && dt && dd && norm(dt.textContent) === "icono") cont = dd.querySelector(".field_uneditable") || dd;
-      });
-      var im = cont && cont.querySelector("img");
-      var src = im ? (im.getAttribute("src") || im.getAttribute("data-src")) : "";
-      if (!src && cont) { var m = cont.textContent.match(/https?:\/\/\S+/); if (m) src = m[0]; }
-      if (!cont) log("no se encontró el campo Icono en /u" + id);
-      else if (!src) log("el campo Icono está vacío");
-      try { sessionStorage.setItem(clave, JSON.stringify({ t: Date.now(), s: src || "" })); } catch (e) {}
-      if (!poner(src, "Icono")) avatarForo();
-    }).catch(function (e) { log("error al leer el perfil: " + e); avatarForo(); });
+    caja.appendChild(boton("bts-rail-btn--arriba", "fa-angle-up", "Ir arriba del todo", function () {
+      try { window.scrollTo({ top: 0, behavior: "smooth" }); } catch (e) { window.scrollTo(0, 0); }
+    }));
+    caja.appendChild(tema);
+    caja.appendChild(boton("bts-rail-btn--abajo", "fa-angle-down", "Ir abajo del todo", function () {
+      var h = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+      try { window.scrollTo({ top: h, behavior: "smooth" }); } catch (e) { window.scrollTo(0, h); }
+    }));
+    pintar();
+    host.insertBefore(caja, host.firstChild);
     return true;
   }
 
@@ -2685,7 +2666,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     return true;
   }
 
-  function arrancar() { programarAlineacion(); esperar(iconoSidebar, 80); esperar(ordenarIndice, 80); esperar(pestanasPerfil, 80); }
+  function arrancar() { programarAlineacion(); esperar(herramientasRail, 80); esperar(ordenarIndice, 80); esperar(pestanasPerfil, 80); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", arrancar);
   else arrancar();
 })();
