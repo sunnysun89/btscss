@@ -7580,3 +7580,8 @@ html[data-bts-tema="claro"] .postprofile { background: color-mix(in srgb, var(--
 html[data-bts-tema="claro"] .rphrase .postprofile-field-content { color: var(--burnthesky-gray-lt); }
 html[data-bts-tema="claro"] .rpower .postprofile-field-label { color: var(--burnthesky-gray-lt); }
 html[data-bts-tema="claro"] .rcbtn, html[data-bts-tema="claro"] .rcontactfields a { color: var(--burnthesky-white); }
+
+/* 68e. Tema claro: descripción de los subforos (.rc3__desc) más oscura */
+html[data-bts-tema="claro"] .rc3__desc { background: rgba(255, 255, 255, .55); color: var(--burnthesky-white); }
+html[data-bts-tema="claro"] .rc3__desc .rfordesc, html[data-bts-tema="claro"] .rc3__desc p, html[data-bts-tema="claro"] .rc3__desc span:not(.rtag) { color: var(--burnthesky-white); }
+html[data-bts-tema="claro"] .rc3__chips { background: rgba(255, 255, 255, .55); color: var(--burnthesky-gray-lt); }
