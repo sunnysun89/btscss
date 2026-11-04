@@ -270,7 +270,7 @@
     return true;
   }
 
-  /* Barra lateral: enlaces propios (perfil, ambientación, grupos, registros) tras el de inicio.
+  /* Barra lateral: enlaces propios (perfil, ambientación, registros) tras el de inicio.
      Si no conoce la dirección de Ambientación o Registros, la busca entre los enlaces de la página
      (categorías, subforos) y la recuerda. Para fijarlas a mano, rellena estas dos líneas. */
   var RAIL_URL_AMBIENTACION = "";   // ej. "/f2-ambientacion"
@@ -296,7 +296,6 @@
     var items = [
       ["rail-perfil", id > 0 ? "/u" + id : "", "Mi perfil"],
       ["rail-ambientacion", RAIL_URL_AMBIENTACION || hallar("amb", /ambientaci[oó]n/i), "Ambientación"],
-      ["rail-grupos", "/groups", "Grupos"],
       ["rail-registros", RAIL_URL_REGISTROS || hallar("reg", /^registros/i), "Registros"]
     ];
     var inicio = ul.querySelector('a.mainmenu[href="/"]'), ref = inicio && inicio.parentNode ? inicio.parentNode.nextSibling : ul.firstChild;

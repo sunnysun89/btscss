@@ -7553,13 +7553,12 @@ html[data-bts-tema="claro"] #page-header .navbar { background: rgba(255, 255, 25
 #page-header .navbar li:has(> a.mainmenu[href*="/calendar"]),
 #page-header .navbar li:has(> a.mainmenu[href*="/images"]),
 #page-header .navbar li:has(> a.mainmenu[href*="/discover"]),
-#page-header .navbar li:has(> a.mainmenu[href*="/profile"]),
-#page-header .navbar li:has(> a.mainmenu[href*="/groups"]:not(.rail-propio)),
+#page-header .navbar li:has(> a.mainmenu[href*="/groups"]),
 #page-header a.mainmenu[href*="/calendar"], #page-header a.mainmenu[href*="/images"], #page-header a.mainmenu[href*="/discover"],
-#page-header a.mainmenu[href*="/profile"], #page-header a.mainmenu[href*="/groups"]:not(.rail-propio) { display: none !important; }
+#page-header a.mainmenu[href*="/groups"]:not(.rail-propio) { display: none !important; }
 #page-header a.mainmenu.rail-perfil::before { content: "\f007"; }
 #page-header a.mainmenu.rail-ambientacion::before { content: "\f64f"; }
-#page-header a.mainmenu.rail-grupos::before { content: "\e533"; }
+#page-header a.mainmenu[href*="mode=editprofile"]::before { content: "\f4ff"; }
 #page-header a.mainmenu.rail-registros::before { content: "\f07c"; }
 
 /* 68c. Tema claro: textos comunes oscuros y mensajes claros; el título del banner se mantiene claro sobre la imagen */
@@ -7570,3 +7569,14 @@ html[data-bts-tema="claro"] .rfordesc, html[data-bts-tema="claro"] .forabg ul.to
 html[data-bts-tema="claro"] #mural .rnews__text, html[data-bts-tema="claro"] #mural .rnews__text a { color: var(--burnthesky-white); }
 html[data-bts-tema="claro"] #headercontainer .rtitle { color: #f6f0f4; text-shadow: 0 2px 22px rgba(0, 0, 0, .6); }
 html[data-bts-tema="claro"] #headercontainer .rdesc { color: #eae3ec; text-shadow: 0 1px 12px rgba(0, 0, 0, .6); }
+
+/* 68d. Tema claro: columna de perfil de los mensajes (avatar, frase, poder y barras) */
+html[data-bts-tema="claro"] {
+  --burnthesky-post-bar-box:   #ffffff;
+  --burnthesky-post-bar-line:  var(--burnthesky-line);
+  --burnthesky-post-bar-track: #e7dee6;
+}
+html[data-bts-tema="claro"] .postprofile { background: color-mix(in srgb, var(--burnthesky-void-3) 75%, transparent) !important; border-right-color: var(--burnthesky-line) !important; }
+html[data-bts-tema="claro"] .rphrase .postprofile-field-content { color: var(--burnthesky-gray-lt); }
+html[data-bts-tema="claro"] .rpower .postprofile-field-label { color: var(--burnthesky-gray-lt); }
+html[data-bts-tema="claro"] .rcbtn, html[data-bts-tema="claro"] .rcontactfields a { color: var(--burnthesky-white); }
