@@ -1987,7 +1987,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       poderes: ["poder perfil", "poderes", "poder", "habilidades"],
       rango: ["rango"],
       icono: ["icono", "icon", "icono de tema", "icono de usuario"],
-      seudonimo: ["seudonimo", "seudonimos", "pseudonimo"],
+      seudonimo: ["user", "seudonimo", "seudonimos", "pseudonimo"],
       creditos: ["creditos", "credito"],
       nacimiento: ["fecha de nacimiento", "fecha nacimiento", "nacimiento", "cumpleanos"],
       inscripcion: ["fecha de inscripcion", "fecha inscripcion", "inscripcion", "fecha de registro"],
