@@ -78,8 +78,8 @@
 
   /* ---- Tipografía ---- */
   --burnthesky-ff-display:    'Unbounded', 'Poppins', 'Segoe UI', Arial, sans-serif;   /* títulos */
-  --burnthesky-ff-mono:       'DM Sans', 'Segoe UI', Arial, sans-serif;   /* nombre heredado: ya no es monoespaciada */
-  --burnthesky-ff-sans:       'DM Sans', 'Segoe UI', Arial, sans-serif;
+  --burnthesky-ff-mono:       'Quicksand', 'DM Sans', 'Segoe UI', Arial, sans-serif;   /* nombre heredado: ya no es monoespaciada */
+  --burnthesky-ff-sans:       'Quicksand', 'DM Sans', 'Segoe UI', Arial, sans-serif;
   --burnthesky-ff-serif:      'DM Serif Display', Georgia, serif;   /* acentos: frases y citas */   /* frases y citas */
 
   --burnthesky-fs-2xs:        10px;
