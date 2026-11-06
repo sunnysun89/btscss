@@ -7585,3 +7585,13 @@ html[data-bts-tema="claro"] .rcbtn, html[data-bts-tema="claro"] .rcontactfields 
 html[data-bts-tema="claro"] .rc3__desc { background: rgba(255, 255, 255, .55); color: var(--burnthesky-white); }
 html[data-bts-tema="claro"] .rc3__desc .rfordesc, html[data-bts-tema="claro"] .rc3__desc p, html[data-bts-tema="claro"] .rc3__desc span:not(.rtag) { color: var(--burnthesky-white); }
 html[data-bts-tema="claro"] .rc3__chips { background: rgba(255, 255, 255, .55); color: var(--burnthesky-gray-lt); }
+
+
+/* 69. Fuente del texto de los posts: Poppins (variable --burnthesky-ff-post).
+   Dentro del mensaje se redefinen las fuentes de texto, así las tablillas (btab, expediente) también la heredan. */
+:root { --burnthesky-ff-post: 'Poppins', 'DM Sans', 'Segoe UI', Arial, sans-serif; }
+.postbody .content, .signature_div {
+  --burnthesky-ff-sans: var(--burnthesky-ff-post);
+  --burnthesky-ff-mono: var(--burnthesky-ff-post);
+  font-family: var(--burnthesky-ff-post);
+}
