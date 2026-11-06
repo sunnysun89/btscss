@@ -770,7 +770,7 @@
       if (qq && idb && idb.nextSibling !== qq) idb.parentNode.insertBefore(qq, idb.nextSibling);
       var nk = q1('.rperfil__nicks');
       if (nk && !nk.getAttribute('data-bts-one')) {
-        var txt = apodos && apodos.textContent.replace(/\s+/g, '').length ? apodos.innerHTML
+        var txt = apodos && apodos.textContent.replace(/\s+/g, '').length && !/^(-+|—|–|n\/?a|ninguno|ninguna|sin apodos?|none)$/i.test(apodos.textContent.trim()) ? apodos.innerHTML
           : Array.prototype.map.call(nk.querySelectorAll('span'), function (x) { return x.textContent; }).join(', ');
         if (txt) { nk.innerHTML = ''; var one = document.createElement('span'); one.innerHTML = txt; nk.appendChild(one); nk.classList.remove('is-empty'); }
         else quita(nk);   /* sin apodos: no se muestra nada */

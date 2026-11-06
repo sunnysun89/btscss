@@ -7595,3 +7595,17 @@ html[data-bts-tema="claro"] .rc3__chips { background: rgba(255, 255, 255, .55); 
   --burnthesky-ff-mono: var(--burnthesky-ff-post);
   font-family: var(--burnthesky-ff-post);
 }
+
+
+/* ==========================================================================
+   70. Perfil: identidad limpia (alias + quote + apodos) y apodos solo si hay contenido
+   ========================================================================== */
+.rperfil__nicks:not(:has(span)) { display: none !important; }
+.rperfil__id { padding: 0 0 2px !important; gap: 0; background: none !important; border: 0 !important; }
+.rperfil__idicon { display: none; }
+.rperfil__alias { font-size: 28px !important; font-weight: 600 !important; line-height: 1.15 !important; letter-spacing: -.2px !important; text-transform: none !important; text-shadow: none; }
+.rperfil__alias::after { content: ""; display: block; width: 44px; height: 2px; margin-top: 12px; border-radius: 2px; background: var(--burnthesky-red-vivid); }
+.rperfil__quote { margin: 12px 0 0; padding: 0 0 0 16px; background: none; border: 0; border-left: 2px solid color-mix(in srgb, var(--burnthesky-red-vivid) 55%, transparent); font-size: 17px !important; line-height: 1.6; color: var(--burnthesky-gray-lt) !important; }
+.rperfil__quote *, .rperfil__quote p { font-size: inherit !important; color: inherit !important; margin: 0; }
+.rperfil__quote::before { display: none; }
+.rperfil__nicks { margin-top: 12px; }

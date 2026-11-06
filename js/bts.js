@@ -1255,7 +1255,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       if (qq && idb && idb.nextSibling !== qq) idb.parentNode.insertBefore(qq, idb.nextSibling);
       var nk = q1('.rperfil__nicks');
       if (nk && !nk.getAttribute('data-bts-one')) {
-        var txt = apodos && apodos.textContent.replace(/\s+/g, '').length ? apodos.innerHTML
+        var txt = apodos && apodos.textContent.replace(/\s+/g, '').length && !/^(-+|—|–|n\/?a|ninguno|ninguna|sin apodos?|none)$/i.test(apodos.textContent.trim()) ? apodos.innerHTML
           : Array.prototype.map.call(nk.querySelectorAll('span'), function (x) { return x.textContent; }).join(', ');
         if (txt) { nk.innerHTML = ''; var one = document.createElement('span'); one.innerHTML = txt; nk.appendChild(one); nk.classList.remove('is-empty'); }
         else quita(nk);   /* sin apodos: no se muestra nada */
@@ -2049,7 +2049,8 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       }
       if (slot === "apodos") {
         if (!tiene) { hueco.classList.add("is-empty"); return; }
-        var partes = c.el.textContent.split(/[,;\/|·•\n]+/).map(function (s) { return s.trim(); }).filter(Boolean);
+        var partes = c.el.textContent.split(/[,;\/|·•\n]+/).map(function (s) { return s.trim(); }).filter(function (s) { return s && !/^(-+|—|–|n\/?a|ninguno|ninguna|sin apodos?|none)$/i.test(s); });
+        if (!partes.length) { hueco.classList.add("is-empty"); return; }
         hueco.innerHTML = "";
         partes.forEach(function (p) { var s = document.createElement("span"); s.textContent = p; hueco.appendChild(s); });
         return;

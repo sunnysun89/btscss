@@ -236,7 +236,8 @@
       }
       if (slot === "apodos") {
         if (!tiene) { hueco.classList.add("is-empty"); return; }
-        var partes = c.el.textContent.split(/[,;\/|·•\n]+/).map(function (s) { return s.trim(); }).filter(Boolean);
+        var partes = c.el.textContent.split(/[,;\/|·•\n]+/).map(function (s) { return s.trim(); }).filter(function (s) { return s && !/^(-+|—|–|n\/?a|ninguno|ninguna|sin apodos?|none)$/i.test(s); });
+        if (!partes.length) { hueco.classList.add("is-empty"); return; }
         hueco.innerHTML = "";
         partes.forEach(function (p) { var s = document.createElement("span"); s.textContent = p; hueco.appendChild(s); });
         return;
