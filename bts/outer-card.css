@@ -7609,3 +7609,27 @@ html[data-bts-tema="claro"] .rc3__chips { background: rgba(255, 255, 255, .55); 
 .rperfil__quote *, .rperfil__quote p { font-size: inherit !important; color: inherit !important; margin: 0; }
 .rperfil__quote::before { display: none; }
 .rperfil__nicks { margin-top: 12px; }
+
+/* ==========================================================================
+   71. Ventana de implantes / inventario / medallero bajo el mensaje: más contraste (oscuro y claro)
+   y panel del avatar al pasar el ratón en tema claro
+   ========================================================================== */
+.rpost-inv .rinv__box h3 { color: var(--burnthesky-gray-lt); }
+.rpost-inv .rinv__head { color: var(--burnthesky-gray-lt); }
+.rpost-inv .rslot:not(.is-on) { opacity: .9; background: var(--burnthesky-void-3); border: 1px dashed var(--burnthesky-gray); }
+.rpost-inv .rimp { border-color: var(--burnthesky-line-2); }
+.rpost-inv .rimp__ico.is-blank { border-color: var(--burnthesky-gray); }
+
+html[data-bts-tema="claro"] .rpost-inv { background: rgba(60, 40, 70, .06); }
+html[data-bts-tema="claro"] .rpost-inv .rinv { background: #fff; border-color: var(--burnthesky-line-2); }
+html[data-bts-tema="claro"] .rpost-inv .rinv__box { border-left-color: var(--burnthesky-line-2); }
+html[data-bts-tema="claro"] .rpost-inv .rinv__box h3, html[data-bts-tema="claro"] .rpost-inv .rinv__head { color: var(--burnthesky-gray-lt); }
+html[data-bts-tema="claro"] .rpost-inv .rslot:not(.is-on) { opacity: 1; background: #e4dbe4; border: 1px dashed #a99dab; }
+html[data-bts-tema="claro"] .rpost-inv .rimp { background: #f1eaf1; border-color: var(--burnthesky-line-2); }
+html[data-bts-tema="claro"] .rpost-inv .rimp__ico.is-blank { border-color: #a99dab; background: #e9e1e9; }
+html[data-bts-tema="claro"] .rpost-inv .rimp:not(.is-on) .rimp__txt { color: var(--burnthesky-gray-lt); }
+
+/* Panel de datos al pasar el ratón por el avatar: en tema claro, velo claro con texto oscuro */
+html[data-bts-tema="claro"] { --burnthesky-post-hover-bg: rgba(250, 246, 249, .92); }
+html[data-bts-tema="claro"] .ravatar .rprofilecontent, html[data-bts-tema="claro"] .ravatar .rprofilecontent .postprofile-field-content { color: var(--burnthesky-white); }
+html[data-bts-tema="claro"] .ravatar .rprofilecontent .postprofile-field { border-bottom-color: var(--burnthesky-line); }
