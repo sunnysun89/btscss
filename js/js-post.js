@@ -26,14 +26,14 @@
    encuentra, para comprobar que coinciden. */
 !function () {
   var CLAVES = {
-    icono:  ['icon'],
+    icono:  ['icono120'],                          // campo "Icono120" (exacto: no se confunde con "Icono56")
     frase:  ['frase-post', 'frase-mensaje'],      // campo "Frase post"
     poder:  ['poder-mensaje', 'poder-post'],      // campo "Poder mensajes"
     inv:    ['inventario', 'objeto', 'item'],
     med:    ['medall', 'insignia'],
     pop:    ['popularidad'],
     auto:   ['autocontrol'],
-    oculto: ['cover', 'portada']
+    oculto: ['cover', 'portada', 'icono56']
   };
 
   function slug(t) {
@@ -1154,7 +1154,7 @@
         var ex = tipoExtra(c);
         if (ex) { (f.extras = f.extras || []).push({ t: ex, f: c }); continue; }
         if (!f.playlist && esPlaylist(c)) f.playlist = c;
-        else if (!f.icono && es(c, CLAVES.icono) && c.querySelector('img')) f.icono = c;
+        else if (!f.icono && slug(nombre(c)).replace(/-/g, '') === 'icono120' && c.querySelector('img')) f.icono = c;
         else if (!f.frase && es(c, CLAVES.frase)) f.frase = c;
         else if (!f.poder && (slug(nombre(c)) === 'poder' || es(c, CLAVES.poder))) f.poder = c;
         else if (!f.pop && es(c, CLAVES.pop)) f.pop = c;

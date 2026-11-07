@@ -173,7 +173,7 @@
       nivel: ["nivel de poder", "nivel poder", "poder nivel", "nivel"],
       poderes: ["poder perfil", "poderes", "poder", "habilidades"],
       rango: ["rango"],
-      icono: ["icono", "icon", "icono de tema", "icono de usuario"],
+      icono56: ["icono56", "icono 56"],
       seudonimo: ["user", "seudonimo", "seudonimos", "pseudonimo"],
       creditos: ["creditos", "credito"],
       nacimiento: ["fecha de nacimiento", "fecha nacimiento", "nacimiento", "cumpleanos"],
@@ -193,7 +193,7 @@
     });
 
     /* Respaldo por parte del nombre (tolera erratas: "inscriptión", "nacimento"...) */
-    var PARCIAL = { icono: /^icon/, banner: /^banner/, nacimiento: /nacim|cumple/, inscripcion: /inscri|registro/, nivel: /^nivel/, creditos: /credit/ };
+    var PARCIAL = { banner: /^banner/, nacimiento: /nacim|cumple/, inscripcion: /inscri|registro/, nivel: /^nivel/, creditos: /credit/ };
     function buscar(slot) {
       var syn = SINONIMOS[slot] || [slot], i;
       for (i = 0; i < campos.length; i++) {
@@ -211,8 +211,8 @@
       return !el || (!el.querySelector("img") && !el.textContent.replace(/[\s -]+/g, "").length);
     };
 
-    /* Icono: el mismo campo "Icono" que usa el post (rtopicicon) alimenta el círculo del avatar */
-    var ci = buscar("icono");
+    /* Icono56: este campo de perfil llena el círculo del avatar (el de 120x120 de los mensajes es "Icono120") */
+    var ci = buscar("icono56");
     if (ci) {
       var ii = ci.el.querySelector("img"), ico = root.querySelector(".rperfil__avico");
       if (ii && ico) {

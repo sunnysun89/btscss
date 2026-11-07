@@ -511,14 +511,14 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
    encuentra, para comprobar que coinciden. */
 !function () {
   var CLAVES = {
-    icono:  ['icon'],
+    icono:  ['icono120'],                          // campo "Icono120" (exacto: no se confunde con "Icono56")
     frase:  ['frase-post', 'frase-mensaje'],      // campo "Frase post"
     poder:  ['poder-mensaje', 'poder-post'],      // campo "Poder mensajes"
     inv:    ['inventario', 'objeto', 'item'],
     med:    ['medall', 'insignia'],
     pop:    ['popularidad'],
     auto:   ['autocontrol'],
-    oculto: ['cover', 'portada']
+    oculto: ['cover', 'portada', 'icono56']
   };
 
   function slug(t) {
@@ -1639,7 +1639,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
         var ex = tipoExtra(c);
         if (ex) { (f.extras = f.extras || []).push({ t: ex, f: c }); continue; }
         if (!f.playlist && esPlaylist(c)) f.playlist = c;
-        else if (!f.icono && es(c, CLAVES.icono) && c.querySelector('img')) f.icono = c;
+        else if (!f.icono && slug(nombre(c)).replace(/-/g, '') === 'icono120' && c.querySelector('img')) f.icono = c;
         else if (!f.frase && es(c, CLAVES.frase)) f.frase = c;
         else if (!f.poder && (slug(nombre(c)) === 'poder' || es(c, CLAVES.poder))) f.poder = c;
         else if (!f.pop && es(c, CLAVES.pop)) f.pop = c;
@@ -1986,7 +1986,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       nivel: ["nivel de poder", "nivel poder", "poder nivel", "nivel"],
       poderes: ["poder perfil", "poderes", "poder", "habilidades"],
       rango: ["rango"],
-      icono: ["icono", "icon", "icono de tema", "icono de usuario"],
+      icono56: ["icono56", "icono 56"],
       seudonimo: ["user", "seudonimo", "seudonimos", "pseudonimo"],
       creditos: ["creditos", "credito"],
       nacimiento: ["fecha de nacimiento", "fecha nacimiento", "nacimiento", "cumpleanos"],
@@ -2006,7 +2006,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     });
 
     /* Respaldo por parte del nombre (tolera erratas: "inscriptión", "nacimento"...) */
-    var PARCIAL = { icono: /^icon/, banner: /^banner/, nacimiento: /nacim|cumple/, inscripcion: /inscri|registro/, nivel: /^nivel/, creditos: /credit/ };
+    var PARCIAL = { banner: /^banner/, nacimiento: /nacim|cumple/, inscripcion: /inscri|registro/, nivel: /^nivel/, creditos: /credit/ };
     function buscar(slot) {
       var syn = SINONIMOS[slot] || [slot], i;
       for (i = 0; i < campos.length; i++) {
@@ -2024,8 +2024,8 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       return !el || (!el.querySelector("img") && !el.textContent.replace(/[\s -]+/g, "").length);
     };
 
-    /* Icono: el mismo campo "Icono" que usa el post (rtopicicon) alimenta el círculo del avatar */
-    var ci = buscar("icono");
+    /* Icono56: este campo de perfil llena el círculo del avatar (el de 120x120 de los mensajes es "Icono120") */
+    var ci = buscar("icono56");
     if (ci) {
       var ii = ci.el.querySelector("img"), ico = root.querySelector(".rperfil__avico");
       if (ii && ico) {
