@@ -7659,3 +7659,6 @@ html[data-bts-tema="claro"] .ravatar .rprofilecontent .postprofile-field { borde
 
 /* 73c. Barra del grupo: más alta, con su mitad sobre el borde inferior del avatar (mitad sobre la imagen, mitad fuera) */
 .rperfil__avbar { height: 96px; min-height: 0; margin: -48px 12px 0; padding: 52px 10px 10px; border-radius: var(--burnthesky-r-md); z-index: 3; box-shadow: 0 10px 28px rgba(0, 0, 0, .4); }
+
+/* 73d. La barra del grupo con el mismo ancho que el avatar */
+.rperfil__avbar { margin-left: 0; margin-right: 0; }
