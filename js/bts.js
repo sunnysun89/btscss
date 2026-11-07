@@ -1635,6 +1635,10 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       for (var i = 0; i < campos.length; i++) {
         var c = campos[i], nm = nombre(c);
         nombres.push(nm || '(sin nombre)');
+        if (slug(nombre(c)).replace(/-/g, '') === 'icono56') {   /* icono56: pasa a la cabecera del panel del avatar */
+          var im56 = c.querySelector('img'); if (im56) f.ico56 = im56;
+          c.parentNode.removeChild(c); continue;
+        }
         if (es(c, CLAVES.oculto)) { c.parentNode.removeChild(c); continue; }
         var ex = tipoExtra(c);
         if (ex) { (f.extras = f.extras || []).push({ t: ex, f: c }); continue; }
@@ -1659,6 +1663,15 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
         var img = f.icono && f.icono.querySelector('img');
         if (img) { iconBox.innerHTML = ''; iconBox.appendChild(img); iconBox.classList.add('tiene'); f.icono.parentNode.removeChild(f.icono); }
         else hueco(iconBox, '');
+      }
+
+      /* icono56 -> sobre los datos del panel que aparece al pasar el ratón por el avatar */
+      if (f.ico56) {
+        var panel = post.querySelector('.ravatar .rprofilecontent');
+        if (panel && !panel.querySelector('.rav-ico') && !/placehold/.test(f.ico56.getAttribute('src') || '')) {
+          var caja56 = el('div', 'rav-ico'); caja56.appendChild(f.ico56);
+          panel.insertBefore(caja56, panel.firstChild);
+        }
       }
 
       /* frase y poder debajo del avatar */

@@ -7633,3 +7633,14 @@ html[data-bts-tema="claro"] .rpost-inv .rimp:not(.is-on) .rimp__txt { color: var
 html[data-bts-tema="claro"] { --burnthesky-post-hover-bg: rgba(250, 246, 249, .92); }
 html[data-bts-tema="claro"] .ravatar .rprofilecontent, html[data-bts-tema="claro"] .ravatar .rprofilecontent .postprofile-field-content { color: var(--burnthesky-white); }
 html[data-bts-tema="claro"] .ravatar .rprofilecontent .postprofile-field { border-bottom-color: var(--burnthesky-line); }
+
+
+/* ==========================================================================
+   72. Panel del avatar (hover): más compacto y con el Icono56 encima de los datos (.rav-ico)
+   ========================================================================== */
+.ravatar .rprofilecontent { padding: 12px 10px; }
+.ravatar .rprofilecontent .postprofile-field { padding: 4px 0; }
+.ravatar .rprofilecontent .postprofile-field-label { margin-bottom: 1px; font-size: 9px; letter-spacing: 1.6px; }
+.ravatar .rprofilecontent .postprofile-field-content { font-size: 11.5px; line-height: 1.35; }
+.rav-ico { width: 56px; height: 56px; margin: 0 auto 8px; border-radius: 50%; overflow: hidden; border: 2px solid var(--burnthesky-post-icon-ring, var(--burnthesky-red-vivid)); background: var(--burnthesky-void); box-shadow: 0 4px 14px rgba(0, 0, 0, .35); }
+.rav-ico img { display: block; width: 100% !important; height: 100% !important; max-width: none; object-fit: cover; border: 0; margin: 0; }
