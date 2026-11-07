@@ -7663,5 +7663,5 @@ html[data-bts-tema="claro"] .ravatar .rprofilecontent .postprofile-field { borde
 /* 73d. La barra del grupo con el mismo ancho que el avatar */
 .rperfil__avbar { margin-left: 0; margin-right: 0; }
 
-/* 74. Recuadros de multicuentas (.rmulti__it): bordes superiores cuadrados, inferiores redondeados */
-.rmulti__it { border-radius: 0 0 var(--burnthesky-r-md) var(--burnthesky-r-md); }
+/* 74. Etiqueta del nombre de multicuentas (.rmulti__n): bordes superiores cuadrados (las cajas .rmulti__it no cambian) */
+.rmulti__n { border-top-left-radius: 0 !important; border-top-right-radius: 0 !important; }
