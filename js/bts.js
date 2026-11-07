@@ -1665,15 +1665,6 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
         else hueco(iconBox, '');
       }
 
-      /* icono56 -> sobre los datos del panel que aparece al pasar el ratón por el avatar */
-      if (f.ico56) {
-        var panel = post.querySelector('.ravatar .rprofilecontent');
-        if (panel && !panel.querySelector('.rav-ico') && !/placehold/.test(f.ico56.getAttribute('src') || '')) {
-          var caja56 = el('div', 'rav-ico'); caja56.appendChild(f.ico56);
-          panel.insertBefore(caja56, panel.firstChild);
-        }
-      }
-
       /* frase y poder debajo del avatar */
       if (frBox) {
         if (f.frase && !vacio(f.frase)) { frBox.appendChild(f.frase); frBox.classList.add('tiene'); }
@@ -1760,8 +1751,11 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       if (pc) {
         var filas = panelDatos(campos);
         pc.innerHTML = '';
+        /* icono56 -> sobre los datos del panel que aparece al pasar el ratón por el avatar */
+        var hay56 = f.ico56 && !/placehold/.test(f.ico56.getAttribute('src') || '');
+        if (hay56) { var caja56 = el('div', 'rav-ico'); caja56.appendChild(f.ico56); pc.appendChild(caja56); }
         filas.forEach(function (x) { pc.appendChild(x); });
-        if (!filas.length) pc.style.display = 'none';
+        if (!filas.length && !hay56) pc.style.display = 'none';
       }
     }
   }
