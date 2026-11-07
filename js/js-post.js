@@ -1225,7 +1225,7 @@
         for (var i2 = 0; i2 < campos.length; i2++) {
           var sl = slug(nombre(campos[i2]));
           if (!msgF && /^(mensajes?|posts?|n-de-mensajes)$/.test(sl)) msgF = campos[i2];
-          else if (!cred && /credit|byun|moneda|dinero/.test(sl)) cred = campos[i2];
+          else if (!cred && /credit|moneda|dinero/.test(sl)) cred = campos[i2];
           else if (!niv && /nivel-de-poder|nivel-poder|^nivel$/.test(sl)) niv = campos[i2];
         }
         function tx(c) { return c && !vacio(c) ? c.querySelector('.postprofile-field-content').textContent.replace(/\s+/g, ' ').trim() : ''; }
