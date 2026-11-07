@@ -1635,7 +1635,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       for (var i = 0; i < campos.length; i++) {
         var c = campos[i], nm = nombre(c);
         nombres.push(nm || '(sin nombre)');
-        if (/^(icono|icon)(90|56)$/.test(slug(nombre(c)).replace(/-/g, ''))) {   /* Icon90: va bajo los datos del panel del avatar */
+        if (slug(nombre(c)).replace(/-/g, '') === 'icono90') {   /* Icono90: va bajo los datos del panel del avatar */
           var im56 = c.querySelector('img'); if (im56) f.ico56 = im56;
           c.parentNode.removeChild(c); continue;
         }
@@ -1751,7 +1751,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       if (pc) {
         var filas = panelDatos(campos);
         pc.innerHTML = '';
-        /* Icon90 -> debajo de los datos del panel que aparece al pasar el ratón por el avatar */
+        /* Icono90 -> debajo de los datos del panel que aparece al pasar el ratón por el avatar */
         var hay56 = f.ico56 && !/placehold/.test(f.ico56.getAttribute('src') || '');
         filas.forEach(function (x) { pc.appendChild(x); });
         if (hay56) { var caja56 = el('div', 'rav-ico'); caja56.appendChild(f.ico56); pc.appendChild(caja56); }
@@ -1993,7 +1993,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       nivel: ["nivel de poder", "nivel poder", "poder nivel", "nivel"],
       poderes: ["poder perfil", "poderes", "poder", "habilidades"],
       rango: ["rango"],
-      icono56: ["icon90", "icono90", "icon 90", "icono 90", "icono56", "icono 56"],
+      icono56: ["icono90", "icono 90"],
       seudonimo: ["user", "seudonimo", "seudonimos", "pseudonimo"],
       creditos: ["creditos", "credito"],
       nacimiento: ["fecha de nacimiento", "fecha nacimiento", "nacimiento", "cumpleanos"],
@@ -2031,7 +2031,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       return !el || (!el.querySelector("img") && !el.textContent.replace(/[\s -]+/g, "").length);
     };
 
-    /* Icon90: este campo de perfil llena el círculo del avatar (el de 120x120 de los mensajes es "Icono120") */
+    /* Icono90: este campo de perfil llena el círculo del avatar (el de 120x120 de los mensajes es "Icono120") */
     var ci = buscar("icono56");
     if (ci) {
       var ii = ci.el.querySelector("img"), ico = root.querySelector(".rperfil__avico");

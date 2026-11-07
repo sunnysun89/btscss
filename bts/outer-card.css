@@ -7642,3 +7642,8 @@ html[data-bts-tema="claro"] .ravatar .rprofilecontent .postprofile-field { borde
 .ravatar .rdato { padding: 5px 12px; font-size: 10px; letter-spacing: .3px; line-height: 1.35; }
 .rav-ico { width: 90px; height: 90px; margin: 14px auto 10px; border-radius: 50%; overflow: hidden; border: 2px solid var(--burnthesky-post-icon-ring, var(--burnthesky-red-vivid)); background: var(--burnthesky-void); box-shadow: 0 4px 14px rgba(0, 0, 0, .35); }
 .rav-ico img { display: block; width: 100% !important; height: 100% !important; max-width: none; object-fit: cover; border: 0; margin: 0; }
+
+
+/* 73. Icono90: el círculo del perfil también a 90 px (a caballo entre la imagen y la barra del grupo) */
+.rperfil__avbar { height: 100px; padding-top: 52px; }
+.rperfil__avico { width: 90px; height: 90px; top: -45px; }

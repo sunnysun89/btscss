@@ -173,7 +173,7 @@
       nivel: ["nivel de poder", "nivel poder", "poder nivel", "nivel"],
       poderes: ["poder perfil", "poderes", "poder", "habilidades"],
       rango: ["rango"],
-      icono56: ["icon90", "icono90", "icon 90", "icono 90", "icono56", "icono 56"],
+      icono56: ["icono90", "icono 90"],
       seudonimo: ["user", "seudonimo", "seudonimos", "pseudonimo"],
       creditos: ["creditos", "credito"],
       nacimiento: ["fecha de nacimiento", "fecha nacimiento", "nacimiento", "cumpleanos"],
@@ -211,7 +211,7 @@
       return !el || (!el.querySelector("img") && !el.textContent.replace(/[\s -]+/g, "").length);
     };
 
-    /* Icon90: este campo de perfil llena el círculo del avatar (el de 120x120 de los mensajes es "Icono120") */
+    /* Icono90: este campo de perfil llena el círculo del avatar (el de 120x120 de los mensajes es "Icono120") */
     var ci = buscar("icono56");
     if (ci) {
       var ii = ci.el.querySelector("img"), ico = root.querySelector(".rperfil__avico");
