@@ -7656,3 +7656,6 @@ html[data-bts-tema="claro"] .ravatar .rprofilecontent .postprofile-field { borde
 .rperfil__avatarimg > :first-child img { height: 100% !important; }
 .rperfil__avbar { position: relative; left: auto; right: auto; bottom: auto; height: auto; min-height: 96px; padding: 52px 10px 12px; border-radius: 0 0 var(--burnthesky-r-md) var(--burnthesky-r-md); box-shadow: none; }
 .rperfil__avico { top: -45px; }
+
+/* 73c. Barra del grupo: más alta, con su mitad sobre el borde inferior del avatar (mitad sobre la imagen, mitad fuera) */
+.rperfil__avbar { height: 96px; min-height: 0; margin: -48px 12px 0; padding: 52px 10px 10px; border-radius: var(--burnthesky-r-md); z-index: 3; box-shadow: 0 10px 28px rgba(0, 0, 0, .4); }
