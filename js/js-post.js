@@ -1150,7 +1150,7 @@
       for (var i = 0; i < campos.length; i++) {
         var c = campos[i], nm = nombre(c);
         nombres.push(nm || '(sin nombre)');
-        if (slug(nombre(c)).replace(/-/g, '') === 'icono56') {   /* icono56: pasa a la cabecera del panel del avatar */
+        if (/^(icono|icon)(90|56)$/.test(slug(nombre(c)).replace(/-/g, ''))) {   /* Icon90: va bajo los datos del panel del avatar */
           var im56 = c.querySelector('img'); if (im56) f.ico56 = im56;
           c.parentNode.removeChild(c); continue;
         }
@@ -1266,10 +1266,10 @@
       if (pc) {
         var filas = panelDatos(campos);
         pc.innerHTML = '';
-        /* icono56 -> sobre los datos del panel que aparece al pasar el ratón por el avatar */
+        /* Icon90 -> debajo de los datos del panel que aparece al pasar el ratón por el avatar */
         var hay56 = f.ico56 && !/placehold/.test(f.ico56.getAttribute('src') || '');
-        if (hay56) { var caja56 = el('div', 'rav-ico'); caja56.appendChild(f.ico56); pc.appendChild(caja56); }
         filas.forEach(function (x) { pc.appendChild(x); });
+        if (hay56) { var caja56 = el('div', 'rav-ico'); caja56.appendChild(f.ico56); pc.appendChild(caja56); }
         if (!filas.length && !hay56) pc.style.display = 'none';
       }
     }
