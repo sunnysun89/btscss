@@ -7647,3 +7647,12 @@ html[data-bts-tema="claro"] .ravatar .rprofilecontent .postprofile-field { borde
 /* 73. Icono90: el círculo del perfil también a 90 px (a caballo entre la imagen y la barra del grupo) */
 .rperfil__avbar { height: 100px; padding-top: 52px; }
 .rperfil__avico { width: 90px; height: 90px; top: -45px; }
+
+/* 73b. Avatar del perfil: la barra del grupo va DEBAJO de la imagen y el icono queda a caballo justo en su borde
+   (mitad sobre la imagen, mitad sobre la barra). */
+.rperfil__avatarimg { height: auto !important; overflow: visible; background: none; border: 0; box-shadow: none; border-radius: 0; }
+.rperfil__avatarimg > :first-child { display: block; height: var(--burnthesky-post-avatar-h, 400px); overflow: hidden; border: 1px solid var(--burnthesky-line-2); border-bottom: 0; border-radius: var(--burnthesky-r-md) var(--burnthesky-r-md) 0 0; background: #100d14; box-shadow: var(--burnthesky-ghost-sm); }
+.rperfil__avatarimg > img:first-child { height: var(--burnthesky-post-avatar-h, 400px) !important; }
+.rperfil__avatarimg > :first-child img { height: 100% !important; }
+.rperfil__avbar { position: relative; left: auto; right: auto; bottom: auto; height: auto; min-height: 96px; padding: 52px 10px 12px; border-radius: 0 0 var(--burnthesky-r-md) var(--burnthesky-r-md); box-shadow: none; }
+.rperfil__avico { top: -45px; }
