@@ -195,26 +195,27 @@
     return w;
   }
 
-  /* Barras de porcentaje bajo el avatar (campos "Popularidad" y "Autocontrol":
-     el usuario escribe un número del 0 al 100, con o sin %). */
-  var BARRAS = [['pop', 'Popularidad', ['popularidad']], ['auto', 'Autocontrol', ['autocontrol']]];
-  function porcentaje(c) {
+  /* Barras de porcentaje bajo el avatar (campos "Popularidad" y "Autocontrol": el usuario
+     escribe un número, con o sin %). Autocontrol va de 0 a 100. Popularidad va de -100 a 100:
+     si es negativa, la barra se llena desde el extremo derecho hacia atrás. */
+  var BARRAS = [['pop', 'Popularidad', ['popularidad'], true], ['auto', 'Autocontrol', ['autocontrol'], false]];
+  function porcentaje(c, neg) {
     var t = c ? (c.querySelector('.postprofile-field-content') || c).textContent : '';
-    var m = t.replace(',', '.').match(/\d+(\.\d+)?/);
-    var n = m ? parseFloat(m[0]) : 0;
-    return Math.max(0, Math.min(100, n));
+    var m = t.replace(',', '.').replace(/[−–—]/g, '-').match(/-?\s*\d+(\.\d+)?/);
+    var n = m ? parseFloat(m[0].replace(/\s+/g, '')) : 0;
+    return Math.max(neg ? -100 : 0, Math.min(100, n));
   }
   function barras(f) {
     var box = el('div', 'rbars');
     BARRAS.forEach(function (b) {
-      var p = porcentaje(f[b[0]]), fila = el('div', 'rbar');
+      var p = porcentaje(f[b[0]], b[3]), fila = el('div', 'rbar');
       fila.appendChild(el('span', 'rbar__l', b[1]));
-      var tr = el('div', 'rbar__track'), fl = el('div', 'rbar__fill');
+      var tr = el('div', 'rbar__track'), fl = el('div', 'rbar__fill' + (p < 0 ? ' rbar__fill--neg' : ''));
       fl.style.width = '0'; fl.textContent = p + '%';
       tr.appendChild(fl); fila.appendChild(tr);
       fila.title = b[1] + ': ' + p + '%';
       box.appendChild(fila);
-      setTimeout(function () { fl.style.width = p + '%'; }, 60);
+      setTimeout(function () { fl.style.width = Math.abs(p) + '%'; }, 60);
     });
     return box;
   }
@@ -628,12 +629,13 @@
      (clases administrativas: en entrenamiento, no revelado y villano). El grupo de
      un usuario se reconoce por el color de su nombre, igual que la paleta, así que
      el color de cada grupo en el panel debe ser el de esta tabla (y el de
-     js-miembros). La clase sustituye al rango: sale en el banner de cada mensaje
-     y en el hueco "Clase" del perfil. */
+     js-miembros). Sale en el hueco "Clase" del perfil. */
   var CLASES = [
-    ['S', 'Excepcional', '#D6AD68'], ['A', 'Superior', '#D96A50'], ['B', 'Avanzado', '#9290D4'],
-    ['C', 'Limitado', '#72A995'], ['D', 'En entrenamiento', '#6FB0D0'],
-    ['E', 'No revelado', '#8D93B5'], ['V', 'Villano', '#D0485F']
+    ['S', 'Excepcional', '#D6AD68', 'S · Excepcional'], ['A', 'Superior', '#C77B55', 'A · Superior'],
+    ['B', 'Avanzado', '#B77AC4', 'B · Avanzado'], ['C', 'Limitado', '#72A995', 'C · Limitado'],
+    ['D', 'En entrenamiento', '#9290D4', 'D · En entrenamiento'], ['E', 'No revelado', '#8DB2B5', 'E · No revelado'],
+    ['V', 'Villano', '#C85B70', 'V · Villano'],
+    ['Authority', 'Staff', '#571919', 'Authority · Staff'], ['Missing', 'Ausente', '#9296AA', 'Missing · Ausente']
   ];
   function claseDeColor(color) {
     var a = aRgb(color), mejor = null, dist = 1e9;
@@ -650,17 +652,15 @@
     var t = raiz.querySelector('[data-slot="clase"], [data-slot="rango"]');
     if (!t) return;
     var v = t.querySelector('.rtile__v'), l = t.querySelector('.rtile__l');
-    if (v) v.textContent = cl[0] + ' · ' + cl[1];
+    if (v) v.textContent = cl[1];
     if (l) l.textContent = 'Clase';
     t.classList.remove('is-empty'); t.setAttribute('data-clase', cl[0]);
   }
   function ponClase(raiz, color) {
     var c = claseDeColor(color);
     if (!c) return;
-    raiz.setAttribute('data-bts-clase', c[0] + '|' + c[1]);
+    raiz.setAttribute('data-bts-clase', c[0] + '|' + c[3]);
     rellenaClase(raiz);
-    var b = raiz.querySelector('.rtopicuser b');
-    if (b) { b.textContent = 'Clase ' + c[0]; b.title = c[1]; b.setAttribute('data-clase', c[0]); }
   }
 
   function aplicaPaleta(raiz, color, fuente, callado) {
@@ -739,6 +739,7 @@
       for (var e = 0; e < EXTRAS.length; e++) if (EXTRAS[e][1].test(sl)) ex = EXTRAS[e][0];
       if (ex) extras.push({ t: ex, f: c });
       else if (/(^|-)(playlist|ost)(-|$)/.test(sl)) playlist = c;
+      else if (/categoria.*popularidad|popularidad.*categoria/.test(sl)) { /* categoría de popularidad: solo se muestra en los mensajes */ }
       else if (/popularidad/.test(sl)) f.pop = c;
       else if (/autocontrol/.test(sl)) f.auto = c;
       else if (/aliad[oa].*descripcion|descripcion.*aliad[oa]/.test(sl)) aliadoDesc = c;
@@ -1197,6 +1198,7 @@
           c.parentNode.removeChild(c); continue;
         }
         if (es(c, CLAVES.oculto)) { c.parentNode.removeChild(c); continue; }
+        if (!f.catpop && /categoria.*popularidad|popularidad.*categoria/.test(slug(nombre(c)))) { f.catpop = c; continue; }
         var ex = tipoExtra(c);
         if (ex) { (f.extras = f.extras || []).push({ t: ex, f: c }); continue; }
         if (!f.playlist && esPlaylist(c)) f.playlist = c;
@@ -1213,6 +1215,15 @@
       if (!avisado) {
         avisado = true;
         try { console.log('[BTS] post: campos de perfil encontrados →', nombres.length ? nombres.join(' | ') : '(ninguno: el usuario no tiene campos rellenos)'); } catch (e) {}
+      }
+
+      /* categoría de popularidad (campo "Categoría de Popularidad"): va junto al nombre, en lugar del rango.
+         Si el usuario no ha elegido ninguna, se queda el rango nativo. */
+      if (f.catpop) {
+        var cpTxt = vacio(f.catpop) ? '' : ((f.catpop.querySelector('.postprofile-field-content') || f.catpop).textContent || '').replace(/\s+/g, ' ').trim(),
+            bRango = post.querySelector('.rtopicuser b');
+        if (cpTxt && bRango) { bRango.textContent = cpTxt; bRango.setAttribute('data-catpop', slug(cpTxt)); }
+        if (f.catpop.parentNode) f.catpop.parentNode.removeChild(f.catpop);
       }
 
       /* icono -> cuadro del nombre */

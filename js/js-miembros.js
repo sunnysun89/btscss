@@ -8,14 +8,14 @@
   /* Los grupos del foro son las clases S/A/B/C/D/E/V. El color de cada grupo en el panel
      debe ser el de esta tabla (y el de CLASES en js-post.js). */
   var GRUPOS = [
-    ['Clase S · Excepcional', '#D6AD68'], ['Clase A · Superior', '#D96A50'], ['Clase B · Avanzado', '#9290D4'],
-    ['Clase C · Limitado', '#72A995'], ['Clase D · En entrenamiento', '#6FB0D0'],
-    ['Clase E · No revelado', '#8D93B5'], ['Clase V · Villano', '#D0485F']
+    ['Authority', '#571919'], ['Clase S · Excepcional', '#D6AD68'], ['Clase A · Superior', '#C77B55'],
+    ['Clase B · Avanzado', '#B77AC4'], ['Clase C · Limitado', '#72A995'], ['Clase D · En entrenamiento', '#9290D4'],
+    ['Clase E · No revelado', '#8DB2B5'], ['Clase V · Villano', '#C85B70'], ['Missing', '#9296AA']
   ];
 
   /* Cuentas que deben mostrarse en un grupo concreto aunque su nombre salga con otro color
      (por ejemplo la cuenta admin, que está en todos los grupos): "Nombre": "Grupo". */
-  var FORZAR = {};   /* ej.: { "Faceless": "Clase S · Excepcional" } */
+  var FORZAR = { "Faceless": "Authority" };
 
   function iniciar() {
     var tabla = document.getElementById('memberlist') || document.querySelector('table#memberlist');
