@@ -81,6 +81,9 @@
   --burnthesky-ff-mono:       'Quicksand', 'DM Sans', 'Segoe UI', Arial, sans-serif;   /* nombre heredado: ya no es monoespaciada */
   --burnthesky-ff-sans:       'Quicksand', 'DM Sans', 'Segoe UI', Arial, sans-serif;
   --burnthesky-ff-serif:      'DM Serif Display', Georgia, serif;   /* acentos: frases y citas */   /* frases y citas */
+  --burnthesky-ff-name:       'Poppins', 'Quicksand', 'Segoe UI', Arial, sans-serif;   /* nombres de usuario (mensajes, perfil, miembros) */
+  --burnthesky-ff-catsocial:  var(--burnthesky-ff-serif);   /* categoría social, junto al nombre */
+  --burnthesky-fs-catsocial:  22px;                          /* tamaño de la categoría social (18px en móvil) */
 
   --burnthesky-fs-2xs:        10px;
   --burnthesky-fs-xs:         11px;
@@ -7682,20 +7685,19 @@ html[data-bts-tema="claro"] .ravatar .rprofilecontent .postprofile-field { borde
 
 /* ==========================================================================
    77. Tipografía de los nombres y de la categoría social
-   Unbounded es muy ancha y los nombres se veían aplastados: los nombres de usuario pasan a Poppins
-   (--burnthesky-ff-name; si prefieres otra, cámbiala aquí: 'Quicksand' es más suave y 'DM Serif Display' más elegante).
-   La categoría social, junto al nombre, va en DM Serif Display cursiva y más grande.
+   Unbounded es muy ancha y los nombres se veían aplastados: los nombres de usuario usan --burnthesky-ff-name
+   y la categoría social --burnthesky-ff-catsocial / --burnthesky-fs-catsocial. Las tres variables están arriba,
+   junto con las demás fuentes (bloque :root del principio).
    ========================================================================== */
-:root { --burnthesky-ff-name: 'Poppins', 'Quicksand', 'Segoe UI', Arial, sans-serif; }
 .post .rtopicuser,
 .rperfil__avname,
 .rmiembro__nombre { font-family: var(--burnthesky-ff-name) !important; }
 .post .rtopicuser, .post .rtopicuser a, .post .rtopicuser strong, .post .rtopicuser span { font-weight: 600; letter-spacing: -.3px; }
 .post .rtopicuser b[data-catpop] {
-  font-family: var(--burnthesky-ff-serif) !important;
+  font-family: var(--burnthesky-ff-catsocial) !important;
   font-style: italic;
   font-weight: 400;
-  font-size: 22px;
+  font-size: var(--burnthesky-fs-catsocial);
   line-height: 1.1;
   letter-spacing: .2px !important;
   text-transform: none !important;
