@@ -223,10 +223,20 @@ jQuery(document).ready(function(){
        APARTE .......... grupos que van FUERA de la rosca, como casillas bajo
                          las estadísticas (nombre en minúsculas, en este orden).
        ADMIN_EN_GRUPOS . otros grupos de la rosca donde también está la cuenta
-                         admin (u1): se les resta 1 miembro. Authority ya está
-                         fuera de la rosca, así que normalmente va vacío. */
-    var APARTE = ["authority", "missing"];
-    var ADMIN_EN_GRUPOS = ["missing", "divine", "notable", "notorious", "infamous", "underdogs", "unknown", "ordinary"];
+                         admin (u1): se les resta 1 miembro. Las claves son las
+                         letras de las clases (s, a, b, c, d, e, v). */
+    var APARTE = [];
+    var ADMIN_EN_GRUPOS = ["s", "a", "b", "c", "d", "e", "v"];
+    /* La clave de un grupo es su letra de clase; se reconoce "S", "Clase S",
+       "S - Excepcional"... Si el grupo no es una clase, la clave es su nombre. */
+    var letraDe = function (nombre) {
+      var t = nombre.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
+      var m = t.match(/^(?:clase |class )?([sabcdev])(?: |$)/);
+      if (m) return m[1];
+      var mapa = { excepcional: "s", superior: "a", avanzado: "b", limitado: "c", entrenamiento: "d", revelado: "e", villano: "v" };
+      for (var k in mapa) if (t.indexOf(k) > -1) return mapa[k];
+      return t;
+    };
 
     var todos = [];
     enlaces.each(function () {
@@ -238,7 +248,7 @@ jQuery(document).ready(function(){
       var $c = $a.find("[style*='color']").first();
       if (!$c.length) $c = $a;
       var rgb = ($c.css("color") || "").match(/\d+(\.\d+)?/g) || [150, 150, 150];
-      var clave = nombre.toLowerCase();
+      var clave = letraDe(nombre);
       if ($.inArray(clave, ADMIN_EN_GRUPOS) > -1) n = Math.max(0, n - 1);
       todos.push({ clave: clave, nombre: nombre.slice(0, 24), n: n, href: $a.attr("href") || "#", r: +rgb[0], g: +rgb[1], b: +rgb[2] });
     });
@@ -1108,8 +1118,49 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     return '';
   }
 
+  /* ---- Clases del foro (los grupos) ------------------------------------------
+     Los grupos del foro SON las clases: S, A, B y C (escala de poder) y D, E y V
+     (clases administrativas: en entrenamiento, no revelado y villano). El grupo de
+     un usuario se reconoce por el color de su nombre, igual que la paleta, así que
+     el color de cada grupo en el panel debe ser el de esta tabla (y el de
+     js-miembros). La clase sustituye al rango: sale en el banner de cada mensaje
+     y en el hueco "Clase" del perfil. */
+  var CLASES = [
+    ['S', 'Excepcional', '#D6AD68'], ['A', 'Superior', '#D96A50'], ['B', 'Avanzado', '#9290D4'],
+    ['C', 'Limitado', '#72A995'], ['D', 'En entrenamiento', '#6FB0D0'],
+    ['E', 'No revelado', '#8D93B5'], ['V', 'Villano', '#D0485F']
+  ];
+  function claseDeColor(color) {
+    var a = aRgb(color), mejor = null, dist = 1e9;
+    if (!a) return null;
+    CLASES.forEach(function (c) {
+      var b = aRgb(c[2]), d = Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]) + Math.abs(a[2] - b[2]);
+      if (d < dist) { dist = d; mejor = c; }
+    });
+    return dist <= 30 ? mejor : null;
+  }
+  function rellenaClase(raiz) {
+    var cl = (raiz.getAttribute('data-bts-clase') || '').split('|');
+    if (!cl[0]) return;
+    var t = raiz.querySelector('[data-slot="clase"], [data-slot="rango"]');
+    if (!t) return;
+    var v = t.querySelector('.rtile__v'), l = t.querySelector('.rtile__l');
+    if (v) v.textContent = cl[0] + ' · ' + cl[1];
+    if (l) l.textContent = 'Clase';
+    t.classList.remove('is-empty'); t.setAttribute('data-clase', cl[0]);
+  }
+  function ponClase(raiz, color) {
+    var c = claseDeColor(color);
+    if (!c) return;
+    raiz.setAttribute('data-bts-clase', c[0] + '|' + c[1]);
+    rellenaClase(raiz);
+    var b = raiz.querySelector('.rtopicuser b');
+    if (b) { b.textContent = 'Clase ' + c[0]; b.title = c[1]; b.setAttribute('data-clase', c[0]); }
+  }
+
   function aplicaPaleta(raiz, color, fuente, callado) {
     var rgb = aRgb(color); if (!rgb) return;
+    ponClase(raiz, color);
     var hsl = rgb2hsl(rgb[0], rgb[1], rgb[2]);
     if (hsl[1] < .12 || hsl[2] > .93 || hsl[2] < .07) return;      /* gris, blanco o negro: se queda el tema */
     var h = hsl[0], s = Math.min(.85, Math.max(.35, hsl[1]));
@@ -1266,7 +1317,8 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     }
 
     /* ===== PESTAÑA 1 · columna derecha ===== */
-    var nivel = q1('[data-slot="nivel"]'), rango = q1('[data-slot="rango"]'), creditos = q1('[data-slot="creditos"]');
+    var nivel = q1('[data-slot="nivel"]'), rango = q1('[data-slot="clase"]') || q1('[data-slot="rango"]'), creditos = q1('[data-slot="creditos"]');
+    rellenaClase(raiz);
     var credTxt = creditos ? (creditos.querySelector('.rtile__v') || creditos).textContent.trim() : '';
     var info = el('div', 'rperfil__info');
     var pTile = el('div', 'rstat rstat--power rstat--poder');
@@ -1301,10 +1353,10 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     if (side) {
       if (banner) side.insertBefore(info, banner.nextSibling); else side.appendChild(info);
     }
-    /* nivel de poder, poder y barras: bajo el avatar, encima de los botones */
+    /* poder y barras: bajo el avatar, encima de los botones */
     if (col) {
       var pb = el('div', 'rperfil__powerbox');
-      if (nivel) pb.appendChild(nivel);
+      quita(nivel);   /* el nivel de poder ya no es un dato: la clase (el grupo) lo sustituye */
       pTile.appendChild(desc); pTile.classList.add('con-desc');
       pb.appendChild(pTile);
       var avi = col.querySelector('.rperfil__avatarimg');
@@ -1702,7 +1754,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
         if (cc) aplicaPaleta(post, cc, 'mensaje', true);
       } catch (e) {}
 
-      /* franja Mensajes · Créditos · Nivel de poder, entre el texto y el inventario */
+      /* franja Mensajes · Créditos, entre el texto y el inventario */
       (function () {
         var vals = [], num = post.querySelector('.rpost-n');
         var nMsg = num ? num.textContent.replace(/[^\d.,]/g, '') : '';
@@ -1717,7 +1769,6 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
         if (!nMsg && msgF) nMsg = ((msgF.querySelector('.postprofile-field-content') || msgF).textContent.match(/[\d.,]+/) || [''])[0];
         if (nMsg) vals.push([nMsg, 'Mensajes']);
         if (tx(cred)) vals.push([tx(cred), (nombre(cred) || 'Créditos').replace(/:$/, '')]);
-        if (tx(niv)) vals.push([tx(niv), (nombre(niv) || 'Nivel de poder').replace(/:$/, '')]);
         var box = post.querySelector('.rpost-stats');
         if (!box && invBox) { box = el('div', 'rpost-stats'); invBox.parentNode.insertBefore(box, invBox); }
         if (box) {
@@ -1831,7 +1882,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
      Si la plantilla profile_view_body NO está instalada (o no se aplica), se
      lee el perfil que pinta Foroactivo (pares "Etiqueta : valor") y se monta
      la ficha encima; lo nativo queda oculto, no borrado. */
-  var MARCADO = "<div class=\"rperfil\" id=\"rperfil\"> <div class=\"rperfil__top\"> <span class=\"rperfil__clock\" aria-hidden=\"true\"></span> <span class=\"rperfil__last\">Última conexión: <b><span data-bind=\"ultima\"></span></b></span> <span class=\"rperfil__online\"><span data-bind=\"estatus\"></span></span> </div> <div class=\"rperfil__cols\"> <div class=\"rperfil__avatar\"> <div class=\"rperfil__avatarimg\"><span data-bind=\"avatar\"></span> <div class=\"rperfil__avbar\"><span class=\"rperfil__avico\"><span data-bind=\"avatar\"></span></span><span class=\"rperfil__avname\"><span data-bind=\"usuario\"></span></span><span class=\"rperfil__avstatus\"><i></i><span data-bind=\"estatus2\"></span></span></div></div> <div class=\"rperfil__seud\" data-slot=\"seudonimo\" data-label=\"User\"></div> </div> <div class=\"rperfil__main\"> <div class=\"rperfil__id\"> <div class=\"rperfil__idicon\" aria-hidden=\"true\"></div> <div class=\"rperfil__idtxt\"> <h1 class=\"rperfil__alias\" data-slot=\"alias\"><span data-bind=\"usuario\"></span></h1> </div> </div> <div class=\"rperfil__nicks\" data-slot=\"apodos\" data-label=\"Apodos\"></div> <div class=\"rperfil__tiles\"> <div class=\"rtile\" data-slot=\"edad\" data-label=\"Edad\"></div> <div class=\"rtile\" data-slot=\"orientacion\" data-label=\"Orientación\"></div> <div class=\"rtile\" data-slot=\"sentimental\" data-label=\"Estado sentimental\"></div> <div class=\"rtile\" data-slot=\"ocupacion\" data-label=\"Ocupación\"></div> <div class=\"rtile\" data-slot=\"faccion\" data-label=\"Facción\"></div> <div class=\"rtile\" data-slot=\"alianza\" data-label=\"Alianza\"></div> <div class=\"rtile rtile--wide\" data-slot=\"ubicacion\" data-label=\"Ubicación\"></div> </div> <div class=\"rperfil__stats\"> <div class=\"rstat rstat--power\" data-slot=\"nivel\" data-label=\"Nivel de poder\"></div> <div class=\"rstat\" data-slot=\"rango\" data-label=\"Rango\"></div> <div class=\"rstat\" data-slot=\"creditos\" data-label=\"Créditos\"></div> </div> <div class=\"rperfil__powers-wrap\"> <h3>Poderes</h3> <div class=\"rperfil__powers\" data-slot=\"poderes\"></div> </div> <blockquote class=\"rperfil__quote\" data-slot=\"frase\"></blockquote> </div> <div class=\"rperfil__side\"> <div class=\"rperfil__now\" data-slot=\"musica\"> <span class=\"rperfil__chip\">Reproduciendo</span> <span class=\"rperfil__song\"></span> <span class=\"rperfil__artist\"></span> <button type=\"button\" class=\"rperfil__play\" aria-label=\"Reproducir\" aria-pressed=\"false\"></button> </div> <div class=\"rperfil__banner\" data-slot=\"banner\"></div> <div class=\"rperfil__actions\"> <a href=\"#BUSCAR#\" title=\"Buscar sus mensajes\">Mensajes</a> <a href=\"#EDITAR#\" title=\"Editar perfil\">Editar</a> <button type=\"button\" class=\"rdate rdate--cake\" data-slot=\"nacimiento\" data-label=\"Fecha de nacimiento\" data-short=\"Nacimiento · \"><span class=\"rdate__ico\"></span><span class=\"rdate__tip\"></span></button> <button type=\"button\" class=\"rdate rdate--cal\" data-slot=\"inscripcion\" data-label=\"Fecha de inscripción\" data-short=\"Inscripción · \" data-fallback=\"#INSCRIPCION#\"><span class=\"rdate__ico\"></span><span class=\"rdate__tip\"></span></button> <span class=\"rperfil__contact\"><a href=\"#MP#\" title=\"Mensaje privado\">MP</a></span> </div> </div> </div> <div class=\"rperfil__foot\"> <span class=\"rperfil__stat\"><b><span data-bind=\"mensajes\"></span></b> mensajes escritos</span> </div> <div class=\"rinv\"> <div class=\"rinv__head\">Inventario y medallero</div> <div class=\"rinv__cols\"> <section class=\"rinv__box rinv__box--imp\"> <h3>Implantes</h3> <div class=\"rinv__implants\"> <div class=\"rimp\" data-slot=\"implante1\" data-label=\"Implante 01\"></div> <div class=\"rimp\" data-slot=\"implante2\" data-label=\"Implante 02\"></div> </div> </section> <section class=\"rinv__box\"> <h3>Inventario</h3> <div class=\"rinv__grid\" data-slot=\"inventario\" data-min=\"12\"></div> </section> <section class=\"rinv__box\"> <h3>Medallero</h3> <div class=\"rinv__grid\" data-slot=\"medallero\" data-min=\"12\"></div> </section> </div> </div> <div class=\"rperfil__extra\" id=\"rperfil-extra\"></div> <div id=\"rperfil-campos\" hidden></div> </div>";
+  var MARCADO = "<div class=\"rperfil\" id=\"rperfil\"> <div class=\"rperfil__top\"> <span class=\"rperfil__clock\" aria-hidden=\"true\"></span> <span class=\"rperfil__last\">Última conexión: <b><span data-bind=\"ultima\"></span></b></span> <span class=\"rperfil__online\"><span data-bind=\"estatus\"></span></span> </div> <div class=\"rperfil__cols\"> <div class=\"rperfil__avatar\"> <div class=\"rperfil__avatarimg\"><span data-bind=\"avatar\"></span> <div class=\"rperfil__avbar\"><span class=\"rperfil__avico\"><span data-bind=\"avatar\"></span></span><span class=\"rperfil__avname\"><span data-bind=\"usuario\"></span></span><span class=\"rperfil__avstatus\"><i></i><span data-bind=\"estatus2\"></span></span></div></div> <div class=\"rperfil__seud\" data-slot=\"seudonimo\" data-label=\"User\"></div> </div> <div class=\"rperfil__main\"> <div class=\"rperfil__id\"> <div class=\"rperfil__idicon\" aria-hidden=\"true\"></div> <div class=\"rperfil__idtxt\"> <h1 class=\"rperfil__alias\" data-slot=\"alias\"><span data-bind=\"usuario\"></span></h1> </div> </div> <div class=\"rperfil__nicks\" data-slot=\"apodos\" data-label=\"Apodos\"></div> <div class=\"rperfil__tiles\"> <div class=\"rtile\" data-slot=\"edad\" data-label=\"Edad\"></div> <div class=\"rtile\" data-slot=\"orientacion\" data-label=\"Orientación\"></div> <div class=\"rtile\" data-slot=\"sentimental\" data-label=\"Estado sentimental\"></div> <div class=\"rtile\" data-slot=\"ocupacion\" data-label=\"Ocupación\"></div> <div class=\"rtile\" data-slot=\"faccion\" data-label=\"Facción\"></div> <div class=\"rtile\" data-slot=\"alianza\" data-label=\"Alianza\"></div> <div class=\"rtile rtile--wide\" data-slot=\"ubicacion\" data-label=\"Ubicación\"></div> </div> <div class=\"rperfil__stats\"> <div class=\"rstat\" data-slot=\"clase\" data-label=\"Clase\"></div> <div class=\"rstat\" data-slot=\"creditos\" data-label=\"Créditos\"></div> </div> <div class=\"rperfil__powers-wrap\"> <h3>Poderes</h3> <div class=\"rperfil__powers\" data-slot=\"poderes\"></div> </div> <blockquote class=\"rperfil__quote\" data-slot=\"frase\"></blockquote> </div> <div class=\"rperfil__side\"> <div class=\"rperfil__now\" data-slot=\"musica\"> <span class=\"rperfil__chip\">Reproduciendo</span> <span class=\"rperfil__song\"></span> <span class=\"rperfil__artist\"></span> <button type=\"button\" class=\"rperfil__play\" aria-label=\"Reproducir\" aria-pressed=\"false\"></button> </div> <div class=\"rperfil__banner\" data-slot=\"banner\"></div> <div class=\"rperfil__actions\"> <a href=\"#BUSCAR#\" title=\"Buscar sus mensajes\">Mensajes</a> <a href=\"#EDITAR#\" title=\"Editar perfil\">Editar</a> <button type=\"button\" class=\"rdate rdate--cake\" data-slot=\"nacimiento\" data-label=\"Fecha de nacimiento\" data-short=\"Nacimiento · \"><span class=\"rdate__ico\"></span><span class=\"rdate__tip\"></span></button> <button type=\"button\" class=\"rdate rdate--cal\" data-slot=\"inscripcion\" data-label=\"Fecha de inscripción\" data-short=\"Inscripción · \" data-fallback=\"#INSCRIPCION#\"><span class=\"rdate__ico\"></span><span class=\"rdate__tip\"></span></button> <span class=\"rperfil__contact\"><a href=\"#MP#\" title=\"Mensaje privado\">MP</a></span> </div> </div> </div> <div class=\"rperfil__foot\"> <span class=\"rperfil__stat\"><b><span data-bind=\"mensajes\"></span></b> mensajes escritos</span> </div> <div class=\"rinv\"> <div class=\"rinv__head\">Inventario y medallero</div> <div class=\"rinv__cols\"> <section class=\"rinv__box rinv__box--imp\"> <h3>Implantes</h3> <div class=\"rinv__implants\"> <div class=\"rimp\" data-slot=\"implante1\" data-label=\"Implante 01\"></div> <div class=\"rimp\" data-slot=\"implante2\" data-label=\"Implante 02\"></div> </div> </section> <section class=\"rinv__box\"> <h3>Inventario</h3> <div class=\"rinv__grid\" data-slot=\"inventario\" data-min=\"12\"></div> </section> <section class=\"rinv__box\"> <h3>Medallero</h3> <div class=\"rinv__grid\" data-slot=\"medallero\" data-min=\"12\"></div> </section> </div> </div> <div class=\"rperfil__extra\" id=\"rperfil-extra\"></div> <div id=\"rperfil-campos\" hidden></div> </div>";
 
   function nativo() {
     var main = document.getElementById("main-content") || document.getElementById("content") || document.body;
@@ -1990,9 +2041,8 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       frase: ["frase", "cita", "lema"],
       banner: ["banner", "banner imagen", "banner pequeno", "cabecera"],
       musica: ["musica", "cancion", "tema musical"],
-      nivel: ["nivel de poder", "nivel poder", "poder nivel", "nivel"],
       poderes: ["poder perfil", "poderes", "poder", "habilidades"],
-      rango: ["rango"],
+      clase: ["clase"],
       icono56: ["icono90", "icono 90"],
       seudonimo: ["user", "seudonimo", "seudonimos", "pseudonimo"],
       creditos: ["creditos", "credito"],
@@ -2013,7 +2063,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     });
 
     /* Respaldo por parte del nombre (tolera erratas: "inscriptión", "nacimento"...) */
-    var PARCIAL = { banner: /^banner/, nacimiento: /nacim|cumple/, inscripcion: /inscri|registro/, nivel: /^nivel/, creditos: /credit/ };
+    var PARCIAL = { banner: /^banner/, nacimiento: /nacim|cumple/, inscripcion: /inscri|registro/, creditos: /credit/ };
     function buscar(slot) {
       var syn = SINONIMOS[slot] || [slot], i;
       for (i = 0; i < campos.length; i++) {
@@ -2335,8 +2385,23 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     unknown:   '<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.6 2.2c-.7.4-1.1 1-1.1 1.8M12 17h.01"/>',
     ordinary:  '<circle cx="12" cy="8" r="4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/>',
     authority: '<path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3zM9 12l2.2 2.2L15.5 10"/>',
-    missing:   '<g stroke-dasharray="2.6 2.6"><circle cx="12" cy="8" r="4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></g>'
+    missing:   '<g stroke-dasharray="2.6 2.6"><circle cx="12" cy="8" r="4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></g>',
+    /* Clases del foro (se reconocen por su letra: "S", "Clase S", "S - Excepcional"...) */
+    s: '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
+    a: '<path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3zM9 12l2.2 2.2L15.5 10"/>',
+    b: '<path d="M6 17l6-6 6 6M6 11l6-6 6 6"/>',
+    c: '<circle cx="12" cy="8" r="4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/>',
+    d: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>',
+    e: '<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.6 2.2c-.7.4-1.1 1-1.1 1.8M12 17h.01"/>',
+    v: '<path d="M12 3c1 3.5 5 5.5 5 10a5 5 0 0 1-10 0c0-2 1-3.2 2-4 0 2 1 3 2 3 0-3-1-6 1-9z"/>'
   };
+  var NOMBRE_CLASE = { excepcional: "s", superior: "a", avanzado: "b", limitado: "c", entrenamiento: "d", revelado: "e", villano: "v" };
+  function letraClase(key) {
+    var m = key.match(/^(?:clase |class )?([sabcdev])(?: |$)/);
+    if (m) return m[1];
+    for (var n in NOMBRE_CLASE) if (key.indexOf(n) > -1) return NOMBRE_CLASE[n];
+    return "";
+  }
   var norm = function (t) {
     return (t || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
   };
@@ -2348,7 +2413,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       var key = norm(nom ? nom.textContent : "");
       var ico = document.createElement("span");
       ico.className = "rdb__gico";
-      var def = ICONOS[key];
+      var def = ICONOS[key] || ICONOS[letraClase(key)];
       if (def && /^https?:/i.test(def)) ico.innerHTML = '<img alt="" src="' + def + '">';
       else ico.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
         (def || '<circle cx="12" cy="12" r="8"/>') + '</svg>';
@@ -2725,14 +2790,17 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
    sin nombre de grupo. La tabla original se oculta (no se borra) para no romper nada.
    Si cambias el color de un grupo en el panel, cámbialo también aquí. */
 (function () {
+  /* Los grupos del foro son las clases S/A/B/C/D/E/V. El color de cada grupo en el panel
+     debe ser el de esta tabla (y el de CLASES en js-post.js). */
   var GRUPOS = [
-    ['Authority', '#D96A50'], ['Divine', '#D6AD68'], ['Infamous', '#C85B70'], ['Notorious', '#9290D4'],
-    ['Underdogs', '#C77B55'], ['Unknown', '#B77AC4'], ['Ordinary', '#72A995'], ['Missing', '#9296AA']
+    ['Clase S · Excepcional', '#D6AD68'], ['Clase A · Superior', '#D96A50'], ['Clase B · Avanzado', '#9290D4'],
+    ['Clase C · Limitado', '#72A995'], ['Clase D · En entrenamiento', '#6FB0D0'],
+    ['Clase E · No revelado', '#8D93B5'], ['Clase V · Villano', '#D0485F']
   ];
 
   /* Cuentas que deben mostrarse en un grupo concreto aunque su nombre salga con otro color
      (por ejemplo la cuenta admin, que está en todos los grupos): "Nombre": "Grupo". */
-  var FORZAR = { "Faceless": "Authority" };
+  var FORZAR = {};   /* ej.: { "Faceless": "Clase S · Excepcional" } */
 
   function iniciar() {
     var tabla = document.getElementById('memberlist') || document.querySelector('table#memberlist');

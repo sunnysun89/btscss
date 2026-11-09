@@ -7665,3 +7665,13 @@ html[data-bts-tema="claro"] .ravatar .rprofilecontent .postprofile-field { borde
 
 /* 74. Etiqueta del nombre de multicuentas (.rmulti__n): bordes superiores cuadrados (las cajas .rmulti__it no cambian) */
 .rmulti__n { border-top-left-radius: 0 !important; border-top-right-radius: 0 !important; }
+
+
+/* ==========================================================================
+   75. Clases (los grupos del foro: S/A/B/C/D/E/V) en lugar de rango y nivel de poder
+   El color sale de la paleta del grupo (--burnthesky-red-vivid), que ya pone js-post.js.
+   ========================================================================== */
+.rstat[data-slot="clase"] .rtile__v,
+.rstat[data-clase] .rtile__v { color: var(--burnthesky-red-vivid); font-size: 20px; letter-spacing: .4px; text-shadow: var(--burnthesky-ghost-sm); }
+.rstat[data-slot="clase"].is-empty { display: none; }
+.rtopicuser b[data-clase] { letter-spacing: 1.2px; }

@@ -25,8 +25,23 @@
     unknown:   '<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.6 2.2c-.7.4-1.1 1-1.1 1.8M12 17h.01"/>',
     ordinary:  '<circle cx="12" cy="8" r="4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/>',
     authority: '<path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3zM9 12l2.2 2.2L15.5 10"/>',
-    missing:   '<g stroke-dasharray="2.6 2.6"><circle cx="12" cy="8" r="4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></g>'
+    missing:   '<g stroke-dasharray="2.6 2.6"><circle cx="12" cy="8" r="4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></g>',
+    /* Clases del foro (se reconocen por su letra: "S", "Clase S", "S - Excepcional"...) */
+    s: '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
+    a: '<path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3zM9 12l2.2 2.2L15.5 10"/>',
+    b: '<path d="M6 17l6-6 6 6M6 11l6-6 6 6"/>',
+    c: '<circle cx="12" cy="8" r="4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/>',
+    d: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>',
+    e: '<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.6 2.2c-.7.4-1.1 1-1.1 1.8M12 17h.01"/>',
+    v: '<path d="M12 3c1 3.5 5 5.5 5 10a5 5 0 0 1-10 0c0-2 1-3.2 2-4 0 2 1 3 2 3 0-3-1-6 1-9z"/>'
   };
+  var NOMBRE_CLASE = { excepcional: "s", superior: "a", avanzado: "b", limitado: "c", entrenamiento: "d", revelado: "e", villano: "v" };
+  function letraClase(key) {
+    var m = key.match(/^(?:clase |class )?([sabcdev])(?: |$)/);
+    if (m) return m[1];
+    for (var n in NOMBRE_CLASE) if (key.indexOf(n) > -1) return NOMBRE_CLASE[n];
+    return "";
+  }
   var norm = function (t) {
     return (t || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
   };
@@ -38,7 +53,7 @@
       var key = norm(nom ? nom.textContent : "");
       var ico = document.createElement("span");
       ico.className = "rdb__gico";
-      var def = ICONOS[key];
+      var def = ICONOS[key] || ICONOS[letraClase(key)];
       if (def && /^https?:/i.test(def)) ico.innerHTML = '<img alt="" src="' + def + '">';
       else ico.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
         (def || '<circle cx="12" cy="12" r="8"/>') + '</svg>';

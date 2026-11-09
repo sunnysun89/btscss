@@ -5,14 +5,17 @@
    sin nombre de grupo. La tabla original se oculta (no se borra) para no romper nada.
    Si cambias el color de un grupo en el panel, cámbialo también aquí. */
 (function () {
+  /* Los grupos del foro son las clases S/A/B/C/D/E/V. El color de cada grupo en el panel
+     debe ser el de esta tabla (y el de CLASES en js-post.js). */
   var GRUPOS = [
-    ['Authority', '#D96A50'], ['Divine', '#D6AD68'], ['Infamous', '#C85B70'], ['Notorious', '#9290D4'],
-    ['Underdogs', '#C77B55'], ['Unknown', '#B77AC4'], ['Ordinary', '#72A995'], ['Missing', '#9296AA']
+    ['Clase S · Excepcional', '#D6AD68'], ['Clase A · Superior', '#D96A50'], ['Clase B · Avanzado', '#9290D4'],
+    ['Clase C · Limitado', '#72A995'], ['Clase D · En entrenamiento', '#6FB0D0'],
+    ['Clase E · No revelado', '#8D93B5'], ['Clase V · Villano', '#D0485F']
   ];
 
   /* Cuentas que deben mostrarse en un grupo concreto aunque su nombre salga con otro color
      (por ejemplo la cuenta admin, que está en todos los grupos): "Nombre": "Grupo". */
-  var FORZAR = { "Faceless": "Authority" };
+  var FORZAR = {};   /* ej.: { "Faceless": "Clase S · Excepcional" } */
 
   function iniciar() {
     var tabla = document.getElementById('memberlist') || document.querySelector('table#memberlist');

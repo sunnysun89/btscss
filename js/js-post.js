@@ -623,8 +623,49 @@
     return '';
   }
 
+  /* ---- Clases del foro (los grupos) ------------------------------------------
+     Los grupos del foro SON las clases: S, A, B y C (escala de poder) y D, E y V
+     (clases administrativas: en entrenamiento, no revelado y villano). El grupo de
+     un usuario se reconoce por el color de su nombre, igual que la paleta, así que
+     el color de cada grupo en el panel debe ser el de esta tabla (y el de
+     js-miembros). La clase sustituye al rango: sale en el banner de cada mensaje
+     y en el hueco "Clase" del perfil. */
+  var CLASES = [
+    ['S', 'Excepcional', '#D6AD68'], ['A', 'Superior', '#D96A50'], ['B', 'Avanzado', '#9290D4'],
+    ['C', 'Limitado', '#72A995'], ['D', 'En entrenamiento', '#6FB0D0'],
+    ['E', 'No revelado', '#8D93B5'], ['V', 'Villano', '#D0485F']
+  ];
+  function claseDeColor(color) {
+    var a = aRgb(color), mejor = null, dist = 1e9;
+    if (!a) return null;
+    CLASES.forEach(function (c) {
+      var b = aRgb(c[2]), d = Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]) + Math.abs(a[2] - b[2]);
+      if (d < dist) { dist = d; mejor = c; }
+    });
+    return dist <= 30 ? mejor : null;
+  }
+  function rellenaClase(raiz) {
+    var cl = (raiz.getAttribute('data-bts-clase') || '').split('|');
+    if (!cl[0]) return;
+    var t = raiz.querySelector('[data-slot="clase"], [data-slot="rango"]');
+    if (!t) return;
+    var v = t.querySelector('.rtile__v'), l = t.querySelector('.rtile__l');
+    if (v) v.textContent = cl[0] + ' · ' + cl[1];
+    if (l) l.textContent = 'Clase';
+    t.classList.remove('is-empty'); t.setAttribute('data-clase', cl[0]);
+  }
+  function ponClase(raiz, color) {
+    var c = claseDeColor(color);
+    if (!c) return;
+    raiz.setAttribute('data-bts-clase', c[0] + '|' + c[1]);
+    rellenaClase(raiz);
+    var b = raiz.querySelector('.rtopicuser b');
+    if (b) { b.textContent = 'Clase ' + c[0]; b.title = c[1]; b.setAttribute('data-clase', c[0]); }
+  }
+
   function aplicaPaleta(raiz, color, fuente, callado) {
     var rgb = aRgb(color); if (!rgb) return;
+    ponClase(raiz, color);
     var hsl = rgb2hsl(rgb[0], rgb[1], rgb[2]);
     if (hsl[1] < .12 || hsl[2] > .93 || hsl[2] < .07) return;      /* gris, blanco o negro: se queda el tema */
     var h = hsl[0], s = Math.min(.85, Math.max(.35, hsl[1]));
@@ -781,7 +822,8 @@
     }
 
     /* ===== PESTAÑA 1 · columna derecha ===== */
-    var nivel = q1('[data-slot="nivel"]'), rango = q1('[data-slot="rango"]'), creditos = q1('[data-slot="creditos"]');
+    var nivel = q1('[data-slot="nivel"]'), rango = q1('[data-slot="clase"]') || q1('[data-slot="rango"]'), creditos = q1('[data-slot="creditos"]');
+    rellenaClase(raiz);
     var credTxt = creditos ? (creditos.querySelector('.rtile__v') || creditos).textContent.trim() : '';
     var info = el('div', 'rperfil__info');
     var pTile = el('div', 'rstat rstat--power rstat--poder');
@@ -816,10 +858,10 @@
     if (side) {
       if (banner) side.insertBefore(info, banner.nextSibling); else side.appendChild(info);
     }
-    /* nivel de poder, poder y barras: bajo el avatar, encima de los botones */
+    /* poder y barras: bajo el avatar, encima de los botones */
     if (col) {
       var pb = el('div', 'rperfil__powerbox');
-      if (nivel) pb.appendChild(nivel);
+      quita(nivel);   /* el nivel de poder ya no es un dato: la clase (el grupo) lo sustituye */
       pTile.appendChild(desc); pTile.classList.add('con-desc');
       pb.appendChild(pTile);
       var avi = col.querySelector('.rperfil__avatarimg');
@@ -1217,7 +1259,7 @@
         if (cc) aplicaPaleta(post, cc, 'mensaje', true);
       } catch (e) {}
 
-      /* franja Mensajes · Créditos · Nivel de poder, entre el texto y el inventario */
+      /* franja Mensajes · Créditos, entre el texto y el inventario */
       (function () {
         var vals = [], num = post.querySelector('.rpost-n');
         var nMsg = num ? num.textContent.replace(/[^\d.,]/g, '') : '';
@@ -1232,7 +1274,6 @@
         if (!nMsg && msgF) nMsg = ((msgF.querySelector('.postprofile-field-content') || msgF).textContent.match(/[\d.,]+/) || [''])[0];
         if (nMsg) vals.push([nMsg, 'Mensajes']);
         if (tx(cred)) vals.push([tx(cred), (nombre(cred) || 'Créditos').replace(/:$/, '')]);
-        if (tx(niv)) vals.push([tx(niv), (nombre(niv) || 'Nivel de poder').replace(/:$/, '')]);
         var box = post.querySelector('.rpost-stats');
         if (!box && invBox) { box = el('div', 'rpost-stats'); invBox.parentNode.insertBefore(box, invBox); }
         if (box) {

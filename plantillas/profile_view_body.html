@@ -14,13 +14,16 @@
       Icono90 (imagen; círculo del avatar y panel del avatar de los mensajes) · Icono120 (imagen; icono de 120x120 de los mensajes) · Apodos · User (sale bajo el avatar) · Alias (alter ego, superhéroe) · Edad · Orientación ·
       Estado sentimental · Ocupación · Facción (equipo, grupo) ·
       Alianza (dúo, dupla, pareja) · Ubicación · Frase ·
-      Nivel de poder · Poderes · Rango · Créditos ·
+      Poderes · Créditos ·
       Fecha de nacimiento · Fecha de inscripción (estas dos solo se ven al
         pasar el ratón por su botón) ·
       Banner (imagen pequeña, URL o [img]) ·
       Música (formato abajo) ·
       Implante 1 · Implante 2 ·
       Inventario · Medallero (imágenes; una por objeto/medalla)
+  · CLASE: el hueco "Clase" no tiene campo de perfil. Se rellena solo con la clase del
+    usuario (S/A/B/C/D/E/V), que es su grupo en el foro y se reconoce por el color de su
+    nombre. Ya no hay "Nivel de poder" ni "Rango": se pueden borrar esos campos del panel.
   · Enlaces (Playlist/OST, Expediente, Baúl, Red social, Búsqueda, Móvil/localizador, Más),
     Popularidad, Autocontrol y Poderes van debajo del avatar (js-post.js).
   · PESTAÑAS (las monta js-post.js; el inventario queda siempre visible):
@@ -86,8 +89,7 @@
 			</div>
 
 			<div class="rperfil__stats">
-				<div class="rstat rstat--power" data-slot="nivel"    data-label="Nivel de poder"></div>
-				<div class="rstat"              data-slot="rango"    data-label="Rango"></div>
+				<div class="rstat"              data-slot="clase"    data-label="Clase"></div>
 				<div class="rstat"              data-slot="creditos" data-label="Créditos"></div>
 			</div>
 

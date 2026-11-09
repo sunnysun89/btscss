@@ -20,8 +20,8 @@ REGISTRO GENERAL — rellena solo lo que está entre comillas o en MAYÚSCULAS y
 [b]Ubicación[/b]
 [code]<div class="registro"> <a href="PERFIL">Ciudad / zona</a> </div>[/code]
 
-[b]Grupo y rango[/b]
-[code]<div class="registro"> <a href="PERFIL">Grupo · Rango</a> </div>[/code]
+[b]Clase[/b]
+[code]<div class="registro"> <a href="PERFIL">Clase (S, A, B, C, D, E o V)</a> </div>[/code]
 
 [b]Empleos y negocios[/b]
 [code]<div class="registro"> <a href="PERFIL">Empleo o negocio</a> </div>[/code]
@@ -32,8 +32,8 @@ REGISTRO GENERAL — rellena solo lo que está entre comillas o en MAYÚSCULAS y
 [b]Alianza[/b]
 [code]<div class="registro"> <a href="PERFIL">Personaje A y Personaje B (ej.: Batman y Robin)</a> </div>[/code]
 
-[b]Poder y nivel de poder[/b]
-[code]<div class="registro"> <a href="PERFIL">Poder · Nivel</a> </div>[/code]
+[b]Poder[/b]
+[code]<div class="registro"> <a href="PERFIL">Nombre del poder</a> </div>[/code]
 
 [b]Peligro[/b]
 [code]<div class="registro"> <a href="PERFIL">Nivel 1-5 · Descripción corta</a> </div>[/code]
