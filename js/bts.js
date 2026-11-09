@@ -522,7 +522,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
 !function () {
   var CLAVES = {
     icono:  ['icono120'],                          // campo "Icono120" (exacto: no se confunde con "Icono56")
-    frase:  ['frase-post', 'frase-mensaje'],      // campo "Frase post"
+    frase:  ['frase-post', 'frase-mensaje'],      // campo "Frase post" (y "Imagen post" va debajo, ver más abajo)
     poder:  ['poder-mensaje', 'poder-post'],      // campo "Poder mensajes"
     inv:    ['inventario', 'objeto', 'item'],
     med:    ['medall', 'insignia'],
@@ -1693,6 +1693,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
         }
         if (es(c, CLAVES.oculto)) { c.parentNode.removeChild(c); continue; }
         if (!f.catpop && /categoria.*(social|popularidad)/.test(slug(nombre(c)))) { f.catpop = c; continue; }
+        if (!f.imgpost && slug(nombre(c)).replace(/-/g, '') === 'imagenpost') { f.imgpost = c; continue; }   /* campo "Imagen post" */
         var ex = tipoExtra(c);
         if (ex) { (f.extras = f.extras || []).push({ t: ex, f: c }); continue; }
         if (!f.playlist && esPlaylist(c)) f.playlist = c;
@@ -1731,6 +1732,21 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       if (frBox) {
         if (f.frase && !vacio(f.frase)) { frBox.appendChild(f.frase); frBox.classList.add('tiene'); }
         else { if (f.frase) f.frase.parentNode.removeChild(f.frase); hueco(frBox, 'sin frase'); }
+      }
+      /* imagen pequeña bajo la frase (campo "Imagen post"; tamaño máximo en --burnthesky-post-img-w/-h).
+         Acepta una imagen en el campo o solo la dirección (URL) de la imagen. */
+      if (f.imgpost) {
+        var imP = f.imgpost.querySelector('img');
+        if (!imP) {
+          var urlP = ((f.imgpost.querySelector('.postprofile-field-content') || f.imgpost).textContent || '').trim();
+          if (/^https?:\/\/\S+$/i.test(urlP)) { imP = document.createElement('img'); imP.src = urlP; imP.alt = ''; }
+        }
+        if (imP && frBox) {
+          if (frBox.classList.contains('vacio')) { frBox.classList.remove('vacio'); frBox.textContent = ''; }
+          var cajaP = el('div', 'rphrase__img'); cajaP.appendChild(imP);
+          frBox.appendChild(cajaP); frBox.classList.add('tiene');
+        }
+        if (f.imgpost.parentNode) f.imgpost.parentNode.removeChild(f.imgpost);
       }
       if (poBox) {
         if (f.poder && !vacio(f.poder)) {

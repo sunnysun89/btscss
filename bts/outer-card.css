@@ -82,6 +82,8 @@
   --burnthesky-ff-sans:       'Quicksand', 'DM Sans', 'Segoe UI', Arial, sans-serif;
   --burnthesky-ff-serif:      'DM Serif Display', Georgia, serif;   /* acentos: frases y citas */   /* frases y citas */
   --burnthesky-ff-name:       'Poppins', 'Quicksand', 'Segoe UI', Arial, sans-serif;   /* nombres de usuario (mensajes, perfil, miembros) */
+  --burnthesky-post-img-w:    180px;                         /* imagen bajo la frase del mensaje ("Imagen post"): ancho máximo */
+  --burnthesky-post-img-h:    120px;                         /* ídem: alto máximo */
   --burnthesky-fs-name:       40px;                          /* tamaño del nombre de usuario en la cabecera de los mensajes */
   --burnthesky-fs-name-m:     30px;                          /* ídem en pantallas pequeñas (móvil) */
   --burnthesky-ff-catsocial:  'Quicksand';   /* categoría social, junto al nombre */
@@ -7710,4 +7712,20 @@ html[data-bts-tema="claro"] .ravatar .rprofilecontent .postprofile-field { borde
 @media (max-width: 900px) {
   .post .rtopicuser { font-size: var(--burnthesky-fs-name-m); }
   .post .rtopicuser b[data-catpop] { font-size: 18px; }
+}
+
+
+/* ==========================================================================
+   78. Imagen pequeña bajo la frase del mensaje (campo de perfil "Imagen post")
+   Tamaño máximo en las variables --burnthesky-post-img-w / -h (bloque :root del principio).
+   ========================================================================== */
+.rphrase__img { display: flex; justify-content: center; margin: 12px 0 0; }
+.rphrase__img img {
+  display: block;
+  width: auto; height: auto;
+  max-width: var(--burnthesky-post-img-w);
+  max-height: var(--burnthesky-post-img-h);
+  object-fit: contain;
+  border-radius: 10px;
+  border: 1px solid var(--burnthesky-line);
 }
