@@ -82,8 +82,8 @@
   --burnthesky-ff-sans:       'Quicksand', 'DM Sans', 'Segoe UI', Arial, sans-serif;
   --burnthesky-ff-serif:      'DM Serif Display', Georgia, serif;   /* acentos: frases y citas */   /* frases y citas */
   --burnthesky-ff-name:       'Poppins', 'Quicksand', 'Segoe UI', Arial, sans-serif;   /* nombres de usuario (mensajes, perfil, miembros) */
-  --burnthesky-fs-name:       34px;                          /* tamaño del nombre de usuario en la cabecera de los mensajes */
-  --burnthesky-fs-name-m:     26px;                          /* ídem en pantallas pequeñas (móvil) */
+  --burnthesky-fs-name:       40px;                          /* tamaño del nombre de usuario en la cabecera de los mensajes */
+  --burnthesky-fs-name-m:     18px;                          /* ídem en pantallas pequeñas (móvil) */
   --burnthesky-ff-catsocial:  var(--burnthesky-ff-serif);   /* categoría social, junto al nombre */
   --burnthesky-fs-catsocial:  22px;                          /* tamaño de la categoría social (18px en móvil) */
 
