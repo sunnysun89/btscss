@@ -7679,4 +7679,26 @@ html[data-bts-tema="claro"] .ravatar .rprofilecontent .postprofile-field { borde
 /* ==========================================================================
    76. La categoría social sustituye al rango junto al nombre (.rtopicuser b[data-catpop])
    ========================================================================== */
-.rtopicuser b[data-catpop] { letter-spacing: .6px; }
+
+/* ==========================================================================
+   77. Tipografía de los nombres y de la categoría social
+   Unbounded es muy ancha y los nombres se veían aplastados: los nombres de usuario pasan a Poppins
+   (--burnthesky-ff-name; si prefieres otra, cámbiala aquí: 'Quicksand' es más suave y 'DM Serif Display' más elegante).
+   La categoría social, junto al nombre, va en DM Serif Display cursiva y más grande.
+   ========================================================================== */
+:root { --burnthesky-ff-name: 'Poppins', 'Quicksand', 'Segoe UI', Arial, sans-serif; }
+.post .rtopicuser,
+.rperfil__avname,
+.rmiembro__nombre { font-family: var(--burnthesky-ff-name) !important; }
+.post .rtopicuser, .post .rtopicuser a, .post .rtopicuser strong, .post .rtopicuser span { font-weight: 600; letter-spacing: -.3px; }
+.post .rtopicuser b[data-catpop] {
+  font-family: var(--burnthesky-ff-serif) !important;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1.1;
+  letter-spacing: .2px !important;
+  text-transform: none !important;
+  color: var(--burnthesky-red-vivid);
+}
+@media (max-width: 900px) { .post .rtopicuser b[data-catpop] { font-size: 18px; } }
