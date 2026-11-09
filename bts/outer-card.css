@@ -7677,9 +7677,6 @@ html[data-bts-tema="claro"] .ravatar .rprofilecontent .postprofile-field { borde
 
 
 /* ==========================================================================
-   76. Barra de Popularidad con valores negativos: se llena desde el extremo derecho hacia atrás
-   (.rbar__fill--neg la pone el script cuando el valor es menor que 0). La categoría de popularidad
-   sustituye al rango junto al nombre (.rtopicuser b[data-catpop]).
+   76. La categoría social sustituye al rango junto al nombre (.rtopicuser b[data-catpop])
    ========================================================================== */
-.rbar__fill.rbar__fill--neg { margin-left: auto; background: linear-gradient(270deg, var(--burnthesky-red-vivid), var(--burnthesky-accent-2)) !important; }
 .rtopicuser b[data-catpop] { letter-spacing: .6px; }

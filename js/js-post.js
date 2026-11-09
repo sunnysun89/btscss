@@ -195,27 +195,26 @@
     return w;
   }
 
-  /* Barras de porcentaje bajo el avatar (campos "Popularidad" y "Autocontrol": el usuario
-     escribe un número, con o sin %). Autocontrol va de 0 a 100. Popularidad va de -100 a 100:
-     si es negativa, la barra se llena desde el extremo derecho hacia atrás. */
-  var BARRAS = [['pop', 'Popularidad', ['popularidad'], true], ['auto', 'Autocontrol', ['autocontrol'], false]];
-  function porcentaje(c, neg) {
+  /* Barras de porcentaje bajo el avatar (campos "Popularidad" y "Autocontrol":
+     el usuario escribe un número del 0 al 100, con o sin %). */
+  var BARRAS = [['pop', 'Popularidad', ['popularidad']], ['auto', 'Autocontrol', ['autocontrol']]];
+  function porcentaje(c) {
     var t = c ? (c.querySelector('.postprofile-field-content') || c).textContent : '';
-    var m = t.replace(',', '.').replace(/[−–—]/g, '-').match(/-?\s*\d+(\.\d+)?/);
-    var n = m ? parseFloat(m[0].replace(/\s+/g, '')) : 0;
-    return Math.max(neg ? -100 : 0, Math.min(100, n));
+    var m = t.replace(',', '.').match(/\d+(\.\d+)?/);
+    var n = m ? parseFloat(m[0]) : 0;
+    return Math.max(0, Math.min(100, n));
   }
   function barras(f) {
     var box = el('div', 'rbars');
     BARRAS.forEach(function (b) {
-      var p = porcentaje(f[b[0]], b[3]), fila = el('div', 'rbar');
+      var p = porcentaje(f[b[0]]), fila = el('div', 'rbar');
       fila.appendChild(el('span', 'rbar__l', b[1]));
-      var tr = el('div', 'rbar__track'), fl = el('div', 'rbar__fill' + (p < 0 ? ' rbar__fill--neg' : ''));
+      var tr = el('div', 'rbar__track'), fl = el('div', 'rbar__fill');
       fl.style.width = '0'; fl.textContent = p + '%';
       tr.appendChild(fl); fila.appendChild(tr);
       fila.title = b[1] + ': ' + p + '%';
       box.appendChild(fila);
-      setTimeout(function () { fl.style.width = Math.abs(p) + '%'; }, 60);
+      setTimeout(function () { fl.style.width = p + '%'; }, 60);
     });
     return box;
   }
@@ -739,7 +738,7 @@
       for (var e = 0; e < EXTRAS.length; e++) if (EXTRAS[e][1].test(sl)) ex = EXTRAS[e][0];
       if (ex) extras.push({ t: ex, f: c });
       else if (/(^|-)(playlist|ost)(-|$)/.test(sl)) playlist = c;
-      else if (/categoria.*popularidad|popularidad.*categoria/.test(sl)) { /* categoría de popularidad: solo se muestra en los mensajes */ }
+      else if (/categoria.*(social|popularidad)/.test(sl)) { /* categoría social: solo se muestra en los mensajes */ }
       else if (/popularidad/.test(sl)) f.pop = c;
       else if (/autocontrol/.test(sl)) f.auto = c;
       else if (/aliad[oa].*descripcion|descripcion.*aliad[oa]/.test(sl)) aliadoDesc = c;
@@ -1198,7 +1197,7 @@
           c.parentNode.removeChild(c); continue;
         }
         if (es(c, CLAVES.oculto)) { c.parentNode.removeChild(c); continue; }
-        if (!f.catpop && /categoria.*popularidad|popularidad.*categoria/.test(slug(nombre(c)))) { f.catpop = c; continue; }
+        if (!f.catpop && /categoria.*(social|popularidad)/.test(slug(nombre(c)))) { f.catpop = c; continue; }
         var ex = tipoExtra(c);
         if (ex) { (f.extras = f.extras || []).push({ t: ex, f: c }); continue; }
         if (!f.playlist && esPlaylist(c)) f.playlist = c;
@@ -1217,7 +1216,7 @@
         try { console.log('[BTS] post: campos de perfil encontrados →', nombres.length ? nombres.join(' | ') : '(ninguno: el usuario no tiene campos rellenos)'); } catch (e) {}
       }
 
-      /* categoría de popularidad (campo "Categoría de Popularidad"): va junto al nombre, en lugar del rango.
+      /* categoría social (campo "Categoría social"): va junto al nombre, en lugar del rango.
          Si el usuario no ha elegido ninguna, se queda el rango nativo. */
       if (f.catpop) {
         var cpTxt = vacio(f.catpop) ? '' : ((f.catpop.querySelector('.postprofile-field-content') || f.catpop).textContent || '').replace(/\s+/g, ' ').trim(),
