@@ -1339,6 +1339,18 @@
         if (hay56) { var caja56 = el('div', 'rav-ico'); caja56.appendChild(f.ico56); pc.appendChild(caja56); }
         if (!filas.length && !hay56) pc.style.display = 'none';
       }
+
+      /* MENSAJE LIMPIO (solo Authority): si el texto lleva [limpio], se oculta la ficha del autor.
+         Para que lo pueda usar cualquiera, pon SOLO_STAFF = false. */
+      (function () {
+        var SOLO_STAFF = true;
+        var cont = post.querySelector('.postbody .content');
+        if (!cont || !/\[limpio\]/i.test(cont.innerHTML)) return;
+        var cl = (post.getAttribute('data-bts-clase') || '').split('|')[0];
+        if (SOLO_STAFF && cl !== 'Authority') return;
+        cont.innerHTML = cont.innerHTML.replace(/\[limpio\]\s*(<br\s*\/?>\s*)?/gi, '');
+        post.classList.add('bts-limpio');
+      })();
     }
   }
 

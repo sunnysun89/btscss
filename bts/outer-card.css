@@ -7729,3 +7729,11 @@ html[data-bts-tema="claro"] .ravatar .rprofilecontent .postprofile-field { borde
   border-radius: 10px;
   border: 1px solid var(--burnthesky-line);
 }
+
+/* 79. Mensaje limpio (Authority + [limpio]): sin ficha de autor, cabecera, inventario ni totales */
+.post.bts-limpio .rtopicbanner,
+.post.bts-limpio .postprofile,
+.post.bts-limpio .rpost-inv,
+.post.bts-limpio .rpost-stats { display: none !important; }
+.post.bts-limpio .rpostcontainer { display: block; }
+.post.bts-limpio .rpostcontainer .postbody { width: 100%; }
