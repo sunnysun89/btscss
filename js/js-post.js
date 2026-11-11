@@ -1271,9 +1271,13 @@
       info.filas++;
       try {
       if (li.classList.contains('bts-card')) return;
-      var dl = li.querySelector('dl'), dt = li.querySelector('dt'); if (!dl || !dt) return;
+      var dl = li.querySelector('dl'); if (!dl) return;
+      /* el título puede ir en un dt o en un dd.dterm, según la plantilla */
+      var dt = li.querySelector('dt') || li.querySelector('dd.dterm') || (li.querySelector('a.topictitle') || {}).parentNode;
+      if (!dt) return;
+      var tEl = dt.getAttribute('title') ? dt : (dl.querySelector('[title]') || dl), tit = tEl.getAttribute('title') || '';
       var bg = ((dl.getAttribute('style') || '') + ' ' + (dl.className || '')).toLowerCase(),
-          s = (((dt && dt.getAttribute('title')) || '') + ' ' + bg).toLowerCase(), tipo = 'chat';
+          s = (tit + ' ' + bg).toLowerCase(), tipo = 'chat';
       if (/anuncio global|global_announce|global/.test(s)) tipo = 'global';
       else if (/anuncio|announce/.test(s)) tipo = 'anuncio';
       else if (/\bnota\b|sticky/.test(s)) tipo = 'nota';
@@ -1310,7 +1314,7 @@
       var main = document.createElement('div'); main.className = 'rtema__main';
       var ic = document.createElement('span');
       ic.className = 'rtico'; ic.setAttribute('data-tipo', tipo); ic.setAttribute('data-nuevo', nuevo);
-      ic.title = dt.getAttribute('title') || (nuevo ? 'Nuevos mensajes' : 'No hay nuevos mensajes');
+      ic.title = tit || (nuevo ? 'Nuevos mensajes' : 'No hay nuevos mensajes');
       ic.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">' + SVG_TEMA[tipo] + '</svg>';
       main.appendChild(ic);
       var txt = document.createElement('div'); txt.className = 'rtema__txt';
