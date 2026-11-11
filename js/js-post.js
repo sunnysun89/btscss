@@ -1193,6 +1193,9 @@
     global: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>'
   };
   function foroVista() {
+    try { foroVistaInt(); } catch (e) { try { console.log('[BTS] foro ERROR:', e && e.message, e && e.stack); } catch (e2) {} }
+  }
+  function foroVistaInt() {
     var raiz = document.getElementById('page-body') || document.body;
     var lista = document.querySelector('ul.topiclist.topics, ul.topiclist');
     if (!lista || raiz.getAttribute('data-bts-foro')) return;
@@ -1263,7 +1266,10 @@
 
     /* 4. Cada tema pasa a ser una tarjeta: icono + título + contadores + imagen del último mensaje */
     var usuarios = {};
+    info.filas = 0; info.errores = [];
     Array.prototype.forEach.call(document.querySelectorAll('ul.topiclist.topics li.row'), function (li) {
+      info.filas++;
+      try {
       if (li.classList.contains('bts-card')) return;
       var dl = li.querySelector('dl'), dt = li.querySelector('dt'); if (!dl || !dt) return;
       var bg = ((dl.getAttribute('style') || '') + ' ' + (dl.className || '')).toLowerCase(),
@@ -1334,6 +1340,7 @@
 
       li.appendChild(card); li.classList.add('bts-card'); info.iconos++;
       if (uid) { (usuarios[uid] = usuarios[uid] || []).push(im); }
+      } catch (err) { info.errores.push(String(err && err.message || err)); try { var bad = li.querySelector('.rtema'); if (bad) bad.parentNode.removeChild(bad); li.classList.remove('bts-card'); } catch (e2) {} }
     });
 
     /* 4b. Imagen del último mensaje: campo de perfil "Imagen post" del usuario; si no tiene, su avatar.
