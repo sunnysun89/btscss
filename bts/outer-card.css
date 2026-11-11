@@ -7908,8 +7908,11 @@ body:has(.rtema-li) .topic-actions > .bts-nav-marcar { order: 2; flex: 0 0 auto;
   font-family: var(--burnthesky-ff-post, var(--burnthesky-ff-sans));
 }
 .bguia, .bguia * { box-sizing: border-box; white-space: normal; }
+/* Saltos de línea: Foroactivo convierte cada Enter del editor en <br>. Los que quedan ENTRE bloques se ocultan (no deben crear huecos);
+   los que están DENTRO de un párrafo, regla (li), introducción, nota o pie se respetan (una línea en blanco = un nuevo párrafo). */
 .bguia br { display: none !important; }
-.bguia p br { display: inline !important; }
+.bguia p br, .bguia li br, .bguia .bguia__intro > br, .bguia .bguia__pie br, .bguia .bguia__nota br { display: inline !important; }
+.bguia p > br:first-child, .bguia li > br:first-child, .bguia p > br:last-child, .bguia li > br:last-child { display: none !important; }
 /* el foro deja los saltos de línea del editor como saltos reales: se respetan solo dentro del texto (p, li, nota, pie).
    Los contenedores (cajas, columnas, lista) siguen en "normal" para que los saltos entre bloques no abran huecos. */
 .bguia p, .bguia li, .bguia .bguia__nota, .bguia .bguia__pie { white-space: pre-line; }
