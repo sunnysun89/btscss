@@ -7799,15 +7799,15 @@ li.row.bts-tico dl.icon dt { padding-left: calc(var(--burnthesky-topic-ico) + 44
 
 /* 81. Temas en tarjetas (js-post.js: foroVista): icono + título + contadores | imagen del último mensaje */
 :root { --burnthesky-topic-last-w: 250px; --burnthesky-topic-last-h: 96px; }   /* imagen del último mensaje: ancho y alto mínimo */
-.forumbg:has(.bts-card) { background: transparent !important; border: 0 !important; box-shadow: none !important; padding: 0 !important; }
-.forumbg:has(.bts-card)::before, .forumbg:has(.bts-card)::after { display: none !important; }
-.forumbg:has(.bts-card) ul.topiclist:not(.topics) { display: none !important; }
-ul.topiclist.topics li.row.bts-card {
+.forumbg:has(.rtema-li) { background: transparent !important; border: 0 !important; box-shadow: none !important; padding: 0 !important; }
+.forumbg:has(.rtema-li)::before, .forumbg:has(.rtema-li)::after { display: none !important; }
+.forumbg:has(.rtema-li) ul.topiclist:not(.topics) { display: none !important; }
+ul.topiclist.topics li.row.rtema-li {
   background: transparent !important; border: 0 !important; box-shadow: none !important;
   padding: 0 !important; margin: 0 0 12px !important;
 }
-ul.topiclist.topics li.row.bts-card:hover { background: transparent !important; box-shadow: none !important; }
-ul.topiclist.topics li.row.bts-card > dl { display: none !important; }
+ul.topiclist.topics li.row.rtema-li:hover { background: transparent !important; box-shadow: none !important; }
+ul.topiclist.topics li.row.rtema-li > dl { display: none !important; }
 .rtema { display: grid; grid-template-columns: minmax(0, 1fr) var(--burnthesky-topic-last-w); gap: 12px; }
 .rtema__main {
   display: flex; align-items: center; gap: 16px; min-height: var(--burnthesky-topic-last-h);
@@ -7848,11 +7848,27 @@ ul.topiclist.topics li.row.bts-card > dl { display: none !important; }
 
 /* título del foro y barra de botones alineados */
 .bts-foro-titulo { margin: 0 0 6px; font: 600 clamp(28px, 3.6vw, 38px) / 1.1 var(--burnthesky-ff-topics) !important; letter-spacing: -.5px; color: var(--burnthesky-white); }
-body:has(.bts-card) .topic-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; margin: 0 0 14px; }
-body:has(.bts-card) .topic-actions .buttons { order: 1; flex: 0 0 auto; border: 0; padding: 0; }
-body:has(.bts-card) .topic-actions .pagination { order: 2; flex: 0 1 auto; margin: 0 0 0 auto; text-align: right; }
-body:has(.bts-card) .topic-actions .pathname-box { flex: 0 0 100%; }
+body:has(.rtema-li) .topic-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; margin: 0 0 14px; }
+body:has(.rtema-li) .topic-actions .buttons { order: 1; flex: 0 0 auto; border: 0; padding: 0; }
+body:has(.rtema-li) .topic-actions .pagination { order: 2; flex: 0 1 auto; margin: 0 0 0 auto; text-align: right; }
+body:has(.rtema-li) .topic-actions .pathname-box { flex: 0 0 100%; }
 @media (max-width: 760px) {
   .rtema { grid-template-columns: 1fr; }
   .rtema__top { flex-wrap: wrap; }
 }
+
+/* 82. Ajustes de las tarjetas de tema y de la barra de ruta / botones */
+.forumbg:has(.rtema-li) li.header { display: none !important; }
+ul.topiclist.topics li.row.rtema-li { display: block !important; width: 100%; }
+.rtema { width: 100%; }
+.rtema__who { display: inline-flex; align-items: baseline; gap: 6px; }
+.rtema__by { justify-content: flex-start; }
+.rtema__by .rtema__pag { margin-left: auto; }
+
+/* barra: ruta arriba (todo el ancho), nuevo tema a la izquierda, marcar/vigilar a la derecha */
+.bts-nav { display: flex !important; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; float: none !important; margin: 0 0 14px !important; padding: 0 !important; border: 0 !important; }
+.bts-nav > * { float: none !important; margin-top: 0 !important; margin-bottom: 0 !important; }
+.bts-nav > .bts-nav-ruta { order: 0; flex: 0 0 100%; }
+.bts-nav > .bts-nav-nuevo { order: 1; flex: 0 0 auto; margin-right: auto !important; }
+.bts-nav > .bts-nav-marcar { order: 2; flex: 0 1 auto; margin-left: auto !important; text-align: right; }
+.bts-crumbs { margin: 0 !important; }

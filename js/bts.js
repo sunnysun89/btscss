@@ -1765,7 +1765,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     Array.prototype.forEach.call(document.querySelectorAll('ul.topiclist.topics li.row'), function (li) {
       info.filas++;
       try {
-      if (li.classList.contains('bts-card')) return;
+      if (li.classList.contains('rtema-li')) return;
       var dl = li.querySelector('dl'); if (!dl) return;
       /* el título puede ir en un dt o en un dd.dterm, según la plantilla */
       var dt = li.querySelector('dt') || li.querySelector('dd.dterm') || (li.querySelector('a.topictitle') || {}).parentNode;
@@ -1801,7 +1801,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
         if (av && !/empty\.gif|placehold/.test(av.getAttribute('src') || '') && !/topic_|icon_/.test(av.getAttribute('src') || '')) avatar = av.getAttribute('src');
         var tmp = lp.cloneNode(true);
         Array.prototype.forEach.call(tmp.querySelectorAll('dfn, a, img'), function (x) { x.parentNode.removeChild(x); });
-        fecha = (tmp.textContent || '').replace(/últimos mensajes/i, '').replace(/\s+/g, ' ').trim();
+        fecha = (tmp.textContent || '').replace(/últimos mensajes/i, '').replace(/\s+/g, ' ').replace(/^\s*(por|by)\s+/i, '').trim();
       }
       var uid = uLink && (uLink.getAttribute('href').match(/\/u(\d+)/) || [])[1];
 
@@ -1821,8 +1821,10 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       pills.innerHTML = '<span><b>' + num(nPos) + '</b> resp.</span><span><b>' + num(nVis) + '</b> vistos</span>';
       top.appendChild(pills); txt.appendChild(top);
       var by = document.createElement('div'); by.className = 'rtema__by';
-      by.appendChild(document.createTextNode('por '));
-      if (autor) by.appendChild(autor.cloneNode(true)); else { var sa = document.createElement('b'); sa.textContent = (dt.textContent.match(/por\s+(.+?)\s*$/i) || [, ''])[1]; by.appendChild(sa); }
+      var quien = document.createElement('span'); quien.className = 'rtema__who';
+      quien.appendChild(document.createTextNode('por '));
+      if (autor) quien.appendChild(autor.cloneNode(true)); else { var sa = document.createElement('b'); sa.textContent = (dt.textContent.match(/por\s+(.+?)\s*$/i) || [, ''])[1]; quien.appendChild(sa); }
+      by.appendChild(quien);
       var pag = dt.querySelector('.pagination, .gotopage, p.pagination');
       if (pag) { var pg = pag.cloneNode(true); pg.classList.add('rtema__pag'); by.appendChild(pg); }
       txt.appendChild(by); main.appendChild(txt); card.appendChild(main);
@@ -1837,9 +1839,9 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       u.textContent = uLink ? 'por ' + (uLink.textContent || '').trim() + ' →' : ''; last.appendChild(u);
       card.appendChild(last);
 
-      li.appendChild(card); li.classList.add('bts-card'); info.iconos++;
+      li.appendChild(card); li.classList.add('rtema-li'); info.iconos++;
       if (uid) { (usuarios[uid] = usuarios[uid] || []).push(im); }
-      } catch (err) { info.errores.push(String(err && err.message || err)); try { var bad = li.querySelector('.rtema'); if (bad) bad.parentNode.removeChild(bad); li.classList.remove('bts-card'); } catch (e2) {} }
+      } catch (err) { info.errores.push(String(err && err.message || err)); try { var bad = li.querySelector('.rtema'); if (bad) bad.parentNode.removeChild(bad); li.classList.remove('rtema-li'); } catch (e2) {} }
     });
 
     /* 4b. Imagen del último mensaje: campo de perfil "Imagen post" del usuario; si no tiene, su avatar.
@@ -1851,20 +1853,27 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     Object.keys(usuarios).forEach(function (uid) {
       var clave = 'bts-ip-' + uid, ims = usuarios[uid], c = null;
       try { c = JSON.parse(localStorage.getItem(clave) || 'null'); } catch (e) {}
-      if (c && Date.now() - c.t < 43200000) { ponImagen(ims, c.u); return; }
+      if (c && Date.now() - c.t < (c.u ? 43200000 : 600000)) { ponImagen(ims, c.u); return; }
       if (!window.fetch) return;
       fetch('/u' + uid, { credentials: 'same-origin' }).then(function (r) { return r.text(); }).then(function (html) {
-        var d = new DOMParser().parseFromString(html, 'text/html'), url = '';
+        var d = new DOMParser().parseFromString(html, 'text/html'), url = '', av2 = '', etiquetas = [];
         Array.prototype.forEach.call(d.querySelectorAll('.rpf'), function (p) {
           var l = p.querySelector('.rpf-l'), v = p.querySelector('.rpf-c');
-          if (!l || !v || slug(l.textContent).replace(/-/g, '') !== 'imagenpost') return;
+          if (!l || !v) return;
+          etiquetas.push((l.textContent || '').trim());
+          if (slug(l.textContent).replace(/-/g, '') !== 'imagenpost') return;
           var i = v.querySelector('img'), m = (v.textContent || '').match(/https?:\/\/\S+/);
           url = i ? (i.getAttribute('src') || '') : (m ? m[0] : '');
         });
         if (/empty\.gif|placehold/.test(url)) url = '';
-        try { localStorage.setItem(clave, JSON.stringify({ t: Date.now(), u: url })); } catch (e) {}
-        ponImagen(ims, url);
-      }).catch(function () {});
+        var ia = d.querySelector('.rperfil__avatarimg img, .rperfil__avatar img');
+        if (ia) av2 = ia.getAttribute('src') || '';
+        if (/empty\.gif|placehold|blank/.test(av2)) av2 = '';
+        var final = url || av2;
+        try { console.log('[BTS] imagen del usuario ' + uid + ':', url ? 'campo Imagen post' : (av2 ? 'avatar (no hay Imagen post)' : 'ninguna'), '| campos del perfil:', etiquetas); } catch (e) {}
+        try { localStorage.setItem(clave, JSON.stringify({ t: Date.now(), u: final })); } catch (e) {}
+        ponImagen(ims, final);
+      }).catch(function (er) { try { console.log('[BTS] imagen: no se pudo leer /u' + uid, er); } catch (e) {} });
     });
 
     /* 5. Fuera "Usuarios navegando en este foro" y el buscador suelto; el título del foro se marca para darle estilo */
@@ -1878,8 +1887,30 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
         break;
       }
     }
-    var kw = document.getElementById('keywords');
-    if (kw && !(cab && cab.contains(kw))) { var sb = kw.closest('#search-box, form') || kw.parentNode; sb.classList.add('bts-oculto'); }
+    Array.prototype.forEach.call(document.querySelectorAll('#keywords, input[name="search_keywords"]'), function (kw) {
+      if (cab && cab.contains(kw)) return;
+      var sb = kw.closest('#search-box, form') || kw.parentNode; if (sb && !sb.querySelector('ul.topiclist')) sb.classList.add('bts-oculto');
+    });
+    /* barra de ruta y botones: ruta arriba a todo el ancho; nuevo tema a la izquierda; "marcar como leídos" a la derecha */
+    function comun(x, y) { for (var n = x; n; n = n.parentNode) { if (n.contains(y)) return n; } return null; }
+    function rama(bar, el) { while (el && el.parentNode !== bar) el = el.parentNode; return el; }
+    var nuevos = document.querySelectorAll('a[href*="mode=newtopic"], a[href*="mode=post"]'), marcas = [];
+    Array.prototype.forEach.call(document.querySelectorAll('a'), function (x) { if (/marcar todos los temas/i.test(x.textContent || '') && !(cab && cab.contains(x))) marcas.push(x); });
+    var migas = document.querySelector('.bts-crumbs');
+    Array.prototype.forEach.call(nuevos, function (np, k) {
+      if (cab && cab.contains(np)) return;
+      var mk = null;
+      for (var z = 0; z < marcas.length; z++) { if (np.compareDocumentPosition(marcas[z]) & 4) { mk = marcas[z]; break; } }
+      if (!mk) return;
+      var bar = comun(np, mk), arriba = migas && (migas.compareDocumentPosition(np) & 4) && !(migas.compareDocumentPosition(np) & 8);
+      if (arriba && bar) bar = comun(bar, migas);
+      if (!bar || bar === raiz || bar === document.body || bar.querySelector('ul.topiclist')) return;
+      var rn = rama(bar, np), rm = rama(bar, mk), rr = arriba ? rama(bar, migas) : null;
+      if (!rn || !rm || rn === rm) return;
+      bar.classList.add('bts-nav');
+      rn.classList.add('bts-nav-nuevo'); rm.classList.add('bts-nav-marcar'); if (rr) rr.classList.add('bts-nav-ruta');
+      info.nav = (info.nav || 0) + 1;
+    });
     var ult = document.querySelector('.bts-crumbs a:last-of-type');
     if (ult) {
       var hs = document.querySelectorAll('h1, h2');
