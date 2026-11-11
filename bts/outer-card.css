@@ -7133,6 +7133,11 @@ html { scrollbar-color: rgba(var(--burnthesky-accent-rgb), .35) var(--burnthesky
 .burnts-sheet .burnts-section p, .burnts-sheet .burnts-power-box p { padding: 0; text-indent: 0; }
 @media (max-width: 768px) { .burnts-sheet .burnts-header-title h1 { font-size: 26px; } }
 
+.burnts-sheet :is(.burnts-section, .burnts-power-box) p b, .burnts-sheet :is(.burnts-section, .burnts-power-box) p strong { font-weight: 600; color: var(--burnts-acc); }
+.burnts-sheet :is(.burnts-section, .burnts-power-box) p em, .burnts-sheet :is(.burnts-section, .burnts-power-box) p i:not([class]) { font-style: italic; color: var(--burnthesky-gray-lt); }
+.burnts-sheet :is(.burnts-section, .burnts-power-box) p u { text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--burnts-acc) 70%, transparent); text-underline-offset: 3px; }
+.burnts-sheet .burnts-footer b { font-weight: 600; color: var(--burnts-acc); }
+
 /* Refuerzo: cualquier <br> fuera de un párrafo se oculta (aunque Foroactivo lo meta dentro de un
    <span> o un <div> intermedio) y el espacio en blanco entre etiquetas no cuenta como elemento
    (con white-space: pre-line/pre-wrap en el mensaje, cada salto entre etiquetas añadía una línea
