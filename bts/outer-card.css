@@ -7124,7 +7124,7 @@ html { scrollbar-color: rgba(var(--burnthesky-accent-rgb), .35) var(--burnthesky
 .burnts-sheet :is(.burnts-section, .burnts-power-box) > p br { display: inline; }
 /* el contenedor del mensaje no debe añadir relleno propio a la ficha */
 .postbody .content > .burnts-sheet, .postbody .content > div > .burnts-sheet { margin-left: auto; margin-right: auto; }
-.burnts-sheet > br, .burnts-sheet p > br:last-child, .burnts-sheet p > br:first-child { display: none !important; }
+.burnts-sheet > br { display: none !important; }
 /* tipografía de la ficha con más peso que los h1-h4 y p del mensaje */
 .burnts-sheet .burnts-header-title h1 { font: 600 34px / 1.08 var(--burnthesky-ff-display); letter-spacing: .5px; margin: 0; text-transform: uppercase; padding: 0; }
 .burnts-sheet .burnts-header-title h2 { font: italic 400 22px / 1.2 var(--burnthesky-ff-serif); margin: 8px 0 0; padding: 0; text-transform: none; letter-spacing: .3px; }
