@@ -1261,10 +1261,11 @@
       });
     }
 
-    /* 4. Iconos de estado de cada tema */
+    /* 4. Cada tema pasa a ser una tarjeta: icono + título + contadores + imagen del último mensaje */
+    var usuarios = {};
     Array.prototype.forEach.call(document.querySelectorAll('ul.topiclist.topics li.row'), function (li) {
-      if (li.querySelector('.rtico')) return;
-      var dl = li.querySelector('dl'), dt = li.querySelector('dt'); if (!dl) return;
+      if (li.classList.contains('bts-card')) return;
+      var dl = li.querySelector('dl'), dt = li.querySelector('dt'); if (!dl || !dt) return;
       var bg = ((dl.getAttribute('style') || '') + ' ' + (dl.className || '')).toLowerCase(),
           s = (((dt && dt.getAttribute('title')) || '') + ' ' + bg).toLowerCase(), tipo = 'chat';
       if (/anuncio global|global_announce|global/.test(s)) tipo = 'global';
@@ -1274,12 +1275,113 @@
       else if (/popular|_hot|hot_/.test(s)) tipo = 'hot';
       var leido = /no hay nuevos/.test(s) || (/(^|[_\/-])read/.test(bg) && !/unread/.test(bg)),
           nuevo = !leido && /nuevos|unread|_new|new_/.test(s) ? 1 : 0;
+
+      var titulo = dt.querySelector('a.topictitle') || dt.querySelector('a'),
+          lp = li.querySelector('dd.lastpost'),
+          nPos = li.querySelector('dd.posts'), nVis = li.querySelector('dd.views');
+      function num(d) { var m = d ? (d.firstChild && d.firstChild.nodeValue || d.textContent || '').match(/[\d.,]+/) : null; return m ? m[0] : '0'; }
+      /* autor del tema: el primer enlace a un perfil dentro del dt que no sea el título */
+      var autor = null, aa = dt.querySelectorAll('a');
+      for (var k = 0; k < aa.length; k++) { if (aa[k] !== titulo && /\/u\d+/.test(aa[k].getAttribute('href') || '')) { autor = aa[k]; break; } }
+      /* último mensaje: usuario, fecha y enlace al mensaje */
+      var uLink = null, pLink = null, avatar = '', fecha = '';
+      if (lp) {
+        var la = lp.querySelectorAll('a');
+        for (var j = 0; j < la.length; j++) {
+          var h = la[j].getAttribute('href') || '';
+          if (!uLink && /\/u\d+/.test(h) && !la[j].querySelector('img')) uLink = la[j];
+          else if (!pLink && /#|\/t\d+/.test(h)) pLink = la[j];
+        }
+        var av = lp.querySelector('.lastpost-avatar img, img[src*="avatar"], img');
+        if (av && !/empty\.gif|placehold/.test(av.getAttribute('src') || '') && !/topic_|icon_/.test(av.getAttribute('src') || '')) avatar = av.getAttribute('src');
+        var tmp = lp.cloneNode(true);
+        Array.prototype.forEach.call(tmp.querySelectorAll('dfn, a, img'), function (x) { x.parentNode.removeChild(x); });
+        fecha = (tmp.textContent || '').replace(/últimos mensajes/i, '').replace(/\s+/g, ' ').trim();
+      }
+      var uid = uLink && (uLink.getAttribute('href').match(/\/u(\d+)/) || [])[1];
+
+      var card = document.createElement('div'); card.className = 'rtema';
+      var main = document.createElement('div'); main.className = 'rtema__main';
       var ic = document.createElement('span');
       ic.className = 'rtico'; ic.setAttribute('data-tipo', tipo); ic.setAttribute('data-nuevo', nuevo);
-      ic.title = (dt && dt.getAttribute('title')) || (nuevo ? 'Nuevos mensajes' : 'No hay nuevos mensajes');
+      ic.title = dt.getAttribute('title') || (nuevo ? 'Nuevos mensajes' : 'No hay nuevos mensajes');
       ic.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">' + SVG_TEMA[tipo] + '</svg>';
-      li.appendChild(ic); li.classList.add('bts-tico'); info.iconos++;
+      main.appendChild(ic);
+      var txt = document.createElement('div'); txt.className = 'rtema__txt';
+      var top = document.createElement('div'); top.className = 'rtema__top';
+      var tt = document.createElement('div'); tt.className = 'rtema__title';
+      if (titulo) { var t2 = titulo.cloneNode(true); tt.appendChild(t2); }
+      top.appendChild(tt);
+      var pills = document.createElement('div'); pills.className = 'rtema__pills';
+      pills.innerHTML = '<span><b>' + num(nPos) + '</b> resp.</span><span><b>' + num(nVis) + '</b> vistos</span>';
+      top.appendChild(pills); txt.appendChild(top);
+      var by = document.createElement('div'); by.className = 'rtema__by';
+      by.appendChild(document.createTextNode('por '));
+      if (autor) by.appendChild(autor.cloneNode(true)); else { var sa = document.createElement('b'); sa.textContent = (dt.textContent.match(/por\s+(.+?)\s*$/i) || [, ''])[1]; by.appendChild(sa); }
+      var pag = dt.querySelector('.pagination, .gotopage, p.pagination');
+      if (pag) { var pg = pag.cloneNode(true); pg.classList.add('rtema__pag'); by.appendChild(pg); }
+      txt.appendChild(by); main.appendChild(txt); card.appendChild(main);
+
+      var last = document.createElement('a'); last.className = 'rtema__last';
+      last.href = (pLink && pLink.getAttribute('href')) || (titulo && titulo.getAttribute('href')) || '#';
+      var im = document.createElement('i'); im.className = 'rtema__img'; if (avatar) im.style.backgroundImage = 'url("' + avatar + '")';
+      else im.classList.add('sin');
+      last.appendChild(im);
+      var f = document.createElement('span'); f.className = 'rtema__date'; f.textContent = fecha; last.appendChild(f);
+      var u = document.createElement('span'); u.className = 'rtema__user';
+      u.textContent = uLink ? 'por ' + (uLink.textContent || '').trim() + ' →' : ''; last.appendChild(u);
+      card.appendChild(last);
+
+      li.appendChild(card); li.classList.add('bts-card'); info.iconos++;
+      if (uid) { (usuarios[uid] = usuarios[uid] || []).push(im); }
     });
+
+    /* 4b. Imagen del último mensaje: campo de perfil "Imagen post" del usuario; si no tiene, su avatar.
+       Se lee de su perfil (/u123) y se guarda 12 horas en el navegador. */
+    function ponImagen(ims, url) {
+      if (!url) return;
+      ims.forEach(function (x) { x.style.backgroundImage = 'url("' + url.replace(/"/g, '%22') + '")'; x.classList.remove('sin'); });
+    }
+    Object.keys(usuarios).forEach(function (uid) {
+      var clave = 'bts-ip-' + uid, ims = usuarios[uid], c = null;
+      try { c = JSON.parse(localStorage.getItem(clave) || 'null'); } catch (e) {}
+      if (c && Date.now() - c.t < 43200000) { ponImagen(ims, c.u); return; }
+      if (!window.fetch) return;
+      fetch('/u' + uid, { credentials: 'same-origin' }).then(function (r) { return r.text(); }).then(function (html) {
+        var d = new DOMParser().parseFromString(html, 'text/html'), url = '';
+        Array.prototype.forEach.call(d.querySelectorAll('.rpf'), function (p) {
+          var l = p.querySelector('.rpf-l'), v = p.querySelector('.rpf-c');
+          if (!l || !v || slug(l.textContent).replace(/-/g, '') !== 'imagenpost') return;
+          var i = v.querySelector('img'), m = (v.textContent || '').match(/https?:\/\/\S+/);
+          url = i ? (i.getAttribute('src') || '') : (m ? m[0] : '');
+        });
+        if (/empty\.gif|placehold/.test(url)) url = '';
+        try { localStorage.setItem(clave, JSON.stringify({ t: Date.now(), u: url })); } catch (e) {}
+        ponImagen(ims, url);
+      }).catch(function () {});
+    });
+
+    /* 5. Fuera "Usuarios navegando en este foro" y el buscador suelto; el título del foro se marca para darle estilo */
+    var tw3 = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false), n3;
+    while ((n3 = tw3.nextNode())) {
+      if (/usuarios navegando en este foro/i.test(n3.nodeValue) && !(cab && cab.contains(n3))) {
+        var e3 = n3.parentNode;
+        while (e3.parentNode && e3.parentNode !== raiz && e3.parentNode !== document.body &&
+               (e3.parentNode.textContent || '').replace(/\s+/g, '') === (e3.textContent || '').replace(/\s+/g, '')) e3 = e3.parentNode;
+        if (!e3.querySelector('ul.topiclist')) e3.classList.add('bts-oculto');
+        break;
+      }
+    }
+    var kw = document.getElementById('keywords');
+    if (kw && !(cab && cab.contains(kw))) { var sb = kw.closest('#search-box, form') || kw.parentNode; sb.classList.add('bts-oculto'); }
+    var ult = document.querySelector('.bts-crumbs a:last-of-type');
+    if (ult) {
+      var hs = document.querySelectorAll('h1, h2');
+      for (var q = 0; q < hs.length; q++) {
+        if ((hs[q].textContent || '').trim().toLowerCase() === (ult.textContent || '').trim().toLowerCase() && !(cab && cab.contains(hs[q]))) { hs[q].classList.add('bts-foro-titulo'); break; }
+      }
+    }
+    document.body.setAttribute('data-bts-foro', '1');
     try { console.log('[BTS] foro:', info); } catch (e) {}
   }
 
