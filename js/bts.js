@@ -1669,10 +1669,119 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     document.body.appendChild(a); a.select(); try { document.execCommand('copy'); } catch (e) {} document.body.removeChild(a);
   }
 
+  /* ==========================================================================
+     SUBFOROS Y CATEGORÍAS (viewforum)
+     · Quita "Ordenar por" y "Cambiar a" y la leyenda de iconos.
+     · Pone un icono propio a cada tema según su estado (nuevo / leído,
+       popular, cerrado, anuncio, nota, anuncio global).
+     · Estiliza la ruta "Burn The Sky :: Categoría :: Foro" cambiando los "::".
+     Todo se detecta por TEXTO (no por clases), así que sirve aunque la
+     plantilla cambie. En la consola (F12) sale "[BTS] foro: ..." con lo que
+     encontró.
+     ========================================================================== */
+  var SVG_TEMA = {
+    chat:  '<path d="M4 5h16v11H9l-5 4z"/>',
+    hot:   '<path d="M12 3c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-9z"/>',
+    lock:  '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+    anuncio: '<path d="M4 10v4h3l8 4V6L7 10z"/><path d="M18 9a4 4 0 0 1 0 6"/>',
+    nota:  '<path d="M9 3h6l-1 6 3 3v2H7v-2l3-3z"/><path d="M12 14v7"/>',
+    global: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>'
+  };
+  function foroVista() {
+    var raiz = document.getElementById('page-body') || document.body;
+    var lista = document.querySelector('ul.topiclist.topics, ul.topiclist');
+    if (!lista || raiz.getAttribute('data-bts-foro')) return;
+    raiz.setAttribute('data-bts-foro', '1');
+    var info = { orden: 0, leyenda: 0, ruta: 0, iconos: 0 };
+
+    /* 1. Ordenar por / Cambiar a */
+    Array.prototype.forEach.call(document.querySelectorAll('select'), function (s) {
+      if (s.closest('#page-header, .rpostcontainer, #quick_reply, #quick-reply')) return;
+      var t = (s.textContent || '').toLowerCase();
+      if (/seleccionar un foro|fecha de creaci|t[ií]tulo del tema/.test(t)) {
+        var caja = s.closest('form') || s.closest('fieldset') || s.parentNode;
+        if (caja && !caja.querySelector('ul.topiclist')) { caja.classList.add('bts-oculto'); info.orden++; }
+      }
+    });
+    var tw = document.createTreeWalker(raiz, NodeFilter.SHOW_TEXT, null, false), nodo, borrar = [];
+    while ((nodo = tw.nextNode())) {
+      if (/^\s*(ordenar por|cambiar a)\s*:?\s*$/i.test(nodo.nodeValue)) borrar.push(nodo.parentNode);
+    }
+    borrar.forEach(function (p) {
+      if (p && p !== raiz && !p.querySelector('ul.topiclist') && /^\s*(ordenar por|cambiar a)\s*:?\s*$/i.test(p.textContent)) p.classList.add('bts-oculto');
+    });
+
+    /* 2. Leyenda: se busca el bloque que contiene "Anuncio global" y no la lista de temas */
+    tw = document.createTreeWalker(raiz, NodeFilter.SHOW_TEXT, null, false);
+    var ley = null;
+    while ((nodo = tw.nextNode())) {
+      if (/^\s*anuncio global\s*$/i.test(nodo.nodeValue)) { ley = nodo.parentNode; break; }
+    }
+    if (ley) {
+      var mejor = ley;
+      while (mejor.parentNode && mejor.parentNode !== raiz && mejor.parentNode !== document.body) {
+        var p = mejor.parentNode, txt = (p.textContent || '');
+        if (p.querySelector('ul.topiclist') || /usuarios navegando|ordenar por/i.test(txt)) break;
+        mejor = p;
+      }
+      mejor.classList.add('bts-oculto'); info.leyenda++;
+      var prev = mejor.previousElementSibling;
+      if (prev && /^\s*leyenda\s*$/i.test(prev.textContent || '')) prev.classList.add('bts-oculto');
+    }
+    Array.prototype.forEach.call(raiz.querySelectorAll('*'), function (e) {
+      if (!e.children.length && /^\s*leyenda\s*$/i.test(e.textContent || '') && !e.closest('ul.topiclist')) {
+        var c = e.closest('div, p, li, h3, h4') || e; if (!c.querySelector('ul.topiclist')) c.classList.add('bts-oculto');
+      }
+    });
+
+    /* 3. Ruta: "::" -> flecha y estilo de migas */
+    var origen = location.origin + '/', cab = document.getElementById('page-header');
+    var raizLink = null, as = raiz.querySelectorAll('a');
+    for (var i = 0; i < as.length; i++) {
+      var h = as[i].getAttribute('href') || '';
+      if ((h === '/' || h === origen || h === origen.slice(0, -1)) && !(cab && cab.contains(as[i])) && /::/.test((as[i].parentNode.textContent || ''))) { raizLink = as[i]; break; }
+    }
+    if (raizLink) {
+      var cont = raizLink.parentNode;
+      cont.classList.add('bts-crumbs'); info.ruta++;
+      var tw2 = document.createTreeWalker(cont, NodeFilter.SHOW_TEXT, null, false), ns = [];
+      while ((nodo = tw2.nextNode())) { if (/::/.test(nodo.nodeValue)) ns.push(nodo); }
+      ns.forEach(function (n) {
+        var partes = n.nodeValue.split('::'), frag = document.createDocumentFragment();
+        partes.forEach(function (tx, k) {
+          if (tx.trim()) frag.appendChild(document.createTextNode(tx));
+          if (k < partes.length - 1) { var sp = document.createElement('span'); sp.className = 'bts-sep'; sp.setAttribute('aria-hidden', 'true'); sp.textContent = '›'; frag.appendChild(sp); }
+        });
+        n.parentNode.replaceChild(frag, n);
+      });
+    }
+
+    /* 4. Iconos de estado de cada tema */
+    Array.prototype.forEach.call(document.querySelectorAll('ul.topiclist.topics li.row'), function (li) {
+      if (li.querySelector('.rtico')) return;
+      var dl = li.querySelector('dl'), dt = li.querySelector('dt'); if (!dl) return;
+      var bg = ((dl.getAttribute('style') || '') + ' ' + (dl.className || '')).toLowerCase(),
+          s = (((dt && dt.getAttribute('title')) || '') + ' ' + bg).toLowerCase(), tipo = 'chat';
+      if (/anuncio global|global_announce|global/.test(s)) tipo = 'global';
+      else if (/anuncio|announce/.test(s)) tipo = 'anuncio';
+      else if (/\bnota\b|sticky/.test(s)) tipo = 'nota';
+      else if (/cerrado|locked/.test(s)) tipo = 'lock';
+      else if (/popular|_hot|hot_/.test(s)) tipo = 'hot';
+      var leido = /no hay nuevos/.test(s) || (/(^|[_\/-])read/.test(bg) && !/unread/.test(bg)),
+          nuevo = !leido && /nuevos|unread|_new|new_/.test(s) ? 1 : 0;
+      var ic = document.createElement('span');
+      ic.className = 'rtico'; ic.setAttribute('data-tipo', tipo); ic.setAttribute('data-nuevo', nuevo);
+      ic.title = (dt && dt.getAttribute('title')) || (nuevo ? 'Nuevos mensajes' : 'No hay nuevos mensajes');
+      ic.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">' + SVG_TEMA[tipo] + '</svg>';
+      li.appendChild(ic); li.classList.add('bts-tico'); info.iconos++;
+    });
+    try { console.log('[BTS] foro:', info); } catch (e) {}
+  }
+
   var avisado = false;
 
   function arrancar() {
-    try { limpiaFichas(); cajasCodigo(); navCategorias(); limpiaPaginacion(); iconosPost(); botonesTema(); perfil(); premiosPerfil(); indiceV3(); bannerArriba(); } catch (e) {}
+    try { limpiaFichas(); cajasCodigo(); navCategorias(); limpiaPaginacion(); iconosPost(); botonesTema(); perfil(); premiosPerfil(); indiceV3(); bannerArriba(); foroVista(); } catch (e) {}
     var posts = document.querySelectorAll('.post');
     for (var n = 0; n < posts.length; n++) {
       var post = posts[n];
@@ -1849,7 +1958,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     }
   }
 
-  function tarde() { setTimeout(arrancar, 0); setTimeout(function () { try { limpiaFichas(); cajasCodigo(); navCategorias(); limpiaPaginacion(); iconosPost(); botonesTema(); perfil(); premiosPerfil(); indiceV3(); bannerArriba(); } catch (e) {} }, 800); }
+  function tarde() { setTimeout(arrancar, 0); setTimeout(function () { try { limpiaFichas(); cajasCodigo(); navCategorias(); limpiaPaginacion(); iconosPost(); botonesTema(); perfil(); premiosPerfil(); indiceV3(); bannerArriba(); foroVista(); } catch (e) {} }, 800); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tarde);
   else tarde();
 }();
