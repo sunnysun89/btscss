@@ -55,6 +55,7 @@ Solo el fundador (u1) puede editar plantillas.
 | `plantillas/widget-mural.html` | Widget Banner (adaptado) |
 | `plantillas/widget-leyenda-grupos.html` | Leyenda con iconos |
 | `plantillas/widget-pie.html` | Widget Footer (adaptado) |
+| `plantillas/tablilla-guia.html` | Tablilla para reglamento, guías, ambientación y anuncios largos (sección 85 del CSS) |
 | `js/js-banner.js`, `js-botones.js` | Todas las páginas |
 | `js/js-indice.js` | Índice (cadenas en español) |
 | `js/js-temas.js`, `js/js-subforos.js` | Temas / subforos |

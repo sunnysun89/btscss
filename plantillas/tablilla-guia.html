@@ -1,0 +1,26 @@
+<!-- TABLILLA DE GUÍA · reglamento, normativa, guías, ambientación y anuncios largos
+Estilos: sección 85 de bts/outer-card.css. Cada tablilla va en UNA sola línea (pégala en el modo código fuente / HTML del editor).
+No uses style="…": Foroactivo lo borra. El color es el del grupo de quien publica (para fijar otro: la variable --bguia-acc en el CSS).
+Las partes son opcionales: usa solo las que necesites y repítelas en el orden que quieras.
+
+PIEZAS
+  Cabecera ............. <div class="bguia__cab"> icono + título + subtítulo. El icono es Font Awesome (<i class="fa-solid fa-scroll bguia__ico"></i>; otros: fa-book, fa-gavel,
+                         fa-map, fa-shield-halved, fa-users, fa-dice-d20). Para poner una imagen cuadrada en su lugar: <span class="bguia__ico"><img src="URL" alt=""></span>
+  Introducción ......... <div class="bguia__intro"><p>…</p></div>  (caja con borde de color a la izquierda)
+  Línea ................ <div class="bguia__linea"></div>  (barra con degradado; se pone antes de la primera sección)
+  Título de sección .... <h4 class="bguia__seccion"><b>01.</b>Título</h4>
+  Cajas en columnas .... <div class="bguia__cols"> con <div class="bguia__caja"> dentro. Dos columnas en pantallas anchas, una en el móvil.
+                         Para forzar una sola columna: class="bguia__cols bguia__cols--1".
+  Etiqueta de regla .... <span class="bguia__tag">Respeto</span> al principio de un párrafo
+  Reglas numeradas ..... <ol class="bguia__lista"><li>…</li></ol>  (1, 2, 3…). Para una sub-regla: <li class="sub"> (sale como 2.1, 2.2…)
+  Nota ................. <p class="bguia__nota"><b>Nota</b>Texto</p>
+  Pie .................. <div class="bguia__pie">Texto</div>
+  En el texto .......... <b> destaca con el color · <em> cursiva gris · <u> subrayado · <a href="…"> enlace
+
+VARIABLES (al inicio de la sección 85 del CSS): --bguia-w (ancho máximo, 100% por defecto) · --bguia-title-fs (tamaño del título) · --bguia-fs (tamaño del texto) · --bguia-pad (relleno)
+
+CONSEJOS
+  · Un tema largo se puede dividir en varias tablillas (una por apartado) o en una sola con varias secciones.
+  · Cada tablilla en una línea. Si el editor la parte, el foro mete saltos de línea que descuadran los espacios.
+-->
+<div class="bguia"><div class="bguia__cab"><i class="fa-solid fa-scroll bguia__ico"></i><div><h3 class="bguia__titulo">Normativa</h3><p class="bguia__sub">Lectura obligatoria</p></div></div><div class="bguia__intro"><p>Bienvenidos a <b>Burn The Sky</b>. Leer esta normativa es obligatorio: no conocerla no exime de cumplirla. Existe para que el foro siga siendo un lugar donde escribir y pasarlo bien, así que les pedimos que respeten <em>unas pocas reglas básicas</em>.</p></div><div class="bguia__linea"></div><h4 class="bguia__seccion"><b>01.</b>Lo esencial</h4><div class="bguia__cols"><div class="bguia__caja"><p><span class="bguia__tag">Respeto</span> Es la única regla que no admite excepciones. No se tolera el <b>acoso</b>, los insultos, la discriminación ni las burlas dirigidas a ningún usuario, dentro o fuera del foro.</p><p><span class="bguia__tag">Rol no es persona</span> Lo que ocurre entre personajes se queda en el tema. Si un conflicto <em>empieza a afectar a las personas</em> que los escriben, avisen al staff.</p></div><div class="bguia__caja"><p><span class="bguia__tag">Sin IA</span> Burn The Sky es un foro de personas para personas: <b>no se permite el uso de IA generativa</b> para escribir mensajes, fichas o gráficos. Las correcciones gramaticales menores sí están bien.</p><p><span class="bguia__tag">Staff</span> Las dudas se resuelven con el staff, por mensaje privado. Respondan a sus avisos en un máximo de <u>72 horas</u>.</p></div></div><h4 class="bguia__seccion"><b>02.</b>Cuentas y personajes</h4><ol class="bguia__lista"><li>Se permiten hasta <b>tres cuentas</b> por persona. Para la cuarta en adelante hará falta pedir permiso al staff.</li><li>Tras registrarse tienen <b>cinco días</b> para completar la ficha y quince para escribir su primer mensaje de rol.</li><li class="sub">Pasado ese plazo sin hacerlo, se eliminan la ficha y el registro.</li><li>El mínimo para un mensaje de rol es de <b>250 palabras</b>.</li></ol><p class="bguia__nota"><b>Nota</b>Cualquier duda sobre estas normas se consulta antes de actuar.</p><div class="bguia__pie">Burn The Sky · 2060</div></div>
