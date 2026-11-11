@@ -576,6 +576,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
       if (prev && prev.nodeName === 'BR') v = v.replace(/^[ \t]*\n/, '');
       else if (antes) v = v.replace(/^[ \t\n]*\n[ \t]*/, '');
       if (despues) v = v.replace(/[ \t]*\n[ \t\n]*$/, '');
+      else if (next && next.nodeName === 'BR') v = v.replace(/[ \t]*\n[ \t]*$/, '');
       if (v === t.nodeValue) return;
       if (!v.replace(/\s+/g, '').length && (antes || despues)) par.removeChild(t); else t.nodeValue = v;
     });
