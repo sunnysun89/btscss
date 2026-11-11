@@ -7880,3 +7880,13 @@ body:has(.rtema-li) .topic-actions > .search-box { display: none !important; }
 body:has(.rtema-li) .topic-actions > .bts-crumbs { order: 1; flex: 0 1 auto; min-width: 0; }
 body:has(.rtema-li) .topic-actions > .bts-nav-marcar { order: 2; flex: 0 0 auto; margin: 0 0 0 auto !important; float: none !important; text-align: right; }
 @media (max-width: 760px) { body:has(.rtema-li) .topic-actions { flex-wrap: wrap; } body:has(.rtema-li) .topic-actions > .bts-nav-marcar { margin-left: 0 !important; } }
+
+/* 84. Separador de la ruta dibujado con CSS (no depende de la tipografía, así queda siempre centrado) */
+.bts-crumbs .bts-sep {
+  display: inline-block; flex: 0 0 auto; align-self: center;
+  width: 6px; height: 6px; margin: 0 6px; padding: 0;
+  font-size: 0 !important; line-height: 0; color: transparent;
+  border-top: 1.5px solid var(--burnthesky-red); border-right: 1.5px solid var(--burnthesky-red);
+  transform: rotate(45deg);
+}
+.bts-crumbs a, .bts-crumbs a > span { display: inline-flex; align-items: center; line-height: 1.4; }
