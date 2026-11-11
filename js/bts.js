@@ -548,6 +548,39 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
     var c = f && f.querySelector('.postprofile-field-content');
     return !c || (!c.querySelector('img') && !c.textContent.replace(/\s+/g, '').length);
   }
+  /* ESPACIOS Y SALTOS DE LÍNEA DEL TEXTO DE LOS MENSAJES
+     Los mensajes usan white-space: pre-line (sección 60 del CSS), así que cada Enter del editor se ve como un salto.
+     Eso mismo hace que los Enter que quedan ENTRE etiquetas de una tablilla (HTML en varias líneas) abran huecos.
+     Esta función los limpia SIN tocar el texto escrito: quita los saltos que solo separan bloques, los de justo después
+     de abrir o antes de cerrar un bloque, y el salto real que va pegado detrás de un <br> (para que no cuente doble).
+     Sirve con cualquier tablilla (propia o de otro foro) y con texto libre sin <p> ni <li>. */
+  function limpiaSaltos(raiz) {
+    if (!raiz || raiz.getAttribute('data-bts-ws')) return;
+    raiz.setAttribute('data-bts-ws', '1');
+    function bloque(e) {
+      if (!e || e.nodeType !== 1) return false;
+      var d = window.getComputedStyle(e).display;
+      return d !== 'inline' && d !== 'inline-block' && d !== 'inline-flex' && d !== 'inline-grid' && d !== 'contents' && d !== 'none';
+    }
+    function vecino(n, dir) { var x = n[dir]; while (x && x.nodeType === 8) x = x[dir]; return x; }
+    var tw = document.createTreeWalker(raiz, NodeFilter.SHOW_TEXT, null, false), lista = [], n;
+    while ((n = tw.nextNode())) lista.push(n);
+    lista.forEach(function (t) {
+      var par = t.parentNode;
+      if (!par || (par.closest && par.closest('pre, code, textarea, script, style, .codebox'))) return;
+      var v = t.nodeValue;
+      if (v.indexOf('\n') < 0) return;
+      var prev = vecino(t, 'previousSibling'), next = vecino(t, 'nextSibling');
+      var antes = prev ? (prev.nodeType === 1 && (bloque(prev) || prev.nodeName === 'BR')) : bloque(par),
+          despues = next ? bloque(next) : bloque(par);
+      if (prev && prev.nodeName === 'BR') v = v.replace(/^[ \t]*\n/, '');
+      else if (antes) v = v.replace(/^[ \t\n]*\n[ \t]*/, '');
+      if (despues) v = v.replace(/[ \t]*\n[ \t\n]*$/, '');
+      if (v === t.nodeValue) return;
+      if (!v.replace(/\s+/g, '').length && (antes || despues)) par.removeChild(t); else t.nodeValue = v;
+    });
+  }
+
   function hueco(box, texto) {
     box.classList.add('vacio');
     box.textContent = texto;
@@ -2092,6 +2125,7 @@ if (document.readyState === "loading") { document.addEventListener("DOMContentLo
         if (!filas.length && !hay56) pc.style.display = 'none';
       }
 
+      limpiaSaltos(post.querySelector('.postbody .content'));
       /* MENSAJE LIMPIO (solo Authority): si el texto lleva [limpio], se oculta la ficha del autor.
          Para que lo pueda usar cualquiera, pon SOLO_STAFF = false. */
       (function () {

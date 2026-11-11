@@ -7908,10 +7908,7 @@ body:has(.rtema-li) .topic-actions > .bts-nav-marcar { order: 2; flex: 0 0 auto;
   font-family: var(--burnthesky-ff-post, var(--burnthesky-ff-sans));
 }
 .bguia, .bguia * { box-sizing: border-box; }
-/* Saltos de línea: aquí NO se toca white-space; se hereda el pre-line de los mensajes (sección 60), así que el Enter se ve igual que en cualquier post.
-   Los contenedores que solo llevan bloques (.bguia, .bguia__caja, .bguia__intro) son flex en columna: los Enter que queden ENTRE etiquetas no abren huecos.
-   Por eso el texto va siempre dentro de <p> o <li>. */
-.bguia, .bguia .bguia__caja, .bguia .bguia__intro { display: flex; flex-direction: column; }
+/* Saltos de línea: no se toca white-space; se hereda el de los mensajes y js-post.js (limpiaSaltos) limpia los Enter que solo separan etiquetas. */
 .bguia p, .bguia li { font-size: var(--bguia-fs); line-height: 1.75; color: var(--burnthesky-white); }
 .bguia p { margin: 0 0 10px; text-align: justify; }
 .bguia p:last-child { margin-bottom: 0; }
