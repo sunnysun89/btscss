@@ -7893,7 +7893,7 @@ body:has(.rtema-li) .topic-actions > .bts-nav-marcar { order: 2; flex: 0 0 auto;
 
 /* ==========================================================================
    85. Tablilla de guía (.bguia): reglamento, normativa, guías, ambientación y anuncios largos
-   Plantilla y manual en plantillas/tablilla-guia.html. Va en UNA sola línea (modo código fuente); sin style="…".
+   Plantilla y manual en plantillas/tablilla-guia.html. Se puede escribir en varias líneas (los saltos se respetan dentro de p, li, nota y pie); sin style="…".
    Piezas: .bguia__cab (cabecera con icono o imagen) · .bguia__intro · .bguia__linea · .bguia__seccion (01. Título)
            .bguia__cols > .bguia__caja (cajas en 1-2 columnas) · .bguia__tag (etiqueta) · ol.bguia__lista (reglas numeradas, li.sub = 2.1)
            .bguia__nota · .bguia__pie · en el texto: <b> destaca, <em> cursiva, <u> subraya
@@ -7907,9 +7907,12 @@ body:has(.rtema-li) .topic-actions > .bts-nav-marcar { order: 2; flex: 0 0 auto;
   box-shadow: 0 14px 40px rgba(0, 0, 0, .3), 0 0 50px color-mix(in srgb, var(--bguia-acc) 8%, transparent);
   font-family: var(--burnthesky-ff-post, var(--burnthesky-ff-sans));
 }
-.bguia * { box-sizing: border-box; white-space: normal; }
+.bguia, .bguia * { box-sizing: border-box; white-space: normal; }
 .bguia br { display: none !important; }
 .bguia p br { display: inline !important; }
+/* el foro deja los saltos de línea del editor como saltos reales: se respetan solo dentro del texto (p, li, nota, pie).
+   Los contenedores (cajas, columnas, lista) siguen en "normal" para que los saltos entre bloques no abran huecos. */
+.bguia p, .bguia li, .bguia .bguia__nota, .bguia .bguia__pie { white-space: pre-line; }
 .bguia p, .bguia li { font-size: var(--bguia-fs); line-height: 1.75; color: var(--burnthesky-white); }
 .bguia p { margin: 0 0 10px; text-align: justify; }
 .bguia p:last-child { margin-bottom: 0; }
@@ -7975,3 +7978,6 @@ body:has(.rtema-li) .topic-actions > .bts-nav-marcar { order: 2; flex: 0 0 auto;
   .bguia .bguia__cols { grid-template-columns: 1fr; }
   .bguia ol.bguia__lista > li { padding-left: 48px; } .bguia ol.bguia__lista > li::before { width: 34px; height: 34px; }
 }
+
+/* 85b. Separación entre bloques de la tablilla de guía */
+.bguia .bguia__cols + *, .bguia ol.bguia__lista + * { margin-top: 18px; }
