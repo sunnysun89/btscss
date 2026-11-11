@@ -7872,3 +7872,11 @@ ul.topiclist.topics li.row.rtema-li { display: block !important; width: 100%; }
 .bts-nav > .bts-nav-nuevo { order: 1; flex: 0 0 auto; margin-right: auto !important; }
 .bts-nav > .bts-nav-marcar { order: 2; flex: 0 1 auto; margin-left: auto !important; text-align: right; }
 .bts-crumbs { margin: 0 !important; }
+
+/* 83. Barra superior del subforo: nuevo tema (donde estaba el buscador) · ruta · marcar como leídos */
+body:has(.rtema-li) .topic-actions { display: flex !important; flex-wrap: nowrap; align-items: center; justify-content: flex-start; gap: 12px 16px; margin: 0 0 16px; }
+body:has(.rtema-li) .topic-actions > .buttons { order: 0; flex: 0 0 auto; border: 0 !important; padding: 0 !important; margin: 0 !important; background: transparent; }
+body:has(.rtema-li) .topic-actions > .search-box { display: none !important; }
+body:has(.rtema-li) .topic-actions > .bts-crumbs { order: 1; flex: 0 1 auto; min-width: 0; }
+body:has(.rtema-li) .topic-actions > .bts-nav-marcar { order: 2; flex: 0 0 auto; margin: 0 0 0 auto !important; float: none !important; text-align: right; }
+@media (max-width: 760px) { body:has(.rtema-li) .topic-actions { flex-wrap: wrap; } body:has(.rtema-li) .topic-actions > .bts-nav-marcar { margin-left: 0 !important; } }

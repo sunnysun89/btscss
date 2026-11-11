@@ -1345,40 +1345,51 @@
       card.appendChild(last);
 
       li.appendChild(card); li.classList.add('rtema-li'); info.iconos++;
-      if (uid) { (usuarios[uid] = usuarios[uid] || []).push(im); }
+      if (uid) { var uu = usuarios[uid] = usuarios[uid] || { ims: [], href: '' }; uu.ims.push(im); if (!uu.href) uu.href = (pLink && pLink.getAttribute('href')) || (titulo && titulo.getAttribute('href')) || ''; }
       } catch (err) { info.errores.push(String(err && err.message || err)); try { var bad = li.querySelector('.rtema'); if (bad) bad.parentNode.removeChild(bad); li.classList.remove('rtema-li'); } catch (e2) {} }
     });
 
-    /* 4b. Imagen del último mensaje: campo de perfil "Imagen post" del usuario; si no tiene, su avatar.
-       Se lee de su perfil (/u123) y se guarda 12 horas en el navegador. */
+    /* 4b. Imagen del último mensaje: campo "Imagen post" del usuario o, si no lo tiene, su avatar.
+       Se lee del propio mensaje (la página del tema, donde ya salen sus campos de perfil) y se guarda
+       12 horas en el navegador (10 minutos si no se encontró nada). */
     function ponImagen(ims, url) {
       if (!url) return;
       ims.forEach(function (x) { x.style.backgroundImage = 'url("' + url.replace(/"/g, '%22') + '")'; x.classList.remove('sin'); });
     }
     Object.keys(usuarios).forEach(function (uid) {
-      var clave = 'bts-ip-' + uid, ims = usuarios[uid], c = null;
+      var clave = 'bts-ip2-' + uid, ims = usuarios[uid].ims, href = usuarios[uid].href, c = null;
       try { c = JSON.parse(localStorage.getItem(clave) || 'null'); } catch (e) {}
       if (c && Date.now() - c.t < (c.u ? 43200000 : 600000)) { ponImagen(ims, c.u); return; }
-      if (!window.fetch) return;
-      fetch('/u' + uid, { credentials: 'same-origin' }).then(function (r) { return r.text(); }).then(function (html) {
-        var d = new DOMParser().parseFromString(html, 'text/html'), url = '', av2 = '', etiquetas = [];
-        Array.prototype.forEach.call(d.querySelectorAll('.rpf'), function (p) {
-          var l = p.querySelector('.rpf-l'), v = p.querySelector('.rpf-c');
-          if (!l || !v) return;
-          etiquetas.push((l.textContent || '').trim());
-          if (slug(l.textContent).replace(/-/g, '') !== 'imagenpost') return;
-          var i = v.querySelector('img'), m = (v.textContent || '').match(/https?:\/\/\S+/);
-          url = i ? (i.getAttribute('src') || '') : (m ? m[0] : '');
-        });
+      if (!window.fetch || !href) return;
+      fetch(href, { credentials: 'same-origin' }).then(function (r) { return r.text(); }).then(function (html) {
+        var d = new DOMParser().parseFromString(html, 'text/html'), url = '', av2 = '', etiquetas = [], elegido = null;
+        var hm = href.match(/#(p\d+)/), reUid = new RegExp('/u' + uid + '(?!\\d)');
+        if (hm) elegido = d.getElementById(hm[1]);
+        if (!elegido || !elegido.querySelector('.postprofile')) {
+          var posts = d.querySelectorAll('.post');
+          for (var q = posts.length - 1; q >= 0; q--) {
+            var as2 = posts[q].querySelectorAll('a');
+            for (var w = 0; w < as2.length; w++) { if (reUid.test(as2[w].getAttribute('href') || '')) { elegido = posts[q]; break; } }
+            if (elegido && elegido.querySelector('.postprofile') && posts[q] === elegido) break;
+          }
+        }
+        if (elegido) {
+          Array.prototype.forEach.call(elegido.querySelectorAll('.postprofile .postprofile-field'), function (f) {
+            var nm = nombre(f); etiquetas.push(nm);
+            if (slug(nm).replace(/-/g, '') !== 'imagenpost') return;
+            var v = f.querySelector('.postprofile-field-content') || f, i = v.querySelector('img'), m = (v.textContent || '').match(/https?:\/\/\S+/);
+            url = i ? (i.getAttribute('src') || '') : (m ? m[0] : '');
+          });
+          var ia = elegido.querySelector('.postprofile .ravatar img');
+          if (ia) av2 = ia.getAttribute('src') || '';
+        }
         if (/empty\.gif|placehold/.test(url)) url = '';
-        var ia = d.querySelector('.rperfil__avatarimg img, .rperfil__avatar img');
-        if (ia) av2 = ia.getAttribute('src') || '';
         if (/empty\.gif|placehold|blank/.test(av2)) av2 = '';
         var final = url || av2;
-        try { console.log('[BTS] imagen del usuario ' + uid + ':', url ? 'campo Imagen post' : (av2 ? 'avatar (no hay Imagen post)' : 'ninguna'), '| campos del perfil:', etiquetas); } catch (e) {}
+        try { console.log('[BTS] imagen del usuario ' + uid + ':', url ? 'campo Imagen post' : (av2 ? 'avatar (no hay Imagen post)' : 'ninguna'), '| mensaje encontrado:', !!elegido, '| campos:', etiquetas.join(', ')); } catch (e) {}
         try { localStorage.setItem(clave, JSON.stringify({ t: Date.now(), u: final })); } catch (e) {}
         ponImagen(ims, final);
-      }).catch(function (er) { try { console.log('[BTS] imagen: no se pudo leer /u' + uid, er); } catch (e) {} });
+      }).catch(function (er) { try { console.log('[BTS] imagen: no se pudo leer ' + href, er); } catch (e) {} });
     });
 
     /* 5. Fuera "Usuarios navegando en este foro" y el buscador suelto; el título del foro se marca para darle estilo */
@@ -1396,26 +1407,19 @@
       if (cab && cab.contains(kw)) return;
       var sb = kw.closest('#search-box, form') || kw.parentNode; if (sb && !sb.querySelector('ul.topiclist')) sb.classList.add('bts-oculto');
     });
-    /* barra de ruta y botones: ruta arriba a todo el ancho; nuevo tema a la izquierda; "marcar como leídos" a la derecha */
-    function comun(x, y) { for (var n = x; n; n = n.parentNode) { if (n.contains(y)) return n; } return null; }
-    function rama(bar, el) { while (el && el.parentNode !== bar) el = el.parentNode; return el; }
-    var nuevos = document.querySelectorAll('a[href*="mode=newtopic"], a[href*="mode=post"]'), marcas = [];
-    Array.prototype.forEach.call(document.querySelectorAll('a'), function (x) { if (/marcar todos los temas/i.test(x.textContent || '') && !(cab && cab.contains(x))) marcas.push(x); });
-    var migas = document.querySelector('.bts-crumbs');
-    Array.prototype.forEach.call(nuevos, function (np, k) {
-      if (cab && cab.contains(np)) return;
+    /* el botón de nuevo tema ocupa el lugar del buscador; "Marcar todos... / ¡Más!" se trae a la misma fila */
+    var ta = document.querySelector('.topic-actions');
+    if (ta && ta.querySelector('.bts-crumbs') && !(cab && cab.contains(ta))) {
       var mk = null;
-      for (var z = 0; z < marcas.length; z++) { if (np.compareDocumentPosition(marcas[z]) & 4) { mk = marcas[z]; break; } }
-      if (!mk) return;
-      var bar = comun(np, mk), arriba = migas && (migas.compareDocumentPosition(np) & 4) && !(migas.compareDocumentPosition(np) & 8);
-      if (arriba && bar) bar = comun(bar, migas);
-      if (!bar || bar === raiz || bar === document.body || bar.querySelector('ul.topiclist')) return;
-      var rn = rama(bar, np), rm = rama(bar, mk), rr = arriba ? rama(bar, migas) : null;
-      if (!rn || !rm || rn === rm) return;
-      bar.classList.add('bts-nav');
-      rn.classList.add('bts-nav-nuevo'); rm.classList.add('bts-nav-marcar'); if (rr) rr.classList.add('bts-nav-ruta');
-      info.nav = (info.nav || 0) + 1;
-    });
+      Array.prototype.forEach.call(document.querySelectorAll('a'), function (x) {
+        if (!mk && /marcar todos los temas/i.test(x.textContent || '') && !(cab && cab.contains(x)) && !ta.contains(x) && (x.compareDocumentPosition(lista) & 4)) mk = x;
+      });
+      if (mk) {
+        var cont = mk;
+        while (cont.parentNode && !cont.parentNode.contains(ta) && !cont.parentNode.querySelector('ul.topiclist') && (cont.parentNode.textContent || '').trim().length < 90) cont = cont.parentNode;
+        if (!cont.contains(ta) && !cont.querySelector('ul.topiclist')) { cont.classList.add('bts-nav-marcar'); ta.appendChild(cont); info.marcar = 1; }
+      }
+    }
     var ult = document.querySelector('.bts-crumbs a:last-of-type');
     if (ult) {
       var hs = document.querySelectorAll('h1, h2');
